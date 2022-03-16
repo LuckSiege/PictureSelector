@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @date：2021/11/20 8:57 下午
  * @describe：SelectedManager
  */
-public class SelectedManager {
+public final class SelectedManager {
     public static final int INVALID = -1;
     public static final int ADD_SUCCESS = 0;
     public static final int REMOVE = 1;
@@ -57,11 +57,11 @@ public class SelectedManager {
     }
 
     public static void addSelectedPreviewResult(ArrayList<LocalMedia> list) {
-        clearExternalPreviewData();
+        clearPreviewData();
         selectedPreviewResult.addAll(list);
     }
 
-    public static void clearExternalPreviewData() {
+    public static void clearPreviewData() {
         if (selectedPreviewResult.size() > 0) {
             selectedPreviewResult.clear();
         }

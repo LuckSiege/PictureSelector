@@ -268,37 +268,22 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
+        onRestoreSavedInstanceData(savedInstanceState);
+        initViewPagerData(mData);
+        iniMagicalView();
         if (isExternalPreview) {
-            if (savedInstanceState != null || mData.size() == 0) {
-                mData = new ArrayList<>(SelectedManager.getSelectedPreviewResult());
-            }
-            magicalView.setBackgroundAlpha(1.0F);
-            SelectedManager.clearExternalPreviewData();
             externalPreviewStyle();
-            initViewPagerData();
         } else {
             initLoader();
             initBottomNavBar();
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
-            iniMagicalView();
-            if (savedInstanceState != null && mData.size() == 0) {
-                // 这种情况就是内存不足导致页面被回收后的补全逻辑，让其恢复到回收前的样子
-                if (isInternalBottomPreview) {
-                    mData = new ArrayList<>(SelectedManager.getSelectedResult());
-                    initViewPagerData();
-                } else {
-                    if (config.isPageStrategy) {
-                        loadData(mPage * config.pageSize);
-                    } else {
-                        // 就算不是分页模式也强行先使用LocalMediaPageLoader模式获取数据
-                        mLoader = new LocalMediaPageLoader(getContext(), config);
-                        loadData(totalNum);
-                    }
-                }
-            } else {
-                initViewPagerData();
-            }
+        }
+    }
+
+    private void onRestoreSavedInstanceData(Bundle savedInstanceState) {
+        if (savedInstanceState != null || mData.size() == 0) {
+            mData.addAll(new ArrayList<>(SelectedManager.getSelectedPreviewResult()));
         }
     }
 
@@ -342,7 +327,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 设置MagicalView
      */
     private void iniMagicalView() {
-        if (isInternalBottomPreview) {
+        if (isInternalBottomPreview || isExternalPreview) {
             magicalView.setBackgroundAlpha(1.0F);
         } else if (config.isPreviewZoomEffect) {
             if (isSaveInstanceState) {
@@ -463,9 +448,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, isShowCamera);
         outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isInternalBottomPreview);
         outState.putString(PictureConfig.EXTRA_CURRENT_ALBUM_NAME, currentAlbum);
-        if (isExternalPreview) {
-            SelectedManager.addSelectedPreviewResult(mData);
-        }
+        SelectedManager.addSelectedPreviewResult(mData);
     }
 
     @Nullable
@@ -575,19 +558,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
-        mData = result;
-        if (mData.size() == 0) {
+        if (result.size() == 0) {
             onBackCurrentFragment();
-            return;
+        } else {
+            mData = result;
+            // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
+            // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
+            int position = isShowCamera ? 0 : -1;
+            for (int i = 0; i < mData.size(); i++) {
+                position++;
+                mData.get(i).setPosition(position);
+            }
+            initViewPagerData(mData);
         }
-        // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
-        // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
-        int position = isShowCamera ? 0 : -1;
-        for (int i = 0; i < mData.size(); i++) {
-            position++;
-            mData.get(i).setPosition(position);
-        }
-        initViewPagerData();
     }
 
     /**
@@ -1128,26 +1111,27 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         return new PicturePreviewAdapter();
     }
 
-    private void initViewPagerData() {
+    private void initViewPagerData(ArrayList<LocalMedia> data) {
         viewPageAdapter = createAdapter();
-        viewPageAdapter.setData(mData);
+        viewPageAdapter.setData(data);
         viewPageAdapter.setOnPreviewEventListener(new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
-        if (mData.size() == 0 || curPosition > mData.size()) {
+        SelectedManager.clearPreviewData();
+        if (data.size() == 0 || curPosition > data.size()) {
             onKeyBackFragmentFinish();
             return;
         }
-        LocalMedia media = mData.get(curPosition);
+        LocalMedia media = data.get(curPosition);
         bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(media.getMimeType())
                 || PictureMimeType.isHasAudio(media.getMimeType()));
-        tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
+        tvSelected.setSelected(SelectedManager.getSelectedResult().contains(data.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 3)));
         sendChangeSubSelectPositionEvent(false);
-        notifySelectNumberStyle(mData.get(curPosition));
+        notifySelectNumberStyle(data.get(curPosition));
     }
 
     /**
