@@ -52,7 +52,7 @@ public class SelectMimeType {
     /**
      * System all image or video album
      */
-    public final static String[] SYSTEM_ALL = new String[]{SelectMimeType.SYSTEM_IMAGE, SelectMimeType.SYSTEM_VIDEO};
+    public final static String SYSTEM_ALL = SelectMimeType.SYSTEM_IMAGE + "," + SelectMimeType.SYSTEM_VIDEO;
 
     /**
      * System image album

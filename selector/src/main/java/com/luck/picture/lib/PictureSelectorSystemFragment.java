@@ -1,14 +1,18 @@
 package com.luck.picture.lib;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -25,6 +29,7 @@ import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,9 +55,9 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     }
 
 
-    private ActivityResultLauncher<String[]> mDocMultipleLauncher;
+    private ActivityResultLauncher<String> mDocMultipleLauncher;
 
-    private ActivityResultLauncher<String[]> mDocSingleLauncher;
+    private ActivityResultLauncher<String> mDocSingleLauncher;
 
     private ActivityResultLauncher<String> mContentsLauncher;
 
@@ -144,24 +149,51 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      * 同时获取图片或视频(多选)
      */
     private void createMultipleDocuments() {
-        mDocMultipleLauncher = registerForActivityResult
-                (new ActivityResultContracts.OpenMultipleDocuments(),
-                        new ActivityResultCallback<List<Uri>>() {
-                            @Override
-                            public void onActivityResult(List<Uri> result) {
-                                if (result == null || result.size() == 0) {
-                                    onKeyBackFragmentFinish();
-                                } else {
-                                    for (int i = 0; i < result.size(); i++) {
-                                        LocalMedia media = buildLocalMedia(result.get(i).toString());
-                                        media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                                        SelectedManager.addSelectResult(media);
-                                    }
-                                    dispatchTransformResult();
-                                }
-                            }
-                        });
+        mDocMultipleLauncher = registerForActivityResult(new ActivityResultContract<String, List<Uri>>() {
 
+            @Override
+            public List<Uri> parseResult(int resultCode, @Nullable Intent intent) {
+                List<Uri> result = new ArrayList<>();
+                if (intent == null) {
+                    return result;
+                }
+                if (intent.getClipData() != null) {
+                    ClipData clipData = intent.getClipData();
+                    int itemCount = clipData.getItemCount();
+                    for (int i = 0; i < itemCount; i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        result.add(uri);
+                    }
+                } else if (intent.getData() != null) {
+                    result.add(intent.getData());
+                }
+                return result;
+            }
+
+            @NonNull
+            @Override
+            public Intent createIntent(@NonNull Context context, String mimeTypes) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setType(mimeTypes);
+                return intent;
+            }
+        }, new ActivityResultCallback<List<Uri>>() {
+            @Override
+            public void onActivityResult(List<Uri> result) {
+                if (result == null || result.size() == 0) {
+                    onKeyBackFragmentFinish();
+                } else {
+                    for (int i = 0; i < result.size(); i++) {
+                        LocalMedia media = buildLocalMedia(result.get(i).toString());
+                        media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
+                        SelectedManager.addSelectResult(media);
+                    }
+                    dispatchTransformResult();
+                }
+            }
+        });
     }
 
 
@@ -169,24 +201,40 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      * 同时获取图片或视频(单选)
      */
     private void createSingleDocuments() {
-        mDocSingleLauncher = registerForActivityResult
-                (new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri result) {
-                        if (result == null) {
-                            onKeyBackFragmentFinish();
-                        } else {
-                            LocalMedia media = buildLocalMedia(result.toString());
-                            media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                            int selectResultCode = confirmSelect(media, false);
-                            if (selectResultCode == SelectedManager.ADD_SUCCESS) {
-                                dispatchTransformResult();
-                            } else {
-                                onKeyBackFragmentFinish();
-                            }
-                        }
+        mDocSingleLauncher = registerForActivityResult(new ActivityResultContract<String, Uri>() {
+
+            @Override
+            public Uri parseResult(int resultCode, @Nullable Intent intent) {
+                if (intent == null) {
+                    return null;
+                }
+                return intent.getData();
+            }
+
+            @NonNull
+            @Override
+            public Intent createIntent(@NonNull Context context, String mimeTypes) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(mimeTypes);
+                return intent;
+            }
+        }, new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                if (result == null) {
+                    onKeyBackFragmentFinish();
+                } else {
+                    LocalMedia media = buildLocalMedia(result.toString());
+                    media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
+                    int selectResultCode = confirmSelect(media, false);
+                    if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                        dispatchTransformResult();
+                    } else {
+                        onKeyBackFragmentFinish();
                     }
-                });
+                }
+            }
+        });
     }
 
 
@@ -194,50 +242,103 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      * 获取图片或视频
      */
     private void createMultipleContents() {
-        mContentsLauncher = registerForActivityResult
-                (new ActivityResultContracts.GetMultipleContents(),
-                        new ActivityResultCallback<List<Uri>>() {
-                            @Override
-                            public void onActivityResult(List<Uri> result) {
-                                if (result == null || result.size() == 0) {
-                                    onKeyBackFragmentFinish();
-                                } else {
-                                    for (int i = 0; i < result.size(); i++) {
-                                        LocalMedia media = buildLocalMedia(result.get(i).toString());
-                                        media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                                        SelectedManager.addSelectResult(media);
-                                    }
-                                    dispatchTransformResult();
-                                }
-                            }
-                        });
+        mContentsLauncher = registerForActivityResult(new ActivityResultContract<String, List<Uri>>() {
 
+            @Override
+            public List<Uri> parseResult(int resultCode, @Nullable Intent intent) {
+                List<Uri> result = new ArrayList<>();
+                if (intent == null) {
+                    return result;
+                }
+                if (intent.getClipData() != null) {
+                    ClipData clipData = intent.getClipData();
+                    int itemCount = clipData.getItemCount();
+                    for (int i = 0; i < itemCount; i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        result.add(uri);
+                    }
+                } else if (intent.getData() != null) {
+                    result.add(intent.getData());
+                }
+                return result;
+            }
+
+            @NonNull
+            @Override
+            public Intent createIntent(@NonNull Context context, String mimeType) {
+                Intent intent;
+                if (TextUtils.equals(SelectMimeType.SYSTEM_VIDEO, mimeType)) {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                } else if (TextUtils.equals(SelectMimeType.SYSTEM_AUDIO, mimeType)) {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                } else {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                return intent;
+            }
+        }, new ActivityResultCallback<List<Uri>>() {
+            @Override
+            public void onActivityResult(List<Uri> result) {
+                if (result == null || result.size() == 0) {
+                    onKeyBackFragmentFinish();
+                } else {
+                    for (int i = 0; i < result.size(); i++) {
+                        LocalMedia media = buildLocalMedia(result.get(i).toString());
+                        media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
+                        SelectedManager.addSelectResult(media);
+                    }
+                    dispatchTransformResult();
+                }
+            }
+        });
     }
 
     /**
      * 单选图片或视频
      */
     private void createContent() {
-        mContentLauncher = registerForActivityResult
-                (new ActivityResultContracts.GetContent(),
-                        new ActivityResultCallback<Uri>() {
-                            @Override
-                            public void onActivityResult(Uri result) {
-                                if (result == null) {
-                                    onKeyBackFragmentFinish();
-                                } else {
-                                    LocalMedia media = buildLocalMedia(result.toString());
-                                    media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                                    int selectResultCode = confirmSelect(media, false);
-                                    if (selectResultCode == SelectedManager.ADD_SUCCESS) {
-                                        dispatchTransformResult();
-                                    } else {
-                                        onKeyBackFragmentFinish();
-                                    }
-                                }
-                            }
+        mContentLauncher = registerForActivityResult(new ActivityResultContract<String, Uri>() {
 
-                        });
+            @Override
+            public Uri parseResult(int resultCode, @Nullable Intent intent) {
+                if (intent == null) {
+                    return null;
+                }
+                return intent.getData();
+            }
+
+            @NonNull
+            @Override
+            public Intent createIntent(@NonNull Context context, String mimeType) {
+                Intent intent;
+                if (TextUtils.equals(SelectMimeType.SYSTEM_VIDEO, mimeType)) {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                } else if (TextUtils.equals(SelectMimeType.SYSTEM_AUDIO, mimeType)) {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                } else {
+                    intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                }
+                return intent;
+            }
+        }, new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                if (result == null) {
+                    onKeyBackFragmentFinish();
+                } else {
+                    LocalMedia media = buildLocalMedia(result.toString());
+                    media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
+                    int selectResultCode = confirmSelect(media, false);
+                    if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                        dispatchTransformResult();
+                    } else {
+                        onKeyBackFragmentFinish();
+                    }
+                }
+            }
+        });
     }
 
     /**
