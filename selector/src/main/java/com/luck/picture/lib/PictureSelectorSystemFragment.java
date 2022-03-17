@@ -147,6 +147,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
 
     /**
      * 同时获取图片或视频(多选)
+     * <p>部分机型可能不支持多选操作</p>
      */
     private void createMultipleDocuments() {
         mDocMultipleLauncher = registerForActivityResult(new ActivityResultContract<String, List<Uri>>() {
@@ -240,6 +241,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
 
     /**
      * 获取图片或视频
+     *  <p>部分机型可能不支持多选操作</p>
      */
     private void createMultipleContents() {
         mContentsLauncher = registerForActivityResult(new ActivityResultContract<String, List<Uri>>() {
