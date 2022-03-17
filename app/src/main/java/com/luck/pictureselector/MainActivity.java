@@ -760,7 +760,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      * @return
      */
     private OnMediaEditInterceptListener getCustomEditMediaEvent() {
-        return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener() : null;
+        return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener(getSandboxPath(), buildOptions()) : null;
     }
 
     /**
@@ -1094,7 +1094,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 自定义编辑
      */
-    private class MeOnMediaEditInterceptListener implements OnMediaEditInterceptListener {
+    private static class MeOnMediaEditInterceptListener implements OnMediaEditInterceptListener {
+        private final String outputCropPath;
+        private final UCrop.Options options;
+
+        public MeOnMediaEditInterceptListener(String outputCropPath, UCrop.Options options) {
+            this.outputCropPath = outputCropPath;
+            this.options = options;
+        }
 
         @Override
         public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
@@ -1102,9 +1109,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Uri inputUri = PictureMimeType.isContent(currentEditPath)
                     ? Uri.parse(currentEditPath) : Uri.fromFile(new File(currentEditPath));
             Uri destinationUri = Uri.fromFile(
-                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpeg"));
+                    new File(outputCropPath, DateUtils.getCreateFileName("CROP_") + ".jpeg"));
             UCrop uCrop = UCrop.of(inputUri, destinationUri);
-            UCrop.Options options = buildOptions();
             options.setHideBottomControls(false);
             uCrop.withOptions(options);
             uCrop.startEdit(fragment.getActivity(), fragment, requestCode);

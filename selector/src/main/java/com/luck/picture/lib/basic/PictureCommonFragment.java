@@ -1245,10 +1245,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 new PictureMediaScannerConnection(getActivity(), media.getRealPath());
             }
         } else {
-            new PictureMediaScannerConnection(getActivity(),
-                    PictureMimeType.isContent(config.cameraPath) ? media.getRealPath() : config.cameraPath);
+            String path = PictureMimeType.isContent(config.cameraPath) ? media.getRealPath() : config.cameraPath;
+            new PictureMediaScannerConnection(getActivity(), path);
             if (PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                File dirFile = new File(path);
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext(), dirFile.getParent());
                 if (lastImageId != -1) {
                     MediaUtils.removeMedia(getContext(), lastImageId);
                 }

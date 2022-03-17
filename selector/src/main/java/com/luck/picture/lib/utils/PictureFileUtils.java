@@ -357,41 +357,6 @@ public class PictureFileUtils {
         }
     }
 
-
-    /**
-     * getDCIMCameraPath
-     *
-     * @return
-     */
-    public static String getDCIMCameraPath() {
-        String absolutePath;
-        try {
-            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
-                    (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-        return absolutePath;
-    }
-
-    /**
-     * getSoundsPath
-     *
-     * @return
-     */
-    public static String getSoundsPath() {
-        String absolutePath;
-        try {
-            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
-                    ("").getAbsolutePath() + "/Sounds";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-        return absolutePath;
-    }
-
     /**
      * 创建视频缩略图地址
      *

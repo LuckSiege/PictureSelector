@@ -111,12 +111,12 @@ public class MediaUtils {
     public static long generateCameraBucketId(Context context, File cameraFile, String outPutCameraDir) {
         long bucketId;
         if (TextUtils.isEmpty(outPutCameraDir)) {
-            bucketId = getCameraFirstBucketId(context);
+            bucketId = getFirstBucketId(context, cameraFile.getParent());
         } else {
             if (cameraFile.getParentFile() != null) {
                 bucketId = cameraFile.getParentFile().getName().hashCode();
             } else {
-                bucketId = getCameraFirstBucketId(context);
+                bucketId = getFirstBucketId(context, cameraFile.getParent());
             }
         }
         return bucketId;
@@ -134,12 +134,12 @@ public class MediaUtils {
     public static long generateSoundsBucketId(Context context, File cameraFile, String outPutAudioDir) {
         long bucketId;
         if (TextUtils.isEmpty(outPutAudioDir)) {
-            bucketId = getSoundsFirstBucketId(context);
+            bucketId = getFirstBucketId(context,cameraFile.getParent());
         } else {
             if (cameraFile.getParentFile() != null) {
                 bucketId = cameraFile.getParentFile().getName().hashCode();
             } else {
-                bucketId = getSoundsFirstBucketId(context);
+                bucketId = getFirstBucketId(context,cameraFile.getParent());
             }
         }
         return bucketId;
@@ -305,14 +305,13 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int getDCIMLastImageId(Context context) {
+    public static int getDCIMLastImageId(Context context,String absoluteDir) {
         Cursor data = null;
         try {
             //selection: 指定查询条件
-            String absolutePath = PictureFileUtils.getDCIMCameraPath();
             String selection = MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
-            String[] selectionArgs = {absolutePath + "%"};
+            String[] selectionArgs = {"%" + absoluteDir + "%"};
             if (SdkVersionUtils.isR()) {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, queryArgs, null);
@@ -324,7 +323,7 @@ public class MediaUtils {
                 int id = data.getInt(data.getColumnIndex(MediaStore.Images.Media._ID));
                 long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                 int duration = DateUtils.dateDiffer(date);
-                // DCIM文件下最近时间1s以内的图片，可以判定是最新生成的重复照片
+                // 最近时间1s以内的图片，可以判定是最新生成的重复照片
                 return duration <= 1 ? id : -1;
             } else {
                 return -1;
@@ -340,18 +339,17 @@ public class MediaUtils {
     }
 
     /**
-     * 获取Camera文件下最新一条拍照记录
+     * 获取最新一条拍照记录
      *
      * @return
      */
-    public static long getCameraFirstBucketId(Context context) {
+    public static long getFirstBucketId(Context context,String absoluteDir) {
         Cursor data = null;
         try {
-            String absolutePath = PictureFileUtils.getDCIMCameraPath();
             //selection: 指定查询条件
             String selection = MediaStore.Files.FileColumns.DATA + " like ?";
             //定义selectionArgs：
-            String[] selectionArgs = {absolutePath + "%"};
+            String[] selectionArgs = {"%" + absoluteDir + "%"};
             if (SdkVersionUtils.isR()) {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
@@ -372,38 +370,6 @@ public class MediaUtils {
         return -1;
     }
 
-    /**
-     * 获取Sounds文件下最新一条录音记录
-     *
-     * @return
-     */
-    public static long getSoundsFirstBucketId(Context context) {
-        Cursor data = null;
-        try {
-            String absolutePath = PictureFileUtils.getSoundsPath();
-            //selection: 指定查询条件
-            String selection = MediaStore.Files.FileColumns.DATA + " like ?";
-            //定义selectionArgs：
-            String[] selectionArgs = {absolutePath + "%"};
-            if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
-                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
-            } else {
-                String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
-                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, selection, selectionArgs, orderBy);
-            }
-            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
-                return data.getLong(data.getColumnIndex("bucket_id"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (data != null) {
-                data.close();
-            }
-        }
-        return -1;
-    }
 
     /**
      * Key for an SQL style {@code LIMIT} string that may be present in the

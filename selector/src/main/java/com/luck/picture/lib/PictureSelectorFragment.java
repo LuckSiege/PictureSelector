@@ -73,6 +73,7 @@ import com.luck.picture.lib.widget.TitleBar;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -102,22 +103,27 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private long intervalClickTime = 0;
 
-    /**
-     * open camera number
-     */
-    private int openCameraNumber;
-
     private int allFolderSize;
 
     private int currentPosition = -1;
+
+    /**
+     * Use camera to callback
+     */
+    private boolean isCameraCallback;
+
+    /**
+     * memory recycling
+     */
+    private boolean isMemoryRecycling;
+
+    private static final Object LOCK = new Object();
 
     private boolean isDisplayCamera;
 
     private PictureImageGridAdapter mAdapter;
 
     private AlbumListPopWindow albumListPopWindow;
-
-    private boolean isCameraMemoryRecycling;
 
     private SlideSelectTouchListener mDragSelectTouchListener;
 
@@ -229,13 +235,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
         outState.putInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
         outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
         outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
+        SelectedManager.setCurrentLocalMediaFolder(SelectedManager.getCurrentLocalMediaFolder());
+        SelectedManager.addAlbumDataSource(albumListPopWindow.getAlbumList());
+        SelectedManager.addDataSource(mAdapter.getData());
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         reStartSavedInstance(savedInstanceState);
-        isCameraMemoryRecycling = savedInstanceState != null;
+        isMemoryRecycling = savedInstanceState != null;
         tvDataEmpty = view.findViewById(R.id.tv_data_empty);
         completeSelectView = view.findViewById(R.id.ps_complete_select);
         titleBar = view.findViewById(R.id.title_bar);
@@ -247,7 +256,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
         initComplete();
         initRecycler(view);
         initBottomNavBar();
-        requestLoadData();
+        if (isMemoryRecycling) {
+            recoverSaveInstanceData();
+        } else {
+            requestLoadData();
+        }
     }
 
 
@@ -375,6 +388,42 @@ public class PictureSelectorFragment extends PictureCommonFragment
         addAlbumPopWindowAction();
     }
 
+    private void recoverSaveInstanceData(){
+        mAdapter.setDisplayCamera(isDisplayCamera);
+        setEnterAnimationDuration(0);
+        if (config.isOnlySandboxDir) {
+            handleInAppDirAllMedia(SelectedManager.getCurrentLocalMediaFolder());
+        } else {
+            handleRecoverAlbumData(new ArrayList<>(SelectedManager.getAlbumDataSource()));
+        }
+    }
+
+
+    private void handleRecoverAlbumData(List<LocalMediaFolder> albumData) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        if (albumData.size() > 0) {
+            LocalMediaFolder firstFolder;
+            if (SelectedManager.getCurrentLocalMediaFolder() != null) {
+                firstFolder = SelectedManager.getCurrentLocalMediaFolder();
+            } else {
+                firstFolder = albumData.get(0);
+                SelectedManager.setCurrentLocalMediaFolder(firstFolder);
+            }
+            titleBar.setTitle(firstFolder.getFolderName());
+            albumListPopWindow.bindAlbumData(albumData);
+            if (config.isPageStrategy) {
+                handleFirstPageMedia(new ArrayList<>(SelectedManager.getDataSource()), true);
+            } else {
+                setAdapterData(firstFolder.getData());
+            }
+        } else {
+            showDataNull();
+        }
+    }
+
+
     private void requestLoadData() {
         mAdapter.setDisplayCamera(isDisplayCamera);
         if (PermissionChecker.isCheckReadStorage(getContext())) {
@@ -482,7 +531,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         lastFolder.setHasMore(mRecycler.isEnabledLoadMore());
 
                         // 2、判断当前相册是否请求过，如果请求过则不从MediaStore去拉取了
-                        if (curFolder.getData().size() > 0) {
+                        if (curFolder.getData().size() > 0 && !curFolder.isHasMore()) {
                             setAdapterData(curFolder.getData());
                             mPage = curFolder.getCurrentDataPage();
                             mRecycler.setEnabledLoadMore(curFolder.isHasMore());
@@ -637,7 +686,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             setAdapterData(result);
         }
-        recoveryRecyclerPosition();
     }
 
     @Override
@@ -669,7 +717,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
             if (isNonNull) {
                 SelectedManager.setCurrentLocalMediaFolder(folder);
                 setAdapterData(folder.getData());
-                recoveryRecyclerPosition();
             } else {
                 showDataNull();
             }
@@ -924,24 +971,48 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @SuppressLint("NotifyDataSetChanged")
     private void setAdapterData(ArrayList<LocalMedia> result) {
-        requireView().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setEnterAnimationDuration(0);
-                sendChangeSubSelectPositionEvent(false);
-                mAdapter.setDataAndDataSetChanged(result);
-                if (mAdapter.isDataEmpty()) {
-                    showDataNull();
-                } else {
-                    hideDataNull();
+        // 这个地方有个时间差，主要是解决进场动画和查询数据同时进行导致动画有点卡顿问题，
+        // 主要是针对添加PictureSelectorFragment方式下
+        long enterAnimationDuration = getEnterAnimationDuration();
+        if (enterAnimationDuration > 0) {
+            requireView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setAdapterDataComplete(result);
                 }
-            }
-        }, getEnterAnimationDuration());
+            }, enterAnimationDuration);
+        } else {
+            setAdapterDataComplete(result);
+        }
+    }
+
+    private void setAdapterDataComplete(ArrayList<LocalMedia> result) {
+        setEnterAnimationDuration(0);
+        sendChangeSubSelectPositionEvent(false);
+        mAdapter.setDataAndDataSetChanged(result);
+        SelectedManager.clearAlbumDataSource();
+        SelectedManager.clearDataSource();
+        recoveryRecyclerPosition();
+        if (mAdapter.isDataEmpty()) {
+            showDataNull();
+        } else {
+            hideDataNull();
+        }
     }
 
     @Override
     public void onRecyclerViewPreloadMore() {
-        loadMoreMediaData();
+        if (isMemoryRecycling) {
+            // 这里延迟是拍照导致的页面被回收，Fragment的重创会快于相机的onActivityResult的
+            requireView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadMoreMediaData();
+                }
+            }, 350);
+        } else {
+            loadMoreMediaData();
+        }
     }
 
     /**
@@ -955,14 +1026,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
             long bucketId = localMediaFolder != null ? localMediaFolder.getBucketId() : 0;
             if (PictureSelectionConfig.loaderDataEngine != null) {
                 PictureSelectionConfig.loaderDataEngine.loadMoreMediaData(getContext(), bucketId, mPage,
-                        getPageLimit(bucketId), config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                        config.pageSize, config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
                             @Override
                             public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                 handleMoreMediaData(result, isHasMore);
                             }
                         });
             } else {
-                mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), config.pageSize,
+                mLoader.loadPageMediaData(bucketId, mPage, config.pageSize, config.pageSize,
                         new OnQueryDataResultListener<LocalMedia>() {
                             @Override
                             public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
@@ -979,6 +1050,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
         mRecycler.setEnabledLoadMore(isHasMore);
         if (mRecycler.isEnabledLoadMore()) {
+            removePageCameraRepeatData(result);
             if (result.size() > 0) {
                 int positionStart = mAdapter.getData().size();
                 mAdapter.getData().addAll(result);
@@ -994,24 +1066,32 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
     }
 
+    private void removePageCameraRepeatData(List<LocalMedia> result) {
+        try {
+            if (config.isPageStrategy && isCameraCallback) {
+                synchronized (LOCK) {
+                    Iterator<LocalMedia> iterator = result.iterator();
+                    while (iterator.hasNext()) {
+                        if (mAdapter.getData().contains(iterator.next())) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            isCameraCallback = false;
+        }
+    }
+
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
-        if (isCameraMemoryRecycling) {
-            isCameraMemoryRecycling = false;
-            // 这种情况一般就是拍照时内存不足了，导致Fragment重新创建了，先走的loadAllData已经获取到了拍照生成的这张
-            // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
-            SelectedManager.addSelectResult(media);
-            mAdapter.notifyItemPositionChanged(config.isDisplayCamera ? 1 : 0);
-            if (config.isDirectReturnSingle) {
-                dispatchTransformResult();
-            }
-            return;
-        }
         int exitsTotalNum = albumListPopWindow.getFirstAlbumImageCount();
         if (!isAddSameImp(exitsTotalNum)) {
             mAdapter.getData().add(0, media);
-            openCameraNumber++;
+            isCameraCallback = true;
         }
         if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
             SelectedManager.clearSelectResult();
@@ -1028,17 +1108,17 @@ public class PictureSelectorFragment extends PictureCommonFragment
             LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
             if (currentLocalMediaFolder == null) {
                 currentLocalMediaFolder = new LocalMediaFolder();
-                long bucketId = ValueOf.toLong(media.getParentFolderName().hashCode());
-                currentLocalMediaFolder.setBucketId(bucketId);
-                currentLocalMediaFolder.setFolderName(media.getParentFolderName());
-                currentLocalMediaFolder.setFirstMimeType(media.getMimeType());
-                currentLocalMediaFolder.setFirstImagePath(media.getPath());
-                currentLocalMediaFolder.setFolderTotalNum(mAdapter.getData().size());
-                currentLocalMediaFolder.setCurrentDataPage(mPage);
-                currentLocalMediaFolder.setHasMore(false);
-                mRecycler.setEnabledLoadMore(false);
-                SelectedManager.setCurrentLocalMediaFolder(currentLocalMediaFolder);
             }
+            currentLocalMediaFolder.setBucketId(ValueOf.toLong(media.getParentFolderName().hashCode()));
+            currentLocalMediaFolder.setFolderName(media.getParentFolderName());
+            currentLocalMediaFolder.setFirstMimeType(media.getMimeType());
+            currentLocalMediaFolder.setFirstImagePath(media.getPath());
+            currentLocalMediaFolder.setFolderTotalNum(mAdapter.getData().size());
+            currentLocalMediaFolder.setCurrentDataPage(mPage);
+            currentLocalMediaFolder.setHasMore(false);
+            currentLocalMediaFolder.setData(mAdapter.getData());
+            mRecycler.setEnabledLoadMore(false);
+            SelectedManager.setCurrentLocalMediaFolder(currentLocalMediaFolder);
         } else {
             mergeFolder(media);
         }
@@ -1057,6 +1137,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private void mergeFolder(LocalMedia media) {
         LocalMediaFolder allFolder;
+        List<LocalMediaFolder> albumList = albumListPopWindow.getAlbumList();
         if (albumListPopWindow.getFolderCount() == 0) {
             // 1、没有相册时需要手动创建相机胶卷
             allFolder = new LocalMediaFolder();
@@ -1065,7 +1146,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             allFolder.setFolderName(folderName);
             allFolder.setFirstImagePath("");
             allFolder.setBucketId(PictureConfig.ALL);
-            albumListPopWindow.getAlbumList().add(0, allFolder);
+            albumList.add(0, allFolder);
         } else {
             // 2、有相册就找到对应的相册把数据加进去
             allFolder = albumListPopWindow.getFolder(0);
@@ -1080,7 +1161,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
         // 先查找Camera目录，没有找到则创建一个Camera目录
         LocalMediaFolder cameraFolder = null;
-        List<LocalMediaFolder> albumList = albumListPopWindow.getAlbumList();
         for (int i = 0; i < albumList.size(); i++) {
             LocalMediaFolder exitsFolder = albumList.get(i);
             if (TextUtils.equals(exitsFolder.getFolderName(), media.getParentFolderName())) {
@@ -1091,21 +1171,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (cameraFolder == null) {
             // 还没有这个目录，创建一个
             cameraFolder = new LocalMediaFolder();
-            cameraFolder.setFolderName(media.getParentFolderName());
-            cameraFolder.setBucketId(media.getBucketId());
-            // 自定义了存储目录的直接加
-            if (!TextUtils.isEmpty(config.outPutCameraDir) || !TextUtils.isEmpty(config.outPutAudioDir)) {
-                cameraFolder.getData().add(0, media);
-            }
             albumList.add(cameraFolder);
+        }
+        cameraFolder.setFolderName(media.getParentFolderName());
+        if (cameraFolder.getBucketId() == -1 || cameraFolder.getBucketId() == 0) {
+            cameraFolder.setBucketId(media.getBucketId());
+        }
+        // 分页模式下，切换到Camera目录下时，会直接从MediaStore拉取
+        if (config.isPageStrategy) {
+            cameraFolder.setHasMore(true);
         } else {
-            // 目录已存在且是普通模式或者自定义了存储目录的直接加，分页模式是通过查询获得
-            if (!config.isPageStrategy && !isAddSameImp(allFolder.getFolderTotalNum()) ||
-                    !TextUtils.isEmpty(config.outPutCameraDir) || !TextUtils.isEmpty(config.outPutAudioDir)) {
+            // 非分页模式数据都是存在目录的data下，所以直接添加进去就行
+            if (!isAddSameImp(allFolder.getFolderTotalNum())
+                    || !TextUtils.isEmpty(config.outPutCameraDir)
+                    || !TextUtils.isEmpty(config.outPutAudioDir)) {
                 cameraFolder.getData().add(0, media);
-            }
-            if (cameraFolder.getBucketId() == -1 || cameraFolder.getBucketId() == 0) {
-                cameraFolder.setBucketId(media.getBucketId());
             }
         }
         cameraFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum())
@@ -1125,20 +1205,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         return allFolderSize > 0 && allFolderSize < totalNum;
     }
 
-    /**
-     * 获取Limit
-     * 如果用户点击拍照并返回，则应动态调整限制
-     *
-     * @return
-     */
-    private int getPageLimit(long bucketId) {
-        if (bucketId == -1) {
-            int limit = openCameraNumber > 0 ? config.pageSize - openCameraNumber : config.pageSize;
-            openCameraNumber = 0;
-            return limit;
-        }
-        return config.pageSize;
-    }
 
     @Override
     public void onDestroyView() {
