@@ -1,3 +1,8 @@
+# 수정사항
+1. Doctalk Service에 맞게 커스텀
+2. 디자인 수정
+3. 코드 정리
+
 # PictureSelector 2.0  
    A Picture Selector for Android platform, support from the album to obtain pictures, video, audio & photo, support crop (single picture or multi-picture crop), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
 
