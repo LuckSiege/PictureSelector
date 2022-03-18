@@ -24,8 +24,14 @@ limitations under the License.
         <attr name="tileBackgroundColor" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="PsMediumBoldTextView">
+    <declare-styleable name="PictureMediumBoldTextView">
         <attr name="stroke_Width" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="PictureRoundCornerRelativeLayout">
+        <attr name="corners" format="dimension" />
+        <attr name="topNormal" format="boolean" />
+        <attr name="bottomNormal" format="boolean" />
     </declare-styleable>
 
 </resources>
