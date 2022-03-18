@@ -1,5 +1,6 @@
 package com.luck.pictureselector;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -94,11 +95,14 @@ import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
+import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.loader.SandboxFileLoader;
+import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionConfig;
+import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.permissions.PermissionUtil;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -264,7 +268,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         launcherResult = createActivityResultLauncher();
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afoey03qj30u05mh1kx.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx4.sinaimg.cn/mw2000/0073ozWdly1h0afofvyc8j30u05qk1kx.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoipj8xj30kw3kmwru.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx4.sinaimg.cn/mw2000/0073ozWdly1h0afoj5q8ij30u04gqkb1.jpg", PictureMimeType.ofJPEG()));
 //        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
 //        mData.addAll(list);
 
@@ -362,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCompressEngine(getCompressEngine())
                                 .setSandboxFileEngine(new MeSandboxFileEngine())
                                 .setCameraInterceptListener(getCustomCameraEvent())
+                                .setRecordAudioInterceptListener(new MeOnRecordAudioInterceptListener())
                                 .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                                 .setEditMediaInterceptListener(getCustomEditMediaEvent())
                                 .setPermissionDescriptionListener(getPermissionDescriptionListener())
@@ -408,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     PictureSelectionCameraModel cameraModel = PictureSelector.create(MainActivity.this)
                             .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
+                            .setRecordAudioInterceptListener(new MeOnRecordAudioInterceptListener())
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
@@ -745,6 +757,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         return cb_custom_camera.isChecked() ? new MeOnCameraInterceptListener() : null;
     }
 
+
     /**
      * 自定义数据加载器
      *
@@ -829,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             String tips;
             if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
                 tips = "缺少相机权限\n可能会导致不能使用摄像头功能";
-            } else if (TextUtils.equals(permissionArray[0], PermissionConfig.RECORD_AUDIO[0])) {
+            } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
                 tips = "缺少录音权限\n访问您设备上的音频、媒体内容和文件";
             } else {
                 tips = "缺少存储权限\n访问您设备上的照片、媒体内容和文件";
@@ -857,7 +870,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         @Override
         public void onDenied(Context context, String permission, int requestCode) {
             String tips;
-            if (TextUtils.equals(permission, PermissionConfig.RECORD_AUDIO[0])) {
+            if (TextUtils.equals(permission, Manifest.permission.RECORD_AUDIO)) {
                 tips = "缺少录音权限\n访问您设备上的音频、媒体内容和文件";
             } else {
                 tips = "缺少相机权限\n可能会导致不能使用摄像头功能";
@@ -895,7 +908,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             String title;
             String explain;
 
-            if (TextUtils.equals(permission, PermissionConfig.RECORD_AUDIO[0])) {
+            if (TextUtils.equals(permission, Manifest.permission.RECORD_AUDIO)) {
                 title = "录音权限使用说明";
                 explain = "录音权限使用说明\n用户app用于录制音频";
             } else {
@@ -951,7 +964,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
                     title = "相机权限使用说明";
                     explain = "相机权限使用说明\n用户app用于拍照/录视频";
-                } else if (TextUtils.equals(permissionArray[0], PermissionConfig.RECORD_AUDIO[0])) {
+                } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
                     title = "录音权限使用说明";
                     explain = "录音权限使用说明\n用户app用于录制音频";
                 } else {
@@ -1118,33 +1131,56 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     /**
+     * 录音回调事件
+     */
+    private static class MeOnRecordAudioInterceptListener implements OnRecordAudioInterceptListener{
+
+        @Override
+        public void onRecordAudio(Fragment fragment, int requestCode) {
+            PermissionChecker.getInstance().requestPermissions(fragment,
+                    new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            Intent recordAudioIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                            if (recordAudioIntent.resolveActivity(fragment.requireActivity().getPackageManager()) != null) {
+                                fragment.startActivityForResult(recordAudioIntent, requestCode);
+                            } else {
+                                ToastUtils.showToast(fragment.getContext(), "The system is missing a recording component");
+                            }
+                        }
+
+                        @Override
+                        public void onDenied() {
+
+                        }
+                    });
+        }
+    }
+
+    /**
      * 自定义拍照
      */
     private class MeOnCameraInterceptListener implements OnCameraInterceptListener {
 
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
-            if (cameraMode == SelectMimeType.ofAudio()) {
-                ToastUtils.showToast(fragment.getContext(), "自定义录音功能，请自行扩展");
-            } else {
-                SimpleCameraX camera = SimpleCameraX.of();
-                camera.setCameraMode(cameraMode);
-                camera.setVideoFrameRate(25);
-                camera.setVideoBitRate(3 * 1024 * 1024);
-                camera.isDisplayRecordChangeTime(true);
-                camera.isManualFocusCameraPreview(cb_camera_focus.isChecked());
-                camera.isZoomCameraPreview(cb_camera_zoom.isChecked());
-                camera.setOutputPathDir(getSandboxCameraOutputPath());
-                camera.setPermissionDeniedListener(getSimpleXPermissionDeniedListener());
-                camera.setPermissionDescriptionListener(getSimpleXPermissionDescriptionListener());
-                camera.setImageEngine(new CameraImageEngine() {
-                    @Override
-                    public void loadImage(Context context, String url, ImageView imageView) {
-                        Glide.with(context).load(url).into(imageView);
-                    }
-                });
-                camera.start(fragment.getActivity(), fragment, requestCode);
-            }
+            SimpleCameraX camera = SimpleCameraX.of();
+            camera.setCameraMode(cameraMode);
+            camera.setVideoFrameRate(25);
+            camera.setVideoBitRate(3 * 1024 * 1024);
+            camera.isDisplayRecordChangeTime(true);
+            camera.isManualFocusCameraPreview(cb_camera_focus.isChecked());
+            camera.isZoomCameraPreview(cb_camera_zoom.isChecked());
+            camera.setOutputPathDir(getSandboxCameraOutputPath());
+            camera.setPermissionDeniedListener(getSimpleXPermissionDeniedListener());
+            camera.setPermissionDescriptionListener(getSimpleXPermissionDescriptionListener());
+            camera.setImageEngine(new CameraImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    Glide.with(context).load(url).into(imageView);
+                }
+            });
+            camera.start(fragment.getActivity(), fragment, requestCode);
         }
     }
 

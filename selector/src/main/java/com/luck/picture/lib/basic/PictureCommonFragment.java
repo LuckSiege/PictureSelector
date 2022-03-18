@@ -49,6 +49,7 @@ import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
+import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
@@ -245,8 +246,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                 }
                             });
         } else {
-            boolean isReadWrite = permissionArray == PermissionConfig.READ_WRITE_EXTERNAL_STORAGE
-                    || permissionArray == PermissionConfig.WRITE_EXTERNAL_STORAGE;
+            boolean isReadWrite = false;
+            if (permissionArray != null && permissionArray.length > 0) {
+                for (String s : permissionArray) {
+                    isReadWrite = TextUtils.equals(s, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            || TextUtils.equals(s, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            }
             PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
         }
     }
@@ -951,44 +957,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void openSoundRecording() {
-        onPermissionExplainEvent(true, PermissionConfig.RECORD_AUDIO);
-        if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            onApplyPermissionsEvent(SelectMimeType.ofAudio(), PermissionConfig.RECORD_AUDIO);
+        if (PictureSelectionConfig.onRecordAudioListener != null) {
+            ForegroundService.startForegroundService(getContext());
+            PictureSelectionConfig.onRecordAudioListener.onRecordAudio(this, PictureConfig.REQUEST_CAMERA);
         } else {
-            PermissionChecker.getInstance().requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
-                        @Override
-                        public void onGranted() {
-                            startCameraRecordSound();
-                        }
-
-                        @Override
-                        public void onDenied() {
-                            handlePermissionDenied(PermissionConfig.RECORD_AUDIO);
-                        }
-                    });
+            throw new NullPointerException(OnRecordAudioInterceptListener.class.getSimpleName() + " interface needs to be implemented for recording");
         }
     }
 
-    /**
-     * Start RECORD_SOUND_ACTION
-     */
-    private void startCameraRecordSound() {
-        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            onPermissionExplainEvent(false, null);
-            if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                onInterceptCameraEvent(SelectMimeType.TYPE_AUDIO);
-            } else {
-                Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    ForegroundService.startForegroundService(getContext());
-                    startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                } else {
-                    ToastUtils.showToast(getContext(), "The system is missing a recording component");
-                }
-            }
-        }
-    }
+
 
     /**
      * 拦截相机事件并处理返回结果
@@ -1011,12 +988,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     @Override
                     public void onCall(String[] permissionArray, boolean isResult) {
                         if (isResult) {
-                            if (event == SelectMimeType.ofImage()) {
-                                startCameraImageCapture();
-                            } else if (event == SelectMimeType.ofVideo()) {
+                            if (event == SelectMimeType.ofVideo()) {
                                 startCameraVideoCapture();
-                            } else if (event == SelectMimeType.ofAudio()) {
-                                startCameraRecordSound();
+                            } else {
+                                startCameraImageCapture();
                             }
                         } else {
                             handlePermissionDenied(permissionArray);

@@ -70,11 +70,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     /**
      * Query conditions in image modes
      *
-     * @param queryMimeTypeOptions
      * @param fileSizeCondition
+     * @param queryMimeTypeOptions
      * @return
      */
-    private static String getSelectionArgsForImageMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+    private static String getSelectionArgsForImageMediaCondition(String fileSizeCondition, String queryMimeTypeOptions) {
         StringBuilder stringBuilder = new StringBuilder();
         if (SdkVersionUtils.isQ()) {
             return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?")
@@ -87,18 +87,34 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     }
 
     /**
-     * Video or Audio mode conditions
+     * Video mode conditions
      *
-     * @param queryMimeTypeOptions
-     * @param fileSizeCondition
+     * @param durationCondition
+     * @param queryMimeCondition
      * @return
      */
-    private static String getSelectionArgsForVideoOrAudioMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+    private static String getSelectionArgsForVideoMediaCondition(String durationCondition, String queryMimeCondition) {
         StringBuilder stringBuilder = new StringBuilder();
         if (SdkVersionUtils.isQ()) {
-            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
+            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" AND ").append(durationCondition).toString();
         } else {
-            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
+            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(") AND ").append(durationCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
+        }
+    }
+
+    /**
+     * Audio mode conditions
+     *
+     * @param durationCondition
+     * @param queryMimeCondition
+     * @return
+     */
+    private static String getSelectionArgsForAudioMediaCondition(String durationCondition, String queryMimeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (SdkVersionUtils.isQ()) {
+            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" AND ").append(durationCondition).toString();
+        } else {
+            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(") AND ").append(durationCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
         }
     }
 
@@ -138,7 +154,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         Cursor data = null;
         try {
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0,getSortOrder());
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0, getSortOrder());
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
                         MediaStore.MediaColumns.MIME_TYPE,
@@ -287,7 +303,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 long bucket_id = data.getLong(bucketIdColumn);
 
 
-
                                 if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
                                     if (config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                                         // If you set the minimum number of seconds of video to display
@@ -313,7 +328,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             } while (data.moveToNext());
                         }
                         if (bucketId == PictureConfig.ALL && page == 1) {
-                            List<LocalMedia> list = SandboxFileLoader.loadInAppSandboxFile(mContext,config.sandboxDir);
+                            List<LocalMedia> list = SandboxFileLoader.loadInAppSandboxFile(mContext, config.sandboxDir);
                             if (list != null) {
                                 result.addAll(list);
                                 SortUtils.sortLocalMediaAddedTime(result);
@@ -571,9 +586,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 // Gets the image of the specified type
                 return getPageSelectionArgsForImageMediaCondition(bucketId, queryMimeCondition, sizeCondition);
             case SelectMimeType.TYPE_VIDEO:
+                //  Gets the video or video
+                return getPageSelectionArgsForVideoMediaCondition(bucketId, queryMimeCondition, durationCondition, sizeCondition);
             case SelectMimeType.TYPE_AUDIO:
                 //  Gets the video or audio
-                return getPageSelectionArgsForVideoOrAudioMediaCondition(bucketId, queryMimeCondition, durationCondition, sizeCondition);
+                return getPageSelectionArgsForAudioMediaCondition(bucketId, queryMimeCondition, durationCondition, sizeCondition);
         }
         return null;
     }
@@ -599,7 +616,17 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         }
     }
 
-    private static String getPageSelectionArgsForVideoOrAudioMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+    private static String getPageSelectionArgsForVideoMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" AND ").append(durationCondition).append(") AND ");
+        if (bucketId == -1) {
+            return stringBuilder.append(sizeCondition).toString();
+        } else {
+            return stringBuilder.append(COLUMN_BUCKET_ID).append("=? AND ").append(sizeCondition).toString();
+        }
+    }
+
+    private static String getPageSelectionArgsForAudioMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" AND ").append(durationCondition).append(") AND ");
         if (bucketId == -1) {
@@ -640,19 +667,22 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
 
     private String getSelection() {
+        String durationCondition = getDurationCondition();
         String fileSizeCondition = getFileSizeCondition();
         String queryMimeCondition = getQueryMimeCondition();
         switch (config.chooseMode) {
             case SelectMimeType.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(), fileSizeCondition, queryMimeCondition);
+                return getSelectionArgsForAllMediaCondition(durationCondition, fileSizeCondition, queryMimeCondition);
             case SelectMimeType.TYPE_IMAGE:
                 // Get Images
-                return getSelectionArgsForImageMediaCondition(queryMimeCondition, fileSizeCondition);
+                return getSelectionArgsForImageMediaCondition(fileSizeCondition, queryMimeCondition);
             case SelectMimeType.TYPE_VIDEO:
+                // Access to video
+                return getSelectionArgsForVideoMediaCondition(durationCondition, queryMimeCondition);
             case SelectMimeType.TYPE_AUDIO:
-                // Gets the specified album directory
-                return getSelectionArgsForVideoOrAudioMediaCondition(queryMimeCondition, fileSizeCondition);
+                // Access to the audio
+                return getSelectionArgsForAudioMediaCondition(durationCondition, queryMimeCondition);
         }
         return null;
     }

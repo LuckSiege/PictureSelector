@@ -26,6 +26,7 @@ import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
+import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -112,6 +113,16 @@ public final class PictureSelectionCameraModel {
         return this;
     }
 
+    /**
+     * Intercept Record Audio click events, and users can implement their own Record Audio framework
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionCameraModel setRecordAudioInterceptListener(OnRecordAudioInterceptListener listener) {
+        PictureSelectionConfig.onRecordAudioListener = listener;
+        return this;
+    }
 
     /**
      * Custom interception permission processing

@@ -6,22 +6,21 @@ import com.luck.picture.lib.config.SelectMimeType;
 
 /**
  * @author：luck
- * @date：2021/11/23 10:41 上午
- * @describe：OnCameraInterceptListener
+ * @date：2022/3/18 2:55 下午
+ * @describe：OnRecordAudioInterceptListener
  */
-public interface OnCameraInterceptListener {
-
+public interface OnRecordAudioInterceptListener {
     /**
-     * Intercept camera click events, and users can implement their own camera framework
+     * Intercept record audio click events, and users can implement their own record audio framework
      *
      * @param fragment    fragment    Fragment to receive result
-     * @param cameraMode  Camera mode
-     *                    {@link SelectMimeType.ofImage(),ofVideo()}
+     * @param requestCode requestCode for result
+     *                    <p>
+     *                    {@link SelectMimeType.ofAudio()}
      *                    <p>
      *                    If you use your own camera, you need to put the result URL
      *                    Intent.putExtra(MediaStore.EXTRA_OUTPUT, URI) after taking photos
      *                    </p>
-     * @param requestCode requestCode for result
      */
-    void openCamera(Fragment fragment, int cameraMode, int requestCode);
+    void onRecordAudio(Fragment fragment, int requestCode);
 }

@@ -36,6 +36,7 @@ import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
+import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
@@ -192,6 +193,19 @@ public final class PictureSelectionModel {
         PictureSelectionConfig.onCameraInterceptListener = listener;
         return this;
     }
+
+
+    /**
+     * Intercept Record Audio click events, and users can implement their own Record Audio framework
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setRecordAudioInterceptListener(OnRecordAudioInterceptListener listener) {
+        PictureSelectionConfig.onRecordAudioListener = listener;
+        return this;
+    }
+
 
     /**
      * Intercept preview click events, and users can implement their own preview framework
@@ -1072,7 +1086,7 @@ public final class PictureSelectionModel {
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.onResultCallListener = call;
-            if (PictureSelectionConfig.imageEngine == null) {
+            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
@@ -1096,7 +1110,7 @@ public final class PictureSelectionModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            if (PictureSelectionConfig.imageEngine == null) {
+            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
@@ -1128,7 +1142,7 @@ public final class PictureSelectionModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            if (PictureSelectionConfig.imageEngine == null) {
+            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);

@@ -1218,14 +1218,15 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 显示数据为空提示
      */
     private void showDataNull() {
-        if (tvDataEmpty.getVisibility() == View.GONE) {
-            tvDataEmpty.setVisibility(View.VISIBLE);
+        if (SelectedManager.getCurrentLocalMediaFolder() == null
+                || SelectedManager.getCurrentLocalMediaFolder().getBucketId() == PictureConfig.ALL) {
+            if (tvDataEmpty.getVisibility() == View.GONE) {
+                tvDataEmpty.setVisibility(View.VISIBLE);
+            }
+            tvDataEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ps_ic_no_data, 0, 0);
+            String tips = config.chooseMode == SelectMimeType.ofAudio() ? getString(R.string.ps_audio_empty) : getString(R.string.ps_empty);
+            tvDataEmpty.setText(tips);
         }
-        tvDataEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ps_ic_no_data, 0, 0);
-        int chooseMode = config.chooseMode;
-        String tips = chooseMode == SelectMimeType.ofAudio()
-                ? getString(R.string.ps_audio_empty) : getString(R.string.ps_empty);
-        tvDataEmpty.setText(tips);
     }
 
     /**

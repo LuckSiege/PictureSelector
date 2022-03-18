@@ -138,6 +138,12 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
             } else {
                 setImageViewBitmap(bitmap);
             }
+            if (media.getWidth() <= 0) {
+                media.setWidth(bitmap.getWidth());
+            }
+            if (media.getHeight() <= 0) {
+                media.setHeight(bitmap.getHeight());
+            }
             int width, height;
             ImageView.ScaleType scaleType;
             if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
@@ -174,12 +180,14 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     protected void setScaleDisplaySize(LocalMedia media) {
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            float ratio = (float) media.getWidth() / (float) media.getHeight();
-            int displayHeight = (int) (screenWidth / ratio);
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
-            layoutParams.width = screenWidth;
-            layoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
-            layoutParams.gravity = Gravity.CENTER;
+            if (media.getWidth() > 0 && media.getHeight() > 0) {
+                float ratio = (float) media.getWidth() / (float) media.getHeight();
+                int displayHeight = (int) (screenWidth / ratio);
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
+                layoutParams.width = screenWidth;
+                layoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+                layoutParams.gravity = Gravity.CENTER;
+            }
         }
     }
 

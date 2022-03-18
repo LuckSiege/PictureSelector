@@ -30,14 +30,25 @@ import java.util.List;
 public final class LocalMediaLoader extends IBridgeMediaLoader {
 
     /**
-     * Video or Audio mode conditions
+     * Video mode conditions
      *
-     * @param sizeCondition
+     * @param durationCondition
      * @param queryMimeCondition
      * @return
      */
-    private static String getSelectionArgsForVideoOrAudioMediaCondition(String sizeCondition, String queryMimeCondition) {
-        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + sizeCondition;
+    private static String getSelectionArgsForVideoMediaCondition(String durationCondition, String queryMimeCondition) {
+        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition;
+    }
+
+    /**
+     * Audio mode conditions
+     *
+     * @param durationCondition
+     * @param queryMimeCondition
+     * @return
+     */
+    private static String getSelectionArgsForAudioMediaCondition(String durationCondition, String queryMimeCondition) {
+        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition;
     }
 
     /**
@@ -62,12 +73,12 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     /**
      * Query conditions in image modes
      *
-     * @param sizeCondition
+     * @param fileSizeCondition
      * @param queryMimeCondition
      * @return
      */
-    private static String getSelectionArgsForImageMediaCondition(String sizeCondition, String queryMimeCondition) {
-        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + sizeCondition;
+    private static String getSelectionArgsForImageMediaCondition(String fileSizeCondition, String queryMimeCondition) {
+        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + fileSizeCondition;
     }
 
     public LocalMediaLoader(Context context, PictureSelectionConfig config) {
@@ -263,10 +274,10 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                 return getSelectionArgsForImageMediaCondition(fileSizeCondition, queryMimeCondition);
             case SelectMimeType.TYPE_VIDEO:
                 // Access to video
-                return getSelectionArgsForVideoOrAudioMediaCondition(fileSizeCondition, queryMimeCondition);
+                return getSelectionArgsForVideoMediaCondition(durationCondition, queryMimeCondition);
             case SelectMimeType.TYPE_AUDIO:
                 // Access to the audio
-                return getSelectionArgsForVideoOrAudioMediaCondition(durationCondition, queryMimeCondition);
+                return getSelectionArgsForAudioMediaCondition(durationCondition, queryMimeCondition);
         }
         return null;
     }

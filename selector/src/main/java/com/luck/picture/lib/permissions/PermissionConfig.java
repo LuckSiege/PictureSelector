@@ -29,8 +29,4 @@ public class PermissionConfig {
      */
     public final static String[] CAMERA = new String[]{Manifest.permission.CAMERA};
 
-    /**
-     * 录音权限
-     */
-    public final static String[] RECORD_AUDIO = new String[]{Manifest.permission.RECORD_AUDIO};
 }
