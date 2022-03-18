@@ -2,7 +2,6 @@ package com.luck.picture.lib.dialog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,23 +10,18 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumAdapter;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.manager.SelectedManager;
-import com.luck.picture.lib.style.AlbumWindowStyle;
-import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.List;
 
@@ -61,19 +55,9 @@ public class AlbumListPopWindow extends PopupWindow {
         windowMaxHeight = (int) (DensityUtil.getScreenHeight(mContext) * 0.6);
         mRecyclerView = getContentView().findViewById(R.id.folder_list);
         windMask = getContentView().findViewById(R.id.rootViewBg);
-        View divider = getContentView().findViewById(R.id.divider);
         mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext));
         mAdapter = new PictureAlbumAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
-        AlbumWindowStyle albumWindowStyle = selectorStyle.getAlbumWindowStyle();
-        int itemBackground = albumWindowStyle.getAlbumAdapterItemBackground();
-        int dp10 = DensityUtil.dip2px(mContext, 10);
-        GradientDrawable dividerDrawable = new GradientDrawable();
-        dividerDrawable.setColor(StyleUtils.checkStyleValidity(itemBackground)
-                ? itemBackground : ContextCompat.getColor(mContext, R.color.ps_color_transparent_white));
-        dividerDrawable.setCornerRadii(new float[]{0, 0, 0, 0, dp10, dp10, dp10, dp10});
-        divider.setBackground(dividerDrawable);
         windMask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
