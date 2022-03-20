@@ -56,6 +56,8 @@
 
                 <include layout="@layout/layout_number" />
 
+                <include layout="@layout/layout_video_number" />
+
                 <RadioGroup
                     android:id="@+id/rgb_style"
                     android:layout_width="match_parent"

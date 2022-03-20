@@ -27,6 +27,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -151,10 +152,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private final static int LAUNCHER_RESULT = 3;
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
+    private int maxSelectVideoNum = 0;
     private TextView tv_select_num;
+    private TextView tv_select_video_num;
     private TextView tv_original_tips;
     private TextView tvDeleteText;
     private RadioGroup rgb_crop;
+    private LinearLayout llSelectVideoSize;
     private int aspect_ratio_x = -1, aspect_ratio_y = -1;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
@@ -185,8 +189,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         selectorStyle = new PictureSelectorStyle();
         ImageView minus = findViewById(R.id.minus);
         ImageView plus = findViewById(R.id.plus);
-        tvDeleteText = findViewById(R.id.tv_delete_text);
         tv_select_num = findViewById(R.id.tv_select_num);
+
+        ImageView videoMinus = findViewById(R.id.video_minus);
+        ImageView videoPlus = findViewById(R.id.video_plus);
+        tv_select_video_num = findViewById(R.id.tv_select_video_num);
+        llSelectVideoSize = findViewById(R.id.ll_select_video_size);
+        tvDeleteText = findViewById(R.id.tv_delete_text);
         tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
         RadioGroup rgb_result = findViewById(R.id.rgb_result);
@@ -251,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         left_back.setOnClickListener(this);
         minus.setOnClickListener(this);
         plus.setOnClickListener(this);
+        videoMinus.setOnClickListener(this);
+        videoPlus.setOnClickListener(this);
         cb_crop.setOnCheckedChangeListener(this);
         cb_only_dir.setOnCheckedChangeListener(this);
         cb_custom_sandbox.setOnCheckedChangeListener(this);
@@ -263,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_not_gif.setOnCheckedChangeListener(this);
         cb_skip_not_gif.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
-
+        tv_select_video_num.setText(ValueOf.toString(maxSelectVideoNum));
         // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
         launcherResult = createActivityResultLauncher();
 
@@ -288,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
                 DensityUtil.dip2px(this, 8), false));
         mAdapter = new GridImageAdapter(getContext(), mData);
-        mAdapter.setSelectMax(maxSelectNum);
+        mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
         mRecyclerView.setAdapter(mAdapter);
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("selectorList") != null) {
             mData.clear();
@@ -409,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                                 .isDirectReturnSingle(cb_single_back.isChecked())
                                 .setMaxSelectNum(maxSelectNum)
+                                .setMaxVideoSelectNum(maxSelectVideoNum)
                                 .setRecyclerAnimationMode(animationMode)
                                 .isGif(cb_isGif.isChecked())
                                 .setSelectedData(mAdapter.getData());
@@ -1025,10 +1037,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         @Override
         public boolean onSelectLimitTips(Context context, PictureSelectionConfig config, int limitType) {
-            if (limitType == SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT) {
-                ToastUtils.showToast(context, context.getString(R.string.ps_message_video_max_num, String.valueOf(config.maxVideoSelectNum)));
-                return true;
-            } else if (limitType == SelectLimitType.SELECT_NOT_SUPPORT_SELECT_LIMIT) {
+            if (limitType == SelectLimitType.SELECT_NOT_SUPPORT_SELECT_LIMIT) {
                 ToastUtils.showToast(context, "暂不支持的选择类型");
                 return true;
             }
@@ -1474,13 +1483,26 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 if (maxSelectNum > 1) {
                     maxSelectNum--;
                 }
-                tv_select_num.setText(maxSelectNum + "");
-                mAdapter.setSelectMax(maxSelectNum);
+                tv_select_num.setText(String.valueOf(maxSelectNum));
+                mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
                 break;
             case R.id.plus:
                 maxSelectNum++;
-                tv_select_num.setText(maxSelectNum + "");
-                mAdapter.setSelectMax(maxSelectNum);
+                tv_select_num.setText(String.valueOf(maxSelectNum));
+                mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
+                break;
+
+            case R.id.video_minus:
+                if (maxSelectVideoNum > 1) {
+                    maxSelectVideoNum--;
+                }
+                tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
+                mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
+                break;
+            case R.id.video_plus:
+                maxSelectVideoNum++;
+                tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
+                mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
                 break;
         }
     }
@@ -1497,12 +1519,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 cb_preview_img.setChecked(true);
                 cb_preview_video.setVisibility(View.VISIBLE);
                 cb_preview_img.setVisibility(View.VISIBLE);
+                llSelectVideoSize.setVisibility(View.VISIBLE);
                 cb_compress.setVisibility(View.VISIBLE);
                 cb_crop.setVisibility(View.VISIBLE);
                 cb_isGif.setVisibility(View.VISIBLE);
                 cb_preview_audio.setVisibility(View.GONE);
                 break;
             case R.id.rb_image:
+                llSelectVideoSize.setVisibility(View.GONE);
                 chooseMode = SelectMimeType.ofImage();
                 cb_preview_img.setChecked(true);
                 cb_preview_video.setChecked(false);
@@ -1517,6 +1541,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 cb_isGif.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_video:
+                llSelectVideoSize.setVisibility(View.GONE);
                 chooseMode = SelectMimeType.ofVideo();
                 cb_preview_img.setChecked(false);
                 cb_preview_video.setChecked(true);
