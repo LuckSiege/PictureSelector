@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
-        android:text="图片数量"
+        android:text="图片"
         android:textColor="@color/ps_color_33" />
 
     <ImageView

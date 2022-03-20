@@ -1129,27 +1129,26 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
         @Override
         public void onLoadComplete(int width, int height, OnCallbackListener<Boolean> call) {
-            if (isSaveInstanceState || isFirstLoaded || isInternalBottomPreview) {
+            if (isSaveInstanceState || isFirstLoaded || isInternalBottomPreview || isExternalPreview) {
                 call.onCall(false);
-                return;
             } else {
                 call.onCall(config.isPreviewZoomEffect);
-            }
-            if (config.isPreviewZoomEffect) {
-                isFirstLoaded = true;
-                magicalView.changeRealScreenHeight(width, height, false);
-                ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                if (viewParams == null) {
-                    magicalView.startNormal(width, height, false);
-                    magicalView.setBackgroundAlpha(1.0F);
-                    for (int i = 0; i < mAnimViews.size(); i++) {
-                        mAnimViews.get(i).setAlpha(1.0F);
+                if (config.isPreviewZoomEffect) {
+                    isFirstLoaded = true;
+                    magicalView.changeRealScreenHeight(width, height, false);
+                    ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+                    if (viewParams == null) {
+                        magicalView.startNormal(width, height, false);
+                        magicalView.setBackgroundAlpha(1.0F);
+                        for (int i = 0; i < mAnimViews.size(); i++) {
+                            mAnimViews.get(i).setAlpha(1.0F);
+                        }
+                    } else {
+                        magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, width, height);
+                        magicalView.start(false);
                     }
-                } else {
-                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, width, height);
-                    magicalView.start(false);
+                    ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
                 }
-                ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
             }
         }
 

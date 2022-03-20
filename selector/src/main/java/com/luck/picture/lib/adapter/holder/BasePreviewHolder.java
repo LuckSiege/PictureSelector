@@ -129,10 +129,10 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         if (bitmap == null) {
             mPreviewEventListener.onLoadError();
         } else {
-            boolean isHasWebp = PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path);
-            boolean isHasGif = PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType());
-            if (isHasWebp || isHasGif) {
+            if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
+                    || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
                 if (PictureSelectionConfig.imageEngine != null) {
+                    coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
                 }
             } else {

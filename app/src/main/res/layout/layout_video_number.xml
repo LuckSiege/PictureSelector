@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
-        android:text="视频数量"
+        android:text="视频"
         android:textColor="@color/ps_color_33" />
 
     <ImageView
