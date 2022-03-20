@@ -29,7 +29,7 @@
         android:layout_width="35dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="0" />
+        android:text="1" />
 
     <ImageView
         android:id="@+id/video_plus"

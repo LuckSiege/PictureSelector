@@ -146,12 +146,13 @@ import top.zibin.luban.OnRenameListener;
 public class MainActivity extends AppCompatActivity implements IBridgePictureBehavior, View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = "PictureSelectorTag";
+    private final static String TAG_EXPLAIN_VIEW = "TAG_EXPLAIN_VIEW";
     private final static int ACTIVITY_RESULT = 1;
     private final static int CALLBACK_RESULT = 2;
     private final static int LAUNCHER_RESULT = 3;
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
-    private int maxSelectVideoNum = 0;
+    private int maxSelectVideoNum = 1;
     private TextView tv_select_num;
     private TextView tv_select_video_num;
     private TextView tv_original_tips;
@@ -908,45 +909,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         @Override
         public void onPermissionDescription(Context context, ViewGroup viewGroup, String permission) {
-            int dp10 = DensityUtil.dip2px(context, 10);
-            int dp15 = DensityUtil.dip2px(context, 15);
-            MediumBoldTextView view = new MediumBoldTextView(context);
-            view.setTag("TAG_EXPLAIN_VIEW");
-            view.setTextSize(14);
-            view.setTextColor(Color.parseColor("#333333"));
-            view.setPadding(dp10, dp15, dp10, dp15);
-
-            String title;
-            String explain;
-
-            if (TextUtils.equals(permission, Manifest.permission.RECORD_AUDIO)) {
-                title = "录音权限使用说明";
-                explain = "录音权限使用说明\n用户app用于录制音频";
-            } else {
-                title = "相机权限使用说明";
-                explain = "相机权限使用说明\n用户app用于拍照/录视频";
-            }
-
-            int startIndex = 0;
-            int endOf = startIndex + title.length();
-            SpannableStringBuilder builder = new SpannableStringBuilder(explain);
-            builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(context, 16)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new ForegroundColorSpan(0xFF333333), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            view.setText(builder);
-
-            view.setBackground(ContextCompat.getDrawable(context, R.drawable.ps_demo_permission_desc_bg));
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
-                    (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.topMargin = DensityUtil.getStatusBarHeight(context);
-            layoutParams.leftMargin = dp10;
-            layoutParams.rightMargin = dp10;
-            viewGroup.addView(view, layoutParams);
+            addPermissionDescription(true, viewGroup, new String[]{permission});
         }
 
         @Override
         public void onDismiss(ViewGroup viewGroup) {
-            View tagExplainView = viewGroup.findViewWithTag("TAG_EXPLAIN_VIEW");
-            viewGroup.removeView(tagExplainView);
+            removePermissionDescription(viewGroup);
         }
     }
 
@@ -958,60 +926,81 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         @Override
         public void onPermissionDescription(Fragment fragment, String[] permissionArray) {
-            View rootView = fragment.getView();
+            View rootView = fragment.requireView();
             if (rootView instanceof ViewGroup) {
-                int dp10 = DensityUtil.dip2px(fragment.getContext(), 10);
-                int dp15 = DensityUtil.dip2px(fragment.getContext(), 15);
-                ViewGroup viewGroup = (ViewGroup) rootView;
-                MediumBoldTextView view = new MediumBoldTextView(fragment.getContext());
-                view.setTag("TAG_EXPLAIN_VIEW");
-                view.setTextSize(14);
-                view.setTextColor(Color.parseColor("#333333"));
-                view.setPadding(dp10, dp15, dp10, dp15);
-
-                String title;
-                String explain;
-
-                if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
-                    title = "相机权限使用说明";
-                    explain = "相机权限使用说明\n用户app用于拍照/录视频";
-                } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
-                    title = "录音权限使用说明";
-                    explain = "录音权限使用说明\n用户app用于录制音频";
-                } else {
-                    title = "存储权限使用说明";
-                    explain = "存储权限使用说明\n用户app写入/下载/保存/读取/修改/删除图片、视频、文件等信息";
-                }
-
-                int startIndex = 0;
-                int endOf = startIndex + title.length();
-                SpannableStringBuilder builder = new SpannableStringBuilder(explain);
-                builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(fragment.getContext(), 16)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                builder.setSpan(new ForegroundColorSpan(0xFF333333), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                view.setText(builder);
-
-                view.setBackground(ContextCompat.getDrawable(fragment.getContext(), R.drawable.ps_demo_permission_desc_bg));
-                ConstraintLayout.LayoutParams layoutParams =
-                        new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.topToBottom = R.id.title_bar;
-                layoutParams.leftToLeft = ConstraintSet.PARENT_ID;
-                layoutParams.leftMargin = dp10;
-                layoutParams.rightMargin = dp10;
-                viewGroup.addView(view, layoutParams);
+                addPermissionDescription(false, (ViewGroup) rootView, permissionArray);
             }
         }
 
         @Override
         public void onDismiss(Fragment fragment) {
-            View rootView = fragment.getView();
-            if (rootView instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) rootView;
-                View tagExplainView = viewGroup.findViewWithTag("TAG_EXPLAIN_VIEW");
-                viewGroup.removeView(tagExplainView);
-            }
+            removePermissionDescription((ViewGroup) fragment.requireView());
         }
     }
 
+    /**
+     * 添加权限说明
+     *
+     * @param viewGroup
+     * @param permissionArray
+     */
+    private static void addPermissionDescription(boolean isHasSimpleXCamera, ViewGroup viewGroup, String[] permissionArray) {
+        int dp10 = DensityUtil.dip2px(viewGroup.getContext(), 10);
+        int dp15 = DensityUtil.dip2px(viewGroup.getContext(), 15);
+        MediumBoldTextView view = new MediumBoldTextView(viewGroup.getContext());
+        view.setTag(TAG_EXPLAIN_VIEW);
+        view.setTextSize(14);
+        view.setTextColor(Color.parseColor("#333333"));
+        view.setPadding(dp10, dp15, dp10, dp15);
+
+        String title;
+        String explain;
+
+        if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
+            title = "相机权限使用说明";
+            explain = "相机权限使用说明\n用户app用于拍照/录视频";
+        } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
+            title = "录音权限使用说明";
+            explain = "录音权限使用说明\n用户app用于采集声音";
+        } else {
+            title = "存储权限使用说明";
+            explain = "存储权限使用说明\n用户app写入/下载/保存/读取/修改/删除图片、视频、文件等信息";
+        }
+        int startIndex = 0;
+        int endOf = startIndex + title.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder(explain);
+        builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(viewGroup.getContext(), 16)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new ForegroundColorSpan(0xFF333333), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        view.setText(builder);
+        view.setBackground(ContextCompat.getDrawable(viewGroup.getContext(), R.drawable.ps_demo_permission_desc_bg));
+
+        if (isHasSimpleXCamera) {
+            RelativeLayout.LayoutParams layoutParams =
+                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.topMargin = DensityUtil.getStatusBarHeight(viewGroup.getContext());
+            layoutParams.leftMargin = dp10;
+            layoutParams.rightMargin = dp10;
+            viewGroup.addView(view, layoutParams);
+        } else {
+            ConstraintLayout.LayoutParams layoutParams =
+                    new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.topToBottom = R.id.title_bar;
+            layoutParams.leftToLeft = ConstraintSet.PARENT_ID;
+            layoutParams.leftMargin = dp10;
+            layoutParams.rightMargin = dp10;
+            viewGroup.addView(view, layoutParams);
+        }
+    }
+
+    /**
+     * 移除权限说明
+     *
+     * @param viewGroup
+     */
+    private static void removePermissionDescription(ViewGroup viewGroup) {
+        View tagExplainView = viewGroup.findViewWithTag(TAG_EXPLAIN_VIEW);
+        viewGroup.removeView(tagExplainView);
+    }
 
     /**
      * 自定义预览
@@ -1141,27 +1130,44 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 录音回调事件
      */
-    private static class MeOnRecordAudioInterceptListener implements OnRecordAudioInterceptListener{
+    private static class MeOnRecordAudioInterceptListener implements OnRecordAudioInterceptListener {
 
         @Override
         public void onRecordAudio(Fragment fragment, int requestCode) {
-            PermissionChecker.getInstance().requestPermissions(fragment,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
-                        @Override
-                        public void onGranted() {
-                            Intent recordAudioIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                            if (recordAudioIntent.resolveActivity(fragment.requireActivity().getPackageManager()) != null) {
-                                fragment.startActivityForResult(recordAudioIntent, requestCode);
-                            } else {
-                                ToastUtils.showToast(fragment.getContext(), "The system is missing a recording component");
+            String[] recordAudio = {Manifest.permission.RECORD_AUDIO};
+            if (PermissionChecker.isCheckSelfPermission(fragment.getContext(), recordAudio)) {
+                startRecordSoundAction(fragment, requestCode);
+            } else {
+                addPermissionDescription(false, (ViewGroup) fragment.requireView(), recordAudio);
+                PermissionChecker.getInstance().requestPermissions(fragment,
+                        new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
+                            @Override
+                            public void onGranted() {
+                                removePermissionDescription((ViewGroup) fragment.requireView());
+                                startRecordSoundAction(fragment, requestCode);
                             }
-                        }
 
-                        @Override
-                        public void onDenied() {
+                            @Override
+                            public void onDenied() {
+                                removePermissionDescription((ViewGroup) fragment.requireView());
+                            }
+                        });
+            }
+        }
+    }
 
-                        }
-                    });
+    /**
+     * 启动录音意图
+     *
+     * @param fragment
+     * @param requestCode
+     */
+    private static void startRecordSoundAction(Fragment fragment, int requestCode) {
+        Intent recordAudioIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+        if (recordAudioIntent.resolveActivity(fragment.requireActivity().getPackageManager()) != null) {
+            fragment.startActivityForResult(recordAudioIntent, requestCode);
+        } else {
+            ToastUtils.showToast(fragment.getContext(), "The system is missing a recording component");
         }
     }
 
