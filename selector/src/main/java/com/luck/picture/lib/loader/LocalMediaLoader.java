@@ -200,8 +200,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
                                 LocalMediaFolder folder = getImageFolder(url, mimeType, folderName, imageFolders);
                                 folder.setBucketId(image.getBucketId());
-                                List<LocalMedia> images = folder.getData();
-                                images.add(image);
+                                folder.getData().add(image);
                                 folder.setFolderTotalNum(folder.getFolderTotalNum() + 1);
                                 folder.setBucketId(image.getBucketId());
                                 latelyImages.add(image);
