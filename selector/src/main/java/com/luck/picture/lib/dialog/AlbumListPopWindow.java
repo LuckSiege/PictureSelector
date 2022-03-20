@@ -158,13 +158,18 @@ public class AlbumListPopWindow extends PopupWindow {
         if (isDismiss) {
             return;
         }
-        windMask.animate().alpha(0).setDuration(50).start();
+        windMask.setAlpha(0F);
         if (windowStatusListener != null) {
             windowStatusListener.onDismissPopupWindow();
         }
         isDismiss = true;
-        AlbumListPopWindow.super.dismiss();
-        isDismiss = false;
+        windMask.post(new Runnable() {
+            @Override
+            public void run() {
+                AlbumListPopWindow.super.dismiss();
+                isDismiss = false;
+            }
+        });
     }
 
 
