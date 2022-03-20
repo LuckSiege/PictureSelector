@@ -322,8 +322,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                     }
                                 }
 
-                                LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
-                                result.add(image);
+                                LocalMedia media = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
+                                result.add(media);
 
                             } while (data.moveToNext());
                         }

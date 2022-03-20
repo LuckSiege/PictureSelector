@@ -197,13 +197,13 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         continue;
                                     }
                                 }
-                                LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
+                                LocalMedia media = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
                                 LocalMediaFolder folder = getImageFolder(url, mimeType, folderName, imageFolders);
-                                folder.setBucketId(image.getBucketId());
-                                folder.getData().add(image);
+                                folder.setBucketId(media.getBucketId());
+                                folder.getData().add(media);
                                 folder.setFolderTotalNum(folder.getFolderTotalNum() + 1);
-                                folder.setBucketId(image.getBucketId());
-                                latelyImages.add(image);
+                                folder.setBucketId(media.getBucketId());
+                                latelyImages.add(media);
                                 int imageNum = allImageFolder.getFolderTotalNum();
                                 allImageFolder.setFolderTotalNum(imageNum + 1);
 

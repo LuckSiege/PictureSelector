@@ -5,7 +5,7 @@
     <string name="ps_take_picture">камера</string>
     <string name="ps_rule">невозможно одновременно выбрать рисунок или видео</string>
     <string name="ps_message_max_num">Вы можете выбрать максимум %1$s фотографий</string>
-    <string name="ps_min_video_num">минимальный выбор видео не может быть меньше %1$s</string>
+    <string name="ps_min_video_num">Минимум %1$s видео</string>
     <string name="ps_message_video_max_num">Вы можете выбрать максимум %1$s видео</string>
     <string name="ps_message_audio_max_num">Вы можете выбрать максимум %1$s звуков</string>
     <string name="ps_preview">Предпросмотр</string>
@@ -29,7 +29,7 @@
     <string name="ps_photograph">Фотография</string>
     <string name="ps_long_chart">Длинный</string>
     <string name="ps_warning">Нет медиа файлов!</string>
-    <string name="ps_prompt">Prompt</string>
+    <string name="ps_prompt">Подсказка</string>
     <string name="ps_prompt_image_content">Вы хотите сохранить фотографии на ваш телефон?</string>
     <string name="ps_prompt_video_content">хочешь сохранить видео на телефоне?</string>
     <string name="ps_prompt_audio_content">хочешь сохранить звук на телефоне?</string>
