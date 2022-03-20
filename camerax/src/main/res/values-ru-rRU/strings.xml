@@ -1,0 +1,6 @@
+<resources>
+    <string name="picture_recording_time_is_short">Слишком короткая запись</string>
+    <string name="picture_photo_camera">Нажмите для фотографирования</string>
+    <string name="picture_photo_pictures">рисунок щелчок</string>
+    <string name="picture_photo_recording">видео зажать</string>
+</resources>

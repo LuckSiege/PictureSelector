@@ -1572,6 +1572,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_ar:
                 language = LanguageConfig.AR;
+            case R.id.rb_ru:
+                language = LanguageConfig.RU;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = -1;

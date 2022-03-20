@@ -67,4 +67,9 @@ public class LanguageConfig {
      * 阿拉伯语
      */
     public static final int AR = 10;
+
+    /**
+     * 俄语
+     */
+    public static final int RU = 11;
 }

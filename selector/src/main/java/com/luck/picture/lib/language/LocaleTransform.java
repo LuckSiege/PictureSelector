@@ -40,6 +40,9 @@ public class LocaleTransform {
             case LanguageConfig.AR:
                 // 阿拉伯语
                 return new Locale("ar", "AE");
+            case LanguageConfig.RU:
+                // 俄语
+                return new Locale("ru", "rRU");
             default:
                 // 简体中文
                 return Locale.CHINESE;
