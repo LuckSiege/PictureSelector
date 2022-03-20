@@ -1,4 +1,4 @@
-# PictureSelector 3.0 
+# PictureSelector 3.0  
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br>
    
    ![](image/picture_framework_es.png)
