@@ -59,7 +59,6 @@ import com.luck.lib.camerax.listener.OnSimpleXPermissionDeniedListener;
 import com.luck.lib.camerax.listener.OnSimpleXPermissionDescriptionListener;
 import com.luck.lib.camerax.permissions.SimpleXPermissionUtil;
 import com.luck.picture.lib.animators.AnimationType;
-import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
@@ -1896,7 +1895,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     media.setWidth(imageExtraInfo.getWidth());
                     media.setHeight(imageExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                    MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                    MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
                     media.setWidth(videoExtraInfo.getWidth());
                     media.setHeight(videoExtraInfo.getHeight());
                 }
