@@ -4,7 +4,7 @@
     <string name="ucrop_scale">масштаб</string>
     <string name="ucrop_crop">кроить</string>
 
-    <string name="ucrop_label_original">нормальная пропорция</string>
+    <string name="ucrop_label_original">масштаб</string>
     <string name="ucrop_label_edit_photo">кроить</string>
 
     <string name="ucrop_menu_crop">кроить</string>

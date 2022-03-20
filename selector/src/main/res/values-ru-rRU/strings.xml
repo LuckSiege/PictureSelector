@@ -8,12 +8,12 @@
     <string name="ps_min_video_num">Минимум %1$s видео</string>
     <string name="ps_message_video_max_num">Вы можете выбрать максимум %1$s видео</string>
     <string name="ps_message_audio_max_num">Вы можете выбрать максимум %1$s звуков</string>
-    <string name="ps_preview">Предпросмотр</string>
+    <string name="ps_preview">Просмотр</string>
     <string name="ps_please">Пожалуйста подождите…</string>
     <string name="ps_done_front_num">%1$d/%2$d Ок</string>
     <string name="ps_completed">Выбрано</string>
     <string name="ps_done">Завершить</string>
-    <string name="ps_please_select">Пожалуйста выберите</string>
+    <string name="ps_please_select">Выберите</string>
     <string name="ps_empty_title">Нет изображений или видео\n</string>
     <string name="ps_empty_audio_title">Нет аудио файлов\n</string>
     <string name="ps_empty">вы можете использовать свою камеру, чтобы сделать фото или видео</string>
@@ -53,7 +53,7 @@
     <string name="ps_default_original_image">Оригинал</string>
     <string name="ps_send">выполнить</string>
     <string name="ps_send_num">выполнить(%1$d/%2$d)</string>
-    <string name="ps_preview_num">Предпросмотр(%1$d)</string>
+    <string name="ps_preview_num">Просмотр(%1$d)</string>
     <string name="ps_select">выбор</string>
     <string name="ps_data_exception">Ошибка получения данных альбома…</string>
     <string name="ps_choose_max_seconds">максимальный выбор видео в пределах %1$ds</string>
