@@ -12,6 +12,7 @@ import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
@@ -134,7 +135,7 @@ public final class PictureSelectionPreviewModel {
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
-            if (PictureSelectionConfig.imageEngine == null) {
+            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             if (list == null || list.size() == 0) {
@@ -171,7 +172,7 @@ public final class PictureSelectionPreviewModel {
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
-            if (PictureSelectionConfig.imageEngine == null) {
+            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             if (list == null || list.size() == 0) {

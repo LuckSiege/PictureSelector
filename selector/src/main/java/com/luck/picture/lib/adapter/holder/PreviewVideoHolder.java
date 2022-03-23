@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -29,7 +29,7 @@ import java.io.File;
  */
 public class PreviewVideoHolder extends BasePreviewHolder {
     public ImageView ivPlayButton;
-    public PlayerView mPlayerView;
+    public StyledPlayerView mPlayerView;
     public ProgressBar progress;
 
     public PreviewVideoHolder(@NonNull View itemView) {
@@ -55,8 +55,14 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                     progress.setVisibility(View.VISIBLE);
                     ivPlayButton.setVisibility(View.GONE);
                     mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                    MediaItem mediaItem = PictureMimeType.isContent(path)
-                            ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
+                    MediaItem mediaItem;
+                    if (PictureMimeType.isContent(path)) {
+                        mediaItem = MediaItem.fromUri(Uri.parse(path));
+                    } else if (PictureMimeType.isHasHttp(path)) {
+                        mediaItem = MediaItem.fromUri(path);
+                    } else {
+                        mediaItem = MediaItem.fromUri(Uri.fromFile(new File(path)));
+                    }
                     player.setMediaItem(mediaItem);
                     player.prepare();
                     player.play();
@@ -105,6 +111,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         public void onPlaybackStateChanged(int playbackState) {
             if (playbackState == Player.STATE_READY) {
                 playerIngUI();
+            } else if (playbackState == Player.STATE_BUFFERING) {
+                progress.setVisibility(View.VISIBLE);
             } else if (playbackState == Player.STATE_ENDED) {
                 playerDefaultUI();
             }
