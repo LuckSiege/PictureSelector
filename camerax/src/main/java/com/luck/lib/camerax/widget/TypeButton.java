@@ -9,13 +9,11 @@ import android.graphics.RectF;
 import android.view.View;
 
 /**
- * =====================================
- * 作    者: 陈嘉桐 445263848@qq.com
- * 版    本：1.0.4
- * 创建日期：2017/4/26
- * 描    述：拍照或录制完成后弹出的确认和返回按钮
- * =====================================
+ * @author：luck
+ * @date：2019-01-04 13:41
+ * @describe：TypeButton
  */
+
 public class TypeButton extends View{
     public static final int TYPE_CANCEL = 0x001;
     public static final int TYPE_CONFIRM = 0x002;

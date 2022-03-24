@@ -279,8 +279,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         launcherResult = createActivityResultLauncher();
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afoey03qj30u05mh1kx.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx4.sinaimg.cn/mw2000/0073ozWdly1h0afofvyc8j30u05qk1kx.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://fdfs.test-kepu.weiyilewen.com/group1/M00/00/01/wKhkY2Iv936EMKWzAAAAAHuLNY8762.mp4", PictureMimeType.ofMP4()));
+//        list.add(LocalMedia.generateLocalMedia("http:/125.124.10.5:81/dfs2/group1/M00/0E/31/CtosLGI0V5aACBl9AFZJdmcSWKg004.mp4", PictureMimeType.ofMP4()));
 //        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg", PictureMimeType.ofJPEG()));
 //        list.add(LocalMedia.generateLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg", PictureMimeType.ofJPEG()));
 //        list.add(LocalMedia.generateLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg", PictureMimeType.ofJPEG()));

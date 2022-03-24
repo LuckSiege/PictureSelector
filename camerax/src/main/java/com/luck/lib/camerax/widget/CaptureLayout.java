@@ -30,7 +30,6 @@ import com.luck.lib.camerax.utils.DensityUtil;
  * @date：2019-01-04 13:41
  * @describe：CaptureLayout
  */
-
 public class CaptureLayout extends FrameLayout {
 
     private CaptureListener captureListener;    //拍照按钮监听
