@@ -38,8 +38,10 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isUrlHasImage(String url) {
-        return url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".jpeg")
-                || url.toLowerCase().endsWith(".png");
+        return url.toLowerCase().endsWith(".jpg")
+                || url.toLowerCase().endsWith(".jpeg")
+                || url.toLowerCase().endsWith(".png")
+                || url.toLowerCase().endsWith(".heic");
     }
 
     /**
