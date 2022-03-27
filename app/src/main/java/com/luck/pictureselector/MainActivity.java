@@ -883,7 +883,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         public void onDenied(Context context, String permission, int requestCode) {
             String tips;
             if (TextUtils.equals(permission, Manifest.permission.RECORD_AUDIO)) {
-                tips = "缺少录音权限\n访问您设备上的音频、媒体内容和文件";
+                tips = "缺少麦克风权限\n可能会导致录视频无法采集声音";
             } else {
                 tips = "缺少相机权限\n可能会导致不能使用摄像头功能";
             }
