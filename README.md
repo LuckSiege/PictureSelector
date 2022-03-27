@@ -270,6 +270,12 @@ IBridgeMediaLoader loader = PictureSelector.create(this)
 
 5、Preview image、video、audio
 
+If you preview the online video AndroidManifest XML add the following code
+
+```sh
+android:usesCleartextTraffic="true"
+```
+
 ```sh
 
 PictureSelector.create(this)
