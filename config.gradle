@@ -4,8 +4,8 @@ ext {
             buildToolsVersion             : "29.0.2",
             minSdkVersion                 : 21,
             targetSdkVersion              : 31,
-            versionCode                   : 77,
-            versionName                   : "v3.0.7",
+            versionCode                   : 78,
+            versionName                   : "v3.0.8",
 
             //open version control
             androidSupportVersion         : "27.0.2",
