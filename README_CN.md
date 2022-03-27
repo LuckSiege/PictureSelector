@@ -271,6 +271,12 @@ IBridgeMediaLoader loader = PictureSelector.create(this)
 
 5、预览图片、视频、音频
 
+如果预览网络视频AndroidManifest.xml添加如下代码
+
+```sh
+android:usesCleartextTraffic="true"
+```
+
 ```sh
 
 PictureSelector.create(this)
