@@ -43,6 +43,7 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
+import androidx.camera.core.UseCaseGroup;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.core.ZoomState;
 import androidx.camera.lifecycle.ProcessCameraProvider;
@@ -308,7 +309,6 @@ public class CustomCameraView extends RelativeLayout {
                                 SimpleCameraX.putOutputUri(activity.getIntent(), savedUri);
                                 String outPutPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
                                 mTextureView.setVisibility(View.VISIBLE);
-                                mCameraPreviewView.setVisibility(View.INVISIBLE);
                                 tvCurrentTime.setVisibility(GONE);
                                 if (mTextureView.isAvailable()) {
                                     startVideoPlay(outPutPath);
@@ -495,6 +495,12 @@ public class CustomCameraView extends RelativeLayout {
         if (recordVideoMinSecond > 0) {
             setRecordVideoMinTime(recordVideoMinSecond);
         }
+        String format = String.format(Locale.getDefault(), "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(recordVideoMaxSecond),
+                TimeUnit.MILLISECONDS.toSeconds(recordVideoMaxSecond)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(recordVideoMaxSecond)));
+        tvCurrentTime.setText(format);
+
         setCaptureLoadingColor(captureLoadingColor);
         setProgressColor(captureLoadingColor);
         boolean isCheckSelfPermission = PermissionChecker.checkSelfPermission(getContext(), new String[]{Manifest.permission.CAMERA});
@@ -583,11 +589,52 @@ public class CustomCameraView extends RelativeLayout {
      * 初始相机预览模式
      */
     private void bindCameraUseCases() {
-        if (buttonFeatures == CustomCameraConfig.BUTTON_STATE_BOTH ||
-                buttonFeatures == CustomCameraConfig.BUTTON_STATE_ONLY_CAPTURE) {
-            bindCameraImageUseCases();
-        } else {
-            bindCameraVideoUseCases();
+        switch (buttonFeatures) {
+            case CustomCameraConfig.BUTTON_STATE_ONLY_CAPTURE:
+                bindCameraImageUseCases();
+                break;
+            case CustomCameraConfig.BUTTON_STATE_ONLY_RECORDER:
+                bindCameraVideoUseCases();
+                break;
+            default:
+                bindCameraWithUserCases();
+                break;
+        }
+    }
+
+    /**
+     * bindCameraWithUserCases
+     */
+    private void bindCameraWithUserCases() {
+        try {
+            CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
+            // Preview
+            Preview preview = new Preview.Builder()
+                    .setTargetRotation(mCameraPreviewView.getDisplay().getRotation())
+                    .build();
+            // ImageCapture
+            buildImageCapture();
+            // VideoCapture
+            buildVideoCapture();
+            UseCaseGroup.Builder useCase = new UseCaseGroup.Builder();
+            useCase.addUseCase(preview);
+            useCase.addUseCase(mImageCapture);
+            useCase.addUseCase(mVideoCapture);
+            UseCaseGroup useCaseGroup = useCase.build();
+            // Must unbind the use-cases before rebinding them
+            mCameraProvider.unbindAll();
+            // A variable number of use-cases can be passed here -
+            // camera provides access to CameraControl & CameraInfo
+            Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, useCaseGroup);
+            // Attach the viewfinder's surface provider to preview use case
+            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
+            // setFlashMode
+            setFlashMode();
+            mCameraInfo = camera.getCameraInfo();
+            mCameraControl = camera.getCameraControl();
+            initCameraPreviewListener();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -606,11 +653,7 @@ public class CustomCameraView extends RelativeLayout {
                     .build();
 
             // ImageCapture
-            mImageCapture = new ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                    .setTargetAspectRatio(screenAspectRatio)
-                    .setTargetRotation(rotation)
-                    .build();
+            buildImageCapture();
 
             // ImageAnalysis
             mImageAnalyzer = new ImageAnalysis.Builder()
@@ -638,25 +681,14 @@ public class CustomCameraView extends RelativeLayout {
     /**
      * bindCameraVideoUseCases
      */
-    @SuppressLint("RestrictedApi")
     private void bindCameraVideoUseCases() {
         try {
             CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
             // Preview
-            int rotation = mCameraPreviewView.getDisplay().getRotation();
             Preview preview = new Preview.Builder()
-                    .setTargetRotation(rotation)
+                    .setTargetRotation(mCameraPreviewView.getDisplay().getRotation())
                     .build();
-            // VideoCapture
-            VideoCapture.Builder builder = new VideoCapture.Builder();
-            builder.setTargetRotation(rotation);
-            if (videoFrameRate > 0) {
-                builder.setVideoFrameRate(videoFrameRate);
-            }
-            if (videoBitRate > 0) {
-                builder.setBitRate(videoBitRate);
-            }
-            mVideoCapture = builder.build();
+            buildVideoCapture();
             // Must unbind the use-cases before rebinding them
             mCameraProvider.unbindAll();
             // A variable number of use-cases can be passed here -
@@ -670,6 +702,28 @@ public class CustomCameraView extends RelativeLayout {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void buildImageCapture() {
+        int screenAspectRatio = aspectRatio(DensityUtil.getScreenWidth(getContext()), DensityUtil.getScreenHeight(getContext()));
+        mImageCapture = new ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setTargetAspectRatio(screenAspectRatio)
+                .setTargetRotation(mCameraPreviewView.getDisplay().getRotation())
+                .build();
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void buildVideoCapture() {
+        VideoCapture.Builder videoBuilder = new VideoCapture.Builder();
+        videoBuilder.setTargetRotation(mCameraPreviewView.getDisplay().getRotation());
+        if (videoFrameRate > 0) {
+            videoBuilder.setVideoFrameRate(videoFrameRate);
+        }
+        if (videoBitRate > 0) {
+            videoBuilder.setBitRate(videoBitRate);
+        }
+        mVideoCapture = videoBuilder.build();
     }
 
 
@@ -922,7 +976,6 @@ public class CustomCameraView extends RelativeLayout {
         }
         mSwitchCamera.setVisibility(VISIBLE);
         mFlashLamp.setVisibility(VISIBLE);
-        mCameraPreviewView.setVisibility(View.VISIBLE);
         mCaptureLayout.resetCaptureLayout();
     }
 

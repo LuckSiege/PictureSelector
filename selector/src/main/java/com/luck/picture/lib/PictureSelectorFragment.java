@@ -28,6 +28,7 @@ import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IPictureSelectorEvent;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.InjectResourceSource;
+import com.luck.picture.lib.config.PermissionEvent;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -431,7 +432,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(-1, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             } else {
                 PermissionChecker.getInstance().requestPermissions(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
@@ -451,17 +452,20 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void onApplyPermissionsEvent(int event, String[] permissionArray) {
-        PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, permissionArray,
-                new OnRequestPermissionListener() {
-                    @Override
-                    public void onCall(String[] permissionArray, boolean isResult) {
-                        if (isResult) {
-                            beginLoadData();
-                        } else {
-                            handlePermissionDenied(permissionArray);
-                        }
+        if (event != PermissionEvent.EVENT_SOURCE_DATA) {
+            super.onApplyPermissionsEvent(event, permissionArray);
+        } else {
+            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, permissionArray, new OnRequestPermissionListener() {
+                @Override
+                public void onCall(String[] permissionArray, boolean isResult) {
+                    if (isResult) {
+                        beginLoadData();
+                    } else {
+                        handlePermissionDenied(permissionArray);
                     }
-                });
+                }
+            });
+        }
     }
 
     /**

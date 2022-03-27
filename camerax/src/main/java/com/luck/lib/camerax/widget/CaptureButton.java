@@ -133,7 +133,7 @@ public class CaptureButton extends View {
      */
     private RecordCountDownTimer timer;
     private boolean isTakeCamera = true;
-    private Activity activity;
+    private final Activity activity;
 
     public CaptureButton(Context context) {
         super(context);
@@ -213,48 +213,9 @@ public class CaptureButton extends View {
                         break;
                     event_Y = event.getY();
                     state = STATE_PRESS;
-
-                    if ((buttonState == CustomCameraConfig.BUTTON_STATE_ONLY_RECORDER
-                            || buttonState == CustomCameraConfig.BUTTON_STATE_BOTH))
-                        if (PermissionChecker.checkSelfPermission(getContext(), new String[]{Manifest.permission.RECORD_AUDIO})) {
-                            postDelayed(longPressRunnable, 500);
-                        } else {
-                            if (CustomCameraConfig.explainListener != null) {
-                                if (!SimpleXSpUtils.getBoolean(getContext(), Manifest.permission.RECORD_AUDIO, false)) {
-                                    ViewGroup customCameraView = getCustomCameraView();
-                                    if (customCameraView != null) {
-                                        CustomCameraConfig.explainListener
-                                                .onPermissionDescription(getContext(), customCameraView,
-                                                        Manifest.permission.RECORD_AUDIO);
-                                    }
-                                }
-                            }
-                            PermissionChecker.getInstance().requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
-                                @Override
-                                public void onGranted() {
-                                    postDelayed(longPressRunnable, 500);
-                                    ViewGroup customCameraView = getCustomCameraView();
-                                    if (customCameraView != null && CustomCameraConfig.explainListener != null) {
-                                        CustomCameraConfig.explainListener.onDismiss(customCameraView);
-                                    }
-                                }
-
-                                @Override
-                                public void onDenied() {
-                                    if (CustomCameraConfig.deniedListener != null) {
-                                        SimpleXSpUtils.putBoolean(getContext(), Manifest.permission.RECORD_AUDIO, true);
-                                        CustomCameraConfig.deniedListener.onDenied(getContext(),
-                                                Manifest.permission.RECORD_AUDIO, PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE);
-                                        ViewGroup customCameraView = getCustomCameraView();
-                                        if (customCameraView != null && CustomCameraConfig.explainListener != null) {
-                                            CustomCameraConfig.explainListener.onDismiss(customCameraView);
-                                        }
-                                    } else {
-                                        SimpleXPermissionUtil.goIntentSetting(activity, PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE);
-                                    }
-                                }
-                            });
-                        }
+                    if (buttonState != CustomCameraConfig.BUTTON_STATE_ONLY_CAPTURE) {
+                        postDelayed(longPressRunnable, 500);
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (captureListener != null
@@ -293,8 +254,10 @@ public class CaptureButton extends View {
                 break;
             case STATE_LONG_PRESS:
             case STATE_RECORDER_ING:
-                timer.cancel();
-                recordEnd();
+                if (PermissionChecker.checkSelfPermission(getContext(), new String[]{Manifest.permission.RECORD_AUDIO})) {
+                    timer.cancel();
+                    recordEnd();
+                }
                 break;
         }
         state = STATE_IDLE;
@@ -414,15 +377,51 @@ public class CaptureButton extends View {
         @Override
         public void run() {
             state = STATE_LONG_PRESS;
-            startRecordAnimation(
-                    button_outside_radius,
-                    button_outside_radius + outside_add_size,
-                    button_inside_radius,
-                    button_inside_radius - inside_reduce_size
-            );
+            if (PermissionChecker.checkSelfPermission(getContext(), new String[]{Manifest.permission.RECORD_AUDIO})) {
+                startRecordAnimation(button_outside_radius, button_outside_radius + outside_add_size,
+                        button_inside_radius, button_inside_radius - inside_reduce_size);
+            } else {
+                onExplainCallback();
+                handlerPressByState();
+                PermissionChecker.getInstance().requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
+                    @Override
+                    public void onGranted() {
+                        postDelayed(longPressRunnable, 500);
+                        ViewGroup customCameraView = getCustomCameraView();
+                        if (customCameraView != null && CustomCameraConfig.explainListener != null) {
+                            CustomCameraConfig.explainListener.onDismiss(customCameraView);
+                        }
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        if (CustomCameraConfig.deniedListener != null) {
+                            SimpleXSpUtils.putBoolean(getContext(), Manifest.permission.RECORD_AUDIO, true);
+                            CustomCameraConfig.deniedListener.onDenied(getContext(), Manifest.permission.RECORD_AUDIO, PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE);
+                            ViewGroup customCameraView = getCustomCameraView();
+                            if (customCameraView != null && CustomCameraConfig.explainListener != null) {
+                                CustomCameraConfig.explainListener.onDismiss(customCameraView);
+                            }
+                        } else {
+                            SimpleXPermissionUtil.goIntentSetting(activity, PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE);
+                        }
+                    }
+                });
+            }
         }
     }
 
+    private void onExplainCallback() {
+        if (CustomCameraConfig.explainListener != null) {
+            if (!SimpleXSpUtils.getBoolean(getContext(), Manifest.permission.RECORD_AUDIO, false)) {
+                ViewGroup customCameraView = getCustomCameraView();
+                if (customCameraView != null) {
+                    CustomCameraConfig.explainListener.onPermissionDescription(getContext(), customCameraView,
+                                    Manifest.permission.RECORD_AUDIO);
+                }
+            }
+        }
+    }
 
     public void setMaxDuration(int duration) {
         this.maxDuration = duration + DIFF_TIME;

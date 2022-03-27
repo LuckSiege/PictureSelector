@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.config.PermissionEvent;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -73,7 +74,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
         } else {
             onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(-1, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                onApplyPermissionsEvent(PermissionEvent.EVENT_SYSTEM_SOURCE_DATA, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             } else {
                 PermissionChecker.getInstance().requestPermissions(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
@@ -93,17 +94,19 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
 
     @Override
     public void onApplyPermissionsEvent(int event, String[] permissionArray) {
-        PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
-                    @Override
-                    public void onCall(String[] permissionArray, boolean isResult) {
-                        if (isResult) {
-                            openSystemAlbum();
-                        } else {
-                            handlePermissionDenied(permissionArray);
+        if (event == PermissionEvent.EVENT_SYSTEM_SOURCE_DATA) {
+            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
+                    PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
+                        @Override
+                        public void onCall(String[] permissionArray, boolean isResult) {
+                            if (isResult) {
+                                openSystemAlbum();
+                            } else {
+                                handlePermissionDenied(permissionArray);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     /**

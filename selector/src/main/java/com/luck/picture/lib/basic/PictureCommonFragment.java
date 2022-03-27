@@ -33,6 +33,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomIntentKey;
+import com.luck.picture.lib.config.PermissionEvent;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -862,7 +863,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void openImageCamera() {
         onPermissionExplainEvent(true, PermissionConfig.CAMERA);
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            onApplyPermissionsEvent(SelectMimeType.ofImage(), PermissionConfig.CAMERA);
+            onApplyPermissionsEvent(PermissionEvent.EVENT_IMAGE_CAMERA, PermissionConfig.CAMERA);
         } else {
             PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
@@ -882,7 +883,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * Start ACTION_IMAGE_CAPTURE
      */
-    private void startCameraImageCapture() {
+    protected void startCameraImageCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             onPermissionExplainEvent(false, null);
             if (PictureSelectionConfig.onCameraInterceptListener != null) {
@@ -909,7 +910,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void openVideoCamera() {
         onPermissionExplainEvent(true, PermissionConfig.CAMERA);
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            onApplyPermissionsEvent(SelectMimeType.ofVideo(), PermissionConfig.CAMERA);
+            onApplyPermissionsEvent(PermissionEvent.EVENT_VIDEO_CAMERA, PermissionConfig.CAMERA);
         } else {
             PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
@@ -929,7 +930,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * Start ACTION_VIDEO_CAPTURE
      */
-    private void startCameraVideoCapture() {
+    protected void startCameraVideoCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             onPermissionExplainEvent(false, null);
             if (PictureSelectionConfig.onCameraInterceptListener != null) {
@@ -988,7 +989,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     @Override
                     public void onCall(String[] permissionArray, boolean isResult) {
                         if (isResult) {
-                            if (event == SelectMimeType.ofVideo()) {
+                            if (event == PermissionEvent.EVENT_VIDEO_CAMERA) {
                                 startCameraVideoCapture();
                             } else {
                                 startCameraImageCapture();

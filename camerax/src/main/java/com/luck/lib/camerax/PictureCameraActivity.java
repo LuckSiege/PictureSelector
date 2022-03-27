@@ -125,7 +125,11 @@ public class PictureCameraActivity extends AppCompatActivity implements IObtainC
     @Override
     public void onBackPressed() {
         CustomCameraConfig.destroy();
-        super.onBackPressed();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -168,7 +172,7 @@ public class PictureCameraActivity extends AppCompatActivity implements IObtainC
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (mPermissionResultCallback != null) {
-            com.luck.lib.camerax.permissions.PermissionChecker.getInstance()
+            PermissionChecker.getInstance()
                     .onRequestPermissionsResult(grantResults, mPermissionResultCallback);
             mPermissionResultCallback = null;
         }

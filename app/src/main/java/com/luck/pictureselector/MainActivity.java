@@ -960,8 +960,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             title = "相机权限使用说明";
             explain = "相机权限使用说明\n用户app用于拍照/录视频";
         } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
-            title = "录音权限使用说明";
-            explain = "录音权限使用说明\n用户app用于采集声音";
+            if (isHasSimpleXCamera){
+                title = "麦克风权限使用说明";
+                explain = "麦克风权限使用说明\n用户app用于录视频时采集声音";
+            } else {
+                title = "录音权限使用说明";
+                explain = "录音权限使用说明\n用户app用于采集声音";
+            }
         } else {
             title = "存储权限使用说明";
             explain = "存储权限使用说明\n用户app写入/下载/保存/读取/修改/删除图片、视频、文件等信息";
