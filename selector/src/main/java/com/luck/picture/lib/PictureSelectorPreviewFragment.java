@@ -1388,7 +1388,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             setMagicalViewParams(size[0], size[1], position);
         } else {
             PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getAvailablePath(),
-                    maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {
+                    maxImageSize[0], maxImageSize[1], null, new OnCallbackListener<Bitmap>() {
                         @Override
                         public void onCall(Bitmap bitmap) {
                             if (ActivityCompatHelper.isDestroy(getActivity())) {

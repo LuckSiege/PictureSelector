@@ -114,7 +114,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     protected void loadImageBitmap(final LocalMedia media, int maxWidth, int maxHeight) {
         if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), media.getAvailablePath(), maxWidth, maxHeight,
+            PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), media.getAvailablePath(), maxWidth, maxHeight,coverImageView,
                     new OnCallbackListener<Bitmap>() {
                         @Override
                         public void onCall(Bitmap bitmap) {
