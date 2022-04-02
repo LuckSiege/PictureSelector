@@ -33,6 +33,7 @@ class CoilEngine : ImageEngine {
         url: String,
         maxWidth: Int,
         maxHeight: Int,
+        imageView: ImageView?,
         call: OnCallbackListener<Bitmap>?
     ) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {

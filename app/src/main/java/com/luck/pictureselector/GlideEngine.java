@@ -51,7 +51,7 @@ public class GlideEngine implements ImageEngine {
      * @param call      回调接口
      */
     @Override
-    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, ImageView imageView,OnCallbackListener<Bitmap> call) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }

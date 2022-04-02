@@ -30,9 +30,10 @@ public interface ImageEngine {
      * @param url
      * @param maxWidth
      * @param maxHeight
+     * @param imageView
      * @param call
      */
-    void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight,
+    void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight,ImageView imageView,
                          OnCallbackListener<Bitmap> call);
 
     /**
