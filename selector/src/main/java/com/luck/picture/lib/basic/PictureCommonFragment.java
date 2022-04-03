@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
-import com.luck.picture.lib.interfaces.OnCompressCallbackListener;
+import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
@@ -86,8 +87,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author：luck
@@ -1459,33 +1461,31 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onCompress(ArrayList<LocalMedia> result) {
         showLoading();
-        LinkedHashMap<Uri, LocalMedia> queue = new LinkedHashMap<>();
+        ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
         for (int i = 0; i < result.size(); i++) {
             LocalMedia media = result.get(i);
             String availablePath = media.getAvailablePath();
-            if (PictureMimeType.isHasHttp(availablePath)) {
-                continue;
-            }
-            if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                continue;
-            }
-            if (PictureMimeType.isHasAudio(media.getMimeType())) {
+            if (PictureMimeType.isHasHttp(availablePath) || PictureMimeType.isHasVideo(media.getMimeType())
+                    || PictureMimeType.isHasAudio(media.getMimeType())) {
                 continue;
             }
             if (PictureMimeType.isHasImage(media.getMimeType()) || PictureMimeType.isUrlHasImage(availablePath)) {
-                Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
-                if (uri == null) {
-                    continue;
-                }
-                queue.put(uri, media);
-                PictureSelectionConfig.compressFileEngine.onCompress(getContext(), uri, new OnCompressCallbackListener() {
+                queue.put(availablePath, media);
+            }
+        }
+        if (queue.size() == 0) {
+            onResultEvent(result);
+        } else {
+            for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
+                String srcPath = entry.getKey();
+                PictureSelectionConfig.compressFileEngine.onCompress(getContext(), srcPath, new OnComposeCallbackListener() {
                     @Override
-                    public void onSuccess(Uri srcUri, String compressPath) {
-                        LocalMedia media = queue.get(srcUri);
+                    public void onSuccess(String srcPath, String compressPath) {
+                        LocalMedia media = queue.get(srcPath);
                         if (media != null) {
                             media.setCompressPath(compressPath);
                             media.setCompressed(!TextUtils.isEmpty(compressPath));
-                            queue.remove(srcUri);
+                            queue.remove(srcPath);
                         }
                         if (queue.size() == 0) {
                             onResultEvent(result);
@@ -1620,22 +1620,35 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * 添加水印
      */
     private void addBitmapWatermark(ArrayList<LocalMedia> result) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
-
-            @Override
-            public ArrayList<LocalMedia> doInBackground() {
-                for (int i = 0; i < result.size(); i++) {
-                    PictureSelectionConfig.onBitmapWatermarkListener.onAddBitmapWatermark(getContext(), result.get(i));
-                }
-                return result;
+        ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia media = result.get(i);
+            String availablePath = media.getAvailablePath();
+            queue.put(availablePath, media);
+        }
+        if (queue.size() == 0) {
+            onCallBackResult(result);
+        } else {
+            for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
+                String srcPath = entry.getKey();
+                LocalMedia media = entry.getValue();
+                PictureSelectionConfig.onBitmapWatermarkListener.onAddBitmapWatermark(getContext(),
+                        srcPath, media.getMimeType(), new OnComposeCallbackListener() {
+                            @Override
+                            public void onSuccess(String srcPath, String resultPath) {
+                                LocalMedia media = queue.get(srcPath);
+                                if (media != null) {
+                                    media.setSandboxPath(resultPath);
+                                    queue.remove(srcPath);
+                                }
+                                Log.i("YYY", "onSuccess: " + queue.size());
+                                if (queue.size() == 0) {
+                                    onCallBackResult(result);
+                                }
+                            }
+                        });
             }
-
-            @Override
-            public void onSuccess(ArrayList<LocalMedia> result) {
-                PictureThreadUtils.cancel(this);
-                onCallBackResult(result);
-            }
-        });
+        }
     }
 
     /**

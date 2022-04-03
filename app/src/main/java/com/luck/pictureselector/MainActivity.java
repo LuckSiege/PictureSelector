@@ -63,7 +63,6 @@ import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
-import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.basic.PictureSelectionCameraModel;
 import com.luck.picture.lib.basic.PictureSelectionModel;
 import com.luck.picture.lib.basic.PictureSelectionSystemModel;
@@ -90,7 +89,7 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
-import com.luck.picture.lib.interfaces.OnCompressCallbackListener;
+import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -137,7 +136,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -887,7 +885,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      * 给图片添加水印
      */
     private OnAddBitmapWatermarkListener getAddBitmapWatermarkListener() {
-        return cb_watermark.isChecked() ? new MeBitmapWatermarkListener(getSandboxPath()) : null;
+        return cb_watermark.isChecked() ? new MeBitmapWatermarkListener(getSandboxMarkDir()) : null;
     }
 
     /**
@@ -901,36 +899,46 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
 
         @Override
-        public void onAddBitmapWatermark(Context context, LocalMedia media) {
-            if (PictureMimeType.isHasImage(media.getMimeType())) {
-                String availablePath = media.getAvailablePath();
-                Bitmap srcBitmap;
-                if (PictureMimeType.isContent(availablePath)) {
-                    InputStream inputStream = PictureContentResolver
-                            .getContentResolverOpenInputStream(context, Uri.parse(availablePath));
-                    srcBitmap = BitmapFactory.decodeStream(inputStream);
-                    PictureFileUtils.close(inputStream);
-                } else {
-                    srcBitmap = BitmapFactory.decodeFile(availablePath);
-                }
-                Bitmap watermark = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_test_year);
-                Bitmap watermarkBitmap = ImageUtil.createWaterMaskRightTop(context, srcBitmap, watermark, 15, 15);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                watermarkBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
-                watermarkBitmap.recycle();
-                FileOutputStream fos = null;
-                try {
-                    File targetFile = new File(targetPath, DateUtils.getCreateFileName("IMG_") + ".jpg");
-                    fos = new FileOutputStream(targetFile);
-                    fos.write(stream.toByteArray());
-                    fos.flush();
-                    media.setSandboxPath(targetFile.getAbsolutePath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    PictureFileUtils.close(fos);
-                    PictureFileUtils.close(stream);
-                }
+        public void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnComposeCallbackListener call) {
+            if (PictureMimeType.isHasHttp(srcPath) || PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
+                // 网络图片、视频和音频暂不处理，有需求的可自行扩展
+                call.onSuccess(srcPath, "");
+            } else {
+                // 暂时只以图片为例
+                Glide.with(context).asBitmap().load(srcPath).into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        Bitmap watermark = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_mark_win);
+                        Bitmap watermarkBitmap = ImageUtil.createWaterMaskRightTop(context, resource, watermark, 15, 15);
+                        watermarkBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
+                        watermarkBitmap.recycle();
+                        FileOutputStream fos = null;
+                        String result = null;
+                        try {
+                            File targetFile = new File(targetPath, DateUtils.getCreateFileName("Mark_") + ".jpg");
+                            fos = new FileOutputStream(targetFile);
+                            fos.write(stream.toByteArray());
+                            fos.flush();
+                            result = targetFile.getAbsolutePath();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            PictureFileUtils.close(fos);
+                            PictureFileUtils.close(stream);
+                        }
+                        if (call != null) {
+                            call.onSuccess(srcPath, result);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        if (call != null) {
+                            call.onSuccess(srcPath, "");
+                        }
+                    }
+                });
             }
         }
     }
@@ -1492,30 +1500,35 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      */
     private static class ImageFileCompressEngine implements CompressFileEngine {
         @Override
-        public void onCompress(Context context, Uri srcUri, OnCompressCallbackListener call) {
-            Luban.with(context).load(srcUri)
-                    .ignoreBy(100)
-                    .setRenameListener(filePath -> {
-                        int indexOf = filePath.lastIndexOf(".");
-                        String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
-                        return DateUtils.getCreateFileName("CMP_") + postfix;
-                    })
-                    .setCompressListener(new OnCompressListener() {
-                        @Override
-                        public void onStart() {
-                        }
+        public void onCompress(Context context, String srcPath, OnComposeCallbackListener call) {
+            Luban.Builder with = Luban.with(context);
+            if (PictureMimeType.isContent(srcPath)) {
+                with.load(Uri.parse(srcPath));
+            } else {
+                with.load(srcPath);
+            }
+            with.ignoreBy(100).setRenameListener(new OnRenameListener() {
+                @Override
+                public String rename(String filePath) {
+                    int indexOf = filePath.lastIndexOf(".");
+                    String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
+                    return DateUtils.getCreateFileName("CMP_") + postfix;
+                }
+            }).setCompressListener(new OnCompressListener() {
+                @Override
+                public void onStart() {
+                }
 
-                        @Override
-                        public void onSuccess(int index, File compressFile) {
-                            call.onSuccess(srcUri, compressFile.getAbsolutePath());
-                        }
+                @Override
+                public void onSuccess(int index, File compressFile) {
+                    call.onSuccess(srcPath, compressFile.getAbsolutePath());
+                }
 
-                        @Override
-                        public void onError(int index, Throwable e) {
-                            call.onSuccess(srcUri, null);
-                        }
-                    })
-                    .launch();
+                @Override
+                public void onError(int index, Throwable e) {
+                    call.onSuccess(srcPath, null);
+                }
+            }).launch();
         }
     }
 
@@ -1592,6 +1605,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         }
                     }).launch();
         }
+
     }
 
     /**
@@ -1644,6 +1658,19 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         return customFile.getAbsolutePath() + File.separator;
     }
 
+    /**
+     * 创建自定义输出目录
+     *
+     * @return
+     */
+    private String getSandboxMarkDir() {
+        File externalFilesDir = getContext().getExternalFilesDir("");
+        File customFile = new File(externalFilesDir.getAbsolutePath(), "Mark");
+        if (!customFile.exists()) {
+            customFile.mkdirs();
+        }
+        return customFile.getAbsolutePath() + File.separator;
+    }
 
     @Override
     public void onClick(View v) {

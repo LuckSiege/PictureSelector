@@ -1,10 +1,8 @@
 package com.luck.picture.lib.engine;
 
 import android.content.Context;
-import android.net.Uri;
-
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnCompressCallbackListener;
+import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
 
 /**
  * @author：luck
@@ -24,7 +22,7 @@ public interface CompressFileEngine {
      * </p>
      *
      * @param context
-     * @param srcUri
+     * @param srcPath
      */
-    void onCompress(Context context, Uri srcUri, OnCompressCallbackListener call);
+    void onCompress(Context context, String srcPath, OnComposeCallbackListener call);
 }
