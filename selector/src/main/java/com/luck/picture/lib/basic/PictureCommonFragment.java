@@ -1480,7 +1480,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 String srcPath = entry.getKey();
                 PictureSelectionConfig.compressFileEngine.onCompress(getContext(), srcPath, new OnComposeCallbackListener() {
                     @Override
-                    public void onSuccess(String srcPath, String compressPath) {
+                    public void onCallback(String srcPath, String compressPath) {
                         LocalMedia media = queue.get(srcPath);
                         if (media != null) {
                             media.setCompressPath(compressPath);
@@ -1635,13 +1635,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 PictureSelectionConfig.onBitmapWatermarkListener.onAddBitmapWatermark(getContext(),
                         srcPath, media.getMimeType(), new OnComposeCallbackListener() {
                             @Override
-                            public void onSuccess(String srcPath, String resultPath) {
+                            public void onCallback(String srcPath, String resultPath) {
                                 LocalMedia media = queue.get(srcPath);
                                 if (media != null) {
                                     media.setSandboxPath(resultPath);
                                     queue.remove(srcPath);
                                 }
-                                Log.i("YYY", "onSuccess: " + queue.size());
                                 if (queue.size() == 0) {
                                     onCallBackResult(result);
                                 }

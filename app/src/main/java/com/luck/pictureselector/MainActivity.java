@@ -902,7 +902,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         public void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnComposeCallbackListener call) {
             if (PictureMimeType.isHasHttp(srcPath) || PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
                 // 网络图片、视频和音频暂不处理，有需求的可自行扩展
-                call.onSuccess(srcPath, "");
+                call.onCallback(srcPath, "");
             } else {
                 // 暂时只以图片为例
                 Glide.with(context).asBitmap().load(srcPath).into(new CustomTarget<Bitmap>() {
@@ -928,14 +928,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             PictureFileUtils.close(stream);
                         }
                         if (call != null) {
-                            call.onSuccess(srcPath, result);
+                            call.onCallback(srcPath, result);
                         }
                     }
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                         if (call != null) {
-                            call.onSuccess(srcPath, "");
+                            call.onCallback(srcPath, "");
                         }
                     }
                 });
@@ -1521,12 +1521,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 @Override
                 public void onSuccess(int index, File compressFile) {
-                    call.onSuccess(srcPath, compressFile.getAbsolutePath());
+                    call.onCallback(srcPath, compressFile.getAbsolutePath());
                 }
 
                 @Override
                 public void onError(int index, Throwable e) {
-                    call.onSuccess(srcPath, null);
+                    call.onCallback(srcPath, null);
                 }
             }).launch();
         }

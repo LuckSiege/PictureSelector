@@ -10,5 +10,5 @@ public interface OnComposeCallbackListener {
      * @param srcPath
      * @param resultPath
      */
-    void onSuccess(String srcPath, String resultPath);
+    void onCallback(String srcPath, String resultPath);
 }
