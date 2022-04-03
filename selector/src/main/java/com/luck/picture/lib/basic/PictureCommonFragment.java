@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1638,7 +1637,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             public void onCallback(String srcPath, String resultPath) {
                                 LocalMedia media = queue.get(srcPath);
                                 if (media != null) {
-                                    media.setSandboxPath(resultPath);
+                                    media.setWatermarkPath(resultPath);
                                     queue.remove(srcPath);
                                 }
                                 if (queue.size() == 0) {

@@ -45,6 +45,11 @@ public class LocalMedia implements Parcelable {
     private String cutPath;
 
     /**
+     * watermark path
+     */
+    private String watermarkPath;
+
+    /**
      * app sandbox path
      */
     private String sandboxPath;
@@ -189,6 +194,7 @@ public class LocalMedia implements Parcelable {
         originalPath = in.readString();
         compressPath = in.readString();
         cutPath = in.readString();
+        watermarkPath = in.readString();
         sandboxPath = in.readString();
         duration = in.readLong();
         isChecked = in.readByte() != 0;
@@ -225,6 +231,7 @@ public class LocalMedia implements Parcelable {
         dest.writeString(originalPath);
         dest.writeString(compressPath);
         dest.writeString(cutPath);
+        dest.writeString(watermarkPath);
         dest.writeString(sandboxPath);
         dest.writeLong(duration);
         dest.writeByte((byte) (isChecked ? 1 : 0));
@@ -359,7 +366,9 @@ public class LocalMedia implements Parcelable {
      */
     public String getAvailablePath() {
         String path;
-        if (isCompressed()) {
+        if (isWatermarkPath()) {
+            path = getWatermarkPath();
+        } else if (isCompressed()) {
             path = getCompressPath();
         } else if (isCut()) {
             path = getCutPath();
@@ -623,11 +632,23 @@ public class LocalMedia implements Parcelable {
         return !TextUtils.isEmpty(getSandboxPath());
     }
 
+    public boolean isWatermarkPath(){
+        return !TextUtils.isEmpty(getWatermarkPath());
+    }
+
     public boolean isGalleryEnabledMask() {
         return isGalleryEnabledMask;
     }
 
     public void setGalleryEnabledMask(boolean galleryEnabledMask) {
         isGalleryEnabledMask = galleryEnabledMask;
+    }
+
+    public String getWatermarkPath() {
+        return watermarkPath;
+    }
+
+    public void setWatermarkPath(String watermarkPath) {
+        this.watermarkPath = watermarkPath;
     }
 }
