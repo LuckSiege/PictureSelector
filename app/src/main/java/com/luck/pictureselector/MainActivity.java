@@ -86,7 +86,7 @@ import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
-import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
+import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
@@ -102,6 +102,7 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
+import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.loader.SandboxFileLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
-            cb_custom_preview, cb_permission_desc;
+            cb_custom_preview, cb_permission_desc,cb_video_thumbnails;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -206,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         tvDeleteText = findViewById(R.id.tv_delete_text);
         tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
+        cb_video_thumbnails = findViewById(R.id.cb_video_thumbnails);
         RadioGroup rgb_result = findViewById(R.id.rgb_result);
         RadioGroup rgb_style = findViewById(R.id.rgb_style);
         RadioGroup rgb_animation = findViewById(R.id.rgb_animation);
@@ -379,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCropEngine(getCropFileEngine())
                                 .setSkipCropMimeType(getNotSupportCrop())
                                 .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
+                                .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isOriginalControl(cb_original.isChecked())
                                 .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
@@ -400,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setPreviewInterceptListener(getPreviewInterceptListener())
                                 .setPermissionDeniedListener(getPermissionDeniedListener())
                                 .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
+                                .setVideoThumbnailListener(getVideoThumbnailEventListener())
 //                              .setQueryFilterListener(new OnQueryFilterListener() {
 //                                    @Override
 //                                    public boolean onFilter(String absolutePath) {
@@ -452,6 +456,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setCropEngine(getCropFileEngine())
                             .setCompressEngine(getCompressFileEngine())
                             .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
+                            .setVideoThumbnailListener(getVideoThumbnailEventListener())
                             .setLanguage(language)
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked())
@@ -817,14 +822,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         return new MeExtendLoaderEngine();
     }
 
-    /**
-     * 自定义编辑事件
-     *
-     * @return
-     */
-    private OnMediaEditInterceptListener getCustomEditMediaEvent() {
-        return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener(getSandboxPath(), buildOptions()) : null;
-    }
 
     /**
      * 注入自定义布局
@@ -835,66 +832,75 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         return cb_inject_layout.isChecked() ? new MeOnInjectLayoutResourceListener() : null;
     }
 
+
     /**
-     * 权限说明
-     *
-     * @return
+     * 处理视频缩略图
      */
-    private OnPermissionDescriptionListener getPermissionDescriptionListener() {
-        return cb_permission_desc.isChecked() ? new MeOnPermissionDescriptionListener() : null;
+    private OnVideoThumbnailEventListener getVideoThumbnailEventListener() {
+        return cb_video_thumbnails.isChecked() ? new MeOnVideoThumbnailEventListener(getVideoThumbnailDir()) : null;
     }
 
     /**
-     * 自定义预览
-     *
-     * @return
+     * 处理视频缩略图
      */
-    private OnPreviewInterceptListener getPreviewInterceptListener() {
-        return cb_custom_preview.isChecked() ? new MeOnPreviewInterceptListener() : null;
-    }
-
-    /**
-     * SimpleCameraX权限说明
-     *
-     * @return
-     */
-    private OnSimpleXPermissionDescriptionListener getSimpleXPermissionDescriptionListener() {
-        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDescriptionListener() : null;
-    }
-
-
-    /**
-     * SimpleCameraX权限拒绝后回调
-     *
-     * @return
-     */
-    private OnSimpleXPermissionDeniedListener getSimpleXPermissionDeniedListener() {
-        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDeniedListener() : null;
-    }
-
-    /**
-     * 权限拒绝后回调
-     *
-     * @return
-     */
-    private OnPermissionDeniedListener getPermissionDeniedListener() {
-        return cb_permission_desc.isChecked() ? new MeOnPermissionDeniedListener() : null;
-    }
-
-    /**
-     * 给图片添加水印
-     */
-    private OnAddBitmapWatermarkListener getAddBitmapWatermarkListener() {
-        return cb_watermark.isChecked() ? new MeBitmapWatermarkListener(getSandboxMarkDir()) : null;
-    }
-
-    /**
-     * 给图片添加水印
-     */
-    private static class MeBitmapWatermarkListener implements OnAddBitmapWatermarkListener {
+    private static class MeOnVideoThumbnailEventListener implements OnVideoThumbnailEventListener {
         private final String targetPath;
 
-        public MeBitmapWatermarkListener(String targetPath) {
+        public MeOnVideoThumbnailEventListener(String targetPath) {
+            this.targetPath = targetPath;
+        }
+
+        @Override
+        public void onVideoThumbnail(Context context, String videoPath, OnComposeCallbackListener call) {
+            Glide.with(context).asBitmap().load(videoPath).into(new CustomTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    resource.compress(Bitmap.CompressFormat.JPEG, 60, stream);
+                    FileOutputStream fos = null;
+                    String result = null;
+                    try {
+                        File targetFile = new File(targetPath, "thumbnails_" + System.currentTimeMillis() + ".jpg");
+                        fos = new FileOutputStream(targetFile);
+                        fos.write(stream.toByteArray());
+                        fos.flush();
+                        result = targetFile.getAbsolutePath();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        PictureFileUtils.close(fos);
+                        PictureFileUtils.close(stream);
+                    }
+                    if (call != null) {
+                        call.onCallback(videoPath, result);
+                    }
+                }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+                    if (call != null) {
+                        call.onCallback(videoPath, "");
+                    }
+                }
+            });
+        }
+    }
+
+
+    /**
+     * 给图片添加水印
+     */
+    private OnBitmapWatermarkEventListener getAddBitmapWatermarkListener() {
+        return cb_watermark.isChecked() ? new MeBitmapWatermarkEventListener(getSandboxMarkDir()) : null;
+    }
+
+    /**
+     * 给图片添加水印
+     */
+    private static class MeBitmapWatermarkEventListener implements OnBitmapWatermarkEventListener {
+        private final String targetPath;
+
+        public MeBitmapWatermarkEventListener(String targetPath) {
             this.targetPath = targetPath;
         }
 
@@ -943,6 +949,17 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
     }
 
+
+    /**
+     * 权限拒绝后回调
+     *
+     * @return
+     */
+    private OnPermissionDeniedListener getPermissionDeniedListener() {
+        return cb_permission_desc.isChecked() ? new MeOnPermissionDeniedListener() : null;
+    }
+
+
     /**
      * 权限拒绝后回调
      */
@@ -975,6 +992,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     /**
+     * SimpleCameraX权限拒绝后回调
+     *
+     * @return
+     */
+    private OnSimpleXPermissionDeniedListener getSimpleXPermissionDeniedListener() {
+        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDeniedListener() : null;
+    }
+
+    /**
      * SimpleCameraX添加权限说明
      */
     private static class MeOnSimpleXPermissionDeniedListener implements OnSimpleXPermissionDeniedListener {
@@ -1003,6 +1029,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     /**
+     * SimpleCameraX权限说明
+     *
+     * @return
+     */
+    private OnSimpleXPermissionDescriptionListener getSimpleXPermissionDescriptionListener() {
+        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDescriptionListener() : null;
+    }
+
+    /**
      * SimpleCameraX添加权限说明
      */
     private static class MeOnSimpleXPermissionDescriptionListener implements OnSimpleXPermissionDescriptionListener {
@@ -1018,6 +1053,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
     }
 
+
+    /**
+     * 权限说明
+     *
+     * @return
+     */
+    private OnPermissionDescriptionListener getPermissionDescriptionListener() {
+        return cb_permission_desc.isChecked() ? new MeOnPermissionDescriptionListener() : null;
+    }
 
     /**
      * 添加权限说明
@@ -1105,6 +1149,17 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static void removePermissionDescription(ViewGroup viewGroup) {
         View tagExplainView = viewGroup.findViewWithTag(TAG_EXPLAIN_VIEW);
         viewGroup.removeView(tagExplainView);
+    }
+
+
+
+    /**
+     * 自定义预览
+     *
+     * @return
+     */
+    private OnPreviewInterceptListener getPreviewInterceptListener() {
+        return cb_custom_preview.isChecked() ? new MeOnPreviewInterceptListener() : null;
     }
 
     /**
@@ -1205,6 +1260,16 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         }
     }
+
+    /**
+     * 自定义编辑事件
+     *
+     * @return
+     */
+    private OnMediaEditInterceptListener getCustomEditMediaEvent() {
+        return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener(getSandboxPath(), buildOptions()) : null;
+    }
+
 
     /**
      * 自定义编辑
@@ -1672,6 +1737,20 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         return customFile.getAbsolutePath() + File.separator;
     }
 
+    /**
+     * 创建自定义输出目录
+     *
+     * @return
+     */
+    private String getVideoThumbnailDir() {
+        File externalFilesDir = getContext().getExternalFilesDir("");
+        File customFile = new File(externalFilesDir.getAbsolutePath(), "Thumbnail");
+        if (!customFile.exists()) {
+            customFile.mkdirs();
+        }
+        return customFile.getAbsolutePath() + File.separator;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -2111,6 +2190,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Log.i(TAG, "原图路径:" + media.getOriginalPath());
             Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
             Log.i(TAG, "水印路径:" + media.getWatermarkPath());
+            Log.i(TAG, "视频缩略图:" + media.getVideoThumbnailPath());
             Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
             Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
             Log.i(TAG, "文件大小: " + media.getSize());

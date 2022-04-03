@@ -13,7 +13,7 @@ import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
+import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
@@ -27,6 +27,7 @@ import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
+import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -143,7 +144,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnPermissionDeniedListener onPermissionDeniedListener;
     public static OnRecordAudioInterceptListener onRecordAudioListener;
     public static OnQueryFilterListener onQueryFilterListener;
-    public static OnAddBitmapWatermarkListener onBitmapWatermarkListener;
+    public static OnBitmapWatermarkEventListener onBitmapWatermarkListener;
+    public static OnVideoThumbnailEventListener onVideoThumbnailEventListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -452,6 +454,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onRecordAudioListener = null;
         PictureSelectionConfig.onQueryFilterListener = null;
         PictureSelectionConfig.onBitmapWatermarkListener = null;
+        PictureSelectionConfig.onVideoThumbnailEventListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

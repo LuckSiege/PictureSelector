@@ -15,6 +15,7 @@ import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
@@ -23,13 +24,14 @@ import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
+import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
+import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -304,8 +306,23 @@ public final class PictureSelectionSystemModel {
      * @param listener
      * @return
      */
-    public PictureSelectionSystemModel setAddBitmapWatermarkListener(OnAddBitmapWatermarkListener listener) {
-        PictureSelectionConfig.onBitmapWatermarkListener = listener;
+    public PictureSelectionSystemModel setAddBitmapWatermarkListener(OnBitmapWatermarkEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onBitmapWatermarkListener = listener;
+        }
+        return this;
+    }
+
+    /**
+     * Process video thumbnails
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setVideoThumbnailListener(OnVideoThumbnailEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onVideoThumbnailEventListener = listener;
+        }
         return this;
     }
 

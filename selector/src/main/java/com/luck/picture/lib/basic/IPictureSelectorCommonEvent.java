@@ -262,6 +262,11 @@ public interface IPictureSelectorCommonEvent {
     boolean checkAddBitmapWatermark();
 
     /**
+     * 验证是否需要处理视频缩略图
+     */
+    boolean checkVideoThumbnail();
+
+    /**
      * 权限申请
      *
      * @param permissionArray

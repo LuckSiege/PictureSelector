@@ -1616,6 +1616,46 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return PictureSelectionConfig.onBitmapWatermarkListener != null;
     }
 
+    @Override
+    public boolean checkVideoThumbnail() {
+        return PictureSelectionConfig.onVideoThumbnailEventListener != null;
+    }
+
+    /**
+     * 处理视频的缩略图
+     *
+     * @param result
+     */
+    private void videoThumbnail(ArrayList<LocalMedia> result) {
+        ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia media = result.get(i);
+            String availablePath = media.getAvailablePath();
+            if (PictureMimeType.isHasVideo(media.getMimeType()) || PictureMimeType.isUrlHasVideo(availablePath)) {
+                queue.put(availablePath, media);
+            }
+        }
+        if (queue.size() == 0) {
+            onCallBackResult(result);
+        } else {
+            for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
+                PictureSelectionConfig.onVideoThumbnailEventListener.onVideoThumbnail(getContext(), entry.getKey(), new OnComposeCallbackListener() {
+                    @Override
+                    public void onCallback(String srcPath, String resultPath) {
+                        LocalMedia media = queue.get(srcPath);
+                        if (media != null) {
+                            media.setVideoThumbnailPath(resultPath);
+                            queue.remove(srcPath);
+                        }
+                        if (queue.size() == 0) {
+                            onCallBackResult(result);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
     /**
      * 添加水印
      */
@@ -1630,7 +1670,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             queue.put(availablePath, media);
         }
         if (queue.size() == 0) {
-            onCallBackResult(result);
+            dispatchWatermarkResult(result);
         } else {
             for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
                 String srcPath = entry.getKey();
@@ -1645,11 +1685,41 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                     queue.remove(srcPath);
                                 }
                                 if (queue.size() == 0) {
-                                    onCallBackResult(result);
+                                    dispatchWatermarkResult(result);
                                 }
                             }
                         });
             }
+        }
+    }
+
+    /**
+     * dispatchUriToFileTransformResult
+     *
+     * @param result
+     */
+    private void dispatchUriToFileTransformResult(ArrayList<LocalMedia> result) {
+        showLoading();
+        if (checkAddBitmapWatermark()) {
+            addBitmapWatermark(result);
+        } else if (checkVideoThumbnail()) {
+            videoThumbnail(result);
+        } else {
+            onCallBackResult(result);
+        }
+    }
+
+
+    /**
+     * dispatchWatermarkResult
+     *
+     * @param result
+     */
+    private void dispatchWatermarkResult(ArrayList<LocalMedia> result) {
+        if (checkVideoThumbnail()) {
+            videoThumbnail(result);
+        } else {
+            onCallBackResult(result);
         }
     }
 
@@ -1683,11 +1753,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public void onSuccess(ArrayList<LocalMedia> result) {
                 PictureThreadUtils.cancel(this);
-                if (checkAddBitmapWatermark()) {
-                    addBitmapWatermark(result);
-                } else {
-                    onCallBackResult(result);
-                }
+                dispatchUriToFileTransformResult(result);
             }
         });
     }
@@ -1724,14 +1790,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public void onSuccess(ArrayList<LocalMedia> result) {
                 PictureThreadUtils.cancel(this);
-                if (checkAddBitmapWatermark()) {
-                    addBitmapWatermark(result);
-                } else {
-                    onCallBackResult(result);
-                }
+                dispatchUriToFileTransformResult(result);
             }
         });
     }
+
 
     /**
      * 构造原图数据
@@ -1759,12 +1822,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             copyExternalPathToAppInDirFor29(result);
         } else {
             mergeOriginalImage(result);
-            if (checkAddBitmapWatermark()) {
-                showLoading();
-                addBitmapWatermark(result);
-            } else {
-                onCallBackResult(result);
-            }
+            dispatchUriToFileTransformResult(result);
         }
     }
 

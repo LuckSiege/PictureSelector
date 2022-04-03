@@ -50,6 +50,11 @@ public class LocalMedia implements Parcelable {
     private String watermarkPath;
 
     /**
+     * video thumbnail path
+     */
+    private String videoThumbnailPath;
+
+    /**
      * app sandbox path
      */
     private String sandboxPath;
@@ -195,6 +200,7 @@ public class LocalMedia implements Parcelable {
         compressPath = in.readString();
         cutPath = in.readString();
         watermarkPath = in.readString();
+        videoThumbnailPath = in.readString();
         sandboxPath = in.readString();
         duration = in.readLong();
         isChecked = in.readByte() != 0;
@@ -232,6 +238,7 @@ public class LocalMedia implements Parcelable {
         dest.writeString(compressPath);
         dest.writeString(cutPath);
         dest.writeString(watermarkPath);
+        dest.writeString(videoThumbnailPath);
         dest.writeString(sandboxPath);
         dest.writeLong(duration);
         dest.writeByte((byte) (isChecked ? 1 : 0));
@@ -654,5 +661,13 @@ public class LocalMedia implements Parcelable {
 
     public void setWatermarkPath(String watermarkPath) {
         this.watermarkPath = watermarkPath;
+    }
+
+    public String getVideoThumbnailPath() {
+        return videoThumbnailPath;
+    }
+
+    public void setVideoThumbnailPath(String videoThumbnailPath) {
+        this.videoThumbnailPath = videoThumbnailPath;
     }
 }

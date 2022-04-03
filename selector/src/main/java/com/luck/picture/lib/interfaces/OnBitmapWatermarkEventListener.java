@@ -5,9 +5,9 @@ import android.content.Context;
 /**
  * @author：luck
  * @date：2022/4/2 4:37 下午
- * @describe：OnAddImageWatermarkListener
+ * @describe：OnBitmapWatermarkEventListener
  */
-public interface OnAddBitmapWatermarkListener {
+public interface OnBitmapWatermarkEventListener {
     /**
      * Add bitmap watermark
      *

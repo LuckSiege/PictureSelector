@@ -32,7 +32,7 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
+import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -45,6 +45,7 @@ import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
+import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -372,8 +373,23 @@ public final class PictureSelectionModel {
      * @param listener
      * @return
      */
-    public PictureSelectionModel setAddBitmapWatermarkListener(OnAddBitmapWatermarkListener listener) {
-        PictureSelectionConfig.onBitmapWatermarkListener = listener;
+    public PictureSelectionModel setAddBitmapWatermarkListener(OnBitmapWatermarkEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onBitmapWatermarkListener = listener;
+        }
+        return this;
+    }
+
+    /**
+     * Process video thumbnails
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setVideoThumbnailListener(OnVideoThumbnailEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onVideoThumbnailEventListener = listener;
+        }
         return this;
     }
 

@@ -16,6 +16,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.config.VideoQuality;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -25,7 +26,7 @@ import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
+import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
@@ -33,6 +34,7 @@ import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
+import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.utils.DoubleUtils;
@@ -240,8 +242,23 @@ public final class PictureSelectionCameraModel {
      * @param listener
      * @return
      */
-    public PictureSelectionCameraModel setAddBitmapWatermarkListener(OnAddBitmapWatermarkListener listener) {
-        PictureSelectionConfig.onBitmapWatermarkListener = listener;
+    public PictureSelectionCameraModel setAddBitmapWatermarkListener(OnBitmapWatermarkEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onBitmapWatermarkListener = listener;
+        }
+        return this;
+    }
+
+    /**
+     * Process video thumbnails
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionCameraModel setVideoThumbnailListener(OnVideoThumbnailEventListener listener) {
+        if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            PictureSelectionConfig.onVideoThumbnailEventListener = listener;
+        }
         return this;
     }
 
