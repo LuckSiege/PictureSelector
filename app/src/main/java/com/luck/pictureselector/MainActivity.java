@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -62,6 +63,7 @@ import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.basic.PictureSelectionCameraModel;
 import com.luck.picture.lib.basic.PictureSelectionModel;
 import com.luck.picture.lib.basic.PictureSelectionSystemModel;
@@ -76,16 +78,19 @@ import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.engine.SandboxFileEngine;
+import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
-import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
+import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
+import com.luck.picture.lib.interfaces.OnCompressCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -112,6 +117,7 @@ import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SandboxTransformUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
@@ -127,7 +133,11 @@ import com.yalantis.ucrop.model.AspectRatio;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -167,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
-            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order,
+            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
             cb_custom_preview, cb_permission_desc;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
@@ -209,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
         cb_isGif = findViewById(R.id.cb_isGif);
+        cb_watermark = findViewById(R.id.cb_watermark);
         cb_WithImageVideo = findViewById(R.id.cbWithImageVideo);
         cb_system_album = findViewById(R.id.cb_system_album);
         cb_fast_select = findViewById(R.id.cb_fast_select);
@@ -366,9 +377,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         PictureSelectionSystemModel systemGalleryMode = PictureSelector.create(getContext())
                                 .openSystemGallery(chooseMode)
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
-                                .setCompressEngine(getCompressEngine())
-                                .setCropEngine(getCropEngine())
+                                .setCompressEngine(getCompressFileEngine())
+                                .setCropEngine(getCropFileEngine())
                                 .setSkipCropMimeType(getNotSupportCrop())
+                                .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                                 .isOriginalControl(cb_original.isChecked())
                                 .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
@@ -379,8 +391,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .openGallery(chooseMode)
                                 .setSelectorUIStyle(selectorStyle)
                                 .setImageEngine(imageEngine)
-                                .setCropEngine(getCropEngine())
-                                .setCompressEngine(getCompressEngine())
+                                .setCropEngine(getCropFileEngine())
+                                .setCompressEngine(getCompressFileEngine())
                                 .setSandboxFileEngine(new MeSandboxFileEngine())
                                 .setCameraInterceptListener(getCustomCameraEvent())
                                 .setRecordAudioInterceptListener(new MeOnRecordAudioInterceptListener())
@@ -389,6 +401,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setPreviewInterceptListener(getPreviewInterceptListener())
                                 .setPermissionDeniedListener(getPermissionDeniedListener())
+                                .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
+//                              .setQueryFilterListener(new OnQueryFilterListener() {
+//                                    @Override
+//                                    public boolean onFilter(String absolutePath) {
+//                                        return PictureMimeType.isUrlHasVideo(absolutePath);
+//                                    }
+//                                })
                                 //.setExtendLoaderEngine(getExtendLoaderEngine())
                                 .setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
@@ -432,8 +451,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setRecordAudioInterceptListener(new MeOnRecordAudioInterceptListener())
-                            .setCropEngine(getCropEngine())
-                            .setCompressEngine(getCompressEngine())
+                            .setCropEngine(getCropFileEngine())
+                            .setCompressEngine(getCompressFileEngine())
+                            .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
+                            .setLanguage(language)
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked())
                             .setPermissionDescriptionListener(getPermissionDescriptionListener())
@@ -747,8 +768,27 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      *
      * @return
      */
+    private ImageFileCompressEngine getCompressFileEngine() {
+        return cb_compress.isChecked() ? new ImageFileCompressEngine() : null;
+    }
+
+    /**
+     * 压缩引擎
+     *
+     * @return
+     */
+    @Deprecated
     private ImageCompressEngine getCompressEngine() {
         return cb_compress.isChecked() ? new ImageCompressEngine() : null;
+    }
+
+    /**
+     * 裁剪引擎
+     *
+     * @return
+     */
+    private ImageFileCropEngine getCropFileEngine() {
+        return cb_crop.isChecked() ? new ImageFileCropEngine() : null;
     }
 
     /**
@@ -841,6 +881,58 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      */
     private OnPermissionDeniedListener getPermissionDeniedListener() {
         return cb_permission_desc.isChecked() ? new MeOnPermissionDeniedListener() : null;
+    }
+
+    /**
+     * 给图片添加水印
+     */
+    private OnAddBitmapWatermarkListener getAddBitmapWatermarkListener() {
+        return cb_watermark.isChecked() ? new MeBitmapWatermarkListener(getSandboxPath()) : null;
+    }
+
+    /**
+     * 给图片添加水印
+     */
+    private static class MeBitmapWatermarkListener implements OnAddBitmapWatermarkListener {
+        private final String targetPath;
+
+        public MeBitmapWatermarkListener(String targetPath) {
+            this.targetPath = targetPath;
+        }
+
+        @Override
+        public void onAddBitmapWatermark(Context context, LocalMedia media) {
+            if (PictureMimeType.isHasImage(media.getMimeType())) {
+                String availablePath = media.getAvailablePath();
+                Bitmap srcBitmap;
+                if (PictureMimeType.isContent(availablePath)) {
+                    InputStream inputStream = PictureContentResolver
+                            .getContentResolverOpenInputStream(context, Uri.parse(availablePath));
+                    srcBitmap = BitmapFactory.decodeStream(inputStream);
+                    PictureFileUtils.close(inputStream);
+                } else {
+                    srcBitmap = BitmapFactory.decodeFile(availablePath);
+                }
+                Bitmap watermark = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_test_year);
+                Bitmap watermarkBitmap = ImageUtil.createWaterMaskRightTop(context, srcBitmap, watermark, 15, 15);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                watermarkBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
+                watermarkBitmap.recycle();
+                FileOutputStream fos = null;
+                try {
+                    File targetFile = new File(targetPath, DateUtils.getCreateFileName("IMG_") + ".jpg");
+                    fos = new FileOutputStream(targetFile);
+                    fos.write(stream.toByteArray());
+                    fos.flush();
+                    media.setSandboxPath(targetFile.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    PictureFileUtils.close(fos);
+                    PictureFileUtils.close(stream);
+                }
+            }
+        }
     }
 
     /**
@@ -960,7 +1052,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             title = "相机权限使用说明";
             explain = "相机权限使用说明\n用户app用于拍照/录视频";
         } else if (TextUtils.equals(permissionArray[0], Manifest.permission.RECORD_AUDIO)) {
-            if (isHasSimpleXCamera){
+            if (isHasSimpleXCamera) {
                 title = "麦克风权限使用说明";
                 explain = "麦克风权限使用说明\n用户app用于录视频时采集声音";
             } else {
@@ -1206,30 +1298,67 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 自定义沙盒文件处理
      */
-    private static class MeSandboxFileEngine implements SandboxFileEngine {
+    private static class MeSandboxFileEngine implements UriToFileTransformEngine {
 
         @Override
-        public void onStartSandboxFileTransform(Context context, boolean isOriginalImage,
-                                                int index, LocalMedia media,
-                                                OnCallbackIndexListener<LocalMedia> listener) {
-            if (PictureMimeType.isContent(media.getAvailablePath())) {
-                String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
-                        media.getMimeType());
-                media.setSandboxPath(sandboxPath);
-            }
-            if (isOriginalImage) {
-                String originalPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
-                        media.getMimeType());
-                media.setOriginalPath(originalPath);
-                media.setOriginal(!TextUtils.isEmpty(originalPath));
-            }
-            listener.onCall(media, index);
+        public String onSandboxFileTransform(Context context, String path, String mineType) {
+            return SandboxTransformUtils.copyPathToSandbox(context, path, mineType);
         }
     }
 
     /**
      * 自定义裁剪
      */
+    private class ImageFileCropEngine implements CropFileEngine {
+
+        @Override
+        public void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
+            UCrop.Options options = buildOptions();
+            UCrop uCrop = UCrop.of(srcUri, destinationUri, dataSource);
+            uCrop.withOptions(options);
+            uCrop.setImageEngine(new UCropImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).load(url).override(180, 180).into(imageView);
+                }
+
+                @Override
+                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).asBitmap().override(maxWidth, maxHeight).load(url).into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (call != null) {
+                                call.onCall(resource);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            if (call != null) {
+                                call.onCall(null);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+                }
+            });
+            uCrop.start(fragment.getActivity(), fragment, requestCode);
+        }
+    }
+
+    /**
+     * 自定义裁剪
+     */
+    @Deprecated
     private class ImageCropEngine implements CropEngine {
 
         @Override
@@ -1361,6 +1490,40 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 自定义压缩
      */
+    private static class ImageFileCompressEngine implements CompressFileEngine {
+        @Override
+        public void onCompress(Context context, Uri srcUri, OnCompressCallbackListener call) {
+            Luban.with(context).load(srcUri)
+                    .ignoreBy(100)
+                    .setRenameListener(filePath -> {
+                        int indexOf = filePath.lastIndexOf(".");
+                        String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
+                        return DateUtils.getCreateFileName("CMP_") + postfix;
+                    })
+                    .setCompressListener(new OnCompressListener() {
+                        @Override
+                        public void onStart() {
+                        }
+
+                        @Override
+                        public void onSuccess(int index, File compressFile) {
+                            call.onSuccess(srcUri, compressFile.getAbsolutePath());
+                        }
+
+                        @Override
+                        public void onError(int index, Throwable e) {
+                            call.onSuccess(srcUri, null);
+                        }
+                    })
+                    .launch();
+        }
+    }
+
+
+    /**
+     * 自定义压缩
+     */
+    @Deprecated
     private static class ImageCompressEngine implements CompressEngine {
 
         @Override
@@ -1387,7 +1550,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         @Override
                         public boolean apply(String path) {
                             return PictureMimeType.isUrlHasImage(path) && !PictureMimeType.isHasHttp(path);
-
                         }
                     })
                     .setRenameListener(new OnRenameListener() {
@@ -1914,7 +2076,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Log.i(TAG, "文件名: " + media.getFileName());
             Log.i(TAG, "是否压缩:" + media.isCompressed());
             Log.i(TAG, "压缩:" + media.getCompressPath());
-            Log.i(TAG, "原图:" + media.getPath());
+            Log.i(TAG, "初始路径:" + media.getPath());
             Log.i(TAG, "绝对路径:" + media.getRealPath());
             Log.i(TAG, "是否裁剪:" + media.isCut());
             Log.i(TAG, "裁剪:" + media.getCutPath());

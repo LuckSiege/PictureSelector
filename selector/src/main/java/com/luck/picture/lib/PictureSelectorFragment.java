@@ -315,7 +315,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
             completeSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dispatchTransformResult();
+                    if (config.isEmptyResultReturn && SelectedManager.getSelectCount() == 0) {
+                        onExitPictureSelector();
+                    } else {
+                        dispatchTransformResult();
+                    }
                 }
             });
         }
@@ -1059,6 +1063,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 int positionStart = mAdapter.getData().size();
                 mAdapter.getData().addAll(result);
                 mAdapter.notifyItemRangeChanged(positionStart, mAdapter.getItemCount());
+                hideDataNull();
             } else {
                 // 如果没数据这里在强制调用一下上拉加载更多，防止是因为某些条件过滤导致的假为0的情况
                 onRecyclerViewPreloadMore();

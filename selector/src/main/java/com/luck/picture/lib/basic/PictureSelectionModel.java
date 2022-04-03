@@ -23,12 +23,16 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.config.VideoQuality;
 import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
+import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -36,6 +40,7 @@ import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
+import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
@@ -120,8 +125,10 @@ public final class PictureSelectionModel {
      * Image Compress the engine
      *
      * @param engine Image Compress the engine
+     * Please use {@link CompressFileEngine}
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setCompressEngine(CompressEngine engine) {
         if (PictureSelectionConfig.compressEngine != engine) {
             PictureSelectionConfig.compressEngine = engine;
@@ -133,14 +140,46 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Image Compress the engine
+     *
+     * @param engine Image Compress the engine
+     * @return
+     */
+    public PictureSelectionModel setCompressEngine(CompressFileEngine engine) {
+        if (PictureSelectionConfig.compressFileEngine != engine) {
+            PictureSelectionConfig.compressFileEngine = engine;
+            selectionConfig.isCompressEngine = true;
+        } else {
+            selectionConfig.isCompressEngine = false;
+        }
+        return this;
+    }
+
+    /**
+     * Image Crop the engine
+     *
+     * @param engine Image Crop the engine
+     * Please Use {@link CropFileEngine}
+     * @return
+     */
+    @Deprecated
+    public PictureSelectionModel setCropEngine(CropEngine engine) {
+        if (PictureSelectionConfig.cropEngine != engine) {
+            PictureSelectionConfig.cropEngine = engine;
+        }
+        return this;
+    }
+
+
+    /**
      * Image Crop the engine
      *
      * @param engine Image Crop the engine
      * @return
      */
-    public PictureSelectionModel setCropEngine(CropEngine engine) {
-        if (PictureSelectionConfig.cropEngine != engine) {
-            PictureSelectionConfig.cropEngine = engine;
+    public PictureSelectionModel setCropEngine(CropFileEngine engine) {
+        if (PictureSelectionConfig.cropFileEngine != engine) {
+            PictureSelectionConfig.cropFileEngine = engine;
         }
         return this;
     }
@@ -149,8 +188,11 @@ public final class PictureSelectionModel {
      * App Sandbox file path transform
      *
      * @param engine App Sandbox path transform
+     * Please Use {@link UriToFileTransformEngine}
      * @return
+     *
      */
+    @Deprecated
     public PictureSelectionModel setSandboxFileEngine(SandboxFileEngine engine) {
         if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
             PictureSelectionConfig.sandboxFileEngine = engine;
@@ -161,6 +203,21 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * App Sandbox file path transform
+     *
+     * @param engine App Sandbox path transform
+     * @return
+     */
+    public PictureSelectionModel setSandboxFileEngine(UriToFileTransformEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.uriToFileTransformEngine != engine) {
+            PictureSelectionConfig.uriToFileTransformEngine = engine;
+            selectionConfig.isSandboxFileEngine = true;
+        } else {
+            selectionConfig.isSandboxFileEngine = false;
+        }
+        return this;
+    }
 
     /**
      * Users can implement some interfaces to access their own query data
@@ -295,6 +352,28 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel setSelectFilterListener(OnSelectFilterListener listener) {
         PictureSelectionConfig.onSelectFilterListener = listener;
+        return this;
+    }
+
+    /**
+     * You need to filter out what doesn't meet the standards
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setQueryFilterListener(OnQueryFilterListener listener) {
+        PictureSelectionConfig.onQueryFilterListener = listener;
+        return this;
+    }
+
+    /**
+     * You can add a watermark to the image
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setAddBitmapWatermarkListener(OnAddBitmapWatermarkListener listener) {
+        PictureSelectionConfig.onBitmapWatermarkListener = listener;
         return this;
     }
 

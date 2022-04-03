@@ -5,11 +5,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
+import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
@@ -18,6 +22,7 @@ import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
+import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
@@ -118,8 +123,11 @@ public final class PictureSelectionConfig implements Parcelable {
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
+    public static CompressFileEngine compressFileEngine;
     public static CropEngine cropEngine;
+    public static CropFileEngine cropFileEngine;
     public static SandboxFileEngine sandboxFileEngine;
+    public static UriToFileTransformEngine uriToFileTransformEngine;
     public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
     public static OnCameraInterceptListener onCameraInterceptListener;
@@ -134,6 +142,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnPermissionDescriptionListener onPermissionDescriptionListener;
     public static OnPermissionDeniedListener onPermissionDeniedListener;
     public static OnRecordAudioInterceptListener onRecordAudioListener;
+    public static OnQueryFilterListener onQueryFilterListener;
+    public static OnAddBitmapWatermarkListener onBitmapWatermarkListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -422,8 +432,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public static void destroy() {
         PictureSelectionConfig.imageEngine = null;
         PictureSelectionConfig.compressEngine = null;
+        PictureSelectionConfig.compressFileEngine = null;
         PictureSelectionConfig.cropEngine = null;
+        PictureSelectionConfig.cropFileEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
+        PictureSelectionConfig.uriToFileTransformEngine = null;
         PictureSelectionConfig.loaderDataEngine = null;
         PictureSelectionConfig.onResultCallListener = null;
         PictureSelectionConfig.onCameraInterceptListener = null;
@@ -437,6 +450,8 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onPermissionDescriptionListener = null;
         PictureSelectionConfig.onPermissionDeniedListener = null;
         PictureSelectionConfig.onRecordAudioListener = null;
+        PictureSelectionConfig.onQueryFilterListener = null;
+        PictureSelectionConfig.onBitmapWatermarkListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

@@ -10,8 +10,9 @@ import java.util.ArrayList;
 /**
  * @author：luck
  * @date：2021/5/19 9:36 AM
- * @describe：CompressEngine
+ * @describe：CompressEngine Please use {@link CompressFileEngine}
  */
+@Deprecated
 public interface CompressEngine {
     /**
      * Custom compression engine
@@ -23,8 +24,8 @@ public interface CompressEngine {
      *
      * <p>
      * 1、LocalMedia media = new LocalMedia();
-     *   media.setCompressed(true);
-     *   media.setCompressPath("Your compressed path");
+     * media.setCompressed(true);
+     * media.setCompressPath("Your compressed path");
      * </p>
      * <p>
      * 2、listener.onCall( "you result" );

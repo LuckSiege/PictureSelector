@@ -183,6 +183,85 @@ public interface IPictureSelectorCommonEvent {
     void onResultEvent(ArrayList<LocalMedia> result);
 
     /**
+     * 裁剪
+     * @param result
+     */
+    void onCrop(ArrayList<LocalMedia> result);
+
+    /**
+     * 裁剪
+     * @param result
+     */
+    void onOldCrop(ArrayList<LocalMedia> result);
+
+    /**
+     * 压缩
+     *
+     * @param result
+     */
+    void onCompress(ArrayList<LocalMedia> result);
+
+    /**
+     * 压缩
+     *
+     * @param result
+     */
+    @Deprecated
+    void onOldCompress(ArrayList<LocalMedia> result);
+
+    /**
+     * 验证是否需要裁剪
+     *
+     * @return
+     */
+    boolean checkCropValidity();
+
+    /**
+     * 验证是否需要裁剪
+     *
+     * @return
+     */
+    @Deprecated
+    boolean checkOldCropValidity();
+
+    /**
+     * 验证是否需要压缩
+     *
+     * @return
+     */
+    boolean checkCompressValidity();
+
+    /**
+     * 验证是否需要压缩
+     *
+     * @return
+     */
+    @Deprecated
+    boolean checkOldCompressValidity();
+
+    /**
+     * 验证是否需要做沙盒转换处理
+     *
+     * @return
+     */
+    boolean checkTransformSandboxFile();
+
+    /**
+     * 验证是否需要做沙盒转换处理
+     *
+     * @return
+     */
+    @Deprecated
+    boolean checkOldTransformSandboxFile();
+
+    /**
+     * 验证是否需要添加水印
+     *
+     * @return
+     */
+    boolean checkAddBitmapWatermark();
+
+    /**
      * 权限申请
      *
      * @param permissionArray

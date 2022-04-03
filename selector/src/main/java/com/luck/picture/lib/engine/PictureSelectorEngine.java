@@ -26,6 +26,13 @@ public interface PictureSelectorEngine {
     CompressEngine createCompressEngine();
 
     /**
+     * Create compress Engine
+     *
+     * @return
+     */
+    CompressFileEngine createCompressFileEngine();
+
+    /**
      * Create loader data Engine
      *
      * @return
@@ -38,6 +45,13 @@ public interface PictureSelectorEngine {
      * @return
      */
     SandboxFileEngine createSandboxFileEngine();
+
+    /**
+     * Create UriToFileTransformEngine  Engine
+     *
+     * @return
+     */
+    UriToFileTransformEngine createUriToFileTransformEngine();
 
     /**
      * Create LayoutResource  Listener

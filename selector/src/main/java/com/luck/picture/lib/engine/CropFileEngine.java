@@ -1,6 +1,8 @@
 package com.luck.picture.lib.engine;
 
 
+import android.net.Uri;
+
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.Crop;
@@ -12,11 +14,9 @@ import java.util.ArrayList;
 /**
  * @author：luck
  * @date：2021/11/23 8:13 下午
- * Please Use {@link CropFileEngine}
- * @describe：CropEngine
+ * @describe：CropFileEngine
  */
-@Deprecated
-public interface CropEngine {
+public interface CropFileEngine {
 
     /**
      * Custom crop image engine
@@ -35,11 +35,12 @@ public interface CropEngine {
      *
      * </p>
      *
-     * @param fragment          Fragment
-     * @param currentLocalMedia current crop data
-     * @param dataSource        crop data
-     * @param requestCode       Activity result code or fragment result code
+     * @param fragment       Fragment
+     * @param srcUri         current src Uri
+     * @param destinationUri current output src Uri
+     * @param dataSource     crop data
+     * @param requestCode    Activity result code or fragment result code
      */
-    void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode);
+    void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode);
 
 }

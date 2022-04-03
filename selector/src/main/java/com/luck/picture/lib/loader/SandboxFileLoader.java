@@ -83,7 +83,11 @@ public final class SandboxFileLoader {
             }
             for (File f : files) {
                 String mimeType = MediaUtils.getMimeTypeFromMediaUrl(f.getAbsolutePath());
-
+                if (PictureSelectionConfig.onQueryFilterListener != null) {
+                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(f.getAbsolutePath())) {
+                        continue;
+                    }
+                }
                 if (config.chooseMode == SelectMimeType.ofImage()) {
                     if (!PictureMimeType.isHasImage(mimeType)) {
                         continue;
@@ -111,6 +115,9 @@ public final class SandboxFileLoader {
                 }
                 String absolutePath = f.getAbsolutePath();
                 long size = f.length();
+                if (size <= 0) {
+                    continue;
+                }
                 long id;
                 if (md != null) {
                     md.update(absolutePath.getBytes());
@@ -150,10 +157,6 @@ public final class SandboxFileLoader {
                     }
                     if (duration == 0) {
                         //If the length is 0, the corrupted video is processed and filtered out
-                        continue;
-                    }
-                    if (size <= 0) {
-                        // The video size is 0 to filter out
                         continue;
                     }
                 }

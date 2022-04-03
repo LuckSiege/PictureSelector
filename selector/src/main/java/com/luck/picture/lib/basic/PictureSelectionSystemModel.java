@@ -17,9 +17,13 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
+import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnAddBitmapWatermarkListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
@@ -93,11 +97,30 @@ public final class PictureSelectionSystemModel {
      * Image Compress the engine
      *
      * @param engine Image Compress the engine
+     * Please use {@link CompressFileEngine}
      * @return
      */
+    @Deprecated
     public PictureSelectionSystemModel setCompressEngine(CompressEngine engine) {
         if (PictureSelectionConfig.compressEngine != engine) {
             PictureSelectionConfig.compressEngine = engine;
+            selectionConfig.isCompressEngine = true;
+        } else {
+            selectionConfig.isCompressEngine = false;
+        }
+        return this;
+    }
+
+
+    /**
+     * Image Compress the engine
+     *
+     * @param engine Image Compress the engine
+     * @return
+     */
+    public PictureSelectionSystemModel setCompressEngine(CompressFileEngine engine) {
+        if (PictureSelectionConfig.compressFileEngine != engine) {
+            PictureSelectionConfig.compressFileEngine = engine;
             selectionConfig.isCompressEngine = true;
         } else {
             selectionConfig.isCompressEngine = false;
@@ -109,11 +132,44 @@ public final class PictureSelectionSystemModel {
      * Image Crop the engine
      *
      * @param engine Image Crop the engine
+     * Please Use {@link CropFileEngine}
      * @return
      */
+    @Deprecated
     public PictureSelectionSystemModel setCropEngine(CropEngine engine) {
         if (PictureSelectionConfig.cropEngine != engine) {
             PictureSelectionConfig.cropEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * Image Crop the engine
+     *
+     * @param engine Image Crop the engine
+     * @return
+     */
+    public PictureSelectionSystemModel setCropEngine(CropFileEngine engine) {
+        if (PictureSelectionConfig.cropFileEngine != engine) {
+            PictureSelectionConfig.cropFileEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * App Sandbox file path transform
+     *
+     * @param engine App Sandbox path transform
+     * Please Use {@link UriToFileTransformEngine}
+     * @return
+     */
+    @Deprecated
+    public PictureSelectionSystemModel setSandboxFileEngine(SandboxFileEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
+            PictureSelectionConfig.sandboxFileEngine = engine;
+            selectionConfig.isSandboxFileEngine = true;
+        } else {
+            selectionConfig.isSandboxFileEngine = false;
         }
         return this;
     }
@@ -124,15 +180,16 @@ public final class PictureSelectionSystemModel {
      * @param engine App Sandbox path transform
      * @return
      */
-    public PictureSelectionSystemModel setSandboxFileEngine(SandboxFileEngine engine) {
-        if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
-            PictureSelectionConfig.sandboxFileEngine = engine;
+    public PictureSelectionSystemModel setSandboxFileEngine(UriToFileTransformEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.uriToFileTransformEngine != engine) {
+            PictureSelectionConfig.uriToFileTransformEngine = engine;
             selectionConfig.isSandboxFileEngine = true;
         } else {
             selectionConfig.isSandboxFileEngine = false;
         }
         return this;
     }
+
 
     /**
      * # file size The unit is KB
@@ -238,6 +295,17 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setSelectFilterListener(OnSelectFilterListener listener) {
         PictureSelectionConfig.onSelectFilterListener = listener;
+        return this;
+    }
+
+    /**
+     * You can add a watermark to the image
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setAddBitmapWatermarkListener(OnAddBitmapWatermarkListener listener) {
+        PictureSelectionConfig.onBitmapWatermarkListener = listener;
         return this;
     }
 

@@ -685,13 +685,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isComplete = true;
+                boolean isComplete;
                 if (selectMainStyle.isCompleteSelectRelativeTop() && SelectedManager.getSelectCount() == 0) {
                     isComplete = confirmSelect(mData.get(viewPager.getCurrentItem()), false)
                             == SelectedManager.ADD_SUCCESS;
+                } else {
+                    isComplete = SelectedManager.getSelectCount() > 0;
                 }
-                if (isComplete) {
-                    dispatchTransformResult();
+                if (config.isEmptyResultReturn && SelectedManager.getSelectCount() == 0) {
+                    onExitPictureSelector();
+                } else {
+                    if (isComplete) {
+                        dispatchTransformResult();
+                    }
                 }
             }
         });
@@ -1387,23 +1393,27 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (size[0] > 0 && size[1] > 0) {
             setMagicalViewParams(size[0], size[1], position);
         } else {
-            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getAvailablePath(),
+            PictureSelectionConfig.imageEngine.loadImageBitmap(requireActivity(), media.getAvailablePath(),
                     maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {
                         @Override
                         public void onCall(Bitmap bitmap) {
                             if (ActivityCompatHelper.isDestroy(getActivity())) {
                                 return;
                             }
-                            media.setWidth(bitmap.getWidth());
-                            media.setHeight(bitmap.getHeight());
-                            if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                                size[0] = screenWidth;
-                                size[1] = screenHeight;
+                            if (bitmap == null) {
+                                setMagicalViewParams(0, 0, position);
                             } else {
-                                size[0] = bitmap.getWidth();
-                                size[1] = bitmap.getHeight();
+                                media.setWidth(bitmap.getWidth());
+                                media.setHeight(bitmap.getHeight());
+                                if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                                    size[0] = screenWidth;
+                                    size[1] = screenHeight;
+                                } else {
+                                    size[0] = bitmap.getWidth();
+                                    size[1] = bitmap.getHeight();
+                                }
+                                setMagicalViewParams(size[0], size[1], position);
                             }
-                            setMagicalViewParams(size[0], size[1], position);
                         }
                     });
         }

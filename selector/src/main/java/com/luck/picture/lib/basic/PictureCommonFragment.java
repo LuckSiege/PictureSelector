@@ -15,6 +15,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -49,6 +50,7 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnCompressCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
@@ -84,6 +86,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -231,7 +234,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void handlePermissionDenied(String[] permissionArray) {
         PermissionConfig.CURRENT_REQUEST_PERMISSION = permissionArray;
         if (permissionArray != null && permissionArray.length > 0) {
-            SpUtils.putBoolean(getContext(),permissionArray[0], true);
+            SpUtils.putBoolean(getContext(), permissionArray[0], true);
         }
         if (PictureSelectionConfig.onPermissionDeniedListener != null) {
             onPermissionExplainEvent(false, null);
@@ -286,6 +289,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
+        setRequestedOrientation();
         setTranslucentStatusBar();
         setRootViewKeyListener(requireView());
         if (config.isOpenClickSound && !config.isOnlyCamera) {
@@ -967,7 +971,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
 
-
     /**
      * 拦截相机事件并处理返回结果
      */
@@ -1011,9 +1014,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (PictureSelectionConfig.onPermissionDescriptionListener != null) {
             if (isDisplayExplain) {
                 if (PermissionChecker.isCheckSelfPermission(getContext(), permissionArray)) {
-                    SpUtils.putBoolean(getContext(),permissionArray[0], false);
+                    SpUtils.putBoolean(getContext(), permissionArray[0], false);
                 } else {
-                    if (!SpUtils.getBoolean(getContext(),permissionArray[0], false)) {
+                    if (!SpUtils.getBoolean(getContext(), permissionArray[0], false)) {
                         PictureSelectionConfig.onPermissionDescriptionListener.onPermissionDescription(this, permissionArray);
                     }
                 }
@@ -1097,14 +1100,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                 ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
                 if (checkCompressValidity()) {
-                    showLoading();
-                    PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
-                            new OnCallbackListener<ArrayList<LocalMedia>>() {
-                                @Override
-                                public void onCall(ArrayList<LocalMedia> result) {
-                                    onResultEvent(result);
-                                }
-                            });
+                    onCompress(result);
+                } else if (checkOldCompressValidity()) {
+                    onOldCompress(result);
                 } else {
                     onResultEvent(result);
                 }
@@ -1405,36 +1403,146 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         ArrayList<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
         if (checkCropValidity()) {
-            LocalMedia currentLocalMedia = null;
-            for (int i = 0; i < result.size(); i++) {
-                LocalMedia item = result.get(i);
-                if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
-                    currentLocalMedia = item;
-                    break;
-                }
-            }
-            PictureSelectionConfig.cropEngine.onStartCrop(this, currentLocalMedia, result, Crop.REQUEST_CROP);
+            onCrop(result);
+        } else if (checkOldCropValidity()) {
+            onOldCrop(result);
         } else if (checkCompressValidity()) {
-            showLoading();
-            PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
-                    new OnCallbackListener<ArrayList<LocalMedia>>() {
-                        @Override
-                        public void onCall(ArrayList<LocalMedia> result) {
-                            onResultEvent(result);
-                        }
-                    });
-
+            onCompress(result);
+        } else if (checkOldCompressValidity()) {
+            onOldCompress(result);
         } else {
             onResultEvent(result);
         }
     }
 
-    /**
-     * 验证裁剪的可行性
-     *
-     * @return
-     */
-    private boolean checkCropValidity() {
+    @Override
+    public void onCrop(ArrayList<LocalMedia> result) {
+        Uri srcUri = null;
+        Uri destinationUri = null;
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia item = result.get(i);
+            if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
+                String currentCropPath = item.getAvailablePath();
+                if (PictureMimeType.isContent(currentCropPath) || PictureMimeType.isHasHttp(currentCropPath)) {
+                    srcUri = Uri.parse(currentCropPath);
+                } else {
+                    srcUri = Uri.fromFile(new File(currentCropPath));
+                }
+                String fileName = DateUtils.getCreateFileName("CROP_") + ".jpg";
+                File externalFilesDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                File outputFile = new File(externalFilesDir.getAbsolutePath(), fileName);
+                destinationUri = Uri.fromFile(outputFile);
+                break;
+            }
+        }
+        ArrayList<String> dataCropSource = new ArrayList<>();
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia media = result.get(i);
+            dataCropSource.add(media.getAvailablePath());
+        }
+        PictureSelectionConfig.cropFileEngine.onStartCrop(this, srcUri, destinationUri, dataCropSource, Crop.REQUEST_CROP);
+    }
+
+    @Override
+    public void onOldCrop(ArrayList<LocalMedia> result) {
+        LocalMedia currentLocalMedia = null;
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia item = result.get(i);
+            if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
+                currentLocalMedia = item;
+                break;
+            }
+        }
+        PictureSelectionConfig.cropEngine.onStartCrop(this, currentLocalMedia, result, Crop.REQUEST_CROP);
+    }
+
+    @Override
+    public void onCompress(ArrayList<LocalMedia> result) {
+        showLoading();
+        LinkedHashMap<Uri, LocalMedia> queue = new LinkedHashMap<>();
+        for (int i = 0; i < result.size(); i++) {
+            LocalMedia media = result.get(i);
+            String availablePath = media.getAvailablePath();
+            if (PictureMimeType.isHasHttp(availablePath)) {
+                continue;
+            }
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                continue;
+            }
+            if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                continue;
+            }
+            if (PictureMimeType.isHasImage(media.getMimeType()) || PictureMimeType.isUrlHasImage(availablePath)) {
+                Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
+                if (uri == null) {
+                    continue;
+                }
+                queue.put(uri, media);
+                PictureSelectionConfig.compressFileEngine.onCompress(getContext(), uri, new OnCompressCallbackListener() {
+                    @Override
+                    public void onSuccess(Uri srcUri, String compressPath) {
+                        LocalMedia media = queue.get(srcUri);
+                        if (media != null) {
+                            media.setCompressPath(compressPath);
+                            media.setCompressed(!TextUtils.isEmpty(compressPath));
+                            queue.remove(srcUri);
+                        }
+                        if (queue.size() == 0) {
+                            onResultEvent(result);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onOldCompress(ArrayList<LocalMedia> result) {
+        showLoading();
+        PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
+                new OnCallbackListener<ArrayList<LocalMedia>>() {
+                    @Override
+                    public void onCall(ArrayList<LocalMedia> result) {
+                        onResultEvent(result);
+                    }
+                });
+    }
+
+    @Override
+    public boolean checkCropValidity() {
+        if (PictureSelectionConfig.cropFileEngine != null) {
+            HashSet<String> filterSet = new HashSet<>();
+            List<String> filters = config.skipCropList;
+            if (filters != null && filters.size() > 0) {
+                filterSet.addAll(filters);
+            }
+            if (SelectedManager.getSelectCount() == 1) {
+                String mimeType = SelectedManager.getTopResultMimeType();
+                boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+                if (isHasImage) {
+                    if (filterSet.contains(mimeType)) {
+                        return false;
+                    }
+                }
+                return isHasImage;
+            } else {
+                int notSupportCropCount = 0;
+                for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
+                    LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        if (filterSet.contains(media.getMimeType())) {
+                            notSupportCropCount++;
+                        }
+                    }
+                }
+                return notSupportCropCount != SelectedManager.getSelectCount();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkOldCropValidity() {
         if (PictureSelectionConfig.cropEngine != null) {
             HashSet<String> filterSet = new HashSet<>();
             List<String> filters = config.skipCropList;
@@ -1466,12 +1574,22 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return false;
     }
 
-    /**
-     * 验证压缩的可行性
-     *
-     * @return
-     */
-    private boolean checkCompressValidity() {
+
+    @Override
+    public boolean checkCompressValidity() {
+        if (PictureSelectionConfig.compressFileEngine != null) {
+            for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
+                LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkOldCompressValidity() {
         if (PictureSelectionConfig.compressEngine != null) {
             for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(i);
@@ -1483,11 +1601,88 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return false;
     }
 
+    @Override
+    public boolean checkTransformSandboxFile() {
+        return SdkVersionUtils.isQ() && PictureSelectionConfig.uriToFileTransformEngine != null;
+    }
+
+    @Override
+    public boolean checkOldTransformSandboxFile() {
+        return SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != null;
+    }
+
+    @Override
+    public boolean checkAddBitmapWatermark() {
+        return PictureSelectionConfig.onBitmapWatermarkListener != null;
+    }
+
+    /**
+     * 添加水印
+     */
+    private void addBitmapWatermark(ArrayList<LocalMedia> result) {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
+
+            @Override
+            public ArrayList<LocalMedia> doInBackground() {
+                for (int i = 0; i < result.size(); i++) {
+                    PictureSelectionConfig.onBitmapWatermarkListener.onAddBitmapWatermark(getContext(), result.get(i));
+                }
+                return result;
+            }
+
+            @Override
+            public void onSuccess(ArrayList<LocalMedia> result) {
+                PictureThreadUtils.cancel(this);
+                onCallBackResult(result);
+            }
+        });
+    }
+
     /**
      * SDK > 29 把外部资源copy一份至应用沙盒内
      *
      * @param result
      */
+    private void uriToFileTransform29(ArrayList<LocalMedia> result) {
+        showLoading();
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
+            @Override
+            public ArrayList<LocalMedia> doInBackground() {
+                for (int i = 0; i < result.size(); i++) {
+                    LocalMedia media = result.get(i);
+                    String realPath = null;
+                    if (PictureMimeType.isContent(media.getAvailablePath())) {
+                        realPath = PictureSelectionConfig.uriToFileTransformEngine.onSandboxFileTransform(getContext(), media.getPath(), media.getMimeType());
+                        media.setSandboxPath(realPath);
+                    }
+                    if (config.isCheckOriginalImage) {
+                        if (TextUtils.isEmpty(realPath)) {
+                            realPath = PictureSelectionConfig.uriToFileTransformEngine.onSandboxFileTransform(getContext(), media.getPath(), media.getMimeType());
+                        }
+                        media.setOriginalPath(realPath);
+                    }
+                }
+                return result;
+            }
+
+            @Override
+            public void onSuccess(ArrayList<LocalMedia> result) {
+                PictureThreadUtils.cancel(this);
+                if (checkAddBitmapWatermark()) {
+                    addBitmapWatermark(result);
+                } else {
+                    onCallBackResult(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * SDK > 29 把外部资源copy一份至应用沙盒内
+     *
+     * @param result
+     */
+    @Deprecated
     private void copyExternalPathToAppInDirFor29(ArrayList<LocalMedia> result) {
         showLoading();
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
@@ -1514,7 +1709,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public void onSuccess(ArrayList<LocalMedia> result) {
                 PictureThreadUtils.cancel(this);
-                onCallBackResult(result);
+                if (checkAddBitmapWatermark()) {
+                    addBitmapWatermark(result);
+                } else {
+                    onCallBackResult(result);
+                }
             }
         });
     }
@@ -1539,11 +1738,18 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     @Override
     public void onResultEvent(ArrayList<LocalMedia> result) {
-        if (PictureSelectionConfig.sandboxFileEngine != null) {
+        if (checkTransformSandboxFile()) {
+            uriToFileTransform29(result);
+        } else if (checkOldTransformSandboxFile()) {
             copyExternalPathToAppInDirFor29(result);
         } else {
             mergeOriginalImage(result);
-            onCallBackResult(result);
+            if (checkAddBitmapWatermark()) {
+                showLoading();
+                addBitmapWatermark(result);
+            } else {
+                onCallBackResult(result);
+            }
         }
     }
 
@@ -1572,7 +1778,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void initAppLanguage() {
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
-        if (config.language != LanguageConfig.UNKNOWN_LANGUAGE && !config.isOnlyCamera) {
+        if (config.language != LanguageConfig.UNKNOWN_LANGUAGE) {
             PictureLanguageUtils.setAppLanguage(getActivity(), config.language);
         }
     }
@@ -1614,10 +1820,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             if (ActivityCompatHelper.isDestroy(getActivity())) {
                 return;
             }
-            if (mLoadingDialog.isShowing()) {
-                mLoadingDialog.dismiss();
+            if (!mLoadingDialog.isShowing()) {
+                mLoadingDialog.show();
             }
-            mLoadingDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1649,6 +1854,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (context instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) context;
         }
+    }
+
+    /**
+     * setRequestedOrientation
+     */
+    protected void setRequestedOrientation() {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        getActivity().setRequestedOrientation(config.requestedOrientation);
     }
 
     /**
@@ -1731,6 +1946,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void createCompressEngine() {
         if (PictureSelectionConfig.getInstance().isCompressEngine) {
+            if (PictureSelectionConfig.compressFileEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.compressFileEngine = baseEngine.createCompressFileEngine();
+            }
             if (PictureSelectionConfig.compressEngine == null) {
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null)
@@ -1745,6 +1965,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void createSandboxFileEngine() {
         if (PictureSelectionConfig.getInstance().isSandboxFileEngine) {
+            if (PictureSelectionConfig.uriToFileTransformEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.uriToFileTransformEngine = baseEngine.createUriToFileTransformEngine();
+            }
             if (PictureSelectionConfig.sandboxFileEngine == null) {
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null)

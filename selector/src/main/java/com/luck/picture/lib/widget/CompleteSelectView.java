@@ -172,7 +172,7 @@ public class CompleteSelectView extends LinearLayout {
                     tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 }
             } else {
-                setEnabled(false);
+                setEnabled(config.isEmptyResultReturn);
                 int normalBackground = selectMainStyle.getSelectNormalBackgroundResources();
                 if (StyleUtils.checkStyleValidity(normalBackground)) {
                     setBackgroundResource(normalBackground);

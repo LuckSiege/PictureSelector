@@ -8,8 +8,9 @@ import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 /**
  * @author：luck
  * @date：2021/11/23 8:23 下午
- * @describe：SandboxFileEngine
+ * @describe：SandboxFileEngine Use {@link UriToFileTransformEngine}
  */
+@Deprecated
 public interface SandboxFileEngine {
 
     /**
