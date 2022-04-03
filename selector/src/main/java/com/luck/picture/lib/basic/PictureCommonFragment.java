@@ -1484,6 +1484,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         if (media != null) {
                             media.setCompressPath(compressPath);
                             media.setCompressed(!TextUtils.isEmpty(compressPath));
+                            media.setSandboxPath(SdkVersionUtils.isQ() ? media.getCompressPath() : null);
                             queue.remove(srcPath);
                         }
                         if (queue.size() == 0) {
@@ -1622,6 +1623,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
         for (int i = 0; i < result.size(); i++) {
             LocalMedia media = result.get(i);
+            if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                continue;
+            }
             String availablePath = media.getAvailablePath();
             queue.put(availablePath, media);
         }

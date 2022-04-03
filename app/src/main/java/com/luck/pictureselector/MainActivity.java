@@ -900,8 +900,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         @Override
         public void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnComposeCallbackListener call) {
-            if (PictureMimeType.isHasHttp(srcPath) || PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
-                // 网络图片、视频和音频暂不处理，有需求的可自行扩展
+            if (PictureMimeType.isHasHttp(srcPath) || PictureMimeType.isHasVideo(mimeType)) {
+                // 网络图片和视频忽略，有需求的可自行扩展
                 call.onCallback(srcPath, "");
             } else {
                 // 暂时只以图片为例
@@ -2110,6 +2110,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Log.i(TAG, "是否开启原图:" + media.isOriginal());
             Log.i(TAG, "原图路径:" + media.getOriginalPath());
             Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
+            Log.i(TAG, "水印路径:" + media.getWatermarkPath());
             Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
             Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
             Log.i(TAG, "文件大小: " + media.getSize());

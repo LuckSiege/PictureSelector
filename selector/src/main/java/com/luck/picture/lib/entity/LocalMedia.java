@@ -365,17 +365,21 @@ public class LocalMedia implements Parcelable {
      * @return
      */
     public String getAvailablePath() {
-        String path;
+        String path = getPath();
+        if (isCut()) {
+            path = getCutPath();
+        }
+        if (isCompressed()) {
+            path = getCompressPath();
+        }
+        if (isToSandboxPath()) {
+            path = getSandboxPath();
+        }
+        if (isOriginal()) {
+            path = getOriginalPath();
+        }
         if (isWatermarkPath()) {
             path = getWatermarkPath();
-        } else if (isCompressed()) {
-            path = getCompressPath();
-        } else if (isCut()) {
-            path = getCutPath();
-        } else if (isToSandboxPath()) {
-            path = getSandboxPath();
-        } else {
-            path = getPath();
         }
         return path;
     }
