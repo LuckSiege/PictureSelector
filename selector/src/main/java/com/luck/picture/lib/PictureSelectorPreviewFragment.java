@@ -807,7 +807,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position, LocalMedia media, View v) {
-                    if (isInternalBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
+                    String albumName = TextUtils.isEmpty(config.defaultAlbumName) ? getString(R.string.ps_camera_roll) : config.defaultAlbumName;
+                    if (isInternalBottomPreview || TextUtils.equals(currentAlbum, albumName)
                             || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
                         int newPosition = isInternalBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
                         if (newPosition == viewPager.getCurrentItem() && media.isChecked()) {

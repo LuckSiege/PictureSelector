@@ -236,10 +236,14 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 allImageFolder.setFirstImagePath
                                         (latelyImages.get(0).getPath());
                                 allImageFolder.setFirstMimeType(latelyImages.get(0).getMimeType());
-                                String title = config.chooseMode == SelectMimeType.ofAudio() ?
-                                        mContext.getString(R.string.ps_all_audio)
-                                        : mContext.getString(R.string.ps_camera_roll);
-                                allImageFolder.setFolderName(title);
+                                String folderName;
+                                if (TextUtils.isEmpty(config.defaultAlbumName)) {
+                                    folderName = config.chooseMode == SelectMimeType.ofAudio()
+                                            ? mContext.getString(R.string.ps_all_audio) : mContext.getString(R.string.ps_camera_roll);
+                                } else {
+                                    folderName = config.defaultAlbumName;
+                                }
+                                allImageFolder.setFolderName(folderName);
                                 allImageFolder.setBucketId(PictureConfig.ALL);
                                 allImageFolder.setData(latelyImages);
                             }

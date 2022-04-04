@@ -509,10 +509,14 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             SortUtils.sortFolder(mediaFolders);
                             allMediaFolder.setFolderTotalNum(totalCount);
                             allMediaFolder.setBucketId(PictureConfig.ALL);
-                            String bucketDisplayName = config.chooseMode == SelectMimeType.ofAudio() ?
-                                    mContext.getString(R.string.ps_all_audio)
-                                    : mContext.getString(R.string.ps_camera_roll);
-                            allMediaFolder.setFolderName(bucketDisplayName);
+                            String folderName;
+                            if (TextUtils.isEmpty(config.defaultAlbumName)) {
+                                folderName = config.chooseMode == SelectMimeType.ofAudio()
+                                        ? mContext.getString(R.string.ps_all_audio) : mContext.getString(R.string.ps_camera_roll);
+                            } else {
+                                folderName = config.defaultAlbumName;
+                            }
+                            allMediaFolder.setFolderName(folderName);
                             mediaFolders.add(0, allMediaFolder);
                             if (config.isSyncCover) {
                                 if (config.chooseMode == SelectMimeType.ofAll()) {

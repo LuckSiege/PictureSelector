@@ -616,6 +616,16 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Set the first default album name
+     *
+     * @param defaultAlbumName
+     * @return
+     */
+    public PictureSelectionModel setDefaultAlbumName(String defaultAlbumName) {
+        selectionConfig.defaultAlbumName = defaultAlbumName;
+        return this;
+    }
 
     /**
      * camera output image format

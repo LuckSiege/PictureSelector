@@ -1150,8 +1150,12 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (albumListPopWindow.getFolderCount() == 0) {
             // 1、没有相册时需要手动创建相机胶卷
             allFolder = new LocalMediaFolder();
-            String folderName = config.chooseMode == SelectMimeType.ofAudio()
-                    ? getString(R.string.ps_all_audio) : getString(R.string.ps_camera_roll);
+            String folderName;
+            if (TextUtils.isEmpty(config.defaultAlbumName)) {
+                folderName = config.chooseMode == SelectMimeType.ofAudio() ? getString(R.string.ps_all_audio) : getString(R.string.ps_camera_roll);
+            } else {
+                folderName = config.defaultAlbumName;
+            }
             allFolder.setFolderName(folderName);
             allFolder.setFirstImagePath("");
             allFolder.setBucketId(PictureConfig.ALL);

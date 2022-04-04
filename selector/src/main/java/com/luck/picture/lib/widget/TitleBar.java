@@ -1,6 +1,7 @@
 package com.luck.picture.lib.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -60,6 +62,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         inflateLayout();
         setClickable(true);
         setFocusable(true);
+        config = PictureSelectionConfig.getInstance();
         viewTopStatusBar = findViewById(R.id.top_status_bar);
         titleBarLayout = findViewById(R.id.rl_title_bar);
         ivLeftBack = findViewById(R.id.ps_iv_left_back);
@@ -76,8 +79,12 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         titleBarLayout.setOnClickListener(this);
         viewAlbumClickArea.setOnClickListener(this);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-        config = PictureSelectionConfig.getInstance();
         handleLayoutUI();
+        if (TextUtils.isEmpty(config.defaultAlbumName)) {
+            setTitle(config.chooseMode == SelectMimeType.ofAudio() ? getContext().getString(R.string.ps_all_audio) : getContext().getString(R.string.ps_camera_roll));
+        } else {
+            setTitle(config.defaultAlbumName);
+        }
     }
 
     protected void inflateLayout() {

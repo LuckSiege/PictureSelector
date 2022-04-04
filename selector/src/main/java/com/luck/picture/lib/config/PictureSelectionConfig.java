@@ -98,6 +98,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String originalPath;
     public String cameraPath;
     public String sortOrder;
+    public String defaultAlbumName;
     public int pageSize;
     public boolean isPageStrategy;
     public boolean isFilterInvalidFile;
@@ -202,6 +203,7 @@ public final class PictureSelectionConfig implements Parcelable {
         originalPath = in.readString();
         cameraPath = in.readString();
         sortOrder = in.readString();
+        defaultAlbumName = in.readString();
         pageSize = in.readInt();
         isPageStrategy = in.readByte() != 0;
         isFilterInvalidFile = in.readByte() != 0;
@@ -282,6 +284,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(originalPath);
         dest.writeString(cameraPath);
         dest.writeString(sortOrder);
+        dest.writeString(defaultAlbumName);
         dest.writeInt(pageSize);
         dest.writeByte((byte) (isPageStrategy ? 1 : 0));
         dest.writeByte((byte) (isFilterInvalidFile ? 1 : 0));
@@ -402,6 +405,7 @@ public final class PictureSelectionConfig implements Parcelable {
         skipCropList = new ArrayList<>();
         sortOrder = "";
         isSelectZoomAnim = true;
+        defaultAlbumName = "";
     }
 
 
