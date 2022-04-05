@@ -328,9 +328,9 @@ PictureSelector.create(this)
 2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
 
 ```sh
-.setCompressEngine(new CompressEngine() {
+.setCompressEngine(new CompressFileEngine() {
    @Override
-   public void onStartCompress(Context context, ArrayList<LocalMedia> list, OnCallbackListener<ArrayList<LocalMedia>> call){
+   public void onStartCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call){
                                     
    }
 });
@@ -340,9 +340,9 @@ PictureSelector.create(this)
 
 ```sh
 
-.setCropEngine(new CropEngine() {
+.setCropEngine(new CropFileEngine() {
    @Override
-   public void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode) {
+   public void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
                                     
    }
 });
