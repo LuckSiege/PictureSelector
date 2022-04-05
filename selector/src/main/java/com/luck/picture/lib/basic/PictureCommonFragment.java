@@ -1734,29 +1734,39 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (queue.size() == 0) {
             dispatchUriToFileTransformResult(result);
         } else {
-            for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
-                LocalMedia media = entry.getValue();
-                PictureSelectionConfig.uriToFileTransformEngine
-                        .onSandboxFileTransform(getContext(), entry.getKey(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
-                            @Override
-                            public void onCallback(String srcPath, String resultPath) {
-                                LocalMedia media = queue.get(srcPath);
-                                if (media != null) {
-                                    if (TextUtils.isEmpty(media.getSandboxPath())) {
-                                        media.setSandboxPath(resultPath);
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
+
+                @Override
+                public ArrayList<LocalMedia> doInBackground() {
+                    for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
+                        LocalMedia media = entry.getValue();
+                        PictureSelectionConfig.uriToFileTransformEngine
+                                .onUriToFileAsyncTransform(getContext(), entry.getKey(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
+                                    @Override
+                                    public void onCallback(String srcPath, String resultPath) {
+                                        LocalMedia media = queue.get(srcPath);
+                                        if (media != null) {
+                                            if (TextUtils.isEmpty(media.getSandboxPath())) {
+                                                media.setSandboxPath(resultPath);
+                                            }
+                                            if (config.isCheckOriginalImage) {
+                                                media.setOriginalPath(resultPath);
+                                                media.setOriginal(!TextUtils.isEmpty(resultPath));
+                                            }
+                                        }
+                                        queue.remove(srcPath);
                                     }
-                                    if (config.isCheckOriginalImage) {
-                                        media.setOriginalPath(resultPath);
-                                        media.setOriginal(!TextUtils.isEmpty(resultPath));
-                                    }
-                                }
-                                queue.remove(srcPath);
-                                if (queue.size() == 0) {
-                                    dispatchUriToFileTransformResult(result);
-                                }
-                            }
-                        });
-            }
+                                });
+                    }
+                    return result;
+                }
+
+                @Override
+                public void onSuccess(ArrayList<LocalMedia> result) {
+                    PictureThreadUtils.cancel(this);
+                    dispatchUriToFileTransformResult(result);
+                }
+            });
         }
     }
 

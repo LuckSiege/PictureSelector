@@ -17,10 +17,13 @@ public interface UriToFileTransformEngine {
      * Users can implement this interface, and then access their own sandbox framework to plug
      * the sandbox path into the {@link LocalMedia} object;
      * </p>
+     * <p>
+     * This is an asynchronous thread callback
+     * </p>
      *
      * @param context  context
      * @param srcPath
      * @param mineType
      */
-    void onSandboxFileTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call);
+    void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call);
 }

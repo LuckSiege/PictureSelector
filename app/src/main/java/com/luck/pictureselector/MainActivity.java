@@ -89,9 +89,9 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
-import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
@@ -114,7 +114,6 @@ import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
-import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -1375,22 +1374,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeSandboxFileEngine implements UriToFileTransformEngine {
 
         @Override
-        public void onSandboxFileTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
-            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
-
-                @Override
-                public String doInBackground() {
-                    return SandboxTransformUtils.copyPathToSandbox(context, srcPath, mineType);
-                }
-
-                @Override
-                public void onSuccess(String result) {
-                    PictureThreadUtils.cancel(this);
-                    if (call != null) {
-                        call.onCallback(srcPath, result);
-                    }
-                }
-            });
+        public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
+            if (call != null) {
+                call.onCallback(srcPath, SandboxTransformUtils.copyPathToSandbox(context, srcPath, mineType));
+            }
         }
     }
 
