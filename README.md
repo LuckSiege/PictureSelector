@@ -403,6 +403,16 @@ The advanced use cases are as follow：
 
 ```
 
+7、Android 10 and above, Sandbox mechanism, file processing，Permissions,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+
+```sh
+.setSandboxFileEngine(new UriToFileTransformEngine() {
+    @Override
+    public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
+                                        
+    }
+});
+```
 
 ## ProGuard
 ```sh
