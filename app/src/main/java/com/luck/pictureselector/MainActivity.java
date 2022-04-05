@@ -144,6 +144,7 @@ import java.util.List;
 import top.zibin.luban.CompressionPredicate;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
+import top.zibin.luban.OnNewCompressListener;
 import top.zibin.luban.OnRenameListener;
 
 /**
@@ -1566,34 +1567,34 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      * 自定义压缩
      */
     private static class ImageFileCompressEngine implements CompressFileEngine {
+
         @Override
-        public void onCompress(Context context, String srcPath, OnKeyValueResultCallbackListener call) {
-            Luban.Builder with = Luban.with(context);
-            if (PictureMimeType.isContent(srcPath)) {
-                with.load(Uri.parse(srcPath));
-            } else {
-                with.load(srcPath);
-            }
-            with.ignoreBy(100).setRenameListener(new OnRenameListener() {
+        public void onCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call) {
+            Luban.with(context).load(source).ignoreBy(100).setRenameListener(new OnRenameListener() {
                 @Override
                 public String rename(String filePath) {
                     int indexOf = filePath.lastIndexOf(".");
                     String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
                     return DateUtils.getCreateFileName("CMP_") + postfix;
                 }
-            }).setCompressListener(new OnCompressListener() {
+            }).setCompressListener(new OnNewCompressListener() {
                 @Override
                 public void onStart() {
+
                 }
 
                 @Override
-                public void onSuccess(int index, File compressFile) {
-                    call.onCallback(srcPath, compressFile.getAbsolutePath());
+                public void onSuccess(String source, File compressFile) {
+                    if (call != null) {
+                        call.onCallback(source, compressFile.getAbsolutePath());
+                    }
                 }
 
                 @Override
-                public void onError(int index, Throwable e) {
-                    call.onCallback(srcPath, null);
+                public void onError(String source, Throwable e) {
+                    if (call != null) {
+                        call.onCallback(source, null);
+                    }
                 }
             }).launch();
         }

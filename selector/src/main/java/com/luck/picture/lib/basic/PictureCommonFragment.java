@@ -1457,38 +1457,38 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void onCompress(ArrayList<LocalMedia> result) {
         showLoading();
         ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
+        ArrayList<Uri> source = new ArrayList<>();
         for (int i = 0; i < result.size(); i++) {
             LocalMedia media = result.get(i);
-            String availablePath = media.getAvailablePath();
-            if (PictureMimeType.isHasHttp(availablePath) || PictureMimeType.isHasVideo(media.getMimeType())
-                    || PictureMimeType.isHasAudio(media.getMimeType())) {
-                continue;
-            }
-            if (PictureMimeType.isHasImage(media.getMimeType()) || PictureMimeType.isUrlHasImage(availablePath)) {
+            if (PictureMimeType.isHasImage(media.getMimeType())) {
+                String availablePath = media.getAvailablePath();
+                Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
+                source.add(uri);
                 queue.put(availablePath, media);
             }
         }
         if (queue.size() == 0) {
             onResultEvent(result);
         } else {
-            for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
-                String srcPath = entry.getKey();
-                PictureSelectionConfig.compressFileEngine.onCompress(getContext(), srcPath, new OnKeyValueResultCallbackListener() {
-                    @Override
-                    public void onCallback(String srcPath, String compressPath) {
+            PictureSelectionConfig.compressFileEngine.onCompress(getContext(), source, new OnKeyValueResultCallbackListener() {
+                @Override
+                public void onCallback(String srcPath, String compressPath) {
+                    if (TextUtils.isEmpty(srcPath)) {
+                        onResultEvent(result);
+                    } else {
                         LocalMedia media = queue.get(srcPath);
                         if (media != null) {
                             media.setCompressPath(compressPath);
                             media.setCompressed(!TextUtils.isEmpty(compressPath));
                             media.setSandboxPath(SdkVersionUtils.isQ() ? media.getCompressPath() : null);
+                            queue.remove(srcPath);
                         }
-                        queue.remove(srcPath);
                         if (queue.size() == 0) {
                             onResultEvent(result);
                         }
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -1641,8 +1641,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         LocalMedia media = queue.get(srcPath);
                         if (media != null) {
                             media.setVideoThumbnailPath(resultPath);
+                            queue.remove(srcPath);
                         }
-                        queue.remove(srcPath);
                         if (queue.size() == 0) {
                             onCallBackResult(result);
                         }
@@ -1675,13 +1675,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         srcPath, media.getMimeType(), new OnKeyValueResultCallbackListener() {
                             @Override
                             public void onCallback(String srcPath, String resultPath) {
-                                LocalMedia media = queue.get(srcPath);
-                                if (media != null) {
-                                    media.setWatermarkPath(resultPath);
-                                }
-                                queue.remove(srcPath);
-                                if (queue.size() == 0) {
+                                if (TextUtils.isEmpty(srcPath)) {
                                     dispatchWatermarkResult(result);
+                                } else {
+                                    LocalMedia media = queue.get(srcPath);
+                                    if (media != null) {
+                                        media.setWatermarkPath(resultPath);
+                                        queue.remove(srcPath);
+                                    }
+                                    if (queue.size() == 0) {
+                                        dispatchWatermarkResult(result);
+                                    }
                                 }
                             }
                         });
@@ -1740,23 +1744,27 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 public ArrayList<LocalMedia> doInBackground() {
                     for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
                         LocalMedia media = entry.getValue();
-                        PictureSelectionConfig.uriToFileTransformEngine
-                                .onUriToFileAsyncTransform(getContext(), entry.getKey(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
-                                    @Override
-                                    public void onCallback(String srcPath, String resultPath) {
-                                        LocalMedia media = queue.get(srcPath);
-                                        if (media != null) {
-                                            if (TextUtils.isEmpty(media.getSandboxPath())) {
-                                                media.setSandboxPath(resultPath);
-                                            }
-                                            if (config.isCheckOriginalImage) {
-                                                media.setOriginalPath(resultPath);
-                                                media.setOriginal(!TextUtils.isEmpty(resultPath));
-                                            }
+                        if (config.isCheckOriginalImage || TextUtils.isEmpty(media.getSandboxPath())) {
+                            PictureSelectionConfig.uriToFileTransformEngine.onUriToFileAsyncTransform(getContext(), entry.getKey(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
+                                @Override
+                                public void onCallback(String srcPath, String resultPath) {
+                                    if (TextUtils.isEmpty(srcPath)) {
+                                        return;
+                                    }
+                                    LocalMedia media = queue.get(srcPath);
+                                    if (media != null) {
+                                        if (TextUtils.isEmpty(media.getSandboxPath())) {
+                                            media.setSandboxPath(resultPath);
+                                        }
+                                        if (config.isCheckOriginalImage) {
+                                            media.setOriginalPath(resultPath);
+                                            media.setOriginal(!TextUtils.isEmpty(resultPath));
                                         }
                                         queue.remove(srcPath);
                                     }
-                                });
+                                }
+                            });
+                        }
                     }
                     return result;
                 }

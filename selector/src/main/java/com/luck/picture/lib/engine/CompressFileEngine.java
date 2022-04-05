@@ -1,9 +1,12 @@
 package com.luck.picture.lib.engine;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
+
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -23,7 +26,7 @@ public interface CompressFileEngine {
      * </p>
      *
      * @param context
-     * @param srcPath
+     * @param source
      */
-    void onCompress(Context context, String srcPath, OnKeyValueResultCallbackListener call);
+    void onCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call);
 }
