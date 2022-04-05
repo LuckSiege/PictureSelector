@@ -53,9 +53,7 @@ import com.luck.picture.lib.decoration.HorizontalItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
-import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
@@ -268,6 +266,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
+        initViewPagerData(mData);
         iniMagicalView();
         if (isExternalPreview) {
             externalPreviewStyle();
@@ -277,7 +276,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
         }
-        initViewPagerData(mData);
     }
 
     private void setMagicalViewBackgroundColor() {
@@ -501,47 +499,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
-    /**
-     * 加载数据
-     */
-    private void loadData(int pageSize) {
-        if (config.isOnlySandboxDir) {
-            if (PictureSelectionConfig.loaderDataEngine != null) {
-                PictureSelectionConfig.loaderDataEngine.loadOnlyInAppDirAllMediaData(getContext(),
-                        new OnQueryAlbumListener<LocalMediaFolder>() {
-                            @Override
-                            public void onComplete(LocalMediaFolder folder) {
-                                handleLoadData(folder.getData());
-                            }
-                        });
-            } else {
-                mLoader.loadOnlyInAppDirAllMedia(new OnQueryAlbumListener<LocalMediaFolder>() {
-                    @Override
-                    public void onComplete(LocalMediaFolder folder) {
-                        handleLoadData(folder.getData());
-                    }
-                });
-            }
-        } else {
-            if (PictureSelectionConfig.loaderDataEngine != null) {
-                PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
-                        mBucketId, 1, pageSize, new OnQueryDataResultListener<LocalMedia>() {
-                            @Override
-                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
-                                handleLoadData(result);
-                            }
-                        });
-            } else {
-                mLoader.loadFirstPageMedia(mBucketId, pageSize, new OnQueryDataResultListener<LocalMedia>() {
-                    @Override
-                    public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
-                        handleLoadData(result);
-                    }
-                });
-            }
-        }
-    }
-
     private void handleLoadData(ArrayList<LocalMedia> result) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
@@ -634,8 +591,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
             }
         }
-
         completeSelectView.setCompleteSelectViewStyle();
+        completeSelectView.setSelectedChange(true);
         if (selectMainStyle.isCompleteSelectRelativeTop()) {
             if (completeSelectView.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
                 ((ConstraintLayout.LayoutParams) completeSelectView
@@ -1122,7 +1079,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(media.getMimeType())
                 || PictureMimeType.isHasAudio(media.getMimeType()));
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(data.get(viewPager.getCurrentItem())));
-        completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 3)));
         sendChangeSubSelectPositionEvent(false);
