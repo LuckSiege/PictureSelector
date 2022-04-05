@@ -412,7 +412,7 @@ PictureSelector.create(this)
     @Override
     public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
                                         
-        }
+    }
 });
 ```
 
