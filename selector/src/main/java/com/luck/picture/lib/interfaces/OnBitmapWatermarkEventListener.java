@@ -15,5 +15,5 @@ public interface OnBitmapWatermarkEventListener {
      * @param srcPath
      * @param mimeType
      */
-    void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnComposeCallbackListener call);
+    void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnKeyValueResultCallbackListener call);
 }

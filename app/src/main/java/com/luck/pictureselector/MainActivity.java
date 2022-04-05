@@ -89,7 +89,7 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
-import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -114,6 +114,7 @@ import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -851,8 +852,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
 
         @Override
-        public void onVideoThumbnail(Context context, String videoPath, OnComposeCallbackListener call) {
-            Glide.with(context).asBitmap().load(videoPath).into(new CustomTarget<Bitmap>() {
+        public void onVideoThumbnail(Context context, String videoPath, OnKeyValueResultCallbackListener call) {
+            Glide.with(context).asBitmap().sizeMultiplier(0.6F).load(videoPath).into(new CustomTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -905,13 +906,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
 
         @Override
-        public void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnComposeCallbackListener call) {
+        public void onAddBitmapWatermark(Context context, String srcPath, String mimeType, OnKeyValueResultCallbackListener call) {
             if (PictureMimeType.isHasHttp(srcPath) || PictureMimeType.isHasVideo(mimeType)) {
                 // 网络图片和视频忽略，有需求的可自行扩展
                 call.onCallback(srcPath, "");
             } else {
                 // 暂时只以图片为例
-                Glide.with(context).asBitmap().load(srcPath).into(new CustomTarget<Bitmap>() {
+                Glide.with(context).asBitmap().sizeMultiplier(0.6F).load(srcPath).into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -1374,8 +1375,22 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeSandboxFileEngine implements UriToFileTransformEngine {
 
         @Override
-        public String onSandboxFileTransform(Context context, String path, String mineType) {
-            return SandboxTransformUtils.copyPathToSandbox(context, path, mineType);
+        public void onSandboxFileTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
+
+                @Override
+                public String doInBackground() {
+                    return SandboxTransformUtils.copyPathToSandbox(context, srcPath, mineType);
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    PictureThreadUtils.cancel(this);
+                    if (call != null) {
+                        call.onCallback(srcPath, result);
+                    }
+                }
+            });
         }
     }
 
@@ -1565,7 +1580,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      */
     private static class ImageFileCompressEngine implements CompressFileEngine {
         @Override
-        public void onCompress(Context context, String srcPath, OnComposeCallbackListener call) {
+        public void onCompress(Context context, String srcPath, OnKeyValueResultCallbackListener call) {
             Luban.Builder with = Luban.with(context);
             if (PictureMimeType.isContent(srcPath)) {
                 with.load(Uri.parse(srcPath));

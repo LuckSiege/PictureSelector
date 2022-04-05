@@ -14,5 +14,5 @@ public interface OnVideoThumbnailEventListener {
      * @param context
      * @param videoPath
      */
-    void onVideoThumbnail(Context context, String videoPath, OnComposeCallbackListener call);
+    void onVideoThumbnail(Context context, String videoPath, OnKeyValueResultCallbackListener call);
 }

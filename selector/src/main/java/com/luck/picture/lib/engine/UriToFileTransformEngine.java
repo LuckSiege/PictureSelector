@@ -3,6 +3,7 @@ package com.luck.picture.lib.engine;
 import android.content.Context;
 
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 
 /**
  * @author：luck
@@ -17,13 +18,9 @@ public interface UriToFileTransformEngine {
      * the sandbox path into the {@link LocalMedia} object;
      * </p>
      *
-     * <p>
-     * ### This method callback is already operated in the child thread
-     * </p>
-     *
      * @param context  context
-     * @param path
+     * @param srcPath
      * @param mineType
      */
-    String onSandboxFileTransform(Context context, String path, String mineType);
+    void onSandboxFileTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call);
 }

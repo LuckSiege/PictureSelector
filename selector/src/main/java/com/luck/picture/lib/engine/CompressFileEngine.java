@@ -3,7 +3,7 @@ package com.luck.picture.lib.engine;
 import android.content.Context;
 
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnComposeCallbackListener;
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 
 /**
  * @author：luck
@@ -25,5 +25,5 @@ public interface CompressFileEngine {
      * @param context
      * @param srcPath
      */
-    void onCompress(Context context, String srcPath, OnComposeCallbackListener call);
+    void onCompress(Context context, String srcPath, OnKeyValueResultCallbackListener call);
 }
