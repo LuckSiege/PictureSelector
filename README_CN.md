@@ -405,7 +405,7 @@ PictureSelector.create(this)
 
 ```
 
-7、Android 10 及以上版本，沙盒机制文件处理，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+7、Android 10 及以上版本，沙盒机制文件处理，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%AE%BF%E9%97%AE%E6%B2%99%E7%9B%92%E5%A4%96%E8%B5%84%E6%BA%90%EF%BC%9F)
 
 ```sh
 .setSandboxFileEngine(new UriToFileTransformEngine() {
