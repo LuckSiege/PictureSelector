@@ -297,7 +297,7 @@ PictureSelector.create(this)
 ```
 
 
-设置图片选择器主题，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
+设置图片选择器主题，更多请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
 
 ```sh
 .setSelectorUIStyle();
@@ -314,7 +314,7 @@ PictureSelector.create(this)
 
 高级用例如下所示：
 
-1、使用自定义相机功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%B8%E6%9C%BA%EF%BC%9F)
+1、使用自定义相机功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%B8%E6%9C%BA%EF%BC%9F)
 
 ```sh
 .setCameraInterceptListener(new OnCameraInterceptListener() {
@@ -325,7 +325,7 @@ PictureSelector.create(this)
 });
 ```
 
-2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
+2、使用图片压缩功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
 
 ```sh
 .setCompressEngine(new CompressFileEngine() {
@@ -336,7 +336,7 @@ PictureSelector.create(this)
 });
 ```
 
-3、使用图片裁剪功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%A3%81%E5%89%AA%EF%BC%9F)
+3、使用图片裁剪功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%A3%81%E5%89%AA%EF%BC%9F)
 
 ```sh
 
@@ -348,7 +348,7 @@ PictureSelector.create(this)
 });
 ```
 
-4、使用图片编辑功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E7%BC%96%E8%BE%91%E5%9B%BE%E7%89%87%EF%BC%9F)
+4、使用图片编辑功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E7%BC%96%E8%BE%91%E5%9B%BE%E7%89%87%EF%BC%9F)
 
 ```sh
 .setEditMediaInterceptListener(new OnMediaEditInterceptListener() {
@@ -360,7 +360,7 @@ PictureSelector.create(this)
 
 ```
 
-5、加载自定义数据源，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%9F)
+5、加载自定义数据源，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%9F)
 
 ```sh
 .setExtendLoaderEngine(new ExtendLoaderEngine() {
@@ -388,7 +388,7 @@ PictureSelector.create(this)
 
 ```
 
-6、自定义权限申请，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+6、自定义权限申请，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
 
 ```sh
 .setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
@@ -403,6 +403,17 @@ PictureSelector.create(this)
       }
 });
 
+```
+
+7、Android 10 及以上版本，沙盒机制文件处理，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+
+```sh
+.setSandboxFileEngine(new UriToFileTransformEngine() {
+    @Override
+    public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
+                                        
+        }
+});
 ```
 
 
