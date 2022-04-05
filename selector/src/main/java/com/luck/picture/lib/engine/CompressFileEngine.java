@@ -21,10 +21,6 @@ public interface CompressFileEngine {
      * the compressed path into the {@link LocalMedia} object;
      * </p>
      *
-     * <p>
-     * ### This method callback is already operated in the child thread
-     * </p>
-     *
      * @param context
      * @param source
      */
