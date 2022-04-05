@@ -1470,7 +1470,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (queue.size() == 0) {
             onResultEvent(result);
         } else {
-            PictureSelectionConfig.compressFileEngine.onCompress(getContext(), source, new OnKeyValueResultCallbackListener() {
+            PictureSelectionConfig.compressFileEngine.onStartCompress(getContext(), source, new OnKeyValueResultCallbackListener() {
                 @Override
                 public void onCallback(String srcPath, String compressPath) {
                     if (TextUtils.isEmpty(srcPath)) {

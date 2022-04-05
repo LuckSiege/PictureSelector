@@ -1569,7 +1569,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class ImageFileCompressEngine implements CompressFileEngine {
 
         @Override
-        public void onCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call) {
+        public void onStartCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call) {
             Luban.with(context).load(source).ignoreBy(100).setRenameListener(new OnRenameListener() {
                 @Override
                 public String rename(String filePath) {

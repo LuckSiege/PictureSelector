@@ -28,5 +28,5 @@ public interface CompressFileEngine {
      * @param context
      * @param source
      */
-    void onCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call);
+    void onStartCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call);
 }
