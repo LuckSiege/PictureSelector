@@ -1420,10 +1420,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void onCrop(ArrayList<LocalMedia> result) {
         Uri srcUri = null;
         Uri destinationUri = null;
+        ArrayList<String> dataCropSource = new ArrayList<>();
         for (int i = 0; i < result.size(); i++) {
-            LocalMedia item = result.get(i);
-            if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
-                String currentCropPath = item.getAvailablePath();
+            LocalMedia media = result.get(i);
+            dataCropSource.add(media.getAvailablePath());
+            if (srcUri == null && PictureMimeType.isHasImage(media.getMimeType())) {
+                String currentCropPath = media.getAvailablePath();
                 if (PictureMimeType.isContent(currentCropPath) || PictureMimeType.isHasHttp(currentCropPath)) {
                     srcUri = Uri.parse(currentCropPath);
                 } else {
@@ -1433,13 +1435,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 File externalFilesDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 File outputFile = new File(externalFilesDir.getAbsolutePath(), fileName);
                 destinationUri = Uri.fromFile(outputFile);
-                break;
             }
-        }
-        ArrayList<String> dataCropSource = new ArrayList<>();
-        for (int i = 0; i < result.size(); i++) {
-            LocalMedia media = result.get(i);
-            dataCropSource.add(media.getAvailablePath());
         }
         PictureSelectionConfig.cropFileEngine.onStartCrop(this, srcUri, destinationUri, dataCropSource, Crop.REQUEST_CROP);
     }
