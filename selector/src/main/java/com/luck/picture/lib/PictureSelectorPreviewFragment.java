@@ -268,7 +268,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
-        initViewPagerData(mData);
         iniMagicalView();
         if (isExternalPreview) {
             externalPreviewStyle();
@@ -278,6 +277,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
         }
+        initViewPagerData(mData);
     }
 
     private void setMagicalViewBackgroundColor() {
