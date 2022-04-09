@@ -41,7 +41,7 @@ public class LocaleTransform {
                 // 阿拉伯语
                 return new Locale("ar", "AE");
             case LanguageConfig.TR:
-                return new Localte("tr", "TR");    
+                return new Locale("tr", "TR");    
             default:
                 // 简体中文
                 return Locale.CHINESE;
