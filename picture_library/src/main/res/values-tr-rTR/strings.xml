@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_camera_roll">Kamera Rulosu</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
+    <string name="picture_cancel">İptal</string>
+    <string name="picture_take_picture">Çek</string>
+    <string name="picture_rule">resim veya video değil</string>
+    <string name="picture_min_video_num">Video Seçimi %1$s Sayıyla Yapılamıyor</string>
+    <string name="picture_message_max_num">En fazla %1$s resim seçin</string>
+    <string name="picture_message_audio_max_num">En fazla %1$s Ses seçin</string>
+    <string name="picture_message_video_max_num">En fazla %1$s Video seçin</string>
+    <string name="picture_preview">Önizleme</string>
+    <string name="picture_please">Lütfen daha sonra…</string>
+    <string name="picture_done_front_num">%1$d/%2$d Ok</string>
+    <string name="picture_completed">Tamamlandı</string>
+    <string name="picture_done">Bitir</string>
+    <string name="picture_please_select">Lütfen Seçin</string>
+    <string name="picture_empty_title">Video veya fotoğraf yok\n</string>
+    <string name="picture_empty_audio_title">Ses dosyası yok\n</string>
+    <string name="picture_audio_empty">Ses kaydetmek için sistem kayıtlarını kullanabilirsiniz.</string>
+    <string name="picture_empty">fotoğraf veya video çekmek için kameranızı kullanabilirsiniz</string>
+    <string name="picture_min_img_num">Resim Seçimi Yapılamıyor %1$s Sayı</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
+    <string name="picture_audio">Sistem kayıt iznine erişim reddedildi</string>
+    <string name="picture_jurisdiction">Hafıza kartı okuma erişimi reddedildi</string>
+    <string name="picture_camera">Sistem kamerası izni reddedildi</string>
+    <string name="picture_video_toast">Video önizlemeye sahip değil</string>
+    <string name="picture_record_video">Video Kaydet</string>
+    <string name="picture_photograph">Fotoğraf</string>
+    <string name="picture_long_chart">Uzun</string>
+    <string name="picture_warning">Medya dosyası yok!</string>
+    <string name="picture_prompt">Komut</string>
+    <string name="picture_prompt_content">Resimleri telefonunuza kaydetmek istiyor musunuz?</string>
+    <string name="picture_save_error">Resim kaydetme işlemi başarısız!</string>
+    <string name="picture_save_success">Resim başarıyla kaydedildi!</string>
+    <string name="picture_all_audio">Tüm Sesler</string>
+    <string name="picture_tape">Ses Kayıtları</string>
+    <string name="picture_play_audio">Oynat</string>
+    <string name="picture_stop_audio">Durdur</string>
+    <string name="picture_quit_audio">Çık</string>
+    <string name="picture_pause_audio">Durdur</string>
+    <string name="picture_error">Resim bozulmuş</string>
+    <string name="picture_video_error">Video bozulmuş</string>
+    <string name="picture_audio_error">Ses bozulmuş</string>
+    <string name="picture_confirm">Onayla</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
+    <string name="picture_not_crop_data">Kırpma bilgisi yok</string>
+    <string name="picture_original_image">Orijinal (%1$s)</string>
+    <string name="picture_default_original_image">Orijinal</string>
+    <string name="picture_send">Tamamla</string>
+    <string name="picture_send_num">Tamamla(%1$d/%2$d)</string>
+    <string name="picture_preview_num">Önizleme(%1$d)</string>
+    <string name="picture_select">Seç</string>
+    <string name="picture_data_exception">Albüme erişlemedi…</string>
+    <string name="picture_recording_time_is_short">kayıt zamanı çok kısa</string>
+    <string name="picture_photo_camera">Fotoğraf, fotoğraf</string>
+    <string name="picture_choose_max_seconds">Yalnızca %1$ds içindeki videoları seçebilirsiniz</string>
+    <string name="picture_choose_min_seconds">%1$ds'den daha küçük bir video seçemezsiniz</string>
+    <string name="picture_choose_limit_seconds">Yalnızca %1$ds ile %2$ds arasındaki videolar seçilebilir</string>
+
+    <string name="picture_photo_pictures">Resim Çek</string>
+    <string name="picture_photo_recording">Uzun Basım Kamerası</string>
+    <string name="picture_go_setting">Ayarlara Git</string>
+    <string name="picture_know">Ok</string>
+    <string name="picture_data_null">Veri yok…</string>
+    <string name="picture_editor">Editör</string>
+
+
+    <string name="ucrop_label_original">Orijinal</string>
+    <string name="ucrop_label_edit_photo">Fotoğrafı Düzenle</string>
+
+    <string name="ucrop_menu_crop">Kırp</string>
+
+    <string name="ucrop_rotate">Döndür</string>
+    <string name="ucrop_scale">Ölçeklendir</string>
+    <string name="ucrop_crop">Kırp</string>
+
+    <string name="ucrop_gif_tag">gif</string>
+</resources>
