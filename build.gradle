@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: "config.gradle"
+apply plugin: 'maven-publish'
 
 group = 'com.github.emirkanacar'
 
