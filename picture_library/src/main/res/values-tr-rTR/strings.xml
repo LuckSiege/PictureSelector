@@ -10,7 +10,7 @@
     <string name="picture_message_audio_max_num">En fazla %1$s Ses seçin</string>
     <string name="picture_message_video_max_num">En fazla %1$s Video seçin</string>
     <string name="picture_preview">Önizleme</string>
-    <string name="picture_please">Lütfen daha sonra…</string>
+    <string name="picture_please">Lütfen daha sonra...</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
     <string name="picture_completed">Tamamlandı</string>
     <string name="picture_done">Bitir</string>
@@ -52,18 +52,18 @@
     <string name="picture_send_num">Tamamla(%1$d/%2$d)</string>
     <string name="picture_preview_num">Önizleme(%1$d)</string>
     <string name="picture_select">Seç</string>
-    <string name="picture_data_exception">Albüme erişlemedi…</string>
+    <string name="picture_data_exception">Albüme erişlemedi...</string>
     <string name="picture_recording_time_is_short">kayıt zamanı çok kısa</string>
     <string name="picture_photo_camera">Fotoğraf, fotoğraf</string>
     <string name="picture_choose_max_seconds">Yalnızca %1$ds içindeki videoları seçebilirsiniz</string>
-    <string name="picture_choose_min_seconds">%1$ds'den daha küçük bir video seçemezsiniz</string>
+    <string name="picture_choose_min_seconds">%1$ds\'den daha küçük bir video seçemezsiniz</string>
     <string name="picture_choose_limit_seconds">Yalnızca %1$ds ile %2$ds arasındaki videolar seçilebilir</string>
 
     <string name="picture_photo_pictures">Resim Çek</string>
     <string name="picture_photo_recording">Uzun Basım Kamerası</string>
     <string name="picture_go_setting">Ayarlara Git</string>
     <string name="picture_know">Ok</string>
-    <string name="picture_data_null">Veri yok…</string>
+    <string name="picture_data_null">Veri yok...</string>
     <string name="picture_editor">Editör</string>
 
 
