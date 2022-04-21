@@ -1,5 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: "config.gradle"
+apply plugin: 'maven-publish'
+
+group = 'com.github.emirkanacar'
+version = '3.0.25'
+
 
 buildscript {
     repositories {
@@ -25,6 +30,38 @@ allprojects {
         maven {
             url 'https://maven.google.com/'
             name 'Google'
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'pictureselector'
+            pom {
+                name = 'Picture selector'
+                description = 'Picture selector'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'emirkanacar'
+                        name = 'Emirkan'
+                        email = 'nydaolian@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
+            def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }

@@ -57,4 +57,9 @@ public class LanguageConfig {
      * 阿拉伯语
      */
     public static final int AR = 10;
+
+    /**
+     * Turkish Langugae
+     */
+    public static final int TR = 11;
 }
