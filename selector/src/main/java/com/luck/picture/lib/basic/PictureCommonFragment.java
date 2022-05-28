@@ -1965,12 +1965,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void onBackCurrentFragment() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             getActivity().getSupportFragmentManager().popBackStack();
-        }
-        List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof PictureCommonFragment) {
-                ((PictureCommonFragment) fragment).onFragmentResume();
+            List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+            for (int i = 0; i < fragments.size(); i++) {
+                Fragment fragment = fragments.get(i);
+                if (fragment instanceof PictureCommonFragment) {
+                    ((PictureCommonFragment) fragment).onFragmentResume();
+                }
             }
         }
     }
