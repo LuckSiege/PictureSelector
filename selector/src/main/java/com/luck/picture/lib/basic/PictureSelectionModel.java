@@ -1098,6 +1098,28 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Whether to play video automatically when previewing
+     *
+     * @param isAutoPlay
+     * @return
+     */
+    public PictureSelectionModel isAutoVideoPlay(boolean isAutoPlay) {
+        selectionConfig.isAutoVideoPlay = isAutoPlay;
+        return this;
+    }
+
+    /**
+     * loop video
+     *
+     * @param isLoopAutoPlay
+     * @return
+     */
+    public PictureSelectionModel isLoopAutoVideoPlay(boolean isLoopAutoPlay) {
+        selectionConfig.isLoopAutoPlay = isLoopAutoPlay;
+        return this;
+    }
+
+    /**
      * Quick slide selection results
      *
      * @param isFastSlidingSelect

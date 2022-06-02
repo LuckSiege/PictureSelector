@@ -122,6 +122,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDisplayTimeAxis;
     public boolean isFastSlidingSelect;
     public boolean isSelectZoomAnim;
+    public boolean isAutoVideoPlay;
+    public boolean isLoopAutoPlay;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -227,6 +229,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isDisplayTimeAxis = in.readByte() != 0;
         isFastSlidingSelect = in.readByte() != 0;
         isSelectZoomAnim = in.readByte() != 0;
+        isAutoVideoPlay = in.readByte() != 0;
+        isLoopAutoPlay = in.readByte() != 0;
     }
 
     @Override
@@ -308,6 +312,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isDisplayTimeAxis ? 1 : 0));
         dest.writeByte((byte) (isFastSlidingSelect ? 1 : 0));
         dest.writeByte((byte) (isSelectZoomAnim ? 1 : 0));
+        dest.writeByte((byte) (isAutoVideoPlay ? 1 : 0));
+        dest.writeByte((byte) (isLoopAutoPlay ? 1 : 0));
     }
 
     @Override
@@ -406,6 +412,8 @@ public final class PictureSelectionConfig implements Parcelable {
         sortOrder = "";
         isSelectZoomAnim = true;
         defaultAlbumName = "";
+        isAutoVideoPlay = false;
+        isLoopAutoPlay = false;
     }
 
 

@@ -147,12 +147,8 @@ public class TransformImageView extends AppCompatImageView {
      *
      * @param imageUri - image Uri
      */
-    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) {
-        if (isUseCustomBitmap && UCropDevelopConfig.imageEngine != null && !FileUtils.isHasHttp(imageUri.toString())) {
-            useCustomLoaderCrop(imageUri, outputUri);
-        } else {
-            useDefaultLoaderCrop(imageUri, outputUri);
-        }
+    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri) {
+        useDefaultLoaderCrop(imageUri, outputUri);
     }
 
     /**
@@ -161,6 +157,7 @@ public class TransformImageView extends AppCompatImageView {
      * @param imageUri
      * @param outputUri
      */
+    @Deprecated
     private void useCustomLoaderCrop(@NonNull final Uri imageUri, @Nullable final Uri outputUri) {
         int[] maxImageSize = BitmapLoadUtils.getMaxImageSize(getContext(), imageUri);
         UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxImageSize[0], maxImageSize[1], new UCropImageEngine.OnCallbackListener<Bitmap>() {

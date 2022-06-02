@@ -100,6 +100,27 @@ public final class PictureSelectionPreviewModel {
         return this;
     }
 
+    /**
+     * Whether to play video automatically when previewing
+     *
+     * @param isAutoPlay
+     * @return
+     */
+    public PictureSelectionPreviewModel isAutoVideoPlay(boolean isAutoPlay) {
+        selectionConfig.isAutoVideoPlay = isAutoPlay;
+        return this;
+    }
+
+    /**
+     * loop video
+     *
+     * @param isLoopAutoPlay
+     * @return
+     */
+    public PictureSelectionPreviewModel isLoopAutoVideoPlay(boolean isLoopAutoPlay) {
+        selectionConfig.isLoopAutoPlay = isLoopAutoPlay;
+        return this;
+    }
 
     /**
      * Intercept external preview click events, and users can implement their own preview framework

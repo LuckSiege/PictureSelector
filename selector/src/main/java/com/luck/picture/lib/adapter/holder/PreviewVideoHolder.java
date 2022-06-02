@@ -45,28 +45,11 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     @Override
     public void bindData(LocalMedia media, int position) {
         super.bindData(media, position);
-        String path = media.getAvailablePath();
         setScaleDisplaySize(media);
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player player = mPlayerView.getPlayer();
-                if (player != null) {
-                    progress.setVisibility(View.VISIBLE);
-                    ivPlayButton.setVisibility(View.GONE);
-                    mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                    MediaItem mediaItem;
-                    if (PictureMimeType.isContent(path)) {
-                        mediaItem = MediaItem.fromUri(Uri.parse(path));
-                    } else if (PictureMimeType.isHasHttp(path)) {
-                        mediaItem = MediaItem.fromUri(path);
-                    } else {
-                        mediaItem = MediaItem.fromUri(Uri.fromFile(new File(path)));
-                    }
-                    player.setMediaItem(mediaItem);
-                    player.prepare();
-                    player.play();
-                }
+                startPlay();
             }
         });
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +60,29 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 }
             }
         });
+    }
+
+
+    public void startPlay() {
+        Player player = mPlayerView.getPlayer();
+        if (player != null) {
+            String path = media.getAvailablePath();
+            progress.setVisibility(View.VISIBLE);
+            ivPlayButton.setVisibility(View.GONE);
+            mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+            MediaItem mediaItem;
+            if (PictureMimeType.isContent(path)) {
+                mediaItem = MediaItem.fromUri(Uri.parse(path));
+            } else if (PictureMimeType.isHasHttp(path)) {
+                mediaItem = MediaItem.fromUri(path);
+            } else {
+                mediaItem = MediaItem.fromUri(Uri.fromFile(new File(path)));
+            }
+            player.setRepeatMode(config.isLoopAutoPlay ? Player.REPEAT_MODE_ALL : Player.REPEAT_MODE_OFF);
+            player.setMediaItem(mediaItem);
+            player.prepare();
+            player.play();
+        }
     }
 
     @Override

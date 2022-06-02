@@ -219,7 +219,7 @@ public class UCropActivity extends AppCompatActivity {
         if (inputUri != null && outputUri != null) {
             try {
                 outputUri = FileUtils.replaceOutputUri(UCropActivity.this, isForbidCropGifWebp, inputUri, outputUri);
-                mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
+                mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
                 finish();

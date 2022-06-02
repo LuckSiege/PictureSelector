@@ -109,6 +109,7 @@ public class BitmapLoadUtils {
      * @param mInputUri
      * @return
      */
+    @Deprecated
     public static int[] getMaxImageSize(Context context, Uri mInputUri) {
         int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(context);
         BitmapFactory.Options options = new BitmapFactory.Options();

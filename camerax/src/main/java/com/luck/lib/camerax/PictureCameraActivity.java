@@ -65,7 +65,9 @@ public class PictureCameraActivity extends AppCompatActivity implements IObtainC
         mCameraView.setImageCallbackListener(new ImageCallbackListener() {
             @Override
             public void onLoadImage(String url, ImageView imageView) {
-                CustomCameraConfig.imageEngine.loadImage(imageView.getContext(), url, imageView);
+                if (CustomCameraConfig.imageEngine != null) {
+                    CustomCameraConfig.imageEngine.loadImage(imageView.getContext(), url, imageView);
+                }
             }
         });
         mCameraView.setCameraListener(new CameraListener() {

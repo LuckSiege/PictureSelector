@@ -115,6 +115,21 @@ public final class PictureMimeType {
     }
 
     /**
+     * isHasBmp
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isHasBmp(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            return false;
+        }
+        return mimeType.startsWith(PictureMimeType.ofBMP())
+                || mimeType.startsWith(PictureMimeType.ofXmsBMP())
+                || mimeType.startsWith(PictureMimeType.ofWapBMP());
+    }
+
+    /**
      * Determine if it is JPG.
      *
      * @param is image file mimeType
@@ -226,6 +241,14 @@ public final class PictureMimeType {
         return MIME_TYPE_BMP;
     }
 
+    public static String ofXmsBMP() {
+        return MIME_TYPE_XMS_BMP;
+    }
+
+    public static String ofWapBMP() {
+        return MIME_TYPE_WAP_BMP;
+    }
+
     public static String ofGIF() {
         return MIME_TYPE_GIF;
     }
@@ -264,6 +287,8 @@ public final class PictureMimeType {
     public final static String MIME_TYPE_JPEG = "image/jpeg";
     private final static String MIME_TYPE_JPG = "image/jpg";
     private final static String MIME_TYPE_BMP = "image/bmp";
+    private final static String MIME_TYPE_XMS_BMP = "image/x-ms-bmp";
+    private final static String MIME_TYPE_WAP_BMP = "image/vnd.wap.wbmp";
     private final static String MIME_TYPE_GIF = "image/gif";
     private final static String MIME_TYPE_WEBP = "image/webp";
 

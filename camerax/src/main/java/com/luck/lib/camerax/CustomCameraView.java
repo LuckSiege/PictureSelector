@@ -832,18 +832,24 @@ public class CustomCameraView extends RelativeLayout {
 
         @Override
         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-            if (outputFileResults.getSavedUri() == null || mCaptureLayoutReference.get() == null ||
-                    mImagePreviewReference.get() == null || mImageCallbackListenerReference.get() == null) {
-                return;
-            }
             Uri savedUri = outputFileResults.getSavedUri();
-            Context context = mImagePreviewReference.get().getContext();
-            SimpleCameraX.putOutputUri(((Activity) context).getIntent(), savedUri);
-            String outPutCameraPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
-            mCaptureLayoutReference.get().setButtonCaptureEnabled(true);
-            mImageCallbackListenerReference.get().onLoadImage(outPutCameraPath, mImagePreviewReference.get());
-            mImagePreviewReference.get().setVisibility(View.VISIBLE);
-            mCaptureLayoutReference.get().startTypeBtnAnimator();
+            if (savedUri != null) {
+                Context context = mImagePreviewReference.get().getContext();
+                SimpleCameraX.putOutputUri(((Activity) context).getIntent(), savedUri);
+                if (mCaptureLayoutReference.get() != null) {
+                    mCaptureLayoutReference.get().setButtonCaptureEnabled(true);
+                }
+                if (mImageCallbackListenerReference.get() != null) {
+                    String outPutCameraPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
+                    mImageCallbackListenerReference.get().onLoadImage(outPutCameraPath, mImagePreviewReference.get());
+                }
+                if (mImagePreviewReference.get() != null) {
+                    mImagePreviewReference.get().setVisibility(View.VISIBLE);
+                }
+                if (mCaptureLayoutReference.get() != null) {
+                    mCaptureLayoutReference.get().startTypeBtnAnimator();
+                }
+            }
         }
 
         @Override

@@ -1,5 +1,6 @@
 package com.luck.picture.lib.adapter;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -105,6 +106,19 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
             if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
                 videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    /**
+     * 设置自动播放视频
+     *
+     * @param position
+     */
+    public void startAutoVideoPlay(int position) {
+        BasePreviewHolder currentHolder = getCurrentHolder(position);
+        if (currentHolder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+            videoHolder.startPlay();
         }
     }
 

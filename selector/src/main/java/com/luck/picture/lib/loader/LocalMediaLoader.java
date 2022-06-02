@@ -166,7 +166,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                     }
                                 }
                                 if (!config.isBmp) {
-                                    if (mimeType.startsWith(PictureMimeType.ofBMP())) {
+                                    if (PictureMimeType.isHasBmp(mimeType)) {
                                         continue;
                                     }
                                 }

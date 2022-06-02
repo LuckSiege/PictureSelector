@@ -547,7 +547,7 @@ public class PictureFileUtils {
      * @return
      */
     public static boolean isFileExists(String path) {
-        return TextUtils.isEmpty(path) || new File(path).exists();
+        return !TextUtils.isEmpty(path) && new File(path).exists();
     }
 
     public static final int KB = 1024;

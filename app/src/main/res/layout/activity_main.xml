@@ -669,6 +669,16 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/cb_auto_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:gravity="center_vertical"
+                    android:text="预览视频自动播放"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/cb_preview_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -751,17 +761,6 @@
                         android:textSize="14sp" />
 
                 </RadioGroup>
-
-                <CheckBox
-                    android:id="@+id/cb_crop_use_bitmap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:gravity="center_vertical"
-                    android:text="自定义Loader Bitmap"
-                    android:textColor="@color/app_color_53575e"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/cb_crop_circular"

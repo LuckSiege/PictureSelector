@@ -159,7 +159,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     protected PreviewGalleryAdapter mGalleryAdapter;
 
-    protected List<View> mAnimViews;
+    protected List<View> mAnimViews = new ArrayList<>();
 
 
     public static PictureSelectorPreviewFragment newInstance() {
@@ -258,16 +258,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         magicalView.setMagicalContent(viewPager);
         setMagicalViewBackgroundColor();
-        mAnimViews = new ArrayList<>();
-        mAnimViews.add(titleBar);
-        mAnimViews.add(tvSelected);
-        mAnimViews.add(tvSelectedWord);
-        mAnimViews.add(selectClickArea);
-        mAnimViews.add(completeSelectView);
-        mAnimViews.add(bottomNarBar);
+        addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, completeSelectView, bottomNarBar);
         initTitleBar();
         initViewPagerData(mData);
-        iniMagicalView();
         if (isExternalPreview) {
             externalPreviewStyle();
         } else {
@@ -276,6 +269,16 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
         }
+        iniMagicalView();
+    }
+
+    /**
+     * addAminViews
+     *
+     * @param views
+     */
+    private void addAminViews(View... views) {
+        Collections.addAll(mAnimViews, views);
     }
 
     private void setMagicalViewBackgroundColor() {
@@ -384,8 +387,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
                 if (currentHolder instanceof PreviewVideoHolder) {
                     PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                    if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                        videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                    if (config.isAutoVideoPlay) {
+                        startAutoVideoPlay(viewPager.getCurrentItem());
+                    } else {
+                        if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
+                            videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -794,7 +801,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             } else {
                 mGalleryRecycle.setVisibility(View.INVISIBLE);
             }
-            mAnimViews.add(mGalleryRecycle);
+            addAminViews(mGalleryRecycle);
             ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
                 @Override
                 public boolean isLongPressDragEnabled() {
@@ -1069,7 +1076,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPageAdapter.setOnPreviewEventListener(new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
-        viewPager.setCurrentItem(curPosition, false);
         SelectedManager.clearPreviewData();
         if (data.size() == 0 || curPosition > data.size()) {
             onKeyBackFragmentFinish();
@@ -1081,6 +1087,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(data.get(viewPager.getCurrentItem())));
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 3)));
+        viewPager.setCurrentItem(curPosition, false);
         sendChangeSubSelectPositionEvent(false);
         notifySelectNumberStyle(data.get(curPosition));
     }
@@ -1317,7 +1324,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
                 if (config.isPreviewZoomEffect) {
                     if (isFirstLoaded || isInternalBottomPreview) {
-                        viewPageAdapter.setVideoPlayButtonUI(position);
+                        if (config.isAutoVideoPlay) {
+                            startAutoVideoPlay(position);
+                        } else {
+                            viewPageAdapter.setVideoPlayButtonUI(position);
+                        }
+                    }
+                } else {
+                    if (config.isAutoVideoPlay) {
+                        startAutoVideoPlay(position);
                     }
                 }
                 notifyGallerySelectMedia(currentMedia);
@@ -1337,6 +1352,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     };
 
+    /**
+     * 自动播放视频
+     *
+     * @param position
+     */
+    private void startAutoVideoPlay(int position) {
+        viewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                viewPageAdapter.startAutoVideoPlay(position);
+            }
+        });
+    }
 
     /**
      * 更新MagicalView ViewParams 参数

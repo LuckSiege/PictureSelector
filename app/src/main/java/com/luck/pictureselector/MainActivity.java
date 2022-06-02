@@ -172,13 +172,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private int aspect_ratio_x = -1, aspect_ratio_y = -1;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
-            cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
+            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
-            cb_custom_preview, cb_permission_desc,cb_video_thumbnails;
+            cb_custom_preview, cb_permission_desc,cb_video_thumbnails,cb_auto_video;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -234,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_custom_preview = findViewById(R.id.cb_custom_preview);
         cb_permission_desc = findViewById(R.id.cb_permission_desc);
         cb_preview_video = findViewById(R.id.cb_preview_video);
+        cb_auto_video = findViewById(R.id.cb_auto_video);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
         cbPage = findViewById(R.id.cbPage);
@@ -254,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_not_gif = findViewById(R.id.cb_not_gif);
         cb_skip_not_gif = findViewById(R.id.cb_skip_not_gif);
         cb_crop_circular = findViewById(R.id.cb_crop_circular);
-        cb_crop_use_bitmap = findViewById(R.id.cb_crop_use_bitmap);
         cb_attach_camera_mode = findViewById(R.id.cb_attach_camera_mode);
         cb_attach_system_mode = findViewById(R.id.cb_attach_system_mode);
         cb_mode.setOnCheckedChangeListener(this);
@@ -278,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_only_dir.setOnCheckedChangeListener(this);
         cb_custom_sandbox.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
-        cb_crop_use_bitmap.setOnCheckedChangeListener(this);
         cb_attach_camera_mode.setOnCheckedChangeListener(this);
         cb_attach_system_mode.setOnCheckedChangeListener(this);
         cb_system_album.setOnCheckedChangeListener(this);
@@ -364,6 +363,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .setImageEngine(imageEngine)
                         .setSelectorUIStyle(selectorStyle)
                         .setLanguage(language)
+                        .isAutoVideoPlay(cb_auto_video.isChecked())
+                        .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
                         .setExternalPreviewEventListener(new MyExternalPreviewEventListener(mAdapter))
                         .startActivityPreview(position, true, mAdapter.getData());
@@ -405,6 +406,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setPermissionDeniedListener(getPermissionDeniedListener())
                                 .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
+                                .isAutoVideoPlay(cb_auto_video.isChecked())
+                                .isLoopAutoVideoPlay(cb_auto_video.isChecked())
 //                              .setQueryFilterListener(new OnQueryFilterListener() {
 //                                    @Override
 //                                    public boolean onFilter(String absolutePath) {
@@ -1403,28 +1406,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 @Override
                 public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
-                    if (!ImageLoaderUtils.assertValidRequest(context)) {
-                        return;
-                    }
-                    Glide.with(context).asBitmap().override(maxWidth, maxHeight).load(url).into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            if (call != null) {
-                                call.onCall(resource);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            if (call != null) {
-                                call.onCall(null);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
                 }
             });
             uCrop.start(fragment.getActivity(), fragment, requestCode);
@@ -1469,28 +1450,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 @Override
                 public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
-                    if (!ImageLoaderUtils.assertValidRequest(context)) {
-                        return;
-                    }
-                    Glide.with(context).asBitmap().override(maxWidth, maxHeight).load(url).into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            if (call != null) {
-                                call.onCall(resource);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            if (call != null) {
-                                call.onCall(null);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
                 }
             });
             uCrop.start(fragment.getActivity(), fragment, requestCode);
@@ -1532,7 +1491,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.withAspectRatio(aspect_ratio_x, aspect_ratio_y);
         options.setCropOutputPathDir(getSandboxPath());
         options.isCropDragSmoothToCenter(false);
-        options.isUseCustomLoaderBitmap(cb_crop_use_bitmap.isChecked());
         options.setSkipCropMimeType(getNotSupportCrop());
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(false);
@@ -2057,7 +2015,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 rgb_crop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_hide.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_crop_circular.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_crop_use_bitmap.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
