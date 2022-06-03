@@ -366,6 +366,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                        .setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
+                            @Override
+                            public int getLayoutResourceId(Context context, int resourceSource) {
+                                if (resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE) {
+                                    return R.layout.ps_custom_fragment_preview;
+                                }
+                                return InjectResourceSource.DEFAULT_LAYOUT_RESOURCE;
+                            }
+                        })
                         .setExternalPreviewEventListener(new MyExternalPreviewEventListener(mAdapter))
                         .startActivityPreview(position, true, mAdapter.getData());
             }
@@ -408,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
-                                .setSelectMaxFileSize(100)
 //                              .setQueryFilterListener(new OnQueryFilterListener() {
 //                                    @Override
 //                                    public boolean onFilter(String absolutePath) {

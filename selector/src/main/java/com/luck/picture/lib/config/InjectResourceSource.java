@@ -17,6 +17,11 @@ import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
  */
 public final class InjectResourceSource {
     /**
+     * default layout
+     */
+    public static final int DEFAULT_LAYOUT_RESOURCE = 0;
+
+    /**
      * {@link PictureSelectorFragment}  layout
      * {@link R.layout.ps_fragment_selector}
      */
@@ -84,6 +89,6 @@ public final class InjectResourceSource {
             return PictureSelectionConfig.onLayoutResourceListener
                     .getLayoutResourceId(context, resourceSource);
         }
-        return 0;
+        return DEFAULT_LAYOUT_RESOURCE;
     }
 }

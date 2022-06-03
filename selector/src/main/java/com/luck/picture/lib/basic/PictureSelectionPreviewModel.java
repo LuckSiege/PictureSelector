@@ -16,6 +16,7 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -86,6 +87,19 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setLanguage(int language) {
         selectionConfig.language = language;
+        return this;
+    }
+
+    /**
+     * Intercept custom inject layout events, Users can implement their own layout
+     * on the premise that the view ID must be consistent
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionPreviewModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
+        selectionConfig.isInjectLayoutResource = listener != null;
+        PictureSelectionConfig.onLayoutResourceListener = listener;
         return this;
     }
 

@@ -34,6 +34,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomIntentKey;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PermissionEvent;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -274,7 +275,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (getResourceId() != 0) {
+        if (getResourceId() != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE) {
             return inflater.inflate(getResourceId(), container, false);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -1964,7 +1965,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     protected void onBackCurrentFragment() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            getActivity().getSupportFragmentManager().popBackStack();
+            if (!isStateSaved()) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
         }
         List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
         for (int i = 0; i < fragments.size(); i++) {

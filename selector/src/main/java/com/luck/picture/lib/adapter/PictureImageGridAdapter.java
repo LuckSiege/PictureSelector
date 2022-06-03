@@ -120,13 +120,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
                 return R.layout.ps_item_grid_camera;
             case ADAPTER_TYPE_VIDEO:
                 layoutResourceId = InjectResourceSource.getLayoutResource(mContext, InjectResourceSource.MAIN_ITEM_VIDEO_LAYOUT_RESOURCE);
-                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_video;
+                return layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_item_grid_video;
             case ADAPTER_TYPE_AUDIO:
                 layoutResourceId = InjectResourceSource.getLayoutResource(mContext, InjectResourceSource.MAIN_ITEM_AUDIO_LAYOUT_RESOURCE);
-                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_audio;
+                return layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_item_grid_audio;
             default:
                 layoutResourceId = InjectResourceSource.getLayoutResource(mContext, InjectResourceSource.MAIN_ITEM_IMAGE_LAYOUT_RESOURCE);
-                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_image;
+                return layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_item_grid_image;
         }
     }
 

@@ -38,71 +38,75 @@ public class DownloadFileUtils {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
 
             @Override
-            public String doInBackground() throws Throwable {
-                Uri uri;
-                ContentValues contentValues = new ContentValues();
-                String time = ValueOf.toString(System.currentTimeMillis());
-                if (PictureMimeType.isHasAudio(mimeType)) {
-                    contentValues.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
-                    contentValues.put(MediaStore.Audio.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_AUDIO : mimeType);
-                    if (SdkVersionUtils.isQ()) {
-                        contentValues.put(MediaStore.Audio.Media.DATE_TAKEN, time);
-                        contentValues.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
-                    } else {
-                        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
-                        contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
-                                + DateUtils.getCreateFileName("AUD_") + PictureMimeType.AMR);
-                    }
-                    uri = context.getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues);
-                } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    contentValues.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-                    contentValues.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
-                    if (SdkVersionUtils.isQ()) {
-                        contentValues.put(MediaStore.Video.Media.DATE_TAKEN, time);
-                        contentValues.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
-                    } else {
-                        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
-                        contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
-                                + DateUtils.getCreateFileName("VID_") + PictureMimeType.MP4);
-                    }
-                    uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
-                } else {
-                    contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-                    contentValues.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
-                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
-                    if (SdkVersionUtils.isQ()) {
-                        contentValues.put(MediaStore.Images.Media.DATE_TAKEN, time);
-                        contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
-                    } else {
-                        if (PictureMimeType.isHasGif(mimeType) || PictureMimeType.isUrlHasGif(path)) {
-                            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                            contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
-                                    + DateUtils.getCreateFileName("IMG_") + PictureMimeType.GIF);
-                        }
-                    }
-                    uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-                }
-                if (uri != null) {
-                    InputStream inputStream;
-                    if (PictureMimeType.isHasHttp(path)) {
-                        inputStream = new URL(path).openStream();
-                    } else {
-                        if (PictureMimeType.isContent(path)) {
-                            inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+            public String doInBackground() {
+                try {
+                    Uri uri;
+                    ContentValues contentValues = new ContentValues();
+                    String time = ValueOf.toString(System.currentTimeMillis());
+                    if (PictureMimeType.isHasAudio(mimeType)) {
+                        contentValues.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
+                        contentValues.put(MediaStore.Audio.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_AUDIO : mimeType);
+                        if (SdkVersionUtils.isQ()) {
+                            contentValues.put(MediaStore.Audio.Media.DATE_TAKEN, time);
+                            contentValues.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
                         } else {
-                            inputStream = new FileInputStream(path);
+                            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+                            contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
+                                    + DateUtils.getCreateFileName("AUD_") + PictureMimeType.AMR);
+                        }
+                        uri = context.getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    } else if (PictureMimeType.isHasVideo(mimeType)) {
+                        contentValues.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+                        contentValues.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
+                        if (SdkVersionUtils.isQ()) {
+                            contentValues.put(MediaStore.Video.Media.DATE_TAKEN, time);
+                            contentValues.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
+                        } else {
+                            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+                            contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
+                                    + DateUtils.getCreateFileName("VID_") + PictureMimeType.MP4);
+                        }
+                        uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    } else {
+                        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+                        contentValues.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
+                                || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
+                        if (SdkVersionUtils.isQ()) {
+                            contentValues.put(MediaStore.Images.Media.DATE_TAKEN, time);
+                            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+                        } else {
+                            if (PictureMimeType.isHasGif(mimeType) || PictureMimeType.isUrlHasGif(path)) {
+                                File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                                contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
+                                        + DateUtils.getCreateFileName("IMG_") + PictureMimeType.GIF);
+                            }
+                        }
+                        uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    }
+                    if (uri != null) {
+                        InputStream inputStream;
+                        if (PictureMimeType.isHasHttp(path)) {
+                            inputStream = new URL(path).openStream();
+                        } else {
+                            if (PictureMimeType.isContent(path)) {
+                                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                            } else {
+                                inputStream = new FileInputStream(path);
+                            }
+                        }
+                        OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(context, uri);
+                        boolean bufferCopy = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
+                        if (bufferCopy) {
+                            return PictureFileUtils.getPath(context, uri);
                         }
                     }
-                    OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(context, uri);
-                    boolean bufferCopy = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
-                    if (bufferCopy) {
-                        return PictureFileUtils.getPath(context, uri);
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 return null;
             }
