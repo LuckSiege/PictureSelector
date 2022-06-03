@@ -350,7 +350,7 @@ public final class PictureSelectionConfig implements Parcelable {
         selectMaxDurationSecond = 0;
         selectMinDurationSecond = 0;
         filterMaxFileSize = 0;
-        filterMinFileSize = 1024;
+        filterMinFileSize = FileSizeUnit.KB;
         selectMaxFileSize = 0;
         selectMinFileSize = 0;
         recordVideoMaxSecond = 60;

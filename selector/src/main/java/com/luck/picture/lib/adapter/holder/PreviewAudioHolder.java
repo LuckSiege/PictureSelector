@@ -81,7 +81,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     public void bindData(LocalMedia media, int position) {
         String path = media.getAvailablePath();
         String dataFormat = DateUtils.getYearDataFormat(media.getDateAddedTime());
-        String fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
+        String fileSize = PictureFileUtils.formatAccurateUnitFileSize(media.getSize());
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(media.getFileName()).append("\n").append(dataFormat).append(" - ").append(fileSize);
         SpannableStringBuilder builder = new SpannableStringBuilder(stringBuilder.toString());

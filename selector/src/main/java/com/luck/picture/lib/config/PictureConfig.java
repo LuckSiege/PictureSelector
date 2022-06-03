@@ -52,7 +52,7 @@ public final class PictureConfig {
 
     public final static int CAMERA_BEFORE = 1;
 
-    public final static long MB = 1048576;
+
 
     public final static int DEFAULT_SPAN_COUNT = 4;
 

@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -916,10 +917,10 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setFilterMaxFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.filterMaxFileSize = fileKbSize;
         } else {
-            selectionConfig.filterMaxFileSize = fileKbSize * 1024;
+            selectionConfig.filterMaxFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
@@ -931,10 +932,10 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setFilterMinFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.filterMinFileSize = fileKbSize;
         } else {
-            selectionConfig.filterMinFileSize = fileKbSize * 1024;
+            selectionConfig.filterMinFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
@@ -947,10 +948,10 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setSelectMaxFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.selectMaxFileSize = fileKbSize;
         } else {
-            selectionConfig.selectMaxFileSize = fileKbSize * 1024;
+            selectionConfig.selectMaxFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
@@ -962,10 +963,10 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setSelectMinFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.selectMinFileSize = fileKbSize;
         } else {
-            selectionConfig.selectMinFileSize = fileKbSize * 1024;
+            selectionConfig.selectMinFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }

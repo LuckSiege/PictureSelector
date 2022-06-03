@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -125,10 +126,10 @@ public class PictureSelectionQueryModel {
      * @return
      */
     public PictureSelectionQueryModel setFilterMaxFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.filterMaxFileSize = fileKbSize;
         } else {
-            selectionConfig.filterMaxFileSize = fileKbSize * 1024;
+            selectionConfig.filterMaxFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
@@ -140,10 +141,10 @@ public class PictureSelectionQueryModel {
      * @return
      */
     public PictureSelectionQueryModel setFilterMinFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.filterMinFileSize = fileKbSize;
         } else {
-            selectionConfig.filterMinFileSize = fileKbSize * 1024;
+            selectionConfig.filterMinFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }

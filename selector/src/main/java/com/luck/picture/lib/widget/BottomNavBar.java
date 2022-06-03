@@ -228,7 +228,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                 totalSize += media.getSize();
             }
             if (totalSize > 0) {
-                String fileSize = PictureFileUtils.formatFileSize(totalSize, 2);
+                String fileSize = PictureFileUtils.formatAccurateUnitFileSize(totalSize);
                 originalCheckbox.setText(getContext().getString(R.string.ps_original_image, fileSize));
             } else {
                 originalCheckbox.setText(getContext().getString(R.string.ps_default_original_image));

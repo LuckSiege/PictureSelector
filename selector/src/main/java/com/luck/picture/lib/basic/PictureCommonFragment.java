@@ -468,7 +468,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
+                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize);
                 showTipsDialog(getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
@@ -483,7 +483,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
+                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize);
                 showTipsDialog(getString(R.string.ps_select_min_size, minFileSize));
                 return true;
             }
@@ -602,7 +602,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
+                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize);
                 showTipsDialog(getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
@@ -617,7 +617,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
+                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize);
                 showTipsDialog(getString(R.string.ps_select_min_size, minFileSize));
                 return true;
             }

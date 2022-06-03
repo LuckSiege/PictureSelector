@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -200,10 +201,10 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setSelectMaxFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.selectMaxFileSize = fileKbSize;
         } else {
-            selectionConfig.selectMaxFileSize = fileKbSize * 1024;
+            selectionConfig.selectMaxFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
@@ -215,10 +216,10 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setSelectMinFileSize(long fileKbSize) {
-        if (fileKbSize >= PictureConfig.MB) {
+        if (fileKbSize >= FileSizeUnit.MB) {
             selectionConfig.selectMinFileSize = fileKbSize;
         } else {
-            selectionConfig.selectMinFileSize = fileKbSize * 1024;
+            selectionConfig.selectMinFileSize = fileKbSize * FileSizeUnit.KB;
         }
         return this;
     }
