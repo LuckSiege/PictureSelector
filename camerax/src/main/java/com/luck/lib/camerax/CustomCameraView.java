@@ -571,6 +571,10 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
         }
     }
 
+    private int getTargetRotation() {
+        return mImageCapture.getTargetRotation();
+    }
+
     @Override
     public void onOrientationChanged(int orientation) {
         if (mImageCapture != null) {
@@ -880,19 +884,29 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
             Uri savedUri = outputFileResults.getSavedUri();
             if (savedUri != null) {
+                CustomCameraView customCameraView = mCameraViewLayoutReference.get();
+                if (customCameraView != null) {
+                    customCameraView.stopCheckOrientation();
+                }
                 ImageView mImagePreview = mImagePreviewReference.get();
                 if (mImagePreview != null) {
                     Context context = mImagePreview.getContext();
                     SimpleCameraX.putOutputUri(((Activity) context).getIntent(), savedUri);
                     mImagePreview.setVisibility(View.VISIBLE);
+                    if (customCameraView != null && customCameraView.isAutoRotation) {
+                        int targetRotation = customCameraView.getTargetRotation();
+                        // 这种角度拍出来的图片宽比高大，所以使用ScaleType.FIT_CENTER缩放模式
+                        if (targetRotation == Surface.ROTATION_90 || targetRotation == Surface.ROTATION_270) {
+                            mImagePreview.setAdjustViewBounds(true);
+                        } else {
+                            mImagePreview.setAdjustViewBounds(false);
+                            mImagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        }
+                    }
                 }
                 View mImagePreviewBackground = mImagePreviewBgReference.get();
                 if (mImagePreviewBackground != null) {
                     mImagePreviewBackground.setVisibility(View.VISIBLE);
-                }
-                CustomCameraView customCameraView = mCameraViewLayoutReference.get();
-                if (customCameraView != null) {
-                    customCameraView.stopCheckOrientation();
                 }
                 CaptureLayout captureLayout = mCaptureLayoutReference.get();
                 if (captureLayout != null) {
