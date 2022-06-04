@@ -60,11 +60,17 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @Override
     public void onBindViewHolder(@NonNull BasePreviewHolder holder, int position) {
         holder.setOnPreviewEventListener(onPreviewEventListener);
-        LocalMedia media = mData.get(position);
+        LocalMedia media = getItem(position);
         mHolderCache.put(position, holder);
         holder.bindData(media, position);
     }
 
+    public LocalMedia getItem(int position) {
+        if (position > mData.size()) {
+            return null;
+        }
+        return mData.get(position);
+    }
 
     @Override
     public int getItemViewType(int position) {

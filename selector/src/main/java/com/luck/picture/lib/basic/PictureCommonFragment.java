@@ -291,6 +291,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
+        if (PictureSelectionConfig.viewLifecycle != null) {
+            PictureSelectionConfig.viewLifecycle.onViewCreated(this, view, savedInstanceState);
+        }
         setRequestedOrientation();
         setTranslucentStatusBar();
         setRootViewKeyListener(requireView());
@@ -1966,6 +1969,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void onBackCurrentFragment() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (!isStateSaved()) {
+                if (PictureSelectionConfig.viewLifecycle != null) {
+                    PictureSelectionConfig.viewLifecycle.onDestroy(this);
+                }
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         }
@@ -1997,6 +2003,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void onExitPictureSelector() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (isNormalDefaultEnter()) {
+                if (PictureSelectionConfig.viewLifecycle != null) {
+                    PictureSelectionConfig.viewLifecycle.onDestroy(this);
+                }
                 getActivity().finish();
             } else {
                 List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();

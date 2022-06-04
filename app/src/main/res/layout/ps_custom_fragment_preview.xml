@@ -83,4 +83,18 @@
         app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
 
 
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
+        android:textColor="@color/ps_color_white"
+        android:textSize="14sp"
+        android:text="分享"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/title_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_bar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

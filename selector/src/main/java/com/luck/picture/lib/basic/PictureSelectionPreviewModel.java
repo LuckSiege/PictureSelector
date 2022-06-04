@@ -104,6 +104,17 @@ public final class PictureSelectionPreviewModel {
     }
 
     /**
+     * View lifecycle listener
+     *
+     * @param viewLifecycle
+     * @return
+     */
+    public PictureSelectionPreviewModel setAttachViewLifecycle(IBridgeViewLifecycle viewLifecycle) {
+        PictureSelectionConfig.viewLifecycle = viewLifecycle;
+        return this;
+    }
+
+    /**
      * Preview Full Screen Mode
      *
      * @param isFullScreenModel

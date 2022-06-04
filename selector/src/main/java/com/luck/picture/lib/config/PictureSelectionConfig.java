@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.luck.picture.lib.basic.IBridgeViewLifecycle;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
@@ -149,6 +150,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnQueryFilterListener onQueryFilterListener;
     public static OnBitmapWatermarkEventListener onBitmapWatermarkListener;
     public static OnVideoThumbnailEventListener onVideoThumbnailEventListener;
+    public static IBridgeViewLifecycle viewLifecycle;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -333,7 +335,7 @@ public final class PictureSelectionConfig implements Parcelable {
         }
     };
 
-    protected void initDefaultValue() {
+    private void initDefaultValue() {
         chooseMode = SelectMimeType.ofImage();
         isOnlyCamera = false;
         selectionMode = SelectModeConfig.MULTIPLE;
@@ -423,7 +425,7 @@ public final class PictureSelectionConfig implements Parcelable {
         return selectionSpec;
     }
 
-    private static PictureSelectionConfig mInstance;
+    private static volatile PictureSelectionConfig mInstance;
 
     public static PictureSelectionConfig getInstance() {
         if (mInstance == null) {
@@ -467,6 +469,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onQueryFilterListener = null;
         PictureSelectionConfig.onBitmapWatermarkListener = null;
         PictureSelectionConfig.onVideoThumbnailEventListener = null;
+        PictureSelectionConfig.viewLifecycle = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

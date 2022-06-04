@@ -277,7 +277,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      *
      * @param views
      */
-    private void addAminViews(View... views) {
+    public void addAminViews(View... views) {
         Collections.addAll(mAnimViews, views);
     }
 
@@ -1068,6 +1068,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     protected PicturePreviewAdapter createAdapter() {
         return new PicturePreviewAdapter();
+    }
+
+    public PicturePreviewAdapter getAdapter() {
+        return viewPageAdapter;
+    }
+
+    public ViewPager2 getViewPager2() {
+        return viewPager;
     }
 
     private void initViewPagerData(ArrayList<LocalMedia> data) {

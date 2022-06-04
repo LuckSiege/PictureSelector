@@ -600,6 +600,16 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * View lifecycle listener
+     *
+     * @param viewLifecycle
+     * @return
+     */
+    public PictureSelectionModel setAttachViewLifecycle(IBridgeViewLifecycle viewLifecycle) {
+        PictureSelectionConfig.viewLifecycle = viewLifecycle;
+        return this;
+    }
 
     /**
      * The video quality output mode is only for system recording, and there are only two modes: poor quality or high quality
