@@ -880,26 +880,29 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
             Uri savedUri = outputFileResults.getSavedUri();
             if (savedUri != null) {
-                if (mImagePreviewReference.get() != null) {
-                    Context context = mImagePreviewReference.get().getContext();
+                ImageView mImagePreview = mImagePreviewReference.get();
+                if (mImagePreview != null) {
+                    Context context = mImagePreview.getContext();
                     SimpleCameraX.putOutputUri(((Activity) context).getIntent(), savedUri);
-                    mImagePreviewReference.get().setVisibility(View.VISIBLE);
+                    mImagePreview.setVisibility(View.VISIBLE);
                 }
-                if (mImagePreviewBgReference.get() != null) {
-                    mImagePreviewBgReference.get().setVisibility(View.VISIBLE);
+                View mImagePreviewBackground = mImagePreviewBgReference.get();
+                if (mImagePreviewBackground != null) {
+                    mImagePreviewBackground.setVisibility(View.VISIBLE);
                 }
-                if (mCaptureLayoutReference.get() != null) {
-                    mCaptureLayoutReference.get().setButtonCaptureEnabled(true);
+                CustomCameraView customCameraView = mCameraViewLayoutReference.get();
+                if (customCameraView != null) {
+                    customCameraView.stopCheckOrientation();
                 }
-                if (mImageCallbackListenerReference.get() != null) {
+                CaptureLayout captureLayout = mCaptureLayoutReference.get();
+                if (captureLayout != null) {
+                    captureLayout.setButtonCaptureEnabled(true);
+                    captureLayout.startTypeBtnAnimator();
+                }
+                ImageCallbackListener imageCallbackListener = mImageCallbackListenerReference.get();
+                if (imageCallbackListener != null) {
                     String outPutCameraPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
-                    mImageCallbackListenerReference.get().onLoadImage(outPutCameraPath, mImagePreviewReference.get());
-                }
-                if (mCaptureLayoutReference.get() != null) {
-                    mCaptureLayoutReference.get().startTypeBtnAnimator();
-                }
-                if (mCameraViewLayoutReference.get() != null) {
-                    mCameraViewLayoutReference.get().stopCheckOrientation();
+                    imageCallbackListener.onLoadImage(outPutCameraPath, mImagePreview);
                 }
             }
         }
