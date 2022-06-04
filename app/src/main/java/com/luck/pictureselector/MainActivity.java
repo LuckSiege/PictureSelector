@@ -1385,6 +1385,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             SimpleCameraX camera = SimpleCameraX.of();
+            camera.isAutoRotation(true);
             camera.setCameraMode(cameraMode);
             camera.setVideoFrameRate(25);
             camera.setVideoBitRate(3 * 1024 * 1024);

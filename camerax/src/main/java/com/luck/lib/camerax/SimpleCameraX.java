@@ -55,6 +55,9 @@ public class SimpleCameraX {
 
     public static final String EXTRA_ZOOM_PREVIEW = EXTRA_PREFIX + ".isZoomPreview";
 
+    public static final String EXTRA_AUTO_ROTATION = EXTRA_PREFIX + ".isAutoRotation";
+
+
     private final Intent mCameraIntent;
 
     private final Bundle mCameraBundle;
@@ -324,6 +327,17 @@ public class SimpleCameraX {
      */
     public SimpleCameraX isZoomCameraPreview(boolean isZoom) {
         mCameraBundle.putBoolean(EXTRA_ZOOM_PREVIEW, isZoom);
+        return this;
+    }
+
+    /**
+     * 是否自动纠偏
+     *
+     * @param isAutoRotation
+     * @return
+     */
+    public SimpleCameraX isAutoRotation(boolean isAutoRotation) {
+        mCameraBundle.putBoolean(EXTRA_AUTO_ROTATION, isAutoRotation);
         return this;
     }
 
