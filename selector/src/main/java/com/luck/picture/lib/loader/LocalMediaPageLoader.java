@@ -306,8 +306,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 String folderName = data.getString(folderNameColumn);
                                 String fileName = data.getString(fileNameColumn);
                                 long bucket_id = data.getLong(bucketIdColumn);
-
-
+                                if (TextUtils.isEmpty(fileName)) {
+                                    fileName = PictureMimeType.getUrlToFileName(absolutePath);
+                                }
                                 if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
                                     if (config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                                         // If you set the minimum number of seconds of video to display

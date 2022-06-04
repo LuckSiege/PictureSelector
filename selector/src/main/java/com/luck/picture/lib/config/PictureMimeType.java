@@ -214,6 +214,24 @@ public final class PictureMimeType {
         }
     }
 
+    /**
+     * Get url to file name
+     *
+     * @param path
+     * @return
+     */
+    public static String getUrlToFileName(String path) {
+        String result = "";
+        try {
+            int lastIndexOf = path.lastIndexOf("/");
+            if (lastIndexOf != -1) {
+                result = path.substring(lastIndexOf + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     /**
      * is content://
