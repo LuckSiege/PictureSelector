@@ -398,7 +398,7 @@ public final class PictureSelectionConfig implements Parcelable {
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-        isCameraForegroundService = true;
+        isCameraForegroundService = false;
         isResultListenerBack = true;
         isActivityResultBack = false;
         isCompressEngine = false;
