@@ -80,7 +80,7 @@ Or Maven:
 
 ## Permission  
 
-Permission describe，see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
+Permission describe，see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
 
 ```sh
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
