@@ -7,13 +7,13 @@
 
    [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-06-05_044238_v3.10.0.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.0.9-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.0-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 
 ## Contents
--[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.0.9)<br>
+-[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.0)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
@@ -37,16 +37,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.9'
+  implementation 'io.github.lucksiege:pictureselector:v3.10.0'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.0.9'
+  implementation 'io.github.lucksiege:compress:v3.10.0'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.0.9'
+  implementation 'io.github.lucksiege:ucrop:v3.10.0'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.0.9'
+  implementation 'io.github.lucksiege:camerax:v3.10.0'
 }
 ```
 
@@ -56,25 +56,25 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.9</version>
+  <version>v3.10.0</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.9</version>
+  <version>v3.10.0</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.9</version>
+  <version>v3.10.0</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.9</version>
+  <version>v3.10.0</version>
 </dependency>
 ```
 
