@@ -82,23 +82,20 @@ dependencies {
 
 ## 权限
 
+权限使用说明，请参阅 [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
+
 ```sh
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-<uses-permission android:name="android.permission.WRITE_SETTINGS" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 <uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 <uses-permission android:name="android.permission.BLUETOOTH" />
-<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 ```
 
 Android 11 使用相机，需要再AndroidManifest.xm 添加如下代码：
