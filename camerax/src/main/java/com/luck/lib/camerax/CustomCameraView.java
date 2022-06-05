@@ -401,7 +401,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 String outputPath = isMergeExternalStorageState(activity, SimpleCameraX.getOutputPath(activity.getIntent()));
                 if (isImageCaptureEnabled()) {
                     mImagePreview.setVisibility(INVISIBLE);
-                    mImagePreviewBg.setVisibility(INVISIBLE);
+                    mImagePreviewBg.setAlpha(0F);
                     if (mCameraListener != null) {
                         mCameraListener.onPictureSuccess(outputPath);
                     }
@@ -898,25 +898,26 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                         // 这种角度拍出来的图片宽比高大，所以使用ScaleType.FIT_CENTER缩放模式
                         if (targetRotation == Surface.ROTATION_90 || targetRotation == Surface.ROTATION_270) {
                             mImagePreview.setAdjustViewBounds(true);
+                            View mImagePreviewBackground = mImagePreviewBgReference.get();
+                            if (mImagePreviewBackground != null) {
+                                mImagePreviewBackground.animate().alpha(1F).setDuration(220).start();
+                            }
                         } else {
                             mImagePreview.setAdjustViewBounds(false);
                             mImagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         }
                     }
+                    ImageCallbackListener imageCallbackListener = mImageCallbackListenerReference.get();
+                    if (imageCallbackListener != null) {
+                        String outPutCameraPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
+                        imageCallbackListener.onLoadImage(outPutCameraPath, mImagePreview);
+                    }
                 }
-                View mImagePreviewBackground = mImagePreviewBgReference.get();
-                if (mImagePreviewBackground != null) {
-                    mImagePreviewBackground.setVisibility(View.VISIBLE);
-                }
+
                 CaptureLayout captureLayout = mCaptureLayoutReference.get();
                 if (captureLayout != null) {
                     captureLayout.setButtonCaptureEnabled(true);
                     captureLayout.startTypeBtnAnimator();
-                }
-                ImageCallbackListener imageCallbackListener = mImageCallbackListenerReference.get();
-                if (imageCallbackListener != null) {
-                    String outPutCameraPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
-                    imageCallbackListener.onLoadImage(outPutCameraPath, mImagePreview);
                 }
             }
         }
@@ -1042,7 +1043,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
     private void resetState() {
         if (isImageCaptureEnabled()) {
             mImagePreview.setVisibility(INVISIBLE);
-            mImagePreviewBg.setVisibility(INVISIBLE);
+            mImagePreviewBg.setAlpha(0F);
         } else {
             try {
                 mVideoCapture.stopRecording();

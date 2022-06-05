@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:background="@color/picture_color_black"
-        android:visibility="invisible" />
+        android:alpha="0"
+        android:background="@color/picture_color_black" />
 
     <ImageView
         android:id="@+id/cover_preview"
