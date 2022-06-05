@@ -1195,19 +1195,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @return
      */
     protected String getOutputPath(Intent data) {
-        String outputPath = null;
-        Uri outPutUri;
-        if (data != null) {
-            if (config.chooseMode == SelectMimeType.ofAudio()) {
-                outPutUri = data.getData() != null ? data.getData() : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-            } else {
-                outPutUri = data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-            }
-            if (outPutUri != null) {
-                outputPath = PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
-            }
+        if (data == null) {
+            return null;
         }
-        return outputPath;
+        Uri outPutUri = data.getData() != null ? data.getData() : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        if (outPutUri == null) {
+            return null;
+        }
+        return PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
     }
 
     /**
@@ -1749,7 +1744,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     for (Map.Entry<String, LocalMedia> entry : queue.entrySet()) {
                         LocalMedia media = entry.getValue();
                         if (config.isCheckOriginalImage || TextUtils.isEmpty(media.getSandboxPath())) {
-                            PictureSelectionConfig.uriToFileTransformEngine.onUriToFileAsyncTransform(getContext(), entry.getKey(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
+                            PictureSelectionConfig.uriToFileTransformEngine.onUriToFileAsyncTransform(getContext(), media.getPath(), media.getMimeType(), new OnKeyValueResultCallbackListener() {
                                 @Override
                                 public void onCallback(String srcPath, String resultPath) {
                                     if (TextUtils.isEmpty(srcPath)) {
