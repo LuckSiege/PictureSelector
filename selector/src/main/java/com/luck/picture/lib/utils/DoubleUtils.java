@@ -1,5 +1,7 @@
 package com.luck.picture.lib.utils;
 
+import android.os.SystemClock;
+
 /**
  * @author：luck
  * @date：2021/12/10 10:07 上午
@@ -11,7 +13,7 @@ public class DoubleUtils {
     private static long lastClickTime;
 
     public static boolean isFastDoubleClick() {
-        long time = System.currentTimeMillis();
+        long time = SystemClock.elapsedRealtime();
         if (time - lastClickTime < TIME) {
             return true;
         }
