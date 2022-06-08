@@ -15,7 +15,6 @@ import java.util.ArrayList;
  * Please Use {@link CropFileEngine}
  * @describe：CropEngine
  */
-@Deprecated
 public interface CropEngine {
 
     /**

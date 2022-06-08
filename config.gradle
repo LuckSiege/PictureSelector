@@ -4,8 +4,8 @@ ext {
             buildToolsVersion             : "29.0.2",
             minSdkVersion                 : 21,
             targetSdkVersion              : 31,
-            versionCode                   : 80,
-            versionName                   : "v3.10.0",
+            versionCode                   : 81,
+            versionName                   : "v3.10.1",
 
             //open version control
             androidSupportVersion         : "27.0.2",
@@ -15,7 +15,7 @@ ext {
             activity_version              : "1.4.0",
             fragment_version              : "1.4.1",
             viewpage2                     : "1.0.0",
-            constraintlayout              : "2.1.3",
+            constraintlayout              : "2.1.4",
             exoplayer                     : "2.17.1",
 
             experimental_version          : "1.1.0",

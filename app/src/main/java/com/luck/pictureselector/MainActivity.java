@@ -1448,7 +1448,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 自定义裁剪
      */
-    @Deprecated
     private class ImageCropEngine implements CropEngine {
 
         @Override
@@ -1488,6 +1487,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             uCrop.start(fragment.getActivity(), fragment, requestCode);
         }
     }
+
+
+
 
     /**
      * 多图裁剪时每张对应的裁剪比例

@@ -858,10 +858,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         selectedDialog.setOnDismissListener(new PhotoItemSelectedDialog.OnDismissListener() {
             @Override
             public void onDismiss(boolean isCancel, DialogInterface dialog) {
-                if (config.isOnlyCamera) {
-                    if (isCancel) {
-                        onKeyBackFragmentFinish();
-                    }
+                if (config.isOnlyCamera && isCancel) {
+                    onKeyBackFragmentFinish();
                 }
             }
         });

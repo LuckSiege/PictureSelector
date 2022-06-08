@@ -92,8 +92,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         super.onCreate(savedInstanceState);
         immersive();
         setContentView(R.layout.ucrop_activity_multiple);
-        initCropFragments();
         setupViews(getIntent());
+        initCropFragments();
     }
 
     private void immersive() {
@@ -112,6 +112,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         uCropNotSupportList = new ArrayList<>();
         for (int i = 0; i < totalCropData.size(); i++) {
             String path = totalCropData.get(i);
+            uCropTotalQueue.put(path, new JSONObject());
             String realPath = FileUtils.isContent(path) ? FileUtils.getPath(this, Uri.parse(path)) : path;
             String mimeType = getPathToMimeType(path);
             if (FileUtils.isUrlHasVideo(realPath) || FileUtils.isHasVideo(mimeType) || FileUtils.isHasAudio(mimeType)) {
@@ -119,17 +120,30 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 uCropNotSupportList.add(path);
             } else {
                 uCropSupportList.add(path);
-                fragments.add(UCropFragment.newInstance(getIntent().getExtras()));
+                Bundle extras = getIntent().getExtras();
+                Uri inputUri = FileUtils.isContent(path) || FileUtils.isHasHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+                String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
+                        isForbidCropGifWebp, inputUri);
+                String fileName = TextUtils.isEmpty(outputCropFileName) ? FileUtils.getCreateFileName("CROP_") + postfix
+                        : FileUtils.getCreateFileName() + "_" + outputCropFileName;
+                Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
+                extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
+                extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
+                AspectRatio aspectRatio = aspectRatioList != null && aspectRatioList.size() > i ? aspectRatioList.get(i) : null;
+                extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, aspectRatio != null ? aspectRatio.getAspectRatioX() : -1);
+                extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_Y, aspectRatio != null ? aspectRatio.getAspectRatioY() : -1);
+                UCropFragment uCropFragment = UCropFragment.newInstance(extras);
+                fragments.add(uCropFragment);
             }
-            JSONObject object = new JSONObject();
-            uCropTotalQueue.put(path, object);
         }
 
         if (uCropSupportList.size() == 0) {
             throw new IllegalArgumentException("No clipping data sources are available");
         }
         setGalleryAdapter();
-        setFirstCropFragment(getCropSupportPosition());
+        UCropFragment uCropFragment = fragments.get(getCropSupportPosition());
+        switchCropFragment(uCropFragment, getCropSupportPosition());
+        galleryAdapter.setCurrentSelectPosition(getCropSupportPosition());
     }
 
     /**
@@ -174,16 +188,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         return mimeType;
     }
 
-    /**
-     * First crop fragment
-     *
-     * @param position
-     */
-    private void setFirstCropFragment(int position) {
-        UCropFragment uCropFragment = buildCropFragment(position);
-        switchCropFragment(uCropFragment, position);
-        galleryAdapter.setCurrentSelectPosition(position);
-    }
 
     /**
      * switch crop fragment tab
@@ -239,7 +243,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
                 galleryAdapter.setCurrentSelectPosition(position);
                 galleryAdapter.notifyItemChanged(position);
-                UCropFragment uCropFragment = buildCropFragment(position);
+                UCropFragment uCropFragment = fragments.get(position);
                 switchCropFragment(uCropFragment, position);
             }
         });
@@ -254,7 +258,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private String getSandboxPathDir() {
         File customFile;
         String outputDir = getIntent().getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_DIR);
-        if (TextUtils.isEmpty(outputDir)) {
+        if (outputDir == null || "".equals(outputDir)) {
             customFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath(), "Sandbox");
         } else {
             customFile = new File(outputDir);
@@ -361,7 +365,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                     if (isCropCompleteFinish) {
                         onCropCompleteFinish();
                     } else {
-                        UCropFragment uCropFragment = buildCropFragment(nextFragmentPosition);
+                        UCropFragment uCropFragment = fragments.get(nextFragmentPosition);
                         switchCropFragment(uCropFragment, nextFragmentPosition);
                         galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
                         galleryAdapter.setCurrentSelectPosition(nextFragmentPosition);
@@ -388,41 +392,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         intent.putExtra(MediaStore.EXTRA_OUTPUT, array.toString());
         setResult(RESULT_OK, intent);
         finish();
-    }
-
-
-    /**
-     * build next crop fragment
-     *
-     * @param position next crop data
-     * @return
-     */
-    private UCropFragment buildCropFragment(int position) {
-        Bundle extras = getIntent().getExtras();
-        String path = uCropSupportList.get(position);
-        Uri inputUri;
-        if (FileUtils.isContent(path) || FileUtils.isHasHttp(path)) {
-            inputUri = Uri.parse(path);
-        } else {
-            inputUri = Uri.fromFile(new File(path));
-        }
-        String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
-                isForbidCropGifWebp, inputUri);
-        String fileName = TextUtils.isEmpty(outputCropFileName)
-                ? FileUtils.getCreateFileName("CROP_") + postfix
-                : FileUtils.getCreateFileName() + "_" + outputCropFileName;
-        Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
-        extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
-        extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
-        // Aspect ratio options
-        if (aspectRatioList != null && aspectRatioList.size() > position) {
-            AspectRatio aspectRatio = aspectRatioList.get(position);
-            extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, aspectRatio.getAspectRatioX());
-            extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_Y, aspectRatio.getAspectRatioY());
-        }
-        UCropFragment uCropFragment = fragments.get(position);
-        uCropFragment.setArguments(extras);
-        return uCropFragment;
     }
 
     /**

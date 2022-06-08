@@ -78,6 +78,9 @@ public class SimpleCameraX {
      * @param requestCode requestCode for result
      */
     public void start(@NonNull Activity activity, int requestCode) {
+        if (CustomCameraConfig.imageEngine == null) {
+            throw new NullPointerException("Missing ImageEngine,please implement SimpleCamerax.setImageEngine");
+        }
         activity.startActivityForResult(getIntent(activity), requestCode);
     }
 
@@ -89,6 +92,9 @@ public class SimpleCameraX {
      * @param requestCode requestCode for result
      */
     public void start(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
+        if (CustomCameraConfig.imageEngine == null) {
+            throw new NullPointerException("Missing ImageEngine,please implement SimpleCamerax.setImageEngine");
+        }
         fragment.startActivityForResult(getIntent(context), requestCode);
     }
 
@@ -110,9 +116,6 @@ public class SimpleCameraX {
      * @return
      */
     public SimpleCameraX setImageEngine(CameraImageEngine engine) {
-        if (CustomCameraConfig.imageEngine == engine) {
-            throw new NullPointerException("Missing ImageEngine,please implement SimpleCamerax.setImageEngine");
-        }
         CustomCameraConfig.imageEngine = engine;
         return this;
     }

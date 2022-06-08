@@ -259,12 +259,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         magicalView.setMagicalContent(viewPager);
         setMagicalViewBackgroundColor();
         addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, completeSelectView, bottomNarBar);
+        initLoader();
         initTitleBar();
         initViewPagerData(mData);
         if (isExternalPreview) {
             externalPreviewStyle();
         } else {
-            initLoader();
             initBottomNavBar();
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
@@ -499,6 +499,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * init LocalMedia Loader
      */
     protected void initLoader() {
+        if (isExternalPreview) {
+            return;
+        }
         if (config.isPageStrategy) {
             mLoader = new LocalMediaPageLoader(getContext(), config);
         } else {
@@ -506,24 +509,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
-    private void handleLoadData(ArrayList<LocalMedia> result) {
-        if (ActivityCompatHelper.isDestroy(getActivity())) {
-            return;
-        }
-        if (result.size() == 0) {
-            onBackCurrentFragment();
-        } else {
-            mData = result;
-            // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
-            // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
-            int position = isShowCamera ? 0 : -1;
-            for (int i = 0; i < mData.size(); i++) {
-                position++;
-                mData.get(i).setPosition(position);
-            }
-            initViewPagerData(mData);
-        }
-    }
 
     /**
      * 加载更多
