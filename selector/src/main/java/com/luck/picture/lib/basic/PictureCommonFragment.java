@@ -1196,7 +1196,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (data == null) {
             return null;
         }
-        Uri outPutUri = data.getData() != null ? data.getData() : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        Uri outPutUri = data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
         if (outPutUri == null) {
             return null;
         }
