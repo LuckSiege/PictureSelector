@@ -278,7 +278,7 @@ public final class PictureSelectionCameraModel {
     /**
      * Choose between photographing and shooting in ofAll mode
      *
-     * @param ofAllCameraType {@link PictureMimeType.ofImage or PictureMimeType.ofVideo}
+     * @param ofAllCameraType {@link SelectMimeType.ofImage or SelectMimeType.ofVideo}
      *                        The default is ofAll() mode
      * @return
      */

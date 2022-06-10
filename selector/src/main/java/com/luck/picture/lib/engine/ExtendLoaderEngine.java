@@ -14,6 +14,7 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
  * @date：2021/12/5 7:31 下午
  * @describe：Custom data loader engine
  */
+@Deprecated
 public interface ExtendLoaderEngine {
     /**
      * load all album list data

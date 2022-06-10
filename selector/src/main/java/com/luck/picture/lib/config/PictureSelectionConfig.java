@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.luck.picture.lib.basic.IBridgeLoaderFactory;
 import com.luck.picture.lib.basic.IBridgeViewLifecycle;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
@@ -118,6 +119,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isActivityResultBack;
     public boolean isCompressEngine;
     public boolean isLoaderDataEngine;
+    public boolean isLoaderFactoryEngine;
     public boolean isSandboxFileEngine;
     public boolean isOriginalControl;
     public boolean isDisplayTimeAxis;
@@ -151,6 +153,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnBitmapWatermarkEventListener onBitmapWatermarkListener;
     public static OnVideoThumbnailEventListener onVideoThumbnailEventListener;
     public static IBridgeViewLifecycle viewLifecycle;
+    public static IBridgeLoaderFactory loaderFactory;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -226,6 +229,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isActivityResultBack = in.readByte() != 0;
         isCompressEngine = in.readByte() != 0;
         isLoaderDataEngine = in.readByte() != 0;
+        isLoaderFactoryEngine = in.readByte() != 0;
         isSandboxFileEngine = in.readByte() != 0;
         isOriginalControl = in.readByte() != 0;
         isDisplayTimeAxis = in.readByte() != 0;
@@ -309,6 +313,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isActivityResultBack ? 1 : 0));
         dest.writeByte((byte) (isCompressEngine ? 1 : 0));
         dest.writeByte((byte) (isLoaderDataEngine ? 1 : 0));
+        dest.writeByte((byte) (isLoaderFactoryEngine ? 1 : 0));
         dest.writeByte((byte) (isSandboxFileEngine ? 1 : 0));
         dest.writeByte((byte) (isOriginalControl ? 1 : 0));
         dest.writeByte((byte) (isDisplayTimeAxis ? 1 : 0));
@@ -348,11 +353,11 @@ public final class PictureSelectionConfig implements Parcelable {
         videoQuality = VideoQuality.VIDEO_QUALITY_HIGH;
         language = LanguageConfig.UNKNOWN_LANGUAGE;
         filterVideoMaxSecond = 0;
-        filterVideoMinSecond = 1000;
+        filterVideoMinSecond = 0;
         selectMaxDurationSecond = 0;
         selectMinDurationSecond = 0;
         filterMaxFileSize = 0;
-        filterMinFileSize = FileSizeUnit.KB;
+        filterMinFileSize = 0;
         selectMaxFileSize = 0;
         selectMinFileSize = 0;
         recordVideoMaxSecond = 60;
@@ -403,6 +408,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isActivityResultBack = false;
         isCompressEngine = false;
         isLoaderDataEngine = false;
+        isLoaderFactoryEngine = false;
         isSandboxFileEngine = false;
         isPreviewFullScreenMode = true;
         isPreviewZoomEffect = chooseMode != SelectMimeType.ofAudio();
@@ -470,6 +476,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onBitmapWatermarkListener = null;
         PictureSelectionConfig.onVideoThumbnailEventListener = null;
         PictureSelectionConfig.viewLifecycle = null;
+        PictureSelectionConfig.loaderFactory = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

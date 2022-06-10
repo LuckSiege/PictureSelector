@@ -1,16 +1,12 @@
 ext {
     cfgs = [
-            compileSdkVersion             : 31,
-            buildToolsVersion             : "29.0.2",
-            minSdkVersion                 : 21,
-            targetSdkVersion              : 31,
-            versionCode                   : 81,
-            versionName                   : "v3.10.1",
+            versionCode                   : 82,
+            versionName                   : "v3.10.2",
 
             //open version control
             androidSupportVersion         : "27.0.2",
             version_recyclerview          : "1.2.1",
-            version_appcompat             : "1.4.1",
+            version_appcompat             : "1.4.2",
             localbroadcastmanager         : "1.0.0",
             activity_version              : "1.4.0",
             fragment_version              : "1.4.1",

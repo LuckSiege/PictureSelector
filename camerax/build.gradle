@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion cfgs.compileSdkVersion
+    compileSdkVersion 32
 
     defaultConfig {
-        minSdkVersion cfgs.minSdkVersion
-        targetSdkVersion cfgs.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 32
         versionCode cfgs.versionCode
         versionName cfgs.versionName
 
@@ -33,11 +33,11 @@ ext {
 apply from: '../publish.gradle'
 
 dependencies {
-    api "androidx.camera:camera-core:1.2.0-alpha01"
-    api "androidx.camera:camera-camera2:1.2.0-alpha01"
-    implementation "androidx.camera:camera-view:1.2.0-alpha01"
-    implementation "androidx.camera:camera-lifecycle:1.2.0-alpha01"
+    api "androidx.camera:camera-core:1.2.0-alpha02"
+    api "androidx.camera:camera-camera2:1.2.0-alpha02"
+    implementation "androidx.camera:camera-view:1.2.0-alpha02"
+    implementation "androidx.camera:camera-lifecycle:1.2.0-alpha02"
     implementation "androidx.transition:transition:1.4.1"
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
 }

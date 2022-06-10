@@ -46,6 +46,7 @@ import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
+import com.luck.picture.lib.loader.IBridgeMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -251,7 +252,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         titleBar = view.findViewById(R.id.title_bar);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         tvCurrentDataTime = view.findViewById(R.id.tv_current_data_time);
-        initLoader();
+        onCreateLoader();
         initAlbumListPopWindow();
         initTitleBar();
         initComplete();
@@ -325,15 +326,18 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
     }
 
-    /**
-     * init LocalMedia Loader
-     */
-    protected void initLoader() {
-        if (config.isPageStrategy) {
-            mLoader = new LocalMediaPageLoader(getContext(), config);
+
+    @Override
+    public void onCreateLoader() {
+        if (PictureSelectionConfig.loaderFactory != null) {
+            mLoader = PictureSelectionConfig.loaderFactory.onCreateLoader();
+            if (mLoader == null) {
+                throw new NullPointerException("No available " + IBridgeMediaLoader.class + " loader found");
+            }
         } else {
-            mLoader = new LocalMediaLoader(getContext(), config);
+            mLoader = config.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
         }
+        mLoader.initConfig(getContext(), config);
     }
 
     private void initTitleBar() {
@@ -672,7 +676,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         }
                     });
         } else {
-            mLoader.loadFirstPageMedia(firstBucketId, mPage * config.pageSize,
+            mLoader.loadPageMediaData(firstBucketId, 1, mPage * config.pageSize,
                     new OnQueryDataResultListener<LocalMedia>() {
                         @Override
                         public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
@@ -1041,7 +1045,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             }
                         });
             } else {
-                mLoader.loadPageMediaData(bucketId, mPage, config.pageSize, config.pageSize,
+                mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
                         new OnQueryDataResultListener<LocalMedia>() {
                             @Override
                             public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {

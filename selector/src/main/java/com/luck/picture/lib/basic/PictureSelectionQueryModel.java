@@ -180,12 +180,8 @@ public class PictureSelectionQueryModel {
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");
         }
-        IBridgeMediaLoader loader;
-        if (selectionConfig.isPageStrategy) {
-            loader = new LocalMediaPageLoader(activity, selectionConfig);
-        } else {
-            loader = new LocalMediaLoader(activity, selectionConfig);
-        }
+        IBridgeMediaLoader loader = selectionConfig.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
+        loader.initConfig(activity, selectionConfig);
         return loader;
     }
 
@@ -203,12 +199,8 @@ public class PictureSelectionQueryModel {
         if (call == null) {
             throw new NullPointerException("OnQueryDataSourceListener cannot be null");
         }
-        IBridgeMediaLoader loader;
-        if (selectionConfig.isPageStrategy) {
-            loader = new LocalMediaPageLoader(activity, selectionConfig);
-        } else {
-            loader = new LocalMediaLoader(activity, selectionConfig);
-        }
+        IBridgeMediaLoader loader = selectionConfig.isPageStrategy?new LocalMediaPageLoader():new LocalMediaLoader();
+        loader.initConfig(activity, selectionConfig);
         loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
@@ -231,19 +223,15 @@ public class PictureSelectionQueryModel {
         if (call == null) {
             throw new NullPointerException("OnQueryDataSourceListener cannot be null");
         }
-        IBridgeMediaLoader loader;
-        if (selectionConfig.isPageStrategy) {
-            loader = new LocalMediaPageLoader(activity, selectionConfig);
-        } else {
-            loader = new LocalMediaLoader(activity, selectionConfig);
-        }
+        IBridgeMediaLoader loader = selectionConfig.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
+        loader.initConfig(activity, selectionConfig);
         loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
                 if (result != null && result.size() > 0) {
                     LocalMediaFolder all = result.get(0);
                     if (selectionConfig.isPageStrategy) {
-                        loader.loadFirstPageMedia(all.getBucketId(), selectionConfig.pageSize,
+                        loader.loadPageMediaData(all.getBucketId(), 1, selectionConfig.pageSize,
                                 new OnQueryDataResultListener<LocalMedia>() {
                                     @Override
                                     public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {

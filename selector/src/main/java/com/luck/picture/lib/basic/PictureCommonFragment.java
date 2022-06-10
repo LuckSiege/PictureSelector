@@ -153,6 +153,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void onCreateLoader() {
+    }
+
+    @Override
     public int getResourceId() {
         return 0;
     }
@@ -2035,6 +2039,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null)
                     PictureSelectionConfig.loaderDataEngine = baseEngine.createLoaderDataEngine();
+            }
+        }
+
+        if (PictureSelectionConfig.getInstance().isLoaderFactoryEngine) {
+            if (PictureSelectionConfig.loaderFactory == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.loaderFactory = baseEngine.onCreateLoader();
             }
         }
     }

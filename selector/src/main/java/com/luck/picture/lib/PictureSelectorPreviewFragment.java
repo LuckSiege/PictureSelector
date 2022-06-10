@@ -55,6 +55,7 @@ import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
+import com.luck.picture.lib.loader.IBridgeMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -259,7 +260,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         magicalView.setMagicalContent(viewPager);
         setMagicalViewBackgroundColor();
         addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, completeSelectView, bottomNarBar);
-        initLoader();
+        onCreateLoader();
         initTitleBar();
         initViewPagerData(mData);
         if (isExternalPreview) {
@@ -495,20 +496,21 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
-    /**
-     * init LocalMedia Loader
-     */
-    protected void initLoader() {
+    @Override
+    public void onCreateLoader() {
         if (isExternalPreview) {
             return;
         }
-        if (config.isPageStrategy) {
-            mLoader = new LocalMediaPageLoader(getContext(), config);
+        if (PictureSelectionConfig.loaderFactory != null) {
+            mLoader = PictureSelectionConfig.loaderFactory.onCreateLoader();
+            if (mLoader == null) {
+                throw new NullPointerException("No available " + IBridgeMediaLoader.class + " loader found");
+            }
         } else {
-            mLoader = new LocalMediaLoader(getContext(), config);
+            mLoader = config.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
         }
+        mLoader.initConfig(getContext(), config);
     }
-
 
     /**
      * 加载更多

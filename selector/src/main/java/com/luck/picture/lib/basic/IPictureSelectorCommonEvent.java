@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.loader.IBridgeMediaLoader;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,11 @@ import java.util.ArrayList;
  * @describe：IPictureSelectorCommonEvent
  */
 public interface IPictureSelectorCommonEvent {
+
+    /**
+     * 创建数据查询器
+     */
+    void onCreateLoader();
 
     /**
      * View Layout

@@ -227,10 +227,14 @@ public final class PictureSelectionModel {
      * {@link ExtendLoaderEngine}
      * {@link LocalMediaFolder}
      * {@link LocalMedia}
+     * <p>
+     * Use {@link #.setLoaderFactoryEngine();}
+     * </p>
      *
      * @param engine
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setExtendLoaderEngine(ExtendLoaderEngine engine) {
         if (PictureSelectionConfig.loaderDataEngine != engine) {
             PictureSelectionConfig.loaderDataEngine = engine;
@@ -241,6 +245,25 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Users can implement some interfaces to access their own query data
+     * The premise is that you need to comply with the model specification of PictureSelector
+     * {@link IBridgeLoaderFactory}
+     * {@link LocalMediaFolder}
+     * {@link LocalMedia}
+     *
+     * @param engine
+     * @return
+     */
+    public PictureSelectionModel setLoaderFactoryEngine(IBridgeLoaderFactory loaderFactory) {
+        if (PictureSelectionConfig.loaderFactory != loaderFactory) {
+            PictureSelectionConfig.loaderFactory = loaderFactory;
+            selectionConfig.isLoaderFactoryEngine = true;
+        } else {
+            selectionConfig.isLoaderFactoryEngine = false;
+        }
+        return this;
+    }
 
     /**
      * Intercept camera click events, and users can implement their own camera framework
@@ -453,7 +476,7 @@ public final class PictureSelectionModel {
     /**
      * Choose between photographing and shooting in ofAll mode
      *
-     * @param ofAllCameraType {@link PictureMimeType.ofImage or PictureMimeType.ofVideo}
+     * @param ofAllCameraType {@link SelectMimeType.ofImage or SelectMimeType.ofVideo}
      *                        The default is ofAll() mode
      * @return
      */

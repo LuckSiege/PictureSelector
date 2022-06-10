@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion cfgs.compileSdkVersion
+    compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion cfgs.minSdkVersion
-        targetSdkVersion cfgs.targetSdkVersion
+        minSdkVersion 19
+        targetSdkVersion 30
         versionCode cfgs.versionCode
         versionName cfgs.versionName
 
