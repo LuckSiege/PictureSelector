@@ -1154,6 +1154,17 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Filter the validity of file size or duration of audio and video
+     *
+     * @param isFilterSizeDuration
+     * @return
+     */
+    public PictureSelectionModel isFilterSizeDuration(boolean isFilterSizeDuration) {
+        selectionConfig.isFilterSizeDuration = isFilterSizeDuration;
+        return this;
+    }
+
+    /**
      * Quick slide selection results
      *
      * @param isFastSlidingSelect

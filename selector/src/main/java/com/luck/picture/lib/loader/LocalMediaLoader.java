@@ -164,7 +164,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 if (TextUtils.isEmpty(fileName)) {
                                     fileName = PictureMimeType.getUrlToFileName(absolutePath);
                                 }
-                                if (size > 0 && size < FileSizeUnit.KB) {
+                                if (getConfig().isFilterSizeDuration && size > 0 && size < FileSizeUnit.KB) {
                                     // Filter out files less than 1KB
                                     continue;
                                 }
@@ -177,7 +177,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         // If you set the maximum number of seconds of video to display
                                         continue;
                                     }
-                                    if (duration <= 0) {
+                                    if (getConfig().isFilterSizeDuration && duration <= 0) {
                                         //If the length is 0, the corrupted video is processed and filtered out
                                         continue;
                                     }
