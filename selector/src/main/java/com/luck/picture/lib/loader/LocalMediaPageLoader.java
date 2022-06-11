@@ -202,8 +202,10 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 }
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 if (getConfig().isFilterInvalidFile) {
-                                    if (!PictureFileUtils.isFileExists(absolutePath)) {
-                                        continue;
+                                    if (PictureMimeType.isHasImage(mimeType)) {
+                                        if (!TextUtils.isEmpty(absolutePath) && !PictureFileUtils.isFileExists(absolutePath)) {
+                                            continue;
+                                        }
                                     }
                                 }
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,

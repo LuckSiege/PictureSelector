@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -548,9 +549,12 @@ public class PictureFileUtils {
      * @return
      */
     public static boolean isFileExists(String path) {
-        return !TextUtils.isEmpty(path) && new File(path).exists();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        options.inSampleSize = 2;
+        BitmapFactory.decodeFile(path, options);
+        return options.outWidth > 0 && options.outHeight > 0;
     }
-
 
     /**
      * Size of byte to fit size of memory.
