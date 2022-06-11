@@ -548,12 +548,22 @@ public class PictureFileUtils {
      * @param path
      * @return
      */
-    public static boolean isFileExists(String path) {
+    public static boolean isImageFileExists(String path) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         options.inSampleSize = 2;
         BitmapFactory.decodeFile(path, options);
         return options.outWidth > 0 && options.outHeight > 0;
+    }
+
+    /**
+     * 判断文件是否存在
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isFileExists(String path) {
+        return !TextUtils.isEmpty(path) && new File(path).exists();
     }
 
     /**

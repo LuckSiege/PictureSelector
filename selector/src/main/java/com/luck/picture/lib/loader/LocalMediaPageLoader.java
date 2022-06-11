@@ -204,7 +204,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 if (getConfig().isFilterInvalidFile) {
                                     if (PictureMimeType.isHasImage(mimeType)) {
-                                        if (!TextUtils.isEmpty(absolutePath) && !PictureFileUtils.isFileExists(absolutePath)) {
+                                        if (!TextUtils.isEmpty(absolutePath) && !PictureFileUtils.isImageFileExists(absolutePath)) {
+                                            continue;
+                                        }
+                                    } else {
+                                        if (!PictureFileUtils.isFileExists(absolutePath)) {
                                             continue;
                                         }
                                     }
