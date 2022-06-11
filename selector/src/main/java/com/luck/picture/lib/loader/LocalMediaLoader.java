@@ -1,11 +1,11 @@
 package com.luck.picture.lib.loader;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -164,6 +164,10 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 if (TextUtils.isEmpty(fileName)) {
                                     fileName = PictureMimeType.getUrlToFileName(absolutePath);
                                 }
+                                if (size > 0 && size < FileSizeUnit.KB) {
+                                    // Filter out files less than 1KB
+                                    continue;
+                                }
                                 if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
                                     if (getConfig().filterVideoMinSecond > 0 && duration < getConfig().filterVideoMinSecond) {
                                         // If you set the minimum number of seconds of video to display
@@ -171,6 +175,10 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                     }
                                     if (getConfig().filterVideoMaxSecond > 0 && duration > getConfig().filterVideoMaxSecond) {
                                         // If you set the maximum number of seconds of video to display
+                                        continue;
+                                    }
+                                    if (duration <= 0) {
+                                        //If the length is 0, the corrupted video is processed and filtered out
                                         continue;
                                     }
                                 }
