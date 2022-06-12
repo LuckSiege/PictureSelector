@@ -1,5 +1,7 @@
 package com.luck.lib.camerax.utils;
 
+import android.os.SystemClock;
+
 /**
  * @author：luck
  * @date：2019-01-04 13:41
@@ -13,7 +15,7 @@ public class DoubleUtils {
     private final static long TIME = 800;
 
     public static boolean isFastDoubleClick() {
-        long time = System.currentTimeMillis();
+        long time = SystemClock.elapsedRealtime();
         if (time - lastClickTime < TIME) {
             return true;
         }
