@@ -107,5 +107,6 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             }
             onKeyBackFragmentFinish();
         }
+        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
     }
 }

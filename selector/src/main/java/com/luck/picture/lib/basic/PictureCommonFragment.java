@@ -251,7 +251,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                 public void onCall(Boolean isResult) {
                                     if (isResult) {
                                         handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
-                                        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
                                     }
                                 }
                             });
@@ -1124,7 +1123,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 MediaUtils.deleteUri(getContext(), config.cameraPath);
             } else if (requestCode == PictureConfig.REQUEST_GO_SETTING) {
                 handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
-                PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
             }
         }
     }

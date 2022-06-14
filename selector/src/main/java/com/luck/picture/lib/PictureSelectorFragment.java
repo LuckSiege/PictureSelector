@@ -520,6 +520,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 onKeyBackFragmentFinish();
             }
         }
+        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
     }
 
     /**
