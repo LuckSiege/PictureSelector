@@ -14,8 +14,6 @@ import androidx.fragment.app.FragmentManager;
 import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.FileSizeUnit;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -272,6 +270,19 @@ public final class PictureSelectionCameraModel {
      */
     public PictureSelectionCameraModel isCameraForegroundService(boolean isForeground) {
         selectionConfig.isCameraForegroundService = isForeground;
+        return this;
+    }
+
+    /**
+     * Returns whether the calling app has All Files Access on the primary shared/external storage media.
+     * Declaring the permission Manifest.permission.MANAGE_EXTERNAL_STORAGE isn't enough to gain the access.
+     * To request access, use android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
+     *
+     * @param isAllFilesAccess
+     * @return
+     */
+    public PictureSelectionCameraModel isAllFilesAccessOf11(boolean isAllFilesAccess) {
+        selectionConfig.isAllFilesAccess = isAllFilesAccess;
         return this;
     }
 

@@ -67,9 +67,16 @@ public class PermissionUtil {
     /**
      * 跳转到系统设置页面
      */
-    public static void goIntentSetting(Fragment fragment, boolean isManageFiles, int requestCode) {
+    public static void goIntentSetting(Fragment fragment, int requestCode) {
+        goIntentSetting(fragment, false, requestCode);
+    }
+
+    /**
+     * 跳转到系统设置页面
+     */
+    public static void goIntentSetting(Fragment fragment, boolean isAllManageFiles, int requestCode) {
         try {
-            if (SdkVersionUtils.isR() && isManageFiles) {
+            if (SdkVersionUtils.isR() && isAllManageFiles) {
                 fragment.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
                         requestCode);
             } else {

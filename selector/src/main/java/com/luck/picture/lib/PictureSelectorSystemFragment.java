@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -69,7 +70,9 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createSystemContracts();
-        if (PermissionChecker.isCheckReadStorage(getContext())) {
+        boolean isCheckReadStorage = SdkVersionUtils.isR() && config.isAllFilesAccess
+                ? Environment.isExternalStorageManager() : PermissionChecker.isCheckReadStorage(getContext());
+        if (isCheckReadStorage) {
             openSystemAlbum();
         } else {
             onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
@@ -364,14 +367,18 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
         onPermissionExplainEvent(false, null);
-        boolean isHasPermissions;
+        boolean isCheckReadStorage;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener
+            isCheckReadStorage = PictureSelectionConfig.onPermissionsEventListener
                     .hasPermissions(this, permissions);
         } else {
-            isHasPermissions = PermissionChecker.isCheckReadStorage(getContext());
+            if (SdkVersionUtils.isR() && config.isAllFilesAccess) {
+                isCheckReadStorage = Environment.isExternalStorageManager();
+            } else {
+                isCheckReadStorage = PermissionChecker.isCheckReadStorage(getContext());
+            }
         }
-        if (isHasPermissions) {
+        if (isCheckReadStorage) {
             openSystemAlbum();
         } else {
             ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));

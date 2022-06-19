@@ -435,7 +435,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private void requestLoadData() {
         mAdapter.setDisplayCamera(isDisplayCamera);
-        if (PermissionChecker.isCheckReadStorage(getContext())) {
+        boolean isCheckReadStorage = SdkVersionUtils.isR() && config.isAllFilesAccess
+                ? Environment.isExternalStorageManager() : PermissionChecker.isCheckReadStorage(getContext());
+        if (isCheckReadStorage) {
             beginLoadData();
         } else {
             onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
@@ -499,7 +501,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             if (isHasCamera) {
                 isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
             } else {
-                if (SdkVersionUtils.isR()) {
+                if (SdkVersionUtils.isR() && config.isAllFilesAccess) {
                     isHasPermissions = Environment.isExternalStorageManager();
                 } else {
                     isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);

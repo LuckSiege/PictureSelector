@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,14 +122,8 @@ public class PermissionChecker {
      * @return
      */
     public static boolean isCheckReadStorage(Context context) {
-        boolean isPermissionState;
-        if (SdkVersionUtils.isR()) {
-            isPermissionState = Environment.isExternalStorageManager();
-        } else {
-            isPermissionState = PermissionChecker.checkSelfPermission(context,
+        return PermissionChecker.checkSelfPermission(context,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
-        }
-        return isPermissionState;
     }
 
     /**
@@ -140,14 +132,8 @@ public class PermissionChecker {
      * @return
      */
     public static boolean isCheckWriteStorage(Context context) {
-        boolean isPermissionState;
-        if (SdkVersionUtils.isR()) {
-            isPermissionState = Environment.isExternalStorageManager();
-        } else {
-            isPermissionState = PermissionChecker.checkSelfPermission(context,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
-        }
-        return isPermissionState;
+        return PermissionChecker.checkSelfPermission(context,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
     }
 
     /**

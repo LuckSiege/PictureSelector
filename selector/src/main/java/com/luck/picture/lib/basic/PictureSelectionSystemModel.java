@@ -69,6 +69,19 @@ public final class PictureSelectionSystemModel {
     }
 
     /**
+     * Returns whether the calling app has All Files Access on the primary shared/external storage media.
+     * Declaring the permission Manifest.permission.MANAGE_EXTERNAL_STORAGE isn't enough to gain the access.
+     * To request access, use android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
+     *
+     * @param isAllFilesAccess
+     * @return
+     */
+    public PictureSelectionSystemModel isAllFilesAccessOf11(boolean isAllFilesAccess) {
+        selectionConfig.isAllFilesAccess = isAllFilesAccess;
+        return this;
+    }
+
+    /**
      * Do you need to display the original controller
      * <p>
      * It needs to be used with setSandboxFileEngine
