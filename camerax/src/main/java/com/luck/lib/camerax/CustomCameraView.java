@@ -276,7 +276,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 ImageCapture.OutputFileOptions fileOptions;
                 File cameraFile;
                 if (isSaveExternal()) {
-                    cameraFile = createTempFile(false);
+                    cameraFile = FileUtils.createTempFile(getContext(), false);
                 } else {
                     cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
                             outPutCameraFileName, imageFormat, outPutCameraDir);
@@ -300,7 +300,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 VideoCapture.OutputFileOptions fileOptions;
                 File cameraFile;
                 if (isSaveExternal()) {
-                    cameraFile = createTempFile(true);
+                    cameraFile = FileUtils.createTempFile(getContext(), true);
                 } else {
                     cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_VIDEO,
                             outPutCameraFileName, videoFormat, outPutCameraDir);
@@ -424,6 +424,11 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
     }
 
     private String isMergeExternalStorageState(Activity activity, String outputPath) {
+        if (isImageCaptureEnabled()) {
+            if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+                outputPath = FileUtils.copyPath(activity, outputPath);
+            }
+        }
         if (isSaveExternal()) {
             try {
                 // 当用户未设置存储路径时，相片默认是存在外部公共目录下
@@ -450,22 +455,6 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
             }
         }
         return outputPath;
-    }
-
-    /**
-     * 创建一个临时路径，主要是解决华为手机放弃拍照后会弹出相册图片被删除的提示
-     *
-     * @param isVideo
-     * @return
-     */
-    private File createTempFile(boolean isVideo) {
-        File externalFilesDir = getContext().getExternalFilesDir("");
-        File tempCameraFile = new File(externalFilesDir.getAbsolutePath(), ".TemporaryCamera");
-        if (!tempCameraFile.exists()) {
-            tempCameraFile.mkdirs();
-        }
-        String fileName = System.currentTimeMillis() + (isVideo ? CameraUtils.MP4 : CameraUtils.JPEG);
-        return new File(tempCameraFile.getAbsolutePath(), fileName);
     }
 
 
