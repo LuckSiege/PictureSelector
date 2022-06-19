@@ -270,9 +270,8 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 tvCurrentTime.setVisibility(GONE);
-                boolean isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_FRONT;
                 ImageCapture.Metadata metadata = new ImageCapture.Metadata();
-                metadata.setReversedHorizontal(isReversedHorizontal);
+                metadata.setReversedHorizontal(isReversedHorizontal());
                 ImageCapture.OutputFileOptions fileOptions;
                 File cameraFile;
                 if (isSaveExternal()) {
@@ -398,7 +397,19 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
 
             @Override
             public void confirm() {
-                String outputPath = isMergeExternalStorageState(activity, SimpleCameraX.getOutputPath(activity.getIntent()));
+                String outputPath = SimpleCameraX.getOutputPath(activity.getIntent());
+                if (isSaveExternal()) {
+                    outputPath = isMergeExternalStorageState(activity, outputPath);
+                } else {
+                    // 对前置镜头导致的镜像进行一个纠正
+                    if (isImageCaptureEnabled() && isReversedHorizontal()) {
+                        File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
+                                outPutCameraFileName, imageFormat, outPutCameraDir);
+                        if (FileUtils.copyPath(activity, outputPath, cameraFile.getAbsolutePath())) {
+                            outputPath = cameraFile.getAbsolutePath();
+                        }
+                    }
+                }
                 if (isImageCaptureEnabled()) {
                     mImagePreview.setVisibility(INVISIBLE);
                     mImagePreviewBg.setAlpha(0F);
@@ -424,35 +435,35 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
     }
 
     private String isMergeExternalStorageState(Activity activity, String outputPath) {
-        if (isImageCaptureEnabled()) {
-            if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
-                outputPath = FileUtils.copyPath(activity, outputPath);
+        try {
+            // 对前置镜头导致的镜像进行一个纠正
+            if (isImageCaptureEnabled() && isReversedHorizontal()) {
+                File tempFile = FileUtils.createTempFile(activity, false);
+                if (FileUtils.copyPath(activity, outputPath, tempFile.getAbsolutePath())) {
+                    outputPath = tempFile.getAbsolutePath();
+                }
             }
-        }
-        if (isSaveExternal()) {
-            try {
-                // 当用户未设置存储路径时，相片默认是存在外部公共目录下
-                Uri externalSavedUri;
-                if (isImageCaptureEnabled()) {
-                    ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
-                    externalSavedUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-                } else {
-                    ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
-                    externalSavedUri = getContext().getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
-                }
-                if (externalSavedUri == null) {
-                    return outputPath;
-                }
-                OutputStream outputStream = getContext().getContentResolver().openOutputStream(externalSavedUri);
-                boolean isWriteFileSuccess = FileUtils.writeFileFromIS(new FileInputStream(outputPath), outputStream);
-                if (isWriteFileSuccess) {
-                    FileUtils.deleteFile(getContext(), outputPath);
-                    SimpleCameraX.putOutputUri(activity.getIntent(), externalSavedUri);
-                    return externalSavedUri.toString();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            // 当用户未设置存储路径时，相片默认是存在外部公共目录下
+            Uri externalSavedUri;
+            if (isImageCaptureEnabled()) {
+                ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
+                externalSavedUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            } else {
+                ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
+                externalSavedUri = getContext().getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
             }
+            if (externalSavedUri == null) {
+                return outputPath;
+            }
+            OutputStream outputStream = getContext().getContentResolver().openOutputStream(externalSavedUri);
+            boolean isWriteFileSuccess = FileUtils.writeFileFromIS(new FileInputStream(outputPath), outputStream);
+            if (isWriteFileSuccess) {
+                FileUtils.deleteFile(getContext(), outputPath);
+                SimpleCameraX.putOutputUri(activity.getIntent(), externalSavedUri);
+                return externalSavedUri.toString();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         return outputPath;
     }
@@ -460,6 +471,10 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
 
     private boolean isSaveExternal() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir);
+    }
+
+    private boolean isReversedHorizontal() {
+        return lensFacing == CameraSelector.LENS_FACING_FRONT;
     }
 
     /**

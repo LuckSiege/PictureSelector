@@ -172,37 +172,36 @@ public class FileUtils {
      * 文件复制
      *
      * @param context
-     * @param path
+     * @param originalPath
+     * @param newPath
      * @return
      */
-    public static String copyPath(Context context, String path) {
-        String newPath = path;
+    public static boolean copyPath(Context context, String originalPath, String newPath) {
         FileOutputStream fos = null;
         ByteArrayOutputStream stream = null;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options);
+            BitmapFactory.decodeFile(originalPath, options);
             options.inSampleSize = BitmapUtils.computeSize(options.outWidth, options.outHeight);
             options.inJustDecodeBounds = false;
 
-            Bitmap newBitmap = BitmapUtils.toHorizontalMirror(BitmapFactory.decodeFile(path, options));
+            Bitmap newBitmap = BitmapUtils.toHorizontalMirror(BitmapFactory.decodeFile(originalPath, options));
             stream = new ByteArrayOutputStream();
             newBitmap.compress(newBitmap.hasAlpha() ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 90, stream);
             newBitmap.recycle();
-            File tempFile = FileUtils.createTempFile(context, false);
-            fos = new FileOutputStream(tempFile);
+            fos = new FileOutputStream(newPath);
             fos.write(stream.toByteArray());
             fos.flush();
-            newPath = tempFile.getAbsolutePath();
-            FileUtils.deleteFile(context, path);
+            FileUtils.deleteFile(context, originalPath);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             FileUtils.close(fos);
             FileUtils.close(stream);
         }
-        return newPath;
+        return false;
     }
 
     /**
