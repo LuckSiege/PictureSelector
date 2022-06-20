@@ -2,7 +2,6 @@ package com.luck.pictureselector;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
 
@@ -10,12 +9,9 @@ import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 
@@ -54,17 +50,8 @@ public class PicassoEngine implements ImageEngine {
         }
     }
 
-    /**
-     * 加载指定url并返回bitmap
-     *
-     * @param context   上下文
-     * @param url       资源url
-     * @param maxWidth  资源最大加载尺寸
-     * @param maxHeight 资源最大加载尺寸
-     * @param call      回调接口
-     */
     @Override
-    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+    public void loadImage(Context context, ImageView imageView, String url, int maxWidth, int maxHeight) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
@@ -75,26 +62,9 @@ public class PicassoEngine implements ImageEngine {
         if (maxWidth > 0 && maxHeight > 0) {
             request.resize(maxWidth, maxHeight);
         }
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                if (call != null) {
-                    call.onCall(bitmap);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-        request.into(target);
+        request.into(imageView);
     }
+
 
     /**
      * 加载相册目录

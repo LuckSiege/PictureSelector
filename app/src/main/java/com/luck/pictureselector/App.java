@@ -71,7 +71,6 @@ public class App extends Application implements IApp, CameraXConfig.Provider, Im
         }
         ComponentRegistry componentRegistry = newBuilder.build();
         imageLoader.components(componentRegistry);
-        imageLoader.crossfade(true);
         imageLoader.memoryCache(new MemoryCache.Builder(getAppContext())
                 .maxSizePercent(0.25).build());
         imageLoader.diskCache(new DiskCache.Builder()

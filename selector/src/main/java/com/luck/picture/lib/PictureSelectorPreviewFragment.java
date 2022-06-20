@@ -8,13 +8,13 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -53,6 +53,7 @@ import com.luck.picture.lib.decoration.HorizontalItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.IBridgeMediaLoader;
@@ -66,7 +67,6 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -111,8 +111,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     protected int curPosition;
 
     protected boolean isInternalBottomPreview;
-
-    protected boolean isFirstLoaded;
 
     protected boolean isSaveInstanceState;
 
@@ -1085,53 +1083,60 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.setCurrentItem(curPosition, false);
         sendChangeSubSelectPositionEvent(false);
         notifySelectNumberStyle(data.get(curPosition));
+        startZoomEffect(media);
+    }
+
+    /**
+     * 启动预览缩放特效
+     */
+    protected void startZoomEffect(LocalMedia media) {
+        if (PictureMimeType.isHasAudio(media.getMimeType())) {
+            return;
+        }
+        int[] size = getRealSizeFromMedia(media, true);
+        if (isSaveInstanceState || isInternalBottomPreview || isExternalPreview) {
+            viewPager.post(new Runnable() {
+                @Override
+                public void run() {
+                    BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(curPosition);
+                    if (currentHolder != null) {
+                        currentHolder.coverImageView.setScaleType(MediaUtils.isLongImage(size[0], size[1])
+                                ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+                    }
+                }
+            });
+        } else {
+            if (config.isPreviewZoomEffect) {
+                viewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(curPosition);
+                        if (currentHolder != null) {
+                            currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        }
+                    }
+                });
+                magicalView.changeRealScreenHeight(size[0], size[1], false);
+                ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+                if (viewParams == null) {
+                    magicalView.startNormal(size[0], size[1], false);
+                    magicalView.setBackgroundAlpha(1.0F);
+                    for (int i = 0; i < mAnimViews.size(); i++) {
+                        mAnimViews.get(i).setAlpha(1.0F);
+                    }
+                } else {
+                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+                    magicalView.start(false);
+                }
+                ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
+            }
+        }
     }
 
     /**
      * ViewPageAdapter回调事件处理
      */
     private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
-
-        @Override
-        public void onLoadComplete(int width, int height, OnCallbackListener<Boolean> call) {
-            if (isSaveInstanceState || isFirstLoaded || isInternalBottomPreview || isExternalPreview) {
-                call.onCall(false);
-            } else {
-                call.onCall(config.isPreviewZoomEffect);
-                if (config.isPreviewZoomEffect) {
-                    isFirstLoaded = true;
-                    magicalView.changeRealScreenHeight(width, height, false);
-                    ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                    if (viewParams == null) {
-                        magicalView.startNormal(width, height, false);
-                        magicalView.setBackgroundAlpha(1.0F);
-                        for (int i = 0; i < mAnimViews.size(); i++) {
-                            mAnimViews.get(i).setAlpha(1.0F);
-                        }
-                    } else {
-                        magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, width, height);
-                        magicalView.start(false);
-                    }
-                    ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
-                }
-            }
-        }
-
-        @Override
-        public void onLoadError() {
-            if (isFirstLoaded || isInternalBottomPreview) {
-                return;
-            }
-            if (config.isPreviewZoomEffect) {
-                isFirstLoaded = true;
-                viewPager.setAlpha(1.0F);
-                magicalView.startNormal(0, 0, false);
-                magicalView.setBackgroundAlpha(1.0F);
-                for (int i = 0; i < mAnimViews.size(); i++) {
-                    mAnimViews.get(i).setAlpha(1.0F);
-                }
-            }
-        }
 
         @Override
         public void onBackPressed() {
@@ -1318,18 +1323,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     changeMagicalViewParams(position);
                 }
                 if (config.isPreviewZoomEffect) {
-                    if (isFirstLoaded || isInternalBottomPreview) {
-                        if (config.isAutoVideoPlay) {
-                            startAutoVideoPlay(position);
-                        } else {
-                            viewPageAdapter.setVideoPlayButtonUI(position);
-                        }
+                    if (isInternalBottomPreview && config.isAutoVideoPlay) {
+                        startAutoVideoPlay(position);
+                    } else {
+                        viewPageAdapter.setVideoPlayButtonUI(position);
                     }
                 } else {
                     if (config.isAutoVideoPlay) {
                         startAutoVideoPlay(position);
                     }
                 }
+                viewPageAdapter.setPreviewCoverScaleType(position);
                 notifyGallerySelectMedia(currentMedia);
                 bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType())
                         || PictureMimeType.isHasAudio(currentMedia.getMimeType()));
@@ -1369,34 +1373,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
         int[] size = getRealSizeFromMedia(media);
-        int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1]);
-        if (size[0] > 0 && size[1] > 0) {
-            setMagicalViewParams(size[0], size[1], position);
-        } else {
-            PictureSelectionConfig.imageEngine.loadImageBitmap(requireActivity(), media.getAvailablePath(),
-                    maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {
-                        @Override
-                        public void onCall(Bitmap bitmap) {
-                            if (ActivityCompatHelper.isDestroy(getActivity())) {
-                                return;
-                            }
-                            if (bitmap == null) {
-                                setMagicalViewParams(0, 0, position);
-                            } else {
-                                media.setWidth(bitmap.getWidth());
-                                media.setHeight(bitmap.getHeight());
-                                if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                                    size[0] = screenWidth;
-                                    size[1] = screenHeight;
-                                } else {
-                                    size[0] = bitmap.getWidth();
-                                    size[1] = bitmap.getHeight();
-                                }
-                                setMagicalViewParams(size[0], size[1], position);
-                            }
-                        }
-                    });
-        }
+        setMagicalViewParams(size[0], size[1], position);
     }
 
     /**
@@ -1416,7 +1393,22 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
+    /**
+     * 获取Media的真实大小
+     *
+     * @param media
+     */
     private int[] getRealSizeFromMedia(LocalMedia media) {
+        return getRealSizeFromMedia(media, false);
+    }
+
+    /**
+     * 获取Media的真实大小
+     *
+     * @param media
+     * @param resize
+     */
+    private int[] getRealSizeFromMedia(LocalMedia media, boolean resize) {
         int realWidth;
         int realHeight;
         if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
@@ -1425,6 +1417,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else {
             realWidth = media.getWidth();
             realHeight = media.getHeight();
+            if (resize) {
+                if ((realWidth <= 0 || realHeight <= 0) || (realWidth > realHeight)) {
+                    MediaExtraInfo extraInfo;
+                    if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                        extraInfo = MediaUtils.getVideoSize(getContext(), media.getAvailablePath());
+                    } else {
+                        extraInfo = MediaUtils.getImageSize(getContext(), media.getAvailablePath());
+                    }
+                    if (extraInfo.getWidth() > 0) {
+                        realWidth = extraInfo.getWidth();
+                        media.setWidth(realWidth);
+                    }
+                    if (extraInfo.getHeight() > 0) {
+                        realHeight = extraInfo.getHeight();
+                        media.setHeight(realHeight);
+                    }
+                    Log.i("YYY", "resize: " + realWidth + "x" + realHeight);
+                }
+            }
         }
         if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
             realWidth = media.getCropImageWidth();

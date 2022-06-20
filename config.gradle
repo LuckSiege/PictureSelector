@@ -11,7 +11,7 @@ ext {
             fragment_version              : "1.3.1",
             viewpage2                     : "1.0.0",
             constraintlayout              : "2.1.4",
-            exoplayer                     : "2.17.1",
+            exoplayer                     : "2.18.0",
             transition                    : "1.4.1",
             okhttp                        : "3.12.13",
             gson                          : "2.8.6",

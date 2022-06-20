@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.luck.picture.lib.basic.IBridgeLoaderFactory;
 import com.luck.picture.lib.basic.IBridgeViewLifecycle;
+import com.luck.picture.lib.basic.InterpolatorFactory;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
@@ -156,6 +157,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnVideoThumbnailEventListener onVideoThumbnailEventListener;
     public static IBridgeViewLifecycle viewLifecycle;
     public static IBridgeLoaderFactory loaderFactory;
+    public static InterpolatorFactory interpolatorFactory;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -485,6 +487,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onVideoThumbnailEventListener = null;
         PictureSelectionConfig.viewLifecycle = null;
         PictureSelectionConfig.loaderFactory = null;
+        PictureSelectionConfig.interpolatorFactory = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

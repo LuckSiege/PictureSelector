@@ -266,6 +266,18 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * An interpolator defines the rate of change of an animation.
+     * This allows the basic animation effects (alpha, scale, translate, rotate) to be accelerated, decelerated, repeated, etc.
+     * Use {@link
+     * .isPreviewZoomEffect(true);
+     * }
+     */
+    public PictureSelectionModel setMagicalEffectInterpolator(InterpolatorFactory interpolatorFactory) {
+        PictureSelectionConfig.interpolatorFactory = interpolatorFactory;
+        return this;
+    }
+
+    /**
      * Intercept camera click events, and users can implement their own camera framework
      *
      * @param listener

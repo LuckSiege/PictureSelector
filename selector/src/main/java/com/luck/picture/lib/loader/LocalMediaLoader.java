@@ -117,11 +117,6 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                if (PictureSelectionConfig.onQueryFilterListener != null) {
-                                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(absolutePath)) {
-                                        continue;
-                                    }
-                                }
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
@@ -183,6 +178,11 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                     }
                                 }
                                 LocalMedia media = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, getConfig().chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
+                                if (PictureSelectionConfig.onQueryFilterListener != null) {
+                                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
+                                        continue;
+                                    }
+                                }
                                 LocalMediaFolder folder = getImageFolder(url, mimeType, folderName, imageFolders);
                                 folder.setBucketId(media.getBucketId());
                                 folder.getData().add(media);

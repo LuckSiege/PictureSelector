@@ -83,11 +83,6 @@ public final class SandboxFileLoader {
             }
             for (File f : files) {
                 String mimeType = MediaUtils.getMimeTypeFromMediaUrl(f.getAbsolutePath());
-                if (PictureSelectionConfig.onQueryFilterListener != null) {
-                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(f.getAbsolutePath())) {
-                        continue;
-                    }
-                }
                 if (config.chooseMode == SelectMimeType.ofImage()) {
                     if (!PictureMimeType.isHasImage(mimeType)) {
                         continue;
@@ -162,6 +157,11 @@ public final class SandboxFileLoader {
                 }
                 LocalMedia media = LocalMedia.parseLocalMedia(id, absolutePath, absolutePath, f.getName(),
                         sandboxFile.getName(), duration, config.chooseMode, mimeType, width, height, size, bucketId, dateTime);
+                if (PictureSelectionConfig.onQueryFilterListener != null) {
+                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
+                        continue;
+                    }
+                }
                 media.setSandboxPath(SdkVersionUtils.isQ() ? absolutePath : null);
                 list.add(media);
             }

@@ -1,5 +1,7 @@
 package com.luck.picture.lib.interfaces;
 
+import com.luck.picture.lib.entity.LocalMedia;
+
 /**
  * @author：luck
  * @date：2022/3/12 10:09 上午
@@ -11,5 +13,5 @@ public interface OnQueryFilterListener {
      *
      * @return the boolean result
      */
-    boolean onFilter(String absolutePath);
+    boolean onFilter(LocalMedia media);
 }

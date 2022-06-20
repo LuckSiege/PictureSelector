@@ -196,11 +196,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                if (PictureSelectionConfig.onQueryFilterListener != null) {
-                                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(absolutePath)) {
-                                        continue;
-                                    }
-                                }
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 if (getConfig().isFilterInvalidFile) {
                                     if (PictureMimeType.isHasImage(mimeType)) {
@@ -273,6 +268,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 }
 
                                 LocalMedia media = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, getConfig().chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
+                                if (PictureSelectionConfig.onQueryFilterListener != null) {
+                                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
+                                        continue;
+                                    }
+                                }
                                 result.add(media);
 
                             } while (data.moveToNext());
@@ -349,12 +349,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             if (SdkVersionUtils.isQ()) {
                                 Map<Long, Long> countMap = new HashMap<>();
                                 while (data.moveToNext()) {
-                                    String url = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
-                                    if (PictureSelectionConfig.onQueryFilterListener != null) {
-                                        if (PictureSelectionConfig.onQueryFilterListener.onFilter(url)) {
-                                            continue;
-                                        }
-                                    }
                                     long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                     Long newCount = countMap.get(bucketId);
                                     if (newCount == null) {
@@ -368,12 +362,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 if (data.moveToFirst()) {
                                     Set<Long> hashSet = new HashSet<>();
                                     do {
-                                        String url = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
-                                        if (PictureSelectionConfig.onQueryFilterListener != null) {
-                                            if (PictureSelectionConfig.onQueryFilterListener.onFilter(url)){
-                                                continue;
-                                            }
-                                        }
                                         long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                         if (hashSet.contains(bucketId)) {
                                             continue;

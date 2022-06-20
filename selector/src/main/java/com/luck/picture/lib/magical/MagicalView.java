@@ -14,6 +14,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import androidx.annotation.RequiresApi;
@@ -218,6 +220,12 @@ public class MagicalView extends FrameLayout {
                     setShowEndParams();
                 }
             });
+            if (PictureSelectionConfig.interpolatorFactory != null) {
+                Interpolator interpolator = PictureSelectionConfig.interpolatorFactory.newInterpolator();
+                if (interpolator != null) {
+                    valueAnimator.setInterpolator(interpolator);
+                }
+            }
             valueAnimator.setDuration(animationDuration).start();
             changeBackgroundViewAlpha(false);
         }

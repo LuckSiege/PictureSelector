@@ -2,23 +2,24 @@ package com.luck.pictureselector;
 
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.ImageViewState;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.MediaUtils;
 
 /**
@@ -53,66 +54,44 @@ public class CustomPreviewAdapter extends PicturePreviewAdapter {
             subsamplingScaleImageView = itemView.findViewById(R.id.big_preview_image);
         }
 
-        @Override
-        protected void loadImageBitmap(LocalMedia media, int maxWidth, int maxHeight) {
-            int[] size = getSize(media);
-            if (MediaUtils.isLongImage(size[0], size[1])) {
-                super.loadImageBitmap(media, PictureConfig.UNSET, PictureConfig.UNSET);
-            } else {
-                super.loadImageBitmap(media, maxWidth, maxHeight);
-            }
-        }
 
         @Override
-        protected void loadBitmapCallback(LocalMedia media, Bitmap bitmap) {
-            String path = media.getAvailablePath();
-            if (bitmap == null) {
-                mPreviewEventListener.onLoadError();
-            } else {
-                boolean isHasWebp = PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path);
-                boolean isHasGif = PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType());
-                if (isHasWebp || isHasGif) {
-                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
-                } else {
-                    setImageViewBitmap(bitmap);
-                }
-                int width, height;
-                ImageView.ScaleType scaleType;
-                if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                    subsamplingScaleImageView.setVisibility(View.VISIBLE);
-                    scaleType = ImageView.ScaleType.FIT_CENTER;
-                    width = screenWidth;
-                    height = screenHeight;
-                } else {
-                    subsamplingScaleImageView.setVisibility(View.GONE);
-                    scaleType = ImageView.ScaleType.FIT_CENTER;
-                    int[] size = getSize(media);
-                    boolean isHaveSize = bitmap.getWidth() > 0 && bitmap.getHeight() > 0;
-                    width = isHaveSize ? bitmap.getWidth() : size[0];
-                    height = isHaveSize ? bitmap.getHeight() : size[1];
-                }
-                mPreviewEventListener.onLoadComplete(width, height, new OnCallbackListener<Boolean>() {
-                    @Override
-                    public void onCall(Boolean isBeginEffect) {
-                        if (isBeginEffect) {
-                            coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        } else {
-                            coverImageView.setScaleType(scaleType);
+        protected void loadImage(LocalMedia media, int maxWidth, int maxHeight) {
+            if (!ActivityCompatHelper.assertValidRequest(itemView.getContext())) {
+                return;
+            }
+            Glide.with(itemView.getContext())
+                    .asBitmap()
+                    .load(media.getAvailablePath())
+                    .into(new CustomTarget<Bitmap>() {
+
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (MediaUtils.isLongImage(resource.getWidth(), resource.getHeight())) {
+                                subsamplingScaleImageView.setVisibility(View.VISIBLE);
+                                float scale = Math.max(screenWidth / (float) resource.getWidth(),
+                                        screenHeight / (float) resource.getHeight());
+                                subsamplingScaleImageView.setImage(ImageSource.cachedBitmap(resource),
+                                        new ImageViewState(scale, new PointF(0, 0), 0));
+                            } else {
+                                subsamplingScaleImageView.setVisibility(View.GONE);
+                                coverImageView.setImageBitmap(resource);
+                            }
                         }
-                    }
-                });
-            }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+
+                    });
         }
 
-        @Override
-        protected void setImageViewBitmap(Bitmap bitmap) {
-            if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                float scale = Math.max(screenWidth / (float) bitmap.getWidth(), screenHeight / (float) bitmap.getHeight());
-                subsamplingScaleImageView.setImage(ImageSource.cachedBitmap(bitmap), new ImageViewState(scale, new PointF(0, 0), 0));
-            } else {
-                super.setImageViewBitmap(bitmap);
-            }
-        }
 
         @Override
         protected void setOnClickEventListener() {

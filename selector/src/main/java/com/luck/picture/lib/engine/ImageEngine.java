@@ -1,10 +1,7 @@
 package com.luck.picture.lib.engine;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.ImageView;
-import com.luck.picture.lib.interfaces.OnCallbackListener;
-
 /**
  * @author：luck
  * @date：2019-11-13 16:59
@@ -21,16 +18,15 @@ public interface ImageEngine {
     void loadImage(Context context, String url, ImageView imageView);
 
     /**
-     * load image bitmap
+     * load image
      *
      * @param context
+     * @param imageView
      * @param url
      * @param maxWidth
      * @param maxHeight
-     * @param call
      */
-    void loadImageBitmap(Context context, String url, int maxWidth, int maxHeight,
-                         OnCallbackListener<Bitmap> call);
+    void loadImage(Context context, ImageView imageView, String url, int maxWidth, int maxHeight);
 
     /**
      * load album cover

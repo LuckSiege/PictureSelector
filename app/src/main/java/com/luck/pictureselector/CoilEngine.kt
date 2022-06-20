@@ -1,17 +1,11 @@
 package com.luck.pictureselector
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.AnimatedImageDrawable
-import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.widget.ImageView
-import coil.drawable.ScaleDrawable
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.luck.picture.lib.engine.ImageEngine
-import com.luck.picture.lib.interfaces.OnCallbackListener
 import com.luck.picture.lib.utils.ActivityCompatHelper
 
 /**
@@ -31,26 +25,25 @@ class CoilEngine : ImageEngine {
         context.imageLoader.enqueue(target)
     }
 
-    override fun loadImageBitmap(
-        context: Context,
-        url: String,
+    override fun loadImage(
+        context: Context?,
+        imageView: ImageView?,
+        url: String?,
         maxWidth: Int,
-        maxHeight: Int,
-        call: OnCallbackListener<Bitmap>?
+        maxHeight: Int
     ) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return
         }
-        val builder = ImageRequest.Builder(context)
-        if (maxWidth > 0 && maxHeight > 0) {
-            builder.size(maxWidth, maxHeight)
+        context?.let {
+            val builder = ImageRequest.Builder(it)
+            if (maxWidth > 0 && maxHeight > 0) {
+                builder.size(maxWidth, maxHeight)
+            }
+            imageView?.let { v -> builder.data(url).target(v) }
+            val request = builder.build();
+            context.imageLoader.enqueue(request)
         }
-        builder.data(url)
-        builder.target {
-            call?.onCall((it as BitmapDrawable).bitmap)
-        }
-        val request = builder.build();
-        context.imageLoader.enqueue(request)
     }
 
     override fun loadAlbumCover(context: Context, url: String, imageView: ImageView) {
