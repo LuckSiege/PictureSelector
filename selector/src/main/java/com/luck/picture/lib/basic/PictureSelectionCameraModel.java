@@ -82,12 +82,8 @@ public final class PictureSelectionCameraModel {
      */
     @Deprecated
     public PictureSelectionCameraModel setCompressEngine(CompressEngine engine) {
-        if (PictureSelectionConfig.compressEngine != engine) {
-            PictureSelectionConfig.compressEngine = engine;
-            selectionConfig.isCompressEngine = true;
-        } else {
-            selectionConfig.isCompressEngine = false;
-        }
+        PictureSelectionConfig.compressEngine = engine;
+        selectionConfig.isCompressEngine = true;
         return this;
     }
 
@@ -98,12 +94,8 @@ public final class PictureSelectionCameraModel {
      * @return
      */
     public PictureSelectionCameraModel setCompressEngine(CompressFileEngine engine) {
-        if (PictureSelectionConfig.compressFileEngine != engine) {
-            PictureSelectionConfig.compressFileEngine = engine;
-            selectionConfig.isCompressEngine = true;
-        } else {
-            selectionConfig.isCompressEngine = false;
-        }
+        PictureSelectionConfig.compressFileEngine = engine;
+        selectionConfig.isCompressEngine = true;
         return this;
     }
 
@@ -116,9 +108,7 @@ public final class PictureSelectionCameraModel {
      */
     @Deprecated
     public PictureSelectionCameraModel setCropEngine(CropEngine engine) {
-        if (PictureSelectionConfig.cropEngine != engine) {
-            PictureSelectionConfig.cropEngine = engine;
-        }
+        PictureSelectionConfig.cropEngine = engine;
         return this;
     }
 
@@ -129,9 +119,7 @@ public final class PictureSelectionCameraModel {
      * @return
      */
     public PictureSelectionCameraModel setCropEngine(CropFileEngine engine) {
-        if (PictureSelectionConfig.cropFileEngine != engine) {
-            PictureSelectionConfig.cropFileEngine = engine;
-        }
+        PictureSelectionConfig.cropFileEngine = engine;
         return this;
     }
 
@@ -144,7 +132,7 @@ public final class PictureSelectionCameraModel {
      */
     @Deprecated
     public PictureSelectionCameraModel setSandboxFileEngine(SandboxFileEngine engine) {
-        if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
+        if (SdkVersionUtils.isQ()) {
             PictureSelectionConfig.sandboxFileEngine = engine;
             selectionConfig.isSandboxFileEngine = true;
         } else {
@@ -160,7 +148,7 @@ public final class PictureSelectionCameraModel {
      * @return
      */
     public PictureSelectionCameraModel setSandboxFileEngine(UriToFileTransformEngine engine) {
-        if (SdkVersionUtils.isQ() && PictureSelectionConfig.uriToFileTransformEngine != engine) {
+        if (SdkVersionUtils.isQ()) {
             PictureSelectionConfig.uriToFileTransformEngine = engine;
             selectionConfig.isSandboxFileEngine = true;
         } else {

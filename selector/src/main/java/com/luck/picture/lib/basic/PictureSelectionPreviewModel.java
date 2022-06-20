@@ -52,9 +52,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setImageEngine(ImageEngine engine) {
-        if (PictureSelectionConfig.imageEngine != engine) {
-            PictureSelectionConfig.imageEngine = engine;
-        }
+        PictureSelectionConfig.imageEngine = engine;
         return this;
     }
 
