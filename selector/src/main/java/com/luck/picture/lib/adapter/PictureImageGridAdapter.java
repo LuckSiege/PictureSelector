@@ -14,9 +14,6 @@ import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 
@@ -131,7 +128,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
     }
 
     @Override
-    public void onBindViewHolder(@NotNull final BaseRecyclerMediaHolder holder, final int position) {
+    public void onBindViewHolder(final BaseRecyclerMediaHolder holder, final int position) {
         if (getItemViewType(position) == ADAPTER_TYPE_CAMERA) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

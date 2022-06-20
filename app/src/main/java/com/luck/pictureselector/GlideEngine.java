@@ -32,7 +32,7 @@ public class GlideEngine implements ImageEngine {
      * @param imageView 图片承载控件
      */
     @Override
-    public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+    public void loadImage(Context context, String url, ImageView imageView) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
@@ -51,7 +51,7 @@ public class GlideEngine implements ImageEngine {
      * @param call      回调接口
      */
     @Override
-    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+    public void loadImageBitmap(Context context,String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
@@ -91,7 +91,7 @@ public class GlideEngine implements ImageEngine {
      * @param imageView 承载图片ImageView
      */
     @Override
-    public void loadAlbumCover(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+    public void loadAlbumCover(Context context, String url, ImageView imageView) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
@@ -114,7 +114,7 @@ public class GlideEngine implements ImageEngine {
      * @param imageView 承载图片ImageView
      */
     @Override
-    public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+    public void loadGridImage(Context context, String url, ImageView imageView) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
@@ -139,16 +139,11 @@ public class GlideEngine implements ImageEngine {
     private GlideEngine() {
     }
 
-    private static GlideEngine instance;
+    private static final class InstanceHolder {
+        static final GlideEngine instance = new GlideEngine();
+    }
 
     public static GlideEngine createGlideEngine() {
-        if (null == instance) {
-            synchronized (GlideEngine.class) {
-                if (null == instance) {
-                    instance = new GlideEngine();
-                }
-            }
-        }
-        return instance;
+        return InstanceHolder.instance;
     }
 }

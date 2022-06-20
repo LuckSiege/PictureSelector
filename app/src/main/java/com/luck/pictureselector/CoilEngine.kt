@@ -2,8 +2,11 @@ package com.luck.pictureselector
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.widget.ImageView
-import androidx.core.graphics.drawable.toBitmap
+import coil.drawable.ScaleDrawable
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
@@ -44,7 +47,7 @@ class CoilEngine : ImageEngine {
         }
         builder.data(url)
         builder.target {
-            call?.onCall(it.toBitmap())
+            call?.onCall((it as BitmapDrawable).bitmap)
         }
         val request = builder.build();
         context.imageLoader.enqueue(request)

@@ -14,14 +14,16 @@ import com.luck.picture.lib.app.IApp;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 
+import java.io.File;
+
 import coil.ComponentRegistry;
 import coil.ImageLoader;
 import coil.ImageLoaderFactory;
 import coil.decode.GifDecoder;
 import coil.decode.ImageDecoderDecoder;
 import coil.decode.VideoFrameDecoder;
-import coil.util.CoilUtils;
-import okhttp3.OkHttpClient;
+import coil.disk.DiskCache;
+import coil.memory.MemoryCache;
 
 
 /**
@@ -59,18 +61,23 @@ public class App extends Application implements IApp, CameraXConfig.Provider, Im
     @NonNull
     @Override
     public ImageLoader newImageLoader() {
-        ComponentRegistry registry = new ComponentRegistry.Builder()
-                .add(SDK_INT >= 28 ? new ImageDecoderDecoder(getAppContext()) : new GifDecoder())
-                .add(new VideoFrameDecoder(getAppContext()))
-                .build();
-        return new ImageLoader.Builder(getAppContext())
-                .componentRegistry(registry)
-                .crossfade(true)
-                .okHttpClient(new OkHttpClient.Builder()
-                        .cache(CoilUtils.createDefaultCache(getAppContext())).build())
-                .availableMemoryPercentage(0.5)
-                .allowHardware(false)
-                .allowRgb565(true)
-                .build();
+        ImageLoader.Builder imageLoader = new ImageLoader.Builder(getAppContext());
+        ComponentRegistry.Builder newBuilder = new ComponentRegistry().newBuilder();
+        newBuilder.add(new VideoFrameDecoder.Factory());
+        if (SDK_INT >= 28) {
+            newBuilder.add(new ImageDecoderDecoder.Factory());
+        } else {
+            newBuilder.add(new GifDecoder.Factory());
+        }
+        ComponentRegistry componentRegistry = newBuilder.build();
+        imageLoader.components(componentRegistry);
+        imageLoader.crossfade(true);
+        imageLoader.memoryCache(new MemoryCache.Builder(getAppContext())
+                .maxSizePercent(0.25).build());
+        imageLoader.diskCache(new DiskCache.Builder()
+                .directory(new File(getCacheDir(), "image_cache"))
+                .maxSizePercent(0.02)
+                .build());
+        return imageLoader.build();
     }
 }

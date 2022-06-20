@@ -37,7 +37,7 @@ dependencies {
     api "androidx.camera:camera-camera2:1.2.0-alpha01"
     implementation "androidx.camera:camera-view:1.2.0-alpha01"
     implementation "androidx.camera:camera-lifecycle:1.2.0-alpha01"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation "androidx.transition:transition:1.4.1"
-    implementation "androidx.concurrent:concurrent-futures:1.1.0"
+    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
+    implementation "androidx.transition:transition:${cfgs.transition}"
+    implementation "androidx.concurrent:concurrent-futures:${cfgs.futures}"
 }

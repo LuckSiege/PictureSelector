@@ -202,16 +202,11 @@ public class PicassoEngine implements ImageEngine {
     private PicassoEngine() {
     }
 
-    private static PicassoEngine instance;
+    private static final class InstanceHolder {
+        static final PicassoEngine instance = new PicassoEngine();
+    }
 
     public static PicassoEngine createPicassoEngine() {
-        if (null == instance) {
-            synchronized (PicassoEngine.class) {
-                if (null == instance) {
-                    instance = new PicassoEngine();
-                }
-            }
-        }
-        return instance;
+        return InstanceHolder.instance;
     }
 }

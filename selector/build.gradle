@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode cfgs.versionCode
         versionName cfgs.versionName
 
@@ -27,6 +27,13 @@ android {
         abortOnError false
     }
 
+    allprojects {
+        configurations.all {
+            resolutionStrategy {
+                force 'androidx.core:core:1.6.0'
+            }
+        }
+    }
 }
 
 ext {
@@ -40,7 +47,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
     implementation "androidx.activity:activity:${cfgs.activity_version}"
     implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
-    implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
+    implementation "androidx.exifinterface:exifinterface:${cfgs.exifinterface_version}"
     implementation "androidx.viewpager2:viewpager2:${cfgs.viewpage2}"
     implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"
     implementation "com.google.android.exoplayer:exoplayer:${cfgs.exoplayer}"
