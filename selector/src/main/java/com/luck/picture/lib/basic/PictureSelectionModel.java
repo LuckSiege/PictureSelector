@@ -1143,6 +1143,16 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Whether to sync the number of resources under the latest album in paging mode with filter conditions
+     *
+     * @param isPageMin10AsCount
+     */
+    public PictureSelectionModel isPageSyncAlbumCount(boolean isPageSyncAsCount) {
+        selectionConfig.isPageSyncAsCount = isPageSyncAsCount;
+        return this;
+    }
+
+    /**
      * Returns whether the calling app has All Files Access on the primary shared/external storage media.
      * Declaring the permission Manifest.permission.MANAGE_EXTERNAL_STORAGE isn't enough to gain the access.
      * To request access, use android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.

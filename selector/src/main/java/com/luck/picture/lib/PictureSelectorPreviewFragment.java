@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -212,7 +211,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         this.curPosition = position;
         this.isDisplayDelete = isDisplayDelete;
         this.isExternalPreview = true;
-        PictureSelectionConfig.getInstance().isPreviewZoomEffect = false;
     }
 
     @Override
@@ -338,7 +336,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     private boolean isHasMagicalEffect() {
-        return !isInternalBottomPreview && !isExternalPreview && config.isPreviewZoomEffect;
+        return !isInternalBottomPreview && config.isPreviewZoomEffect;
     }
 
     /**
@@ -408,7 +406,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onMagicalViewFinish() {
-                onBackCurrentFragment();
+                if (isExternalPreview && isNormalDefaultEnter() && isHasMagicalEffect()) {
+                    onExitPictureSelector();
+                } else {
+                    onBackCurrentFragment();
+                }
             }
 
             @Override
@@ -662,7 +664,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBackPressed() {
                 if (isExternalPreview) {
-                    handleExternalPreviewBack();
+                    if (config.isPreviewZoomEffect) {
+                        magicalView.backToMin();
+                    } else {
+                        handleExternalPreviewBack();
+                    }
                 } else {
                     if (!isInternalBottomPreview && config.isPreviewZoomEffect) {
                         magicalView.backToMin();
@@ -1090,46 +1096,36 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 启动预览缩放特效
      */
     protected void startZoomEffect(LocalMedia media) {
+        if (isSaveInstanceState || isInternalBottomPreview) {
+            return;
+        }
         if (PictureMimeType.isHasAudio(media.getMimeType())) {
             return;
         }
-        int[] size = getRealSizeFromMedia(media, true);
-        if (isSaveInstanceState || isInternalBottomPreview || isExternalPreview) {
+        if (config.isPreviewZoomEffect) {
             viewPager.post(new Runnable() {
                 @Override
                 public void run() {
                     BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(curPosition);
                     if (currentHolder != null) {
-                        currentHolder.coverImageView.setScaleType(MediaUtils.isLongImage(size[0], size[1])
-                                ? ImageView.ScaleType.CENTER_CROP : ImageView.ScaleType.FIT_CENTER);
+                        currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     }
                 }
             });
-        } else {
-            if (config.isPreviewZoomEffect) {
-                viewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(curPosition);
-                        if (currentHolder != null) {
-                            currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        }
-                    }
-                });
-                magicalView.changeRealScreenHeight(size[0], size[1], false);
-                ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                if (viewParams == null) {
-                    magicalView.startNormal(size[0], size[1], false);
-                    magicalView.setBackgroundAlpha(1.0F);
-                    for (int i = 0; i < mAnimViews.size(); i++) {
-                        mAnimViews.get(i).setAlpha(1.0F);
-                    }
-                } else {
-                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
-                    magicalView.start(false);
+            int[] size = getRealSizeFromMedia(media, true);
+            magicalView.changeRealScreenHeight(size[0], size[1], false);
+            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+            if (viewParams == null) {
+                magicalView.startNormal(size[0], size[1], false);
+                magicalView.setBackgroundAlpha(1.0F);
+                for (int i = 0; i < mAnimViews.size(); i++) {
+                    mAnimViews.get(i).setAlpha(1.0F);
                 }
-                ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
+            } else {
+                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+                magicalView.start(false);
             }
+            ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
         }
     }
 
@@ -1144,7 +1140,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 previewFullScreenMode();
             } else {
                 if (isExternalPreview) {
-                    handleExternalPreviewBack();
+                    if (config.isPreviewZoomEffect) {
+                        magicalView.backToMin();
+                    } else {
+                        handleExternalPreviewBack();
+                    }
                 } else {
                     if (!isInternalBottomPreview && config.isPreviewZoomEffect) {
                         magicalView.backToMin();
@@ -1181,7 +1181,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void onKeyDownBackToMin() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (isExternalPreview) {
-                onExitPictureSelector();
+                if (config.isPreviewZoomEffect) {
+                    magicalView.backToMin();
+                } else {
+                    onExitPictureSelector();
+                }
             } else if (isInternalBottomPreview) {
                 onBackCurrentFragment();
             } else if (config.isPreviewZoomEffect) {
@@ -1333,7 +1337,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         startAutoVideoPlay(position);
                     }
                 }
-                viewPageAdapter.setPreviewCoverScaleType(position);
                 notifyGallerySelectMedia(currentMedia);
                 bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType())
                         || PictureMimeType.isHasAudio(currentMedia.getMimeType()));
@@ -1433,7 +1436,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         realHeight = extraInfo.getHeight();
                         media.setHeight(realHeight);
                     }
-                    Log.i("YYY", "resize: " + realWidth + "x" + realHeight);
                 }
             }
         }

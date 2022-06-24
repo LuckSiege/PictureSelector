@@ -43,7 +43,11 @@ public class Crop {
      */
     @Nullable
     public static Uri getOutput(@NonNull Intent intent) {
-        return intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        Uri outputUri = intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        if (outputUri == null) {
+            outputUri = intent.getParcelableExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
+        }
+        return outputUri;
     }
 
     /**

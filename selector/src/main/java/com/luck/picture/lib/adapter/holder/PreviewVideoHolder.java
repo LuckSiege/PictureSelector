@@ -87,23 +87,12 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     @Override
     protected void setScaleDisplaySize(LocalMedia media) {
+        super.setScaleDisplaySize(media);
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            float ratio;
-            if (media.getWidth() > media.getHeight()) {
-                ratio = (float) media.getHeight() / (float) media.getWidth();
-            } else {
-                ratio = (float) media.getWidth() / (float) media.getHeight();
-            }
-            int displayHeight = (int) (screenWidth / ratio);
             FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
             playerLayoutParams.width = screenWidth;
-            playerLayoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+            playerLayoutParams.height = screenAppInHeight;
             playerLayoutParams.gravity = Gravity.CENTER;
-
-            FrameLayout.LayoutParams coverLayoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
-            coverLayoutParams.width = screenWidth;
-            coverLayoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
-            coverLayoutParams.gravity = Gravity.CENTER;
         }
     }
 

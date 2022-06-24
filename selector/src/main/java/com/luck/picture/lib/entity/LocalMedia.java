@@ -7,6 +7,10 @@ import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.obj.pool.ObjectPools;
+import com.luck.picture.lib.utils.MediaUtils;
+
+import java.io.File;
 
 /**
  * @author：luck
@@ -288,55 +292,73 @@ public class LocalMedia implements Parcelable {
      * 构造网络资源下的LocalMedia
      *
      * @param url      网络url
-     * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF() ...}
+     * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF()}
      * @return
      */
-    public static LocalMedia generateLocalMedia(String url, String mimeType) {
-        LocalMedia media = new LocalMedia();
+    public static LocalMedia generateHttpAsLocalMedia(String url) {
+        LocalMedia media = LocalMedia.create();
+        media.setPath(url);
+        media.setMimeType(MediaUtils.getMimeTypeFromMediaHttpUrl(url));
+        return media;
+    }
+
+    /**
+     * 构造网络资源下的LocalMedia
+     *
+     * @param url      网络url
+     * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF()}
+     * @return
+     */
+    public static LocalMedia generateHttpAsLocalMedia(String url, String mimeType) {
+        LocalMedia media = LocalMedia.create();
         media.setPath(url);
         media.setMimeType(mimeType);
         return media;
     }
 
     /**
-     * 构造LocalMedia
+     * 构造网络资源下的LocalMedia
      *
-     * @param id               资源id
-     * @param path             资源路径
-     * @param absolutePath     资源绝对路径
-     * @param fileName         文件名
-     * @param parentFolderName 文件所在相册目录名称
-     * @param duration         视频/音频时长
-     * @param chooseModel      相册选择模式
-     * @param mimeType         资源类型
-     * @param width            资源宽
-     * @param height           资源高
-     * @param size             资源大小
-     * @param bucketId         文件目录id
-     * @param dateAdded        资源添加时间
+     * @param absolutePath 本地路径
      * @return
      */
-    public static LocalMedia parseLocalMedia(long id, String path, String absolutePath,
-                                             String fileName, String parentFolderName,
-                                             long duration, int chooseModel, String mimeType,
-                                             int width, int height, long size, long bucketId, long dateAdded) {
-        LocalMedia localMedia = new LocalMedia();
-        localMedia.setId(id);
-        localMedia.setPath(path);
-        localMedia.setRealPath(absolutePath);
-        localMedia.setFileName(fileName);
-        localMedia.setParentFolderName(parentFolderName);
-        localMedia.setDuration(duration);
-        localMedia.setChooseModel(chooseModel);
-        localMedia.setMimeType(mimeType);
-        localMedia.setWidth(width);
-        localMedia.setHeight(height);
-        localMedia.setSize(size);
-        localMedia.setBucketId(bucketId);
-        localMedia.setDateAddedTime(dateAdded);
-        return localMedia;
+    public static LocalMedia generateLocalMedia(String absolutePath) {
+        File cameraFile = new File(absolutePath);
+        LocalMedia media = LocalMedia.create();
+        media.setPath(absolutePath);
+        media.setRealPath(cameraFile.getAbsolutePath());
+        media.setFileName(cameraFile.getName());
+        media.setParentFolderName(MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath()));
+        media.setMimeType(MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath()));
+        media.setSize(cameraFile.length());
+        media.setDateAddedTime(cameraFile.lastModified() / 1000);
+        return media;
     }
 
+    /**
+     * 构造网络资源下的LocalMedia
+     *
+     * @param url      网络url
+     * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF()}
+     * @return
+     */
+    @Deprecated
+    public static LocalMedia generateLocalMedia(String url, String mimeType) {
+        LocalMedia media = LocalMedia.create();
+        media.setPath(url);
+        media.setMimeType(mimeType);
+        return media;
+    }
+
+
+    /**
+     * 创建LocalMedia对象
+     *
+     * @return
+     */
+    public static LocalMedia create() {
+        return new LocalMedia();
+    }
 
     /**
      * 当前匹配上的对象
@@ -669,5 +691,44 @@ public class LocalMedia implements Parcelable {
 
     public void setVideoThumbnailPath(String videoThumbnailPath) {
         this.videoThumbnailPath = videoThumbnailPath;
+    }
+
+    /**
+     * 对象池
+     */
+    private static ObjectPools.SynchronizedPool<LocalMedia> sPool;
+
+    /**
+     * 从对象池里取LocalMedia
+     */
+    public static LocalMedia obtain() {
+        if (sPool == null) {
+            sPool = new ObjectPools.SynchronizedPool<>();
+        }
+        LocalMedia media = sPool.acquire();
+        if (media == null) {
+            return LocalMedia.create();
+        } else {
+            return media;
+        }
+    }
+
+    /**
+     * 回收对象池
+     */
+    public void recycle() {
+        if (sPool != null) {
+            sPool.release(this);
+        }
+    }
+
+    /**
+     * 销毁对象池
+     */
+    public static void destroyPool() {
+        if (sPool != null) {
+            sPool.destroy();
+            sPool = null;
+        }
     }
 }

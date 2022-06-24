@@ -121,7 +121,7 @@ public final class SandboxFileLoader {
                     id = f.lastModified() / 1000;
                 }
                 long bucketId = ValueOf.toLong(sandboxFile.getName().hashCode());
-                long dateTime = f.lastModified() / 1000;
+                long dateAdded = f.lastModified() / 1000;
                 long duration;
                 int width, height;
                 if (PictureMimeType.isHasVideo(mimeType)) {
@@ -155,8 +155,20 @@ public final class SandboxFileLoader {
                         continue;
                     }
                 }
-                LocalMedia media = LocalMedia.parseLocalMedia(id, absolutePath, absolutePath, f.getName(),
-                        sandboxFile.getName(), duration, config.chooseMode, mimeType, width, height, size, bucketId, dateTime);
+                LocalMedia media = LocalMedia.create();
+                media.setId(id);
+                media.setPath(absolutePath);
+                media.setRealPath(absolutePath);
+                media.setFileName(f.getName());
+                media.setParentFolderName(sandboxFile.getName());
+                media.setDuration(duration);
+                media.setChooseModel(config.chooseMode);
+                media.setMimeType(mimeType);
+                media.setWidth(width);
+                media.setHeight(height);
+                media.setSize(size);
+                media.setBucketId(bucketId);
+                media.setDateAddedTime(dateAdded);
                 if (PictureSelectionConfig.onQueryFilterListener != null) {
                     if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
                         continue;

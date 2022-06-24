@@ -62,17 +62,45 @@ public class MediaUtils {
     /**
      * 获取mimeType
      *
-     * @param url
+     * @param path
      * @return
      */
-    public static String getMimeTypeFromMediaUrl(String url) {
-        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(url);
+    public static String getMimeTypeFromMediaUrl(String path) {
+        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(path);
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                 fileExtension.toLowerCase());
         if (TextUtils.isEmpty(mimeType)) {
-            mimeType = getMimeType(new File(url));
+            mimeType = getMimeType(new File(path));
         }
         return TextUtils.isEmpty(mimeType) ? PictureMimeType.MIME_TYPE_JPEG : mimeType;
+    }
+
+    /**
+     * 获取mimeType
+     *
+     * @param url
+     * @return
+     */
+    public static String getMimeTypeFromMediaHttpUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return null;
+        }
+        if (url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".jpeg")) {
+            return "image/jpeg";
+        } else if (url.toLowerCase().endsWith(".png")) {
+            return "image/png";
+        } else if (url.toLowerCase().endsWith(".gif")) {
+            return "image/gif";
+        } else if (url.toLowerCase().endsWith(".webp")) {
+            return "image/webp";
+        } else if (url.toLowerCase().endsWith(".bmp")) {
+            return "image/bmp";
+        } else if (url.toLowerCase().endsWith(".mp4")) {
+            return "video/mp4";
+        } else if (url.toLowerCase().endsWith(".avi")) {
+            return "video/avi";
+        }
+        return null;
     }
 
     /**

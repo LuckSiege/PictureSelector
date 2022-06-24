@@ -1085,6 +1085,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         media.setSandboxPath(media.getCutPath());
                     } else {
                         String extra = data.getStringExtra(MediaStore.EXTRA_OUTPUT);
+                        if (TextUtils.isEmpty(extra)) {
+                            extra = data.getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
+                        }
                         JSONArray array = new JSONArray(extra);
                         if (array.length() == selectedResult.size()) {
                             for (int i = 0; i < selectedResult.size(); i++) {
@@ -1295,10 +1298,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             mediaExtraInfo = MediaUtils.getImageSize(getContext(), generatePath);
         }
         String folderName = MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath());
-        LocalMedia media = LocalMedia.parseLocalMedia(id, generatePath, cameraFile.getAbsolutePath(),
-                cameraFile.getName(), folderName, mediaExtraInfo.getDuration(), config.chooseMode,
-                mimeType, mediaExtraInfo.getWidth(), mediaExtraInfo.getHeight(), cameraFile.length(), bucketId,
-                cameraFile.lastModified() / 1000);
+        LocalMedia media = LocalMedia.create();
+        media.setId(id);
+        media.setBucketId(bucketId);
+        media.setPath(generatePath);
+        media.setRealPath(cameraFile.getAbsolutePath());
+        media.setFileName(cameraFile.getName());
+        media.setParentFolderName(folderName);
+        media.setDuration(mediaExtraInfo.getDuration());
+        media.setChooseModel(config.chooseMode);
+        media.setMimeType(mimeType);
+        media.setWidth(mediaExtraInfo.getWidth());
+        media.setHeight(mediaExtraInfo.getHeight());
+        media.setSize(cameraFile.length());
+        media.setDateAddedTime(cameraFile.lastModified() / 1000);
         if (SdkVersionUtils.isQ()) {
             media.setSandboxPath(PictureMimeType.isContent(generatePath) ? null : generatePath);
         }

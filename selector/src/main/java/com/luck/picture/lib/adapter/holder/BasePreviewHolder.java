@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.MediaUtils;
 
 /**
  * @author：luck
@@ -80,6 +82,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1]);
         loadImage(media, maxImageSize[0], maxImageSize[1]);
         setScaleDisplaySize(media);
+        setCoverScaleType(media);
         setOnClickEventListener();
         setOnLongClickEventListener();
     }
@@ -129,14 +132,20 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    protected void setCoverScaleType(LocalMedia media) {
+        if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+            coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
+    }
+
     protected void setScaleDisplaySize(LocalMedia media) {
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
             if (media.getWidth() > 0 && media.getHeight() > 0) {
-                float ratio = (float) media.getWidth() / (float) media.getHeight();
-                int displayHeight = (int) (screenWidth / ratio);
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
                 layoutParams.width = screenWidth;
-                layoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+                layoutParams.height = screenAppInHeight;
                 layoutParams.gravity = Gravity.CENTER;
             }
         }

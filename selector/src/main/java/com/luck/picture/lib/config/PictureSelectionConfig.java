@@ -130,6 +130,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isLoopAutoPlay;
     public boolean isFilterSizeDuration;
     public boolean isAllFilesAccess;
+    public boolean isPageSyncAsCount;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -243,6 +244,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isLoopAutoPlay = in.readByte() != 0;
         isFilterSizeDuration = in.readByte() != 0;
         isAllFilesAccess = in.readByte() != 0;
+        isPageSyncAsCount = in.readByte() != 0;
     }
 
     @Override
@@ -329,6 +331,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isLoopAutoPlay ? 1 : 0));
         dest.writeByte((byte) (isFilterSizeDuration ? 1 : 0));
         dest.writeByte((byte) (isAllFilesAccess ? 1 : 0));
+        dest.writeByte((byte) (isPageSyncAsCount ? 1 : 0));
     }
 
     @Override
@@ -432,6 +435,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isLoopAutoPlay = false;
         isFilterSizeDuration = true;
         isAllFilesAccess = false;
+        isPageSyncAsCount = false;
     }
 
 
@@ -491,6 +495,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();
+        LocalMedia.destroyPool();
         SelectedManager.setCurrentLocalMediaFolder(null);
     }
 

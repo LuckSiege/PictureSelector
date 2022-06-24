@@ -14,6 +14,7 @@ public class CustomIntentKey {
      * 输出的路径
      */
     public static final String EXTRA_OUT_PUT_PATH = "outPutPath";
+
     /**
      * 图片宽度
      */
@@ -34,4 +35,9 @@ public class CustomIntentKey {
      * 图片旋转比例
      */
     public static final String EXTRA_ASPECT_RATIO = "aspectRatio";
+
+    /**
+     * uCrop的裁剪输出路径Key
+     */
+    public static final String EXTRA_OUTPUT_URI = "com.yalantis.ucrop.OutputUri";
 }

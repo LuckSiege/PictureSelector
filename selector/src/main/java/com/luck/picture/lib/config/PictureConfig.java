@@ -67,4 +67,5 @@ public final class PictureConfig {
     public final static int UNSET = -1;
 
     public final static int MODE_TYPE_SYSTEM_SOURCE = 1;
+    public final static int MODE_TYPE_EXTERNAL_PREVIEW_SOURCE = 2;
 }

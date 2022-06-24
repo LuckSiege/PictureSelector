@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
@@ -18,10 +19,12 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
 
 import java.util.ArrayList;
@@ -38,7 +41,6 @@ public final class PictureSelectionPreviewModel {
     public PictureSelectionPreviewModel(PictureSelector selector) {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
-        selectionConfig.isPreviewZoomEffect = false;
     }
 
 
@@ -120,6 +122,42 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel isPreviewFullScreenMode(boolean isFullScreenModel) {
         selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
+        return this;
+    }
+
+    /**
+     * Preview Zoom Effect Mode
+     *
+     * @param isPreviewZoomEffect
+     * @param rv
+     */
+    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, RecyclerView rv) {
+        return isPreviewZoomEffect(isPreviewZoomEffect, selectionConfig.isPreviewFullScreenMode, rv);
+    }
+
+    /**
+     * Preview Zoom Effect Mode
+     *
+     * @param isPreviewZoomEffect
+     * @param isFullScreenModel
+     * @param rv
+     */
+    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, boolean isFullScreenModel, RecyclerView rv) {
+        if (selectionConfig.chooseMode == SelectMimeType.ofAudio()) {
+            selectionConfig.isPreviewZoomEffect = false;
+        } else {
+            if (isPreviewZoomEffect && rv == null) {
+                throw new NullPointerException("isPreviewZoomEffect mode, external must be passed into " + RecyclerView.class);
+            }
+            if (isPreviewZoomEffect) {
+                if (isFullScreenModel) {
+                    BuildRecycleItemViewParams.generateViewParams(rv, 0);
+                } else {
+                    BuildRecycleItemViewParams.generateViewParams(rv, DensityUtil.getStatusBarHeight(selector.getActivity()));
+                }
+            }
+            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        }
         return this;
     }
 
@@ -222,9 +260,10 @@ public final class PictureSelectionPreviewModel {
             if (list == null || list.size() == 0) {
                 throw new NullPointerException("preview data is null");
             }
-            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
             SelectedManager.addSelectedPreviewResult(list);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
+            intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             Fragment fragment = selector.getFragment();
@@ -233,8 +272,12 @@ public final class PictureSelectionPreviewModel {
             } else {
                 activity.startActivity(intent);
             }
-            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            if (selectionConfig.isPreviewZoomEffect) {
+                activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in);
+            } else {
+                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            }
         }
     }
 

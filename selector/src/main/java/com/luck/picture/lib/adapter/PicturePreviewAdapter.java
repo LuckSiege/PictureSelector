@@ -2,7 +2,6 @@ package com.luck.picture.lib.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,12 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewAudioHolder;
-import com.luck.picture.lib.adapter.holder.PreviewImageHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.utils.MediaUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -102,31 +99,6 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         holder.onViewDetachedFromWindow();
     }
 
-    /**
-     * 设置封面的ScaleType
-     *
-     * @param position
-     */
-    public void setPreviewCoverScaleType(int position) {
-        BasePreviewHolder currentHolder = getCurrentHolder(position);
-        if (currentHolder == null) {
-            return;
-        }
-        LocalMedia item = getItem(position);
-        if (item == null) {
-            return;
-        }
-        currentHolder.coverImageView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (MediaUtils.isLongImage(item.getWidth(), item.getHeight())) {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                }
-            }
-        });
-    }
 
     /**
      * 设置播放按钮状态

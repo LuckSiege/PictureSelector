@@ -10,20 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.PictureSelectorFragment;
-import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
-
-import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -56,20 +50,8 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     }
 
     private void setupFragment() {
-        if (getIntent().hasExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW)
-                && getIntent().getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, false)) {
-            int position = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, 0);
-            PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
-            ArrayList<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
-            ArrayList<LocalMedia> previewData = new ArrayList<>(previewResult);
-            boolean isDisplayDelete = getIntent()
-                    .getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
-            fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
-            FragmentInjectManager.injectFragment(this, PictureSelectorPreviewFragment.TAG, fragment);
-        } else {
-            FragmentInjectManager.injectFragment(this, PictureSelectorFragment.TAG,
-                    PictureSelectorFragment.newInstance());
-        }
+        FragmentInjectManager.injectFragment(this, PictureSelectorFragment.TAG,
+                PictureSelectorFragment.newInstance());
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.loader;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -81,9 +82,16 @@ public abstract class IBridgeMediaLoader {
     protected static final String[] ALL_PROJECTION = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.MediaColumns.DATA,
-            COLUMN_BUCKET_ID,
-            COLUMN_BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE,
+            MediaStore.MediaColumns.WIDTH,
+            MediaStore.MediaColumns.HEIGHT,
+            COLUMN_DURATION,
+            MediaStore.MediaColumns.SIZE,
+            COLUMN_BUCKET_DISPLAY_NAME,
+            MediaStore.MediaColumns.DISPLAY_NAME,
+            COLUMN_BUCKET_ID,
+            MediaStore.MediaColumns.DATE_ADDED,
+            COLUMN_ORIENTATION,
             "COUNT(*) AS " + COLUMN_COUNT};
 
     /**
@@ -133,6 +141,14 @@ public abstract class IBridgeMediaLoader {
      * Passing null will use the default sort order, which may be unordered.
      */
     protected abstract String getSortOrder();
+
+    /**
+     * parse LocalMedia
+     *
+     * @param data      Cursor
+     * @param isUsePool object pool
+     */
+    protected abstract LocalMedia parseLocalMedia(Cursor data, boolean isUsePool);
 
     /**
      * Get video (maximum or minimum time)

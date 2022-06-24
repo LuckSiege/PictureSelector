@@ -62,6 +62,7 @@ import com.luck.lib.camerax.permissions.SimpleXPermissionUtil;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
+import com.luck.picture.lib.basic.IBridgeViewLifecycle;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelectionCameraModel;
 import com.luck.picture.lib.basic.PictureSelectionModel;
@@ -99,6 +100,7 @@ import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
+import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
@@ -289,16 +291,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
         launcherResult = createActivityResultLauncher();
 
-//        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateLocalMedia("https://fdfs.test-kepu.weiyilewen.com/group1/M00/00/01/wKhkY2Iv936EMKWzAAAAAHuLNY8762.mp4", PictureMimeType.ofMP4()));
-//        list.add(LocalMedia.generateLocalMedia("http:/125.124.10.5:81/dfs2/group1/M00/0E/31/CtosLGI0V5aACBl9AFZJdmcSWKg004.mp4", PictureMimeType.ofMP4()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoipj8xj30kw3kmwru.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://wx4.sinaimg.cn/mw2000/0073ozWdly1h0afoj5q8ij30u04gqkb1.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
-//        mData.addAll(list);
+        List<LocalMedia> list = new ArrayList<>();
+//        list.add(LocalMedia.generateHttpAsLocalMedia("https://fdfs.test-kepu.weiyilewen.com/group1/M00/00/01/wKhkY2Iv936EMKWzAAAAAHuLNY8762.mp4"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoipj8xj30kw3kmwru.jpg"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx4.sinaimg.cn/mw2000/0073ozWdly1h0afoj5q8ij30u04gqkb1.jpg"));
+        list.add(LocalMedia.generateHttpAsLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif"));
+        mData.addAll(list);
 
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
@@ -366,9 +367,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
-//                        .setAttachViewLifecycle(new IBridgeViewLifecycle() {
-//                            @Override
-//                            public void onViewCreated(Fragment fragment, View view, Bundle savedInstanceState) {
+                        .isPreviewZoomEffect(true, mRecyclerView)
+                        .setAttachViewLifecycle(new IBridgeViewLifecycle() {
+                            @Override
+                            public void onViewCreated(Fragment fragment, View view, Bundle savedInstanceState) {
 //                                PictureSelectorPreviewFragment previewFragment = (PictureSelectorPreviewFragment) fragment;
 //                                MediumBoldTextView tvShare = view.findViewById(R.id.tv_share);
 //                                tvShare.setVisibility(View.VISIBLE)
@@ -384,21 +386,32 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 //                                        ToastUtils.showToast(fragment.getContext(), "自定义分享事件:" + viewPager2.getCurrentItem());
 //                                    }
 //                                });
-//                            }
-//
-//                            @Override
-//                            public void onDestroy(Fragment fragment) {
-//                            }
-//                        })
-//                        .setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
-//                            @Override
-//                            public int getLayoutResourceId(Context context, int resourceSource) {
-//                                return resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE
-//                                        ? R.layout.ps_custom_fragment_preview
-//                                        : InjectResourceSource.DEFAULT_LAYOUT_RESOURCE;
-//                            }
-//                        })
-                        .setExternalPreviewEventListener(new MyExternalPreviewEventListener(mAdapter))
+                            }
+
+                            @Override
+                            public void onDestroy(Fragment fragment) {
+//                                if (cb_preview_full.isChecked()) {
+//                                    // 如果是全屏预览模式且是startFragmentPreview预览，回到自己的界面时需要恢复一下自己的沉浸式状态
+//                                    // 以下提供2种解决方案:
+//                                    // 1.通过ImmersiveManager.immersiveAboveAPI23重新设置一下沉浸式
+//                                    int statusBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
+//                                    int navigationBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
+//                                    ImmersiveManager.immersiveAboveAPI23(MainActivity.this,
+//                                            true, true,
+//                                            statusBarColor, navigationBarColor, false);
+//                                    // 2.让自己的titleBar的高度加上一个状态栏高度且内容PaddingTop下沉一个状态栏的高度
+//                                }
+                            }
+                        })
+                        .setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
+                            @Override
+                            public int getLayoutResourceId(Context context, int resourceSource) {
+                                return resourceSource == InjectResourceSource.PREVIEW_LAYOUT_RESOURCE
+                                        ? R.layout.ps_custom_fragment_preview
+                                        : InjectResourceSource.DEFAULT_LAYOUT_RESOURCE;
+                            }
+                        })
+                        .setExternalPreviewEventListener(new MyExternalPreviewEventListener())
                         .startActivityPreview(position, true, mAdapter.getData());
             }
 
@@ -440,12 +453,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
-//                              .setQueryFilterListener(new OnQueryFilterListener() {
-//                                    @Override
-//                                    public boolean onFilter(String absolutePath) {
-//                                        return PictureMimeType.isUrlHasVideo(absolutePath);
-//                                    }
-//                                })
+                                .isPageSyncAlbumCount(true)
+                                .setQueryFilterListener(new OnQueryFilterListener() {
+                                    @Override
+                                    public boolean onFilter(LocalMedia media) {
+                                        return false;
+                                    }
+                                })
                                 //.setExtendLoaderEngine(getExtendLoaderEngine())
                                 .setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
@@ -768,17 +782,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 外部预览监听事件
      */
-    private static class MyExternalPreviewEventListener implements OnExternalPreviewEventListener {
-        private final GridImageAdapter adapter;
-
-        public MyExternalPreviewEventListener(GridImageAdapter adapter) {
-            this.adapter = adapter;
-        }
+    private class MyExternalPreviewEventListener implements OnExternalPreviewEventListener {
 
         @Override
         public void onPreviewDelete(int position) {
-            adapter.remove(position);
-            adapter.notifyItemRemoved(position);
+            mAdapter.remove(position);
+            mAdapter.notifyItemRemoved(position);
         }
 
         @Override
@@ -1441,7 +1450,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
                 }
             });
-            uCrop.start(fragment.getActivity(), fragment, requestCode);
+            uCrop.start(fragment.requireActivity(), fragment, requestCode);
         }
     }
 

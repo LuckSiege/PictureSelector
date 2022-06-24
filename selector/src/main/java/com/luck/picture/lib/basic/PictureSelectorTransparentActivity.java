@@ -13,13 +13,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManager;
+import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
+
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -32,11 +38,23 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         immersive();
         setContentView(R.layout.ps_empty);
-        setActivitySize();
+        if (isExternalPreview()) {
+            // TODO ignore
+        } else {
+            setActivitySize();
+        }
         setupFragment();
     }
 
+    private boolean isExternalPreview() {
+        int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
+        return modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE;
+    }
+
     private void immersive() {
+        if (PictureSelectionConfig.selectorStyle == null) {
+            PictureSelectionConfig.getInstance();
+        }
         SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         int statusBarColor = mainStyle.getStatusBarColor();
         int navigationBarColor = mainStyle.getNavigationBarColor();
@@ -51,12 +69,21 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     }
 
     private void setupFragment() {
-        int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
         String fragmentTag;
         Fragment targetFragment;
+        int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
         if (modeTypeSource == PictureConfig.MODE_TYPE_SYSTEM_SOURCE) {
             fragmentTag = PictureSelectorSystemFragment.TAG;
             targetFragment = PictureSelectorSystemFragment.newInstance();
+        } else if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE) {
+            fragmentTag = PictureSelectorPreviewFragment.TAG;
+            targetFragment = PictureSelectorPreviewFragment.newInstance();
+            int position = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, 0);
+            ArrayList<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
+            ArrayList<LocalMedia> previewData = new ArrayList<>(previewResult);
+            boolean isDisplayDelete = getIntent()
+                    .getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
+            ((PictureSelectorPreviewFragment) targetFragment).setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
         } else {
             fragmentTag = PictureOnlyCameraFragment.TAG;
             targetFragment = PictureOnlyCameraFragment.newInstance();
