@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                        .isPreviewZoomEffect(true, mRecyclerView)
+                        .isPreviewZoomEffect(cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
                             @Override
                             public void onViewCreated(Fragment fragment, View view, Bundle savedInstanceState) {
