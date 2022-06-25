@@ -41,7 +41,7 @@ public class GlideEngine implements ImageEngine {
         Glide.with(context)
                 .load(url)
                 .override(maxWidth, maxHeight)
-                .into((ImageView) imageView);
+                .into(imageView);
     }
 
     /**
