@@ -21,7 +21,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.manager.SelectedManager;
-import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -111,6 +111,13 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, R.anim.ps_anim_fade_out);
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
+        if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE && !config.isPreviewZoomEffect) {
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+            overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
+        } else {
+            overridePendingTransition(0, R.anim.ps_anim_fade_out);
+        }
     }
 }

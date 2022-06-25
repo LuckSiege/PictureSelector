@@ -43,6 +43,7 @@ public final class PictureSelectionPreviewModel {
     public PictureSelectionPreviewModel(PictureSelector selector) {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
+        selectionConfig.isPreviewZoomEffect = false;
     }
 
 
