@@ -1145,7 +1145,7 @@ public final class PictureSelectionModel {
     /**
      * Whether to sync the number of resources under the latest album in paging mode with filter conditions
      *
-     * @param isPageMin10AsCount
+     * @param isPageSyncAsCount
      */
     public PictureSelectionModel isPageSyncAlbumCount(boolean isPageSyncAsCount) {
         selectionConfig.isPageSyncAsCount = isPageSyncAsCount;
