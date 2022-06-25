@@ -2,6 +2,8 @@ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -129,10 +131,10 @@ public final class PictureSelectionPreviewModel {
      * Preview Zoom Effect Mode
      *
      * @param isPreviewZoomEffect
-     * @param rv
+     * @param listView  Use {@link RecyclerView,ListView}
      */
-    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, RecyclerView rv) {
-        return isPreviewZoomEffect(isPreviewZoomEffect, selectionConfig.isPreviewFullScreenMode, rv);
+    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, ViewGroup listView) {
+        return isPreviewZoomEffect(isPreviewZoomEffect, selectionConfig.isPreviewFullScreenMode, listView);
     }
 
     /**
@@ -140,23 +142,25 @@ public final class PictureSelectionPreviewModel {
      *
      * @param isPreviewZoomEffect
      * @param isFullScreenModel
-     * @param rv
+     * @param listView   Use {@link RecyclerView,ListView}
      */
-    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, boolean isFullScreenModel, RecyclerView rv) {
+    public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, boolean isFullScreenModel, ViewGroup listView) {
         if (selectionConfig.chooseMode == SelectMimeType.ofAudio()) {
             selectionConfig.isPreviewZoomEffect = false;
         } else {
-            if (isPreviewZoomEffect && rv == null) {
-                throw new NullPointerException("isPreviewZoomEffect mode, external must be passed into " + RecyclerView.class);
-            }
-            if (isPreviewZoomEffect) {
-                if (isFullScreenModel) {
-                    BuildRecycleItemViewParams.generateViewParams(rv, 0);
-                } else {
-                    BuildRecycleItemViewParams.generateViewParams(rv, DensityUtil.getStatusBarHeight(selector.getActivity()));
+            if (listView instanceof RecyclerView || listView instanceof ListView) {
+                if (isPreviewZoomEffect) {
+                    if (isFullScreenModel) {
+                        BuildRecycleItemViewParams.generateViewParams(listView, 0);
+                    } else {
+                        BuildRecycleItemViewParams.generateViewParams(listView, DensityUtil.getStatusBarHeight(selector.getActivity()));
+                    }
                 }
+                selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+            } else {
+                throw new IllegalArgumentException(listView.getClass().getCanonicalName()
+                        + " Must be " + RecyclerView.class + " or " + ListView.class);
             }
-            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
         }
         return this;
     }

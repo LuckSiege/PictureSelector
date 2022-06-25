@@ -1,6 +1,9 @@
 package com.luck.picture.lib.magical;
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,25 +30,44 @@ public class BuildRecycleItemViewParams {
         return viewParams.size() > position ? viewParams.get(position) : null;
     }
 
-    public static void generateViewParams(RecyclerView recyclerView, int statusBarHeight) {
+    public static void generateViewParams(ViewGroup viewGroup, int statusBarHeight) {
         List<View> views = new ArrayList<>();
-        int childCount = recyclerView.getChildCount();
+        int childCount;
+        if (viewGroup instanceof RecyclerView) {
+            childCount = ((RecyclerView) viewGroup).getChildCount();
+        } else if (viewGroup instanceof ListView) {
+            childCount = ((ListView) viewGroup).getChildCount();
+        } else {
+            throw new IllegalArgumentException(viewGroup.getClass().getCanonicalName()
+                    + " Must be " + RecyclerView.class + " or " + ListView.class);
+        }
         for (int i = 0; i < childCount; i++) {
-            View view = recyclerView.getChildAt(i);
+            View view = viewGroup.getChildAt(i);
             if (view == null) {
                 continue;
             }
             views.add(view);
         }
-        GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-        if (layoutManager == null) {
-            return;
-        }
         int firstPos;
         int lastPos;
-        int totalCount = layoutManager.getItemCount();
-        firstPos = layoutManager.findFirstVisibleItemPosition();
-        lastPos = layoutManager.findLastVisibleItemPosition();
+        int totalCount;
+        if (viewGroup instanceof RecyclerView) {
+            GridLayoutManager layoutManager = (GridLayoutManager) ((RecyclerView) viewGroup).getLayoutManager();
+            if (layoutManager == null) {
+                return;
+            }
+            totalCount = layoutManager.getItemCount();
+            firstPos = layoutManager.findFirstVisibleItemPosition();
+            lastPos = layoutManager.findLastVisibleItemPosition();
+        } else {
+            ListAdapter listAdapter = ((ListView) viewGroup).getAdapter();
+            if (listAdapter == null) {
+                return;
+            }
+            totalCount = listAdapter.getCount();
+            firstPos = ((ListView) viewGroup).getFirstVisiblePosition();
+            lastPos = ((ListView) viewGroup).getLastVisiblePosition();
+        }
         lastPos = lastPos > totalCount ? totalCount - 1 : lastPos;
         fillPlaceHolder(views, totalCount, firstPos, lastPos);
         viewParams.clear();
@@ -68,7 +90,6 @@ public class BuildRecycleItemViewParams {
             viewParams.add(viewParam);
         }
     }
-
 
     private static void fillPlaceHolder(List<View> originImageList, int totalCount, int firstPos, int lastPos) {
         if (firstPos > 0) {
