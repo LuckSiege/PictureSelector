@@ -16,7 +16,6 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -47,7 +46,6 @@ import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
@@ -76,7 +74,6 @@ import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.SpUtils;
 import com.luck.picture.lib.utils.ToastUtils;
-import com.luck.picture.lib.utils.ValueOf;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -1241,79 +1238,18 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * buildLocalMedia
      *
-     * @param generatePath
+     * @param absolutePath
      */
-    protected LocalMedia buildLocalMedia(String generatePath) {
-        if (ActivityCompatHelper.isDestroy(getActivity())) {
-            return null;
-        }
-        long id = 0, bucketId;
-        File cameraFile;
-        String mimeType;
-        if (PictureMimeType.isContent(generatePath)) {
-            Uri cameraUri = Uri.parse(generatePath);
-            String path = PictureFileUtils.getPath(getActivity(), cameraUri);
-            cameraFile = new File(path);
-            mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
-            if (PictureFileUtils.isMediaDocument(cameraUri)) {
-                String documentId = DocumentsContract.getDocumentId(cameraUri);
-                if (!TextUtils.isEmpty(documentId)) {
-                    String[] split = documentId.split(":");
-                    if (split.length > 1) {
-                        id = ValueOf.toLong(split[1]);
-                    }
-                }
-            } else if (PictureFileUtils.isDownloadsDocument(cameraUri)) {
-                id = ValueOf.toLong(DocumentsContract.getDocumentId(cameraUri));
-            } else {
-                int lastIndexOf = generatePath.lastIndexOf("/") + 1;
-                id = lastIndexOf > 0 ? ValueOf.toLong(generatePath.substring(lastIndexOf)) : System.currentTimeMillis();
-            }
-            if (PictureMimeType.isHasAudio(mimeType)) {
-                bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, "");
-            } else {
-                bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
-            }
-        } else {
-            cameraFile = new File(generatePath);
-            mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
-            id = System.currentTimeMillis();
-            if (PictureMimeType.isHasAudio(mimeType)) {
-                bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, config.outPutCameraDir);
-            } else {
-                bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
-            }
-        }
-        if (PictureMimeType.isHasImage(mimeType)) {
-            if (config.isCameraRotateImage) {
-                BitmapUtils.rotateImage(getContext(), generatePath);
-            }
-        }
-        MediaExtraInfo mediaExtraInfo;
-        if (PictureMimeType.isHasVideo(mimeType)) {
-            mediaExtraInfo = MediaUtils.getVideoSize(getContext(), generatePath);
-        } else if (PictureMimeType.isHasAudio(mimeType)) {
-            mediaExtraInfo = MediaUtils.getAudioSize(getContext(), generatePath);
-        } else {
-            mediaExtraInfo = MediaUtils.getImageSize(getContext(), generatePath);
-        }
-        String folderName = MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath());
-        LocalMedia media = LocalMedia.create();
-        media.setId(id);
-        media.setBucketId(bucketId);
-        media.setPath(generatePath);
-        media.setRealPath(cameraFile.getAbsolutePath());
-        media.setFileName(cameraFile.getName());
-        media.setParentFolderName(folderName);
-        media.setDuration(mediaExtraInfo.getDuration());
+    protected LocalMedia buildLocalMedia(String absolutePath) {
+        LocalMedia media = LocalMedia.generateLocalMedia(getContext(), absolutePath);
         media.setChooseModel(config.chooseMode);
-        media.setMimeType(mimeType);
-        media.setWidth(mediaExtraInfo.getWidth());
-        media.setHeight(mediaExtraInfo.getHeight());
-        media.setSize(cameraFile.length());
-        media.setDateAddedTime(cameraFile.lastModified() / 1000);
-        if (SdkVersionUtils.isQ()) {
-            media.setSandboxPath(PictureMimeType.isContent(generatePath) ? null : generatePath);
+        if (SdkVersionUtils.isQ() && !PictureMimeType.isContent(absolutePath)) {
+            media.setSandboxPath(absolutePath);
+        } else {
+            media.setSandboxPath(null);
+        }
+        if (config.isCameraRotateImage && PictureMimeType.isHasImage(media.getMimeType())) {
+            BitmapUtils.rotateImage(getContext(), absolutePath);
         }
         return media;
     }

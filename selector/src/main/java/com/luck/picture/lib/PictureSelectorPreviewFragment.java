@@ -1106,16 +1106,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             viewPager.post(new Runnable() {
                 @Override
                 public void run() {
-                    BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(curPosition);
-                    if (currentHolder != null) {
-                        currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    }
+                    viewPageAdapter.setCoverScaleType(curPosition);
                 }
             });
-            int[] size = getRealSizeFromMedia(media, true);
+            int[] size = getRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath()));
             magicalView.changeRealScreenHeight(size[0], size[1], false);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-            if (viewParams == null) {
+            if (viewParams == null || (size[0] == 0 && size[1] == 0)) {
                 magicalView.startNormal(size[0], size[1], false);
                 magicalView.setBackgroundAlpha(1.0F);
                 for (int i = 0; i < mAnimViews.size(); i++) {

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.photoview.OnViewTapListener;
@@ -87,6 +88,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         setOnLongClickEventListener();
     }
 
+
     /**
      * load image cover
      *
@@ -96,8 +98,12 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      */
     protected void loadImage(final LocalMedia media, int maxWidth, int maxHeight) {
         if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), coverImageView,
-                    media.getAvailablePath(), maxWidth, maxHeight);
+            String availablePath = media.getAvailablePath();
+            if (maxWidth == PictureConfig.UNSET && maxHeight == PictureConfig.UNSET) {
+                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), availablePath, coverImageView);
+            } else {
+                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), coverImageView, availablePath, maxWidth, maxHeight);
+            }
         }
     }
 

@@ -129,51 +129,6 @@ public class MediaUtils {
     }
 
     /**
-     * 生成BucketId
-     *
-     * @param context         上下文
-     * @param cameraFile      拍照资源文件
-     * @param outPutCameraDir 自定义拍照输出目录
-     * @return
-     */
-    public static long generateCameraBucketId(Context context, File cameraFile, String outPutCameraDir) {
-        long bucketId;
-        if (TextUtils.isEmpty(outPutCameraDir)) {
-            bucketId = getFirstBucketId(context, cameraFile.getParent());
-        } else {
-            if (cameraFile.getParentFile() != null) {
-                bucketId = cameraFile.getParentFile().getName().hashCode();
-            } else {
-                bucketId = getFirstBucketId(context, cameraFile.getParent());
-            }
-        }
-        return bucketId;
-    }
-
-
-    /**
-     * 生成BucketId
-     *
-     * @param context        上下文
-     * @param cameraFile     拍照资源文件
-     * @param outPutAudioDir 自定义拍照输出目录
-     * @return
-     */
-    public static long generateSoundsBucketId(Context context, File cameraFile, String outPutAudioDir) {
-        long bucketId;
-        if (TextUtils.isEmpty(outPutAudioDir)) {
-            bucketId = getFirstBucketId(context,cameraFile.getParent());
-        } else {
-            if (cameraFile.getParentFile() != null) {
-                bucketId = cameraFile.getParentFile().getName().hashCode();
-            } else {
-                bucketId = getFirstBucketId(context,cameraFile.getParent());
-            }
-        }
-        return bucketId;
-    }
-
-    /**
      * 创建目录名
      *
      * @param absolutePath 资源路径
@@ -367,26 +322,28 @@ public class MediaUtils {
     }
 
     /**
-     * 获取最新一条拍照记录
+     * getPathMediaBucketId
      *
      * @return
      */
-    public static long getFirstBucketId(Context context,String absoluteDir) {
+    public static Long[] getPathMediaBucketId(Context context, String absolutePath) {
+        Long[] mediaBucketId = new Long[]{0L, 0L};
         Cursor data = null;
         try {
             //selection: 指定查询条件
             String selection = MediaStore.Files.FileColumns.DATA + " like ?";
             //定义selectionArgs：
-            String[] selectionArgs = {"%" + absoluteDir + "%"};
+            String[] selectionArgs = {"%" + absolutePath + "%"};
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
-                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0, MediaStore.Files.FileColumns._ID + " DESC");
+                data = context.getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
             } else {
                 String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
-                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, selection, selectionArgs, orderBy);
+                data = context.getContentResolver().query(MediaStore.Files.getContentUri("external"), null, selection, selectionArgs, orderBy);
             }
             if (data != null && data.getCount() > 0 && data.moveToFirst()) {
-                return data.getLong(data.getColumnIndex("bucket_id"));
+                mediaBucketId[0] = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                mediaBucketId[1] = data.getLong(data.getColumnIndex("bucket_id"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -395,7 +352,7 @@ public class MediaUtils {
                 data.close();
             }
         }
-        return -1;
+        return mediaBucketId;
     }
 
 

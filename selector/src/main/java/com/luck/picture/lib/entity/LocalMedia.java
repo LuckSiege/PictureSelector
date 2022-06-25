@@ -1,6 +1,8 @@
 package com.luck.picture.lib.entity;
 
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -9,6 +11,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.obj.pool.ObjectPools;
 import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.PictureFileUtils;
 
 import java.io.File;
 
@@ -192,9 +195,7 @@ public class LocalMedia implements Parcelable {
     private boolean isEditorImage;
 
     public LocalMedia() {
-
     }
-
 
     protected LocalMedia(Parcel in) {
         id = in.readLong();
@@ -317,21 +318,48 @@ public class LocalMedia implements Parcelable {
     }
 
     /**
-     * 构造网络资源下的LocalMedia
+     * 构造本地资源下的LocalMedia
      *
-     * @param absolutePath 本地路径
+     * @param context 上下文
+     * @param path    本地路径
      * @return
      */
-    public static LocalMedia generateLocalMedia(String absolutePath) {
-        File cameraFile = new File(absolutePath);
+    public static LocalMedia generateLocalMedia(Context context, String path) {
         LocalMedia media = LocalMedia.create();
-        media.setPath(absolutePath);
+        File cameraFile = PictureMimeType.isContent(path) ? new File(PictureFileUtils.getPath(context, Uri.parse(path))) : new File(path);
+        media.setPath(path);
         media.setRealPath(cameraFile.getAbsolutePath());
         media.setFileName(cameraFile.getName());
         media.setParentFolderName(MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath()));
         media.setMimeType(MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath()));
         media.setSize(cameraFile.length());
         media.setDateAddedTime(cameraFile.lastModified() / 1000);
+        String realPath = cameraFile.getAbsolutePath();
+        if (realPath.contains("Android/data/") || realPath.contains("data/user/")) {
+            media.setId(System.currentTimeMillis());
+            media.setBucketId(0L);
+        } else {
+            Long[] mediaBucketId = MediaUtils.getPathMediaBucketId(context, media.getRealPath());
+            media.setId(mediaBucketId[0] == 0 ? System.currentTimeMillis() : mediaBucketId[0]);
+            media.setBucketId(mediaBucketId[1]);
+        }
+        if (media.getBucketId() == 0L && cameraFile.getParentFile() != null) {
+            media.setBucketId(cameraFile.getParentFile().getName().hashCode());
+        }
+        MediaExtraInfo mediaExtraInfo;
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
+            mediaExtraInfo = MediaUtils.getVideoSize(context, path);
+            media.setWidth(mediaExtraInfo.getWidth());
+            media.setHeight(mediaExtraInfo.getHeight());
+            media.setDuration(mediaExtraInfo.getDuration());
+        } else if (PictureMimeType.isHasAudio(media.getMimeType())) {
+            mediaExtraInfo = MediaUtils.getAudioSize(context, path);
+            media.setDuration(mediaExtraInfo.getDuration());
+        } else {
+            mediaExtraInfo = MediaUtils.getImageSize(context, path);
+            media.setWidth(mediaExtraInfo.getWidth());
+            media.setHeight(mediaExtraInfo.getHeight());
+        }
         return media;
     }
 
@@ -340,6 +368,7 @@ public class LocalMedia implements Parcelable {
      *
      * @param url      网络url
      * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF()}
+     *                 Use {@link LocalMedia.generateHttpAsLocalMedia()}
      * @return
      */
     @Deprecated
@@ -383,7 +412,9 @@ public class LocalMedia implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof LocalMedia)) return false;
         LocalMedia media = (LocalMedia) o;
-        boolean isCompare = TextUtils.equals(getPath(), media.getPath()) || getId() == media.getId();
+        boolean isCompare = TextUtils.equals(getPath(), media.getPath())
+                || TextUtils.equals(getRealPath(), media.getRealPath())
+                || getId() == media.getId();
         compareLocalMedia = isCompare ? media : null;
         return isCompare;
     }

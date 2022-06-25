@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -99,6 +100,22 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         holder.onViewDetachedFromWindow();
     }
 
+    /**
+     * 设置封面的缩放方式
+     *
+     * @param position
+     */
+    public void setCoverScaleType(int position) {
+        BasePreviewHolder currentHolder = getCurrentHolder(position);
+        if (currentHolder != null) {
+            LocalMedia media = getItem(position);
+            if (media.getWidth() == 0 && media.getHeight() == 0) {
+                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            } else {
+                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+        }
+    }
 
     /**
      * 设置播放按钮状态
