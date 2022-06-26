@@ -24,6 +24,8 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -92,6 +94,7 @@ import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnGridItemSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
@@ -105,6 +108,7 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
@@ -182,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
-            cb_custom_preview, cb_permission_desc,cb_video_thumbnails,cb_auto_video;
+            cb_custom_preview, cb_permission_desc,cb_video_thumbnails, cb_auto_video, cb_selected_anim;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_permission_desc = findViewById(R.id.cb_permission_desc);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_auto_video = findViewById(R.id.cb_auto_video);
+        cb_selected_anim = findViewById(R.id.cb_selected_anim);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
         cbPage = findViewById(R.id.cbPage);
@@ -494,6 +499,28 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isPreviewImage(cb_preview_img.isChecked())
                                 .isPreviewVideo(cb_preview_video.isChecked())
                                 .isPreviewAudio(cb_preview_audio.isChecked())
+                                .setGridItemSelectAnimListener(cb_selected_anim.isChecked() ? new OnGridItemSelectAnimListener() {
+
+                                    @Override
+                                    public void onSelectItemAnim(View view, boolean isSelected) {
+                                        AnimatorSet set = new AnimatorSet();
+                                        set.playTogether(
+                                                ObjectAnimator.ofFloat(view, "scaleX", isSelected ? 1F : 1.12F, isSelected ? 1.12f : 1.0F),
+                                                ObjectAnimator.ofFloat(view, "scaleY", isSelected ? 1F : 1.12F, isSelected ? 1.12f : 1.0F)
+                                        );
+                                        set.setDuration(350);
+                                        set.start();
+                                    }
+                                } : null)
+                                .setSelectAnimListener(cb_selected_anim.isChecked() ? new OnSelectAnimListener() {
+
+                                    @Override
+                                    public long onSelectAnim(View view) {
+                                        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
+                                        view.startAnimation(animation);
+                                        return animation.getDuration();
+                                    }
+                                } : null)
                                 //.setQueryOnlyMimeType(PictureMimeType.ofGIF())
                                 .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                                 .isDirectReturnSingle(cb_single_back.isChecked())

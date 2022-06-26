@@ -737,7 +737,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     LocalMedia currentMedia = mData.get(viewPager.getCurrentItem());
                     int selectResultCode = confirmSelect(currentMedia, tvSelected.isSelected());
                     if (selectResultCode == SelectedManager.ADD_SUCCESS) {
-                        tvSelected.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
+                        if (PictureSelectionConfig.onSelectAnimListener != null) {
+                            PictureSelectionConfig.onSelectAnimListener.onSelectAnim(tvSelected);
+                        } else {
+                            tvSelected.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
+                        }
                     }
                 }
             }

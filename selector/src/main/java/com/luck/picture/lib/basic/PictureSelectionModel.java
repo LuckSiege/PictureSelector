@@ -34,6 +34,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
+import com.luck.picture.lib.interfaces.OnGridItemSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
@@ -43,6 +44,7 @@ import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
@@ -377,6 +379,28 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel setQueryFilterListener(OnQueryFilterListener listener) {
         PictureSelectionConfig.onQueryFilterListener = listener;
+        return this;
+    }
+
+    /**
+     * Animate the selected item in the list
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setGridItemSelectAnimListener(OnGridItemSelectAnimListener listener) {
+        PictureSelectionConfig.onItemSelectAnimListener = listener;
+        return this;
+    }
+
+    /**
+     * Animate the selected item
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setSelectAnimListener(OnSelectAnimListener listener) {
+        PictureSelectionConfig.onSelectAnimListener = listener;
         return this;
     }
 

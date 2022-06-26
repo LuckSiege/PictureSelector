@@ -151,7 +151,11 @@ public class CompleteSelectView extends LinearLayout {
                     // ignore
                 } else {
                     tvSelectNum.setText(ValueOf.toString(SelectedManager.getSelectCount()));
-                    tvSelectNum.startAnimation(numberChangeAnimation);
+                    if (PictureSelectionConfig.onSelectAnimListener != null) {
+                        PictureSelectionConfig.onSelectAnimListener.onSelectAnim(tvSelectNum);
+                    } else {
+                        tvSelectNum.startAnimation(numberChangeAnimation);
+                    }
                 }
             } else {
                 tvSelectNum.setVisibility(GONE);

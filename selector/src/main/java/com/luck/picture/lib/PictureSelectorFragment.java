@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -89,7 +90,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     /**
      * 这个时间对应的是R.anim.ps_anim_modal_in里面的
      */
-    private static final int SELECT_ANIM_DURATION = 135;
+    private static int SELECT_ANIM_DURATION = 135;
 
     private RecyclerPreloadView mRecycler;
 
@@ -818,7 +819,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
             public int onSelected(View selectedView, int position, LocalMedia media) {
                 int selectResultCode = confirmSelect(media, selectedView.isSelected());
                 if (selectResultCode == SelectedManager.ADD_SUCCESS) {
-                    selectedView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
+                    if (PictureSelectionConfig.onSelectAnimListener != null) {
+                        long duration = PictureSelectionConfig.onSelectAnimListener.onSelectAnim(selectedView);
+                        if (duration > 0) {
+                            SELECT_ANIM_DURATION = (int) duration;
+                        }
+                    } else {
+                        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
+                        SELECT_ANIM_DURATION = (int) animation.getDuration();
+                        selectedView.startAnimation(animation);
+                    }
                 }
                 return selectResultCode;
             }

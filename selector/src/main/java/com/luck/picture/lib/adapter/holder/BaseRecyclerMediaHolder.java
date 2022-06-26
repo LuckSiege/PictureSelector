@@ -164,7 +164,17 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 }
                 if (resultCode == SelectedManager.ADD_SUCCESS) {
                     if (config.isSelectZoomAnim) {
-                        AnimUtils.selectZoom(ivPicture);
+                        if (PictureSelectionConfig.onItemSelectAnimListener != null) {
+                            PictureSelectionConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, true);
+                        } else {
+                            AnimUtils.selectZoom(ivPicture);
+                        }
+                    }
+                } else if (resultCode == SelectedManager.REMOVE) {
+                    if (config.isSelectZoomAnim) {
+                        if (PictureSelectionConfig.onItemSelectAnimListener != null) {
+                            PictureSelectionConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, false);
+                        }
                     }
                 }
                 selectedMedia(isSelected(media));

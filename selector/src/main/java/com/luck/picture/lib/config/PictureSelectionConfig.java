@@ -19,6 +19,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnGridItemSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -29,6 +30,7 @@ import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.interfaces.OnRecordAudioInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
@@ -161,6 +163,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public static IBridgeViewLifecycle viewLifecycle;
     public static IBridgeLoaderFactory loaderFactory;
     public static InterpolatorFactory interpolatorFactory;
+    public static OnGridItemSelectAnimListener onItemSelectAnimListener;
+    public static OnSelectAnimListener onSelectAnimListener;
+
 
     private PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
@@ -494,6 +499,8 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.viewLifecycle = null;
         PictureSelectionConfig.loaderFactory = null;
         PictureSelectionConfig.interpolatorFactory = null;
+        PictureSelectionConfig.onItemSelectAnimListener = null;
+        PictureSelectionConfig.onSelectAnimListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();
