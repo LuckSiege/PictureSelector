@@ -178,6 +178,23 @@ PictureSelector.create(this)
 });
 ```
 
+To take photos separately in the Navigation Fragment scene, please use the following methods:
+
+```sh
+PictureSelector.create(this)
+     .openCamera(SelectMimeType.ofImage())
+     .forResultActivity(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(ArrayList<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+});
+```
 
 3、You can also use the following example：
 
