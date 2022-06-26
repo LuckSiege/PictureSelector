@@ -685,6 +685,9 @@ public final class PictureSelectionCameraModel {
 
     /**
      * Start PictureSelector
+     * <p>
+     * If you are in the Navigation Fragment scene, you must use this method
+     * </p>
      *
      * @param requestCode
      */
@@ -709,6 +712,9 @@ public final class PictureSelectionCameraModel {
 
     /**
      * ActivityResultLauncher PictureSelector
+     * <p>
+     *     If you are in the Navigation Fragment scene, you must use this method
+     * </p>
      *
      * @param launcher use {@link Activity.registerForActivityResult( ActivityResultContract , ActivityResultCallback )}
      */
@@ -731,6 +737,9 @@ public final class PictureSelectionCameraModel {
 
     /**
      * Start PictureSelector
+     * <p>
+     * If you are in the Navigation Fragment scene, you must use this method
+     * </>
      *
      * @param call
      */
