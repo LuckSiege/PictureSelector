@@ -337,14 +337,12 @@ public class LocalMedia implements Parcelable {
         String realPath = cameraFile.getAbsolutePath();
         if (realPath.contains("Android/data/") || realPath.contains("data/user/")) {
             media.setId(System.currentTimeMillis());
-            media.setBucketId(0L);
+            File parentFile = cameraFile.getParentFile();
+            media.setBucketId(parentFile != null ? parentFile.getName().hashCode() : 0L);
         } else {
             Long[] mediaBucketId = MediaUtils.getPathMediaBucketId(context, media.getRealPath());
             media.setId(mediaBucketId[0] == 0 ? System.currentTimeMillis() : mediaBucketId[0]);
             media.setBucketId(mediaBucketId[1]);
-        }
-        if (media.getBucketId() == 0L && cameraFile.getParentFile() != null) {
-            media.setBucketId(cameraFile.getParentFile().getName().hashCode());
         }
         MediaExtraInfo mediaExtraInfo;
         if (PictureMimeType.isHasVideo(media.getMimeType())) {
