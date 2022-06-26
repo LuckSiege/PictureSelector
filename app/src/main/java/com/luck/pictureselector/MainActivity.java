@@ -1417,7 +1417,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     Glide.with(context).load(url).into(imageView);
                 }
             });
-            camera.start(fragment.getActivity(), fragment, requestCode);
+            camera.start(fragment.requireActivity(), fragment, requestCode);
         }
     }
 
@@ -1500,7 +1500,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
                 }
             });
-            uCrop.start(fragment.getActivity(), fragment, requestCode);
+            uCrop.start(fragment.requireActivity(), fragment, requestCode);
         }
     }
 

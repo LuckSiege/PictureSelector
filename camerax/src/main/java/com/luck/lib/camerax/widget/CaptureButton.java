@@ -350,6 +350,9 @@ public class CaptureButton extends View {
         currentRecordedTime = (int) (maxDuration - millisUntilFinished);
         progress = 360f - millisUntilFinished / (float) maxDuration * 360f;
         invalidate();
+        if (captureListener != null) {
+            captureListener.changeTime(millisUntilFinished);
+        }
     }
 
     private class RecordCountDownTimer extends CountDownTimer {
@@ -360,9 +363,6 @@ public class CaptureButton extends View {
         @Override
         public void onTick(long millisUntilFinished) {
             updateProgress(millisUntilFinished);
-            if (captureListener != null) {
-                captureListener.changeTime(millisUntilFinished);
-            }
         }
 
         @Override
