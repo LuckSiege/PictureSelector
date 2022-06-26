@@ -19,6 +19,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
@@ -145,6 +146,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnSelectLimitTipsListener onSelectLimitTipsListener;
     public static OnResultCallbackListener<LocalMedia> onResultCallListener;
     public static OnExternalPreviewEventListener onExternalPreviewEventListener;
+    public static OnInjectActivityPreviewListener onInjectActivityPreviewListener;
     public static OnMediaEditInterceptListener onEditMediaEventListener;
     public static OnPermissionsInterceptListener onPermissionsEventListener;
     public static OnInjectLayoutResourceListener onLayoutResourceListener;
@@ -160,8 +162,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static IBridgeLoaderFactory loaderFactory;
     public static InterpolatorFactory interpolatorFactory;
 
-
-    protected PictureSelectionConfig(Parcel in) {
+    private PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
         isOnlyCamera = in.readByte() != 0;
         isDirectReturnSingle = in.readByte() != 0;
@@ -477,6 +478,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onResultCallListener = null;
         PictureSelectionConfig.onCameraInterceptListener = null;
         PictureSelectionConfig.onExternalPreviewEventListener = null;
+        PictureSelectionConfig.onInjectActivityPreviewListener = null;
         PictureSelectionConfig.onEditMediaEventListener = null;
         PictureSelectionConfig.onPermissionsEventListener = null;
         PictureSelectionConfig.onLayoutResourceListener = null;

@@ -347,87 +347,129 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onBeginBackMinAnim() {
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
-                if (currentHolder == null) {
-                    return;
-                }
-                if (currentHolder.coverImageView.getVisibility() == View.GONE) {
-                    currentHolder.coverImageView.setVisibility(View.VISIBLE);
-                }
-                if (currentHolder instanceof PreviewVideoHolder) {
-                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                    if (videoHolder.ivPlayButton.getVisibility() == View.VISIBLE) {
-                        videoHolder.ivPlayButton.setVisibility(View.GONE);
-                    }
-                }
+                onMojitoBeginBackMinAnim();
             }
 
             @Override
             public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
-                if (currentHolder == null) {
-                    return;
-                }
-                LocalMedia media = mData.get(viewPager.getCurrentItem());
-                int realWidth, realHeight;
-                if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
-                    realWidth = media.getCropImageWidth();
-                    realHeight = media.getCropImageHeight();
-                } else {
-                    realWidth = media.getWidth();
-                    realHeight = media.getHeight();
-                }
-                if (MediaUtils.isLongImage(realWidth, realHeight)) {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                }
-                if (currentHolder instanceof PreviewVideoHolder) {
-                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                    if (config.isAutoVideoPlay) {
-                        startAutoVideoPlay(viewPager.getCurrentItem());
-                    } else {
-                        if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                            videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
+                onMojitoBeginAnimComplete(mojitoView, showImmediately);
             }
 
             @Override
             public void onBackgroundAlpha(float alpha) {
-                for (int i = 0; i < mAnimViews.size(); i++) {
-                    if (mAnimViews.get(i) instanceof TitleBar) {
-                        continue;
-                    }
-                    mAnimViews.get(i).setAlpha(alpha);
-                }
+                onMojitoBackgroundAlpha(alpha);
             }
 
             @Override
             public void onMagicalViewFinish() {
-                if (isExternalPreview && isNormalDefaultEnter() && isHasMagicalEffect()) {
-                    onExitPictureSelector();
-                } else {
-                    onBackCurrentFragment();
-                }
+                onMojitoMagicalViewFinish();
             }
 
             @Override
             public void onBeginBackMinMagicalFinish(boolean isResetSize) {
-                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                if (itemViewParams == null) {
-                    return;
-                }
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
-                if (currentHolder == null) {
-                    return;
-                }
-                currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
-                currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
-                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                onMojitoBeginBackMinFinish(isResetSize);
             }
         });
+    }
+
+    /**
+     * 开始准备执行缩放动画
+     */
+    protected void onMojitoBeginBackMinAnim() {
+        BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+        if (currentHolder == null) {
+            return;
+        }
+        if (currentHolder.coverImageView.getVisibility() == View.GONE) {
+            currentHolder.coverImageView.setVisibility(View.VISIBLE);
+        }
+        if (currentHolder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+            if (videoHolder.ivPlayButton.getVisibility() == View.VISIBLE) {
+                videoHolder.ivPlayButton.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
+     * 关闭缩放动画执行完成后关闭页面
+     */
+    protected void onMojitoMagicalViewFinish() {
+        if (isExternalPreview && isNormalDefaultEnter() && isHasMagicalEffect()) {
+            onExitPictureSelector();
+        } else {
+            onBackCurrentFragment();
+        }
+    }
+
+    /**
+     * 缩放动画执行时透明度跟随变化
+     *
+     * @param alpha
+     */
+    protected void onMojitoBackgroundAlpha(float alpha) {
+        for (int i = 0; i < mAnimViews.size(); i++) {
+            if (mAnimViews.get(i) instanceof TitleBar) {
+                continue;
+            }
+            mAnimViews.get(i).setAlpha(alpha);
+        }
+    }
+
+    /**
+     * 关闭缩放动画执行完成
+     *
+     * @param isResetSize
+     */
+    protected void onMojitoBeginBackMinFinish(boolean isResetSize) {
+        ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+        if (itemViewParams == null) {
+            return;
+        }
+        BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+        if (currentHolder == null) {
+            return;
+        }
+        currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
+        currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
+        currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    }
+
+    /**
+     * 缩放动画执行完成
+     *
+     * @param mojitoView
+     * @param showImmediately
+     */
+    protected void onMojitoBeginAnimComplete(MagicalView mojitoView, boolean showImmediately) {
+        BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+        if (currentHolder == null) {
+            return;
+        }
+        LocalMedia media = mData.get(viewPager.getCurrentItem());
+        int realWidth, realHeight;
+        if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
+            realWidth = media.getCropImageWidth();
+            realHeight = media.getCropImageHeight();
+        } else {
+            realWidth = media.getWidth();
+            realHeight = media.getHeight();
+        }
+        if (MediaUtils.isLongImage(realWidth, realHeight)) {
+            currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
+        if (currentHolder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+            if (config.isAutoVideoPlay) {
+                startAutoVideoPlay(viewPager.getCurrentItem());
+            } else {
+                if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
+                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     @Override

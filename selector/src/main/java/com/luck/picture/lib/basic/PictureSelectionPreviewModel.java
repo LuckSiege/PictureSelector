@@ -19,6 +19,7 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -199,6 +200,16 @@ public final class PictureSelectionPreviewModel {
         return this;
     }
 
+    /**
+     * startActivityPreview(); Preview mode, custom preview callback
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionPreviewModel setInjectActivityPreviewFragment(OnInjectActivityPreviewListener listener) {
+        PictureSelectionConfig.onInjectActivityPreviewListener = listener;
+        return this;
+    }
 
     /**
      * @param isHidePreviewDownload Previews do not show downloads
@@ -212,11 +223,23 @@ public final class PictureSelectionPreviewModel {
     /**
      * preview LocalMedia
      *
+     * @param currentPosition
+     * @param isDisplayDelete
+     * @param list
+     */
+    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
+        startFragmentPreview(null, currentPosition, isDisplayDelete, list);
+    }
+
+    /**
+     * preview LocalMedia
+     *
+     * @param previewFragment PictureSelectorPreviewFragment
      * @param currentPosition current position
      * @param isDisplayDelete if visible delete
      * @param list            preview data
      */
-    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
+    public void startFragmentPreview(PictureSelectorPreviewFragment previewFragment, int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -237,11 +260,17 @@ public final class PictureSelectionPreviewModel {
             if (fragmentManager == null) {
                 throw new NullPointerException("FragmentManager cannot be null");
             }
-            if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
-                PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
+            String fragmentTag;
+            if (previewFragment != null) {
+                fragmentTag = previewFragment.getFragmentTag();
+            } else {
+                fragmentTag = PictureSelectorPreviewFragment.TAG;
+                previewFragment = PictureSelectorPreviewFragment.newInstance();
+            }
+            if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, fragmentTag)) {
                 ArrayList<LocalMedia> previewData = new ArrayList<>(list);
-                fragment.setExternalPreviewData(currentPosition, previewData.size(), previewData, isDisplayDelete);
-                FragmentInjectManager.injectSystemRoomFragment(fragmentManager, PictureSelectorPreviewFragment.TAG, fragment);
+                previewFragment.setExternalPreviewData(currentPosition, previewData.size(), previewData, isDisplayDelete);
+                FragmentInjectManager.injectSystemRoomFragment(fragmentManager, fragmentTag, previewFragment);
             }
         }
     }

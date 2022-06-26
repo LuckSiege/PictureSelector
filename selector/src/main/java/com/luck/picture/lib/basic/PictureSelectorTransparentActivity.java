@@ -70,14 +70,21 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
 
     private void setupFragment() {
         String fragmentTag;
-        Fragment targetFragment;
+        Fragment targetFragment = null;
         int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
         if (modeTypeSource == PictureConfig.MODE_TYPE_SYSTEM_SOURCE) {
             fragmentTag = PictureSelectorSystemFragment.TAG;
             targetFragment = PictureSelectorSystemFragment.newInstance();
         } else if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE) {
-            fragmentTag = PictureSelectorPreviewFragment.TAG;
-            targetFragment = PictureSelectorPreviewFragment.newInstance();
+            if (PictureSelectionConfig.onInjectActivityPreviewListener != null) {
+                targetFragment = PictureSelectionConfig.onInjectActivityPreviewListener.onInjectPreviewFragment();
+            }
+            if (targetFragment != null) {
+                fragmentTag = ((PictureSelectorPreviewFragment) targetFragment).getFragmentTag();
+            } else {
+                fragmentTag = PictureSelectorPreviewFragment.TAG;
+                targetFragment = PictureSelectorPreviewFragment.newInstance();
+            }
             int position = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, 0);
             ArrayList<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
             ArrayList<LocalMedia> previewData = new ArrayList<>(previewResult);
