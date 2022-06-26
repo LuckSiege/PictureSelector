@@ -384,7 +384,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
             ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
             onKeyBackFragmentFinish();
         }
-        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
+        PermissionConfig.CURRENT_REQUEST_PERMISSION = new String[]{};
     }
 
     @Override

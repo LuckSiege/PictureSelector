@@ -11,7 +11,7 @@ public class PermissionConfig {
     /**
      * 当前申请权限
      */
-    public static String[] CURRENT_REQUEST_PERMISSION = null;
+    public static String[] CURRENT_REQUEST_PERMISSION = new String[]{};
 
     /**
      * 读写权限

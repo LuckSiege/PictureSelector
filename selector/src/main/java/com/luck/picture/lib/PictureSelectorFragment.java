@@ -494,7 +494,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
         onPermissionExplainEvent(false, null);
-        boolean isHasCamera = TextUtils.equals(permissions[0],PermissionConfig.CAMERA[0]);
+        boolean isHasCamera = permissions.length > 0 && TextUtils.equals(permissions[0], PermissionConfig.CAMERA[0]);
         boolean isHasPermissions;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             isHasPermissions = PictureSelectionConfig.onPermissionsEventListener.hasPermissions(this, permissions);
@@ -523,7 +523,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 onKeyBackFragmentFinish();
             }
         }
-        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
+        PermissionConfig.CURRENT_REQUEST_PERMISSION = new String[]{};
     }
 
     /**
