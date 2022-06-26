@@ -181,7 +181,7 @@ PictureSelector.create(this)
 });
 ```
 
-注: NavigationFragment场景下单独拍照请使用如下方式:
+Navigation Fragment场景下，单独拍照请使用如下方式:
 
 ```sh
 PictureSelector.create(this)
