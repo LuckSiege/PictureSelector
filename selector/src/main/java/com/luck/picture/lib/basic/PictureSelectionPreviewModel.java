@@ -147,22 +147,18 @@ public final class PictureSelectionPreviewModel {
      * @param listView   Use {@link RecyclerView,ListView}
      */
     public PictureSelectionPreviewModel isPreviewZoomEffect(boolean isPreviewZoomEffect, boolean isFullScreenModel, ViewGroup listView) {
-        if (selectionConfig.chooseMode == SelectMimeType.ofAudio()) {
-            selectionConfig.isPreviewZoomEffect = false;
-        } else {
-            if (listView instanceof RecyclerView || listView instanceof ListView) {
-                if (isPreviewZoomEffect) {
-                    if (isFullScreenModel) {
-                        BuildRecycleItemViewParams.generateViewParams(listView, 0);
-                    } else {
-                        BuildRecycleItemViewParams.generateViewParams(listView, DensityUtil.getStatusBarHeight(selector.getActivity()));
-                    }
+        if (listView instanceof RecyclerView || listView instanceof ListView) {
+            if (isPreviewZoomEffect) {
+                if (isFullScreenModel) {
+                    BuildRecycleItemViewParams.generateViewParams(listView, 0);
+                } else {
+                    BuildRecycleItemViewParams.generateViewParams(listView, DensityUtil.getStatusBarHeight(selector.getActivity()));
                 }
-                selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
-            } else {
-                throw new IllegalArgumentException(listView.getClass().getCanonicalName()
-                        + " Must be " + RecyclerView.class + " or " + ListView.class);
             }
+            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        } else {
+            throw new IllegalArgumentException(listView.getClass().getCanonicalName()
+                    + " Must be " + RecyclerView.class + " or " + ListView.class);
         }
         return this;
     }
@@ -281,6 +277,9 @@ public final class PictureSelectionPreviewModel {
      * @param currentPosition current position
      * @param isDisplayDelete if visible delete
      * @param list            preview data
+     *                        <p>
+     *                        You can do it {@link .setInjectActivityPreviewFragment()} interface, custom Preview
+     *                        </p>
      */
     public void startActivityPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {

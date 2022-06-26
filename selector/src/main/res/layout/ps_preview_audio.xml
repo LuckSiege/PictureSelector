@@ -17,7 +17,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:drawableTop="@drawable/ps_ic_audio_play_cover"
+        tools:drawableTop="@drawable/ps_ic_audio_play_cover"
         android:drawablePadding="15dp"
         android:gravity="center"
         android:lineSpacingExtra="5dp"

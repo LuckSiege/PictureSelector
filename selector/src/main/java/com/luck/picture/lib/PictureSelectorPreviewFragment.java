@@ -1141,9 +1141,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (isSaveInstanceState || isInternalBottomPreview) {
             return;
         }
-        if (PictureMimeType.isHasAudio(media.getMimeType())) {
-            return;
-        }
         if (config.isPreviewZoomEffect) {
             viewPager.post(new Runnable() {
                 @Override

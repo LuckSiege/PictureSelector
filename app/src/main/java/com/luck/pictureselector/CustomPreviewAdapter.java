@@ -19,6 +19,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.MediaUtils;
 
@@ -50,10 +51,8 @@ public class CustomPreviewAdapter extends PicturePreviewAdapter {
 
         @Override
         protected void findViews(View itemView) {
-            super.findViews(itemView);
             subsamplingScaleImageView = itemView.findViewById(R.id.big_preview_image);
         }
-
 
         @Override
         protected void loadImage(LocalMedia media, int maxWidth, int maxHeight) {
@@ -92,9 +91,8 @@ public class CustomPreviewAdapter extends PicturePreviewAdapter {
                     });
         }
 
-
         @Override
-        protected void setOnClickEventListener() {
+        protected void onClickBackPressed() {
             if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                 subsamplingScaleImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -105,12 +103,19 @@ public class CustomPreviewAdapter extends PicturePreviewAdapter {
                     }
                 });
             } else {
-                super.setOnClickEventListener();
+                coverImageView.setOnViewTapListener(new OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        if (mPreviewEventListener != null) {
+                            mPreviewEventListener.onBackPressed();
+                        }
+                    }
+                });
             }
         }
 
         @Override
-        protected void setOnLongClickEventListener() {
+        protected void onLongPressDownload(LocalMedia media) {
             if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                 subsamplingScaleImageView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -122,7 +127,15 @@ public class CustomPreviewAdapter extends PicturePreviewAdapter {
                     }
                 });
             } else {
-                super.setOnLongClickEventListener();
+                coverImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        if (mPreviewEventListener != null) {
+                            mPreviewEventListener.onLongPressDownload(media);
+                        }
+                        return false;
+                    }
+                });
             }
         }
     }

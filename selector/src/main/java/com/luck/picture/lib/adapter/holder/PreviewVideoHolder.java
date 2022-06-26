@@ -15,9 +15,11 @@ import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.photoview.OnViewTapListener;
 
 import java.io.File;
 
@@ -40,6 +42,48 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         mPlayerView.setUseController(false);
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    protected void findViews(View itemView) {
+
+    }
+
+    @Override
+    protected void loadImage(LocalMedia media, int maxWidth, int maxHeight) {
+        if (PictureSelectionConfig.imageEngine != null) {
+            String availablePath = media.getAvailablePath();
+            if (maxWidth == PictureConfig.UNSET && maxHeight == PictureConfig.UNSET) {
+                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), availablePath, coverImageView);
+            } else {
+                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), coverImageView, availablePath, maxWidth, maxHeight);
+            }
+        }
+    }
+
+    @Override
+    protected void onClickBackPressed() {
+        coverImageView.setOnViewTapListener(new OnViewTapListener() {
+            @Override
+            public void onViewTap(View view, float x, float y) {
+                if (mPreviewEventListener != null) {
+                    mPreviewEventListener.onBackPressed();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onLongPressDownload(LocalMedia media) {
+        coverImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mPreviewEventListener != null) {
+                    mPreviewEventListener.onLongPressDownload(media);
+                }
+                return false;
+            }
+        });
     }
 
     @Override

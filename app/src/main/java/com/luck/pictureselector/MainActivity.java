@@ -59,6 +59,7 @@ import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.lib.camerax.listener.OnSimpleXPermissionDeniedListener;
 import com.luck.lib.camerax.listener.OnSimpleXPermissionDescriptionListener;
 import com.luck.lib.camerax.permissions.SimpleXPermissionUtil;
+import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
@@ -91,6 +92,7 @@ import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -366,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                        .isPreviewZoomEffect(cb_preview_scale.isChecked(),mRecyclerView)
+                        .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
                             @Override
                             public void onViewCreated(Fragment fragment, View view, Bundle savedInstanceState) {

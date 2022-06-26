@@ -17,8 +17,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
@@ -78,10 +80,45 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     }
 
     @Override
+    protected void findViews(View itemView) {
+    }
+
+    @Override
+    protected void loadImage(LocalMedia media, int maxWidth, int maxHeight) {
+        tvAudioName.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ps_ic_audio_play_cover, 0, 0);
+    }
+
+    @Override
+    protected void onClickBackPressed() {
+        coverImageView.setOnViewTapListener(new OnViewTapListener() {
+            @Override
+            public void onViewTap(View view, float x, float y) {
+                if (mPreviewEventListener != null) {
+                    mPreviewEventListener.onBackPressed();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onLongPressDownload(LocalMedia media) {
+        coverImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mPreviewEventListener != null) {
+                    mPreviewEventListener.onLongPressDownload(media);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
     public void bindData(LocalMedia media, int position) {
         String path = media.getAvailablePath();
         String dataFormat = DateUtils.getYearDataFormat(media.getDateAddedTime());
         String fileSize = PictureFileUtils.formatAccurateUnitFileSize(media.getSize());
+        loadImage(media, PictureConfig.UNSET, PictureConfig.UNSET);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(media.getFileName()).append("\n").append(dataFormat).append(" - ").append(fileSize);
         SpannableStringBuilder builder = new SpannableStringBuilder(stringBuilder.toString());
