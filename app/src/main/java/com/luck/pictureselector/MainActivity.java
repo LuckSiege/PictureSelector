@@ -413,6 +413,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             }
                         })
                         .setExternalPreviewEventListener(new MyExternalPreviewEventListener())
+                        .setInjectActivityPreviewFragment(new OnInjectActivityPreviewListener() {
+                            @Override
+                            public PictureSelectorPreviewFragment onInjectPreviewFragment() {
+                                return cb_custom_preview.isChecked() ? CustomPreviewFragment.newInstance() : null;
+                            }
+                        })
                         .startActivityPreview(position, true, mAdapter.getData());
             }
 
