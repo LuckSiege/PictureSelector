@@ -2053,7 +2053,11 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 TitleBarStyle numberTitleBarStyle = new TitleBarStyle();
                 numberTitleBarStyle.setHideCancelButton(true);
                 numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
-                numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
+                if (cb_only_dir.isChecked()) {
+                    numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_demo_only_album_bg);
+                } else {
+                    numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
+                }
                 numberTitleBarStyle.setTitleDrawableRightResource(R.drawable.ps_ic_grey_arrow);
                 numberTitleBarStyle.setPreviewTitleLeftBackResource(R.drawable.ps_ic_normal_back);
 
