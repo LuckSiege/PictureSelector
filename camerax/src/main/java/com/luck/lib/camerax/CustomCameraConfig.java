@@ -28,7 +28,7 @@ public final class CustomCameraConfig {
     /**
      * 默认最大录制时间
      */
-    public static final int DEFAULT_MAX_RECORD_VIDEO = 60 * 1000;
+    public static final int DEFAULT_MAX_RECORD_VIDEO = 60 * 1000 + 500;
 
     /**
      * 默认最小录制时间
