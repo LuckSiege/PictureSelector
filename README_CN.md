@@ -181,6 +181,24 @@ PictureSelector.create(this)
 });
 ```
 
+注: NavigationFragment场景下单独拍照请使用如下方式:
+
+```sh
+PictureSelector.create(this)
+     .openCamera(SelectMimeType.ofImage())
+     .forResultActivity(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(ArrayList<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+});
+```
+
 
 3、您还可以按如下示例使用：
 
@@ -289,7 +307,7 @@ PictureSelector.create(this)
        public boolean onLongPressDownload(LocalMedia media) {
            return false;
        }
-    }).startActivityPreview(position, true, "data");
+    }).startActivityPreview(position, true, list);
 
 ```
 
