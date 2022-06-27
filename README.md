@@ -43,7 +43,7 @@ dependencies {
   implementation 'io.github.lucksiege:compress:v3.10.3'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.10.3'
+  implementation 'io.github.lucksiege:ucrop:v3.10.2'
 
   // simple camerax library (Not necessary)
   implementation 'io.github.lucksiege:camerax:v3.10.3'
