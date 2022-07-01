@@ -45,7 +45,7 @@ dependencies {
   implementation 'io.github.lucksiege:compress:v3.10.3'
 
   // 图片裁剪 (按需引入)
-  implementation 'io.github.lucksiege:ucrop:v3.10.3'
+  implementation 'io.github.lucksiege:ucrop:v3.10.2'
 
   // 自定义相机 (按需引入)
   implementation 'io.github.lucksiege:camerax:v3.10.3'
