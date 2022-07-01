@@ -33,9 +33,9 @@ public class RoundCornerRelativeLayout extends RelativeLayout {
     public RoundCornerRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PictureRoundCornerRelativeLayout, defStyleAttr, 0);
-        cornerSize = a.getDimension(R.styleable.PictureRoundCornerRelativeLayout_corners, 0);
-        isTopNormal = a.getBoolean(R.styleable.PictureRoundCornerRelativeLayout_topNormal, false);
-        isBottomNormal = a.getBoolean(R.styleable.PictureRoundCornerRelativeLayout_bottomNormal, false);
+        cornerSize = a.getDimension(R.styleable.PictureRoundCornerRelativeLayout_psCorners, 0);
+        isTopNormal = a.getBoolean(R.styleable.PictureRoundCornerRelativeLayout_psTopNormal, false);
+        isBottomNormal = a.getBoolean(R.styleable.PictureRoundCornerRelativeLayout_psBottomNormal, false);
         a.recycle();
         path = new Path();
     }

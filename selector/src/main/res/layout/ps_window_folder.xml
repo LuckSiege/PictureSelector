@@ -16,8 +16,8 @@
         android:id="@+id/round_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:corners="10dp"
-        app:topNormal="true">
+        app:psCorners="10dp"
+        app:psTopNormal="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/folder_list"

@@ -260,7 +260,7 @@ public class UCrop {
      */
     @Nullable
     public static Uri getOutput(@NonNull Intent intent) {
-        return intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        return intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
     }
 
     /**

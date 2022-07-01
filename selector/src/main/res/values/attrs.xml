@@ -29,9 +29,9 @@ limitations under the License.
     </declare-styleable>
 
     <declare-styleable name="PictureRoundCornerRelativeLayout">
-        <attr name="corners" format="dimension" />
-        <attr name="topNormal" format="boolean" />
-        <attr name="bottomNormal" format="boolean" />
+        <attr name="psCorners" format="dimension" />
+        <attr name="psTopNormal" format="boolean" />
+        <attr name="psBottomNormal" format="boolean" />
     </declare-styleable>
 
 </resources>
