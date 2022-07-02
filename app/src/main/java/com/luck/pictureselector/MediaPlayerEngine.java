@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.view.View;
 
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
@@ -29,6 +30,9 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
     @Override
     public void onStarPlayer(MediaPlayerView player, LocalMedia media) {
         player.start(media.getAvailablePath());
+        MediaPlayer mediaPlayer = player.getMediaPlayer();
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        mediaPlayer.setLooping(config.isLoopAutoPlay);
     }
 
     @Override
