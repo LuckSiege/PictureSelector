@@ -2,7 +2,7 @@ package com.luck.picture.lib.interfaces;
 
 /**
  * @author：luck
- * @date：2022/7/1 3:44 下午
+ * @date：2022/7/1 23:25 下午
  * @describe：OnPlayerListener
  */
 public interface OnPlayerListener {
@@ -22,7 +22,7 @@ public interface OnPlayerListener {
     void onPlayerLoading();
 
     /**
-     * End of playback
+     * end of playback
      */
     void onPlayerEnd();
 }
