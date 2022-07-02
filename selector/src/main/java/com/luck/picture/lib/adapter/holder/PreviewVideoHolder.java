@@ -261,7 +261,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     @Override
     public void onViewAttachedToWindow() {
         if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onPlayerAttached(videoPlayer);
+            PictureSelectionConfig.videoPlayerEngine.onPlayerAttachedToWindow(videoPlayer);
             PictureSelectionConfig.videoPlayerEngine.addPlayListener(mPlayerListener);
         }
     }
@@ -269,7 +269,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     @Override
     public void onViewDetachedFromWindow() {
         if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onPlayerDetached(videoPlayer);
+            PictureSelectionConfig.videoPlayerEngine.onPlayerDetachedFromWindow(videoPlayer);
             PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
         }
         playerDefaultUI();

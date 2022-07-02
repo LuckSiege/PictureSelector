@@ -99,14 +99,14 @@ public class ExoPlayerEngine implements VideoPlayerEngine<StyledPlayerView> {
     }
 
     @Override
-    public void onPlayerAttached(StyledPlayerView exoPlayer) {
+    public void onPlayerAttachedToWindow(StyledPlayerView exoPlayer) {
         Player player = new ExoPlayer.Builder(exoPlayer.getContext()).build();
         exoPlayer.setPlayer(player);
         player.addListener(mPlayerListener);
     }
 
     @Override
-    public void onPlayerDetached(StyledPlayerView exoPlayer) {
+    public void onPlayerDetachedFromWindow(StyledPlayerView exoPlayer) {
         Player player = exoPlayer.getPlayer();
         if (player != null) {
             player.removeListener(mPlayerListener);

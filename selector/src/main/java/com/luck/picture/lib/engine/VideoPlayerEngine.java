@@ -67,14 +67,14 @@ public interface VideoPlayerEngine<T> {
      *
      * @param player
      */
-    void onPlayerAttached(T player);
+    void onPlayerAttachedToWindow(T player);
 
     /**
      * Player detached to window
      *
      * @param player
      */
-    void onPlayerDetached(T player);
+    void onPlayerDetachedFromWindow(T player);
 
     /**
      * Player release

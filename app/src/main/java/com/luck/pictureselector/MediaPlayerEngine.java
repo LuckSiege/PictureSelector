@@ -74,7 +74,7 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
     }
 
     @Override
-    public void onPlayerAttached(MediaPlayerView player) {
+    public void onPlayerAttachedToWindow(MediaPlayerView player) {
         MediaPlayer mediaPlayer = player.initMediaPlayer();
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -109,7 +109,7 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
     }
 
     @Override
-    public void onPlayerDetached(MediaPlayerView player) {
+    public void onPlayerDetachedFromWindow(MediaPlayerView player) {
         player.release();
     }
 
