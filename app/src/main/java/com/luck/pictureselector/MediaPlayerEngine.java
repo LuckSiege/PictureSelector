@@ -29,10 +29,10 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
 
     @Override
     public void onStarPlayer(MediaPlayerView player, LocalMedia media) {
-        player.start(media.getAvailablePath());
         MediaPlayer mediaPlayer = player.getMediaPlayer();
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         mediaPlayer.setLooping(config.isLoopAutoPlay);
+        player.start(media.getAvailablePath());
     }
 
     @Override

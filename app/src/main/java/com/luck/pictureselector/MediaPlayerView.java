@@ -77,7 +77,6 @@ public class MediaPlayerView extends FrameLayout implements SurfaceHolder.Callba
             } else {
                 mediaPlayer.setDataSource(path);
             }
-            mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
