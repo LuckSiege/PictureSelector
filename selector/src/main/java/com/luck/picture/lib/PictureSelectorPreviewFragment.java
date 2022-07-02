@@ -466,7 +466,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 startAutoVideoPlay(viewPager.getCurrentItem());
             } else {
                 if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                    if (!viewPageAdapter.isPlaying(viewPager.getCurrentItem())) {
+                        videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }

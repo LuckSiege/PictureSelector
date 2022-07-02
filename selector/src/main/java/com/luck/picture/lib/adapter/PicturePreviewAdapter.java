@@ -146,6 +146,20 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     }
 
     /**
+     * isPlaying
+     *
+     * @param position
+     * @return
+     */
+    public boolean isPlaying(int position) {
+        BasePreviewHolder currentHolder = getCurrentHolder(position);
+        if (currentHolder instanceof PreviewVideoHolder) {
+            return ((PreviewVideoHolder) currentHolder).isPlaying();
+        }
+        return false;
+    }
+
+    /**
      * 释放当前视频相关
      */
     public void destroy() {
