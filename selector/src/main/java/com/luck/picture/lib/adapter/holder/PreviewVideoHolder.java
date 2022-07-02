@@ -1,27 +1,25 @@
 package com.luck.picture.lib.adapter.holder;
 
-import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnPlayerListener;
 import com.luck.picture.lib.photoview.OnViewTapListener;
-
-import java.io.File;
 
 
 /**
@@ -31,17 +29,31 @@ import java.io.File;
  */
 public class PreviewVideoHolder extends BasePreviewHolder {
     public ImageView ivPlayButton;
-    public StyledPlayerView mPlayerView;
     public ProgressBar progress;
+    public View videoPlayer;
+    private boolean isPlayed = false;
 
     public PreviewVideoHolder(@NonNull View itemView) {
         super(itemView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
-        mPlayerView = itemView.findViewById(R.id.playerView);
         progress = itemView.findViewById(R.id.progress);
-        mPlayerView.setUseController(false);
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            videoPlayer = PictureSelectionConfig.videoPlayerEngine.onCreateVideoPlayer(itemView.getContext());
+            if (videoPlayer == null) {
+                throw new NullPointerException("onCreateVideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
+            }
+            if (videoPlayer.getLayoutParams() == null) {
+                videoPlayer.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            }
+            ViewGroup viewGroup = (ViewGroup) itemView;
+            if (viewGroup.indexOfChild(videoPlayer) != -1) {
+                viewGroup.removeView(videoPlayer);
+            }
+            viewGroup.addView(videoPlayer, 0);
+            videoPlayer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -93,39 +105,108 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPlay();
+                if (config.isPauseResumePlay) {
+                    dispatchPlay();
+                } else {
+                    startPlay();
+                }
             }
         });
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mPreviewEventListener != null) {
-                    mPreviewEventListener.onBackPressed();
+                if (config.isPauseResumePlay) {
+                    dispatchPlay();
+                } else {
+                    if (mPreviewEventListener != null) {
+                        mPreviewEventListener.onBackPressed();
+                    }
                 }
             }
         });
     }
 
+    /**
+     * 视频播放状态分发
+     */
+    private void dispatchPlay() {
+        if (isPlayed) {
+            if (isPlaying()) {
+                onPause();
+            } else {
+                onResume();
+            }
+        } else {
+            startPlay();
+        }
+    }
 
+    /**
+     * 恢复播放
+     */
+    private void onResume() {
+        ivPlayButton.setVisibility(View.GONE);
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            PictureSelectionConfig.videoPlayerEngine.onResume(videoPlayer);
+        }
+    }
+
+    /**
+     * 暂停播放
+     */
+    private void onPause() {
+        ivPlayButton.setVisibility(View.VISIBLE);
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            PictureSelectionConfig.videoPlayerEngine.onPause(videoPlayer);
+        }
+    }
+
+    /**
+     * 是否正在播放中
+     */
+    public boolean isPlaying() {
+        return PictureSelectionConfig.videoPlayerEngine != null
+                && PictureSelectionConfig.videoPlayerEngine.isPlaying(videoPlayer);
+    }
+
+    /**
+     * 外部播放状态监听回调
+     */
+    private final OnPlayerListener mPlayerListener = new OnPlayerListener() {
+        @Override
+        public void onPlayerError() {
+            playerDefaultUI();
+        }
+
+        @Override
+        public void onPlayerReady() {
+            playerIngUI();
+        }
+
+        @Override
+        public void onPlayerLoading() {
+            progress.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPlayerEnd() {
+            playerDefaultUI();
+        }
+    };
+
+    /**
+     * 开始播放视频
+     */
     public void startPlay() {
-        Player player = mPlayerView.getPlayer();
-        if (player != null) {
-            String path = media.getAvailablePath();
+        if (videoPlayer == null) {
+            throw new NullPointerException("VideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
+        }
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
             progress.setVisibility(View.VISIBLE);
             ivPlayButton.setVisibility(View.GONE);
             mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-            MediaItem mediaItem;
-            if (PictureMimeType.isContent(path)) {
-                mediaItem = MediaItem.fromUri(Uri.parse(path));
-            } else if (PictureMimeType.isHasHttp(path)) {
-                mediaItem = MediaItem.fromUri(path);
-            } else {
-                mediaItem = MediaItem.fromUri(Uri.fromFile(new File(path)));
-            }
-            player.setRepeatMode(config.isLoopAutoPlay ? Player.REPEAT_MODE_ALL : Player.REPEAT_MODE_OFF);
-            player.setMediaItem(mediaItem);
-            player.prepare();
-            player.play();
+            isPlayed = true;
+            PictureSelectionConfig.videoPlayerEngine.onStarPlayer(videoPlayer, media);
         }
     }
 
@@ -133,82 +214,74 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     protected void setScaleDisplaySize(LocalMedia media) {
         super.setScaleDisplaySize(media);
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
-            playerLayoutParams.width = screenWidth;
-            playerLayoutParams.height = screenAppInHeight;
-            playerLayoutParams.gravity = Gravity.CENTER;
+            ViewGroup.LayoutParams layoutParams = videoPlayer.getLayoutParams();
+            if (layoutParams instanceof FrameLayout.LayoutParams){
+                FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) layoutParams;
+                playerLayoutParams.width = screenWidth;
+                playerLayoutParams.height = screenAppInHeight;
+                playerLayoutParams.gravity = Gravity.CENTER;
+            } else if (layoutParams instanceof RelativeLayout.LayoutParams){
+                RelativeLayout.LayoutParams playerLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
+                playerLayoutParams.width = screenWidth;
+                playerLayoutParams.height = screenAppInHeight;
+                playerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);;
+            } else if (layoutParams instanceof LinearLayout.LayoutParams){
+                LinearLayout.LayoutParams playerLayoutParams = (LinearLayout.LayoutParams) layoutParams;
+                playerLayoutParams.width = screenWidth;
+                playerLayoutParams.height = screenAppInHeight;
+                playerLayoutParams.gravity = Gravity.CENTER;
+            } else if (layoutParams instanceof ConstraintLayout.LayoutParams){
+                ConstraintLayout.LayoutParams playerLayoutParams = (ConstraintLayout.LayoutParams) layoutParams;
+                playerLayoutParams.width = screenWidth;
+                playerLayoutParams.height = screenAppInHeight;
+                playerLayoutParams.topToTop = ConstraintSet.PARENT_ID;
+                playerLayoutParams.bottomToBottom = ConstraintSet.PARENT_ID;
+            }
         }
     }
 
-    private final Player.Listener mPlayerListener = new Player.Listener() {
-        @Override
-        public void onPlayerError(@NonNull PlaybackException error) {
-            playerDefaultUI();
-        }
-
-        @Override
-        public void onPlaybackStateChanged(int playbackState) {
-            if (playbackState == Player.STATE_READY) {
-                playerIngUI();
-            } else if (playbackState == Player.STATE_BUFFERING) {
-                progress.setVisibility(View.VISIBLE);
-            } else if (playbackState == Player.STATE_ENDED) {
-                playerDefaultUI();
-            }
-        }
-    };
-
     private void playerDefaultUI() {
+        isPlayed = false;
         ivPlayButton.setVisibility(View.VISIBLE);
         progress.setVisibility(View.GONE);
         coverImageView.setVisibility(View.VISIBLE);
-        mPlayerView.setVisibility(View.GONE);
+        videoPlayer.setVisibility(View.GONE);
         if (mPreviewEventListener != null) {
             mPreviewEventListener.onPreviewVideoTitle(null);
         }
     }
 
     private void playerIngUI() {
-        if (progress.getVisibility() == View.VISIBLE) {
-            progress.setVisibility(View.GONE);
-        }
-        if (ivPlayButton.getVisibility() == View.VISIBLE) {
-            ivPlayButton.setVisibility(View.GONE);
-        }
-        if (coverImageView.getVisibility() == View.VISIBLE) {
-            coverImageView.setVisibility(View.GONE);
-        }
-        if (mPlayerView.getVisibility() == View.GONE) {
-            mPlayerView.setVisibility(View.VISIBLE);
-        }
+        progress.setVisibility(View.GONE);
+        ivPlayButton.setVisibility(View.GONE);
+        coverImageView.setVisibility(View.GONE);
+        videoPlayer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onViewAttachedToWindow() {
-        Player player = new ExoPlayer.Builder(itemView.getContext()).build();
-        mPlayerView.setPlayer(player);
-        player.addListener(mPlayerListener);
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            PictureSelectionConfig.videoPlayerEngine.onPlayerAttached(videoPlayer);
+            PictureSelectionConfig.videoPlayerEngine.addPlayListener(mPlayerListener);
+        }
     }
 
     @Override
     public void onViewDetachedFromWindow() {
-        Player player = mPlayerView.getPlayer();
-        if (player != null) {
-            player.removeListener(mPlayerListener);
-            player.release();
-            mPlayerView.setPlayer(null);
-            playerDefaultUI();
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            PictureSelectionConfig.videoPlayerEngine.onPlayerDetached(videoPlayer);
+            PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
         }
+        playerDefaultUI();
     }
 
     /**
      * 释放VideoView
      */
     public void releaseVideo() {
-        Player player = mPlayerView.getPlayer();
-        if (player != null) {
-            player.removeListener(mPlayerListener);
-            player.release();
+        if (PictureSelectionConfig.videoPlayerEngine != null) {
+            PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
+            PictureSelectionConfig.videoPlayerEngine.release(videoPlayer);
         }
     }
 }

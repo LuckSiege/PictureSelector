@@ -17,6 +17,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
@@ -59,6 +60,19 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setImageEngine(ImageEngine engine) {
         PictureSelectionConfig.imageEngine = engine;
+        return this;
+    }
+
+    /**
+     * Set up player engine
+     *  <p>
+     *   Used to preview custom player instances
+     *  </p>
+     * @param engine
+     * @return
+     */
+    public PictureSelectionPreviewModel setVideoPlayerEngine(VideoPlayerEngine engine) {
+        PictureSelectionConfig.videoPlayerEngine = engine;
         return this;
     }
 
@@ -182,6 +196,17 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel isLoopAutoVideoPlay(boolean isLoopAutoPlay) {
         selectionConfig.isLoopAutoPlay = isLoopAutoPlay;
+        return this;
+    }
+
+    /**
+     * The video supports pause and resume
+     *
+     * @param isPauseResumePlay
+     * @return
+     */
+    public PictureSelectionPreviewModel isPauseResumePlay(boolean isPauseResumePlay) {
+        selectionConfig.isPauseResumePlay = isPauseResumePlay;
         return this;
     }
 

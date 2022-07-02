@@ -126,7 +126,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         BasePreviewHolder currentHolder = getCurrentHolder(position);
         if (currentHolder instanceof PreviewVideoHolder) {
             PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-            if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
+            if (!videoHolder.isPlaying()) {
                 videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
             }
         }

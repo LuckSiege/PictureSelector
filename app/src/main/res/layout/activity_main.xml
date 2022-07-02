@@ -265,6 +265,39 @@
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
+                <CheckBox
+                    android:id="@+id/cb_video_resume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="视频暂停与继续"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioGroup
+                    android:id="@+id/rgb_video_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_exo_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="ExoPlayer"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_media_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MediaPlayer"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
                 <RadioGroup
                     android:id="@+id/rgb_list_anim"
                     android:layout_width="match_parent"

@@ -87,6 +87,7 @@ import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
+import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
@@ -186,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
-            cb_custom_preview, cb_permission_desc,cb_video_thumbnails, cb_auto_video, cb_selected_anim;
+            cb_custom_preview, cb_permission_desc,cb_video_thumbnails, cb_auto_video, cb_selected_anim,
+            cb_video_resume;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -199,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private ActivityResultLauncher<Intent> launcherResult;
     private int resultMode = LAUNCHER_RESULT;
     private ImageEngine imageEngine;
+    private VideoPlayerEngine videoPlayerEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
         cb_video_thumbnails = findViewById(R.id.cb_video_thumbnails);
+        RadioGroup rgb_video_player = findViewById(R.id.rgb_video_player);
         RadioGroup rgb_result = findViewById(R.id.rgb_result);
         RadioGroup rgb_style = findViewById(R.id.rgb_style);
         RadioGroup rgb_animation = findViewById(R.id.rgb_animation);
@@ -226,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         RadioGroup rgb_engine = findViewById(R.id.rgb_engine);
         cb_voice = findViewById(R.id.cb_voice);
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
+        cb_video_resume = findViewById(R.id.cb_video_resume);
         cb_isCamera = findViewById(R.id.cb_isCamera);
         cb_isGif = findViewById(R.id.cb_isGif);
         cb_watermark = findViewById(R.id.cb_watermark);
@@ -275,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         rgb_list_anim.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         rgb_language.setOnCheckedChangeListener(this);
+        rgb_video_player.setOnCheckedChangeListener(this);
         rgb_engine.setOnCheckedChangeListener(this);
         RecyclerView mRecyclerView = findViewById(R.id.recycler);
         ImageView left_back = findViewById(R.id.left_back);
@@ -360,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         });
 
         imageEngine = GlideEngine.createGlideEngine();
+        videoPlayerEngine = new ExoPlayerEngine();
 
         mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
@@ -368,11 +375,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 PictureSelector.create(MainActivity.this)
                         .openPreview()
                         .setImageEngine(imageEngine)
+                        .setVideoPlayerEngine(videoPlayerEngine)
                         .setSelectorUIStyle(selectorStyle)
                         .setLanguage(language)
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                        .isPauseResumePlay(cb_video_resume.isChecked())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
                             @Override
@@ -451,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .openGallery(chooseMode)
                                 .setSelectorUIStyle(selectorStyle)
                                 .setImageEngine(imageEngine)
+                                .setVideoPlayerEngine(videoPlayerEngine)
                                 .setCropEngine(getCropFileEngine())
                                 .setCompressEngine(getCompressFileEngine())
                                 .setSandboxFileEngine(new MeSandboxFileEngine())
@@ -495,6 +505,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 //.setOutputCameraVideoFileName("luck.mp4")
                                 .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
                                 .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                                .isPauseResumePlay(cb_video_resume.isChecked())
                                 .isPreviewZoomEffect(cb_preview_scale.isChecked())
                                 .isPreviewImage(cb_preview_img.isChecked())
                                 .isPreviewVideo(cb_preview_video.isChecked())
@@ -1884,6 +1895,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_coil:
                 imageEngine = new CoilEngine();
+                break;
+            case R.id.rb_exo_player:
+                videoPlayerEngine = new ExoPlayerEngine();
+                break;
+            case R.id.rb_media_player:
+                videoPlayerEngine = new MediaPlayerEngine();
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

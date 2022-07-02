@@ -26,14 +26,6 @@ android {
     lintOptions {
         abortOnError false
     }
-
-    allprojects {
-        configurations.all {
-            resolutionStrategy {
-                force 'androidx.core:core:1.6.0'
-            }
-        }
-    }
 }
 
 ext {
@@ -50,5 +42,4 @@ dependencies {
     implementation "androidx.exifinterface:exifinterface:${cfgs.exifinterface_version}"
     implementation "androidx.viewpager2:viewpager2:${cfgs.viewpage2}"
     implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"
-    implementation "com.google.android.exoplayer:exoplayer:${cfgs.exoplayer}"
 }

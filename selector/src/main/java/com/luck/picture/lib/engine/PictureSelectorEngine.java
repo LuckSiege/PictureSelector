@@ -1,5 +1,7 @@
 package com.luck.picture.lib.engine;
 
+import android.view.View;
+
 import com.luck.picture.lib.basic.IBridgeLoaderFactory;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
@@ -39,6 +41,13 @@ public interface PictureSelectorEngine {
      * @return
      */
     ExtendLoaderEngine createLoaderDataEngine();
+
+    /**
+     * Create video player  Engine
+     *
+     * @return
+     */
+    VideoPlayerEngine createVideoPlayerEngine();
 
     /**
      * Create loader data Engine

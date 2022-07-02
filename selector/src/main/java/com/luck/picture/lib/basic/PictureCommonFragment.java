@@ -1831,6 +1831,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onRecreateEngine() {
         createImageLoaderEngine();
+        createVideoPlayerEngine();
         createCompressEngine();
         createSandboxFileEngine();
         createLoaderDataEngine();
@@ -1980,6 +1981,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
+    /**
+     * Get the video player engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void createVideoPlayerEngine(){
+        if (PictureSelectionConfig.videoPlayerEngine == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null) {
+                PictureSelectionConfig.videoPlayerEngine = baseEngine.createVideoPlayerEngine();
+            }
+        }
+    }
 
     /**
      * Get the image loader data engine again, provided that the user implements the IApp interface in the Application

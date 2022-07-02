@@ -5,7 +5,6 @@ import static java.lang.Math.abs;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.google.android.exoplayer2.C;
 import com.luck.picture.lib.R;
 
 import java.text.SimpleDateFormat;
@@ -102,9 +101,6 @@ public class DateUtils {
      * @return
      */
     public static String formatDurationTime(long timeMs) {
-        if (timeMs == C.TIME_UNSET) {
-            timeMs = 0;
-        }
         String prefix = timeMs < 0 ? "-" : "";
         timeMs = abs(timeMs);
         long totalSeconds = (timeMs + 500) / 1000;
