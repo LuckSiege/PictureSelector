@@ -3,13 +3,13 @@ package com.luck.pictureselector;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.luck.picture.lib.basic.IBridgeLoaderFactory;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.MediaPlayerEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
@@ -76,7 +76,7 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
     @Override
     public VideoPlayerEngine createVideoPlayerEngine() {
         // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致VideoPlayerEngine被回收
-        return new ExoPlayerEngine();
+        return null;
     }
 
     /**

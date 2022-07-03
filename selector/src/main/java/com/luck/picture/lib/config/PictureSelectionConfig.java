@@ -146,7 +146,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static SandboxFileEngine sandboxFileEngine;
     public static UriToFileTransformEngine uriToFileTransformEngine;
     public static ExtendLoaderEngine loaderDataEngine;
-    public static VideoPlayerEngine<View> videoPlayerEngine;
+    public static VideoPlayerEngine videoPlayerEngine;
     public static PictureSelectorStyle selectorStyle;
     public static OnCameraInterceptListener onCameraInterceptListener;
     public static OnSelectLimitTipsListener onSelectLimitTipsListener;

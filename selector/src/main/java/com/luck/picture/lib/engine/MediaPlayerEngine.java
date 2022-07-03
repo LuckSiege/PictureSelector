@@ -1,13 +1,13 @@
-package com.luck.pictureselector;
+package com.luck.picture.lib.engine;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.view.View;
 
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
+import com.luck.picture.lib.widget.MediaPlayerView;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

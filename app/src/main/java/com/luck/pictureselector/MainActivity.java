@@ -366,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         });
 
         imageEngine = GlideEngine.createGlideEngine();
-        videoPlayerEngine = new ExoPlayerEngine();
 
         mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
@@ -1898,9 +1897,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_exo_player:
                 videoPlayerEngine = new ExoPlayerEngine();
-                break;
-            case R.id.rb_media_player:
-                videoPlayerEngine = new MediaPlayerEngine();
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

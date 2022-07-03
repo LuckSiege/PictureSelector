@@ -284,18 +284,10 @@
                         android:id="@+id/rb_exo_player"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
                         android:text="ExoPlayer"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 
-                    <RadioButton
-                        android:id="@+id/rb_media_player"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MediaPlayer"
-                        android:textColor="@color/app_color_53575e"
-                        android:textSize="14sp" />
                 </RadioGroup>
 
                 <RadioGroup

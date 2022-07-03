@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.engine.MediaPlayerEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
@@ -39,21 +40,22 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         progress = itemView.findViewById(R.id.progress);
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            videoPlayer = PictureSelectionConfig.videoPlayerEngine.onCreateVideoPlayer(itemView.getContext());
-            if (videoPlayer == null) {
-                throw new NullPointerException("onCreateVideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
-            }
-            if (videoPlayer.getLayoutParams() == null) {
-                videoPlayer.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            }
-            ViewGroup viewGroup = (ViewGroup) itemView;
-            if (viewGroup.indexOfChild(videoPlayer) != -1) {
-                viewGroup.removeView(videoPlayer);
-            }
-            viewGroup.addView(videoPlayer, 0);
-            videoPlayer.setVisibility(View.GONE);
+        if (PictureSelectionConfig.videoPlayerEngine == null) {
+            PictureSelectionConfig.videoPlayerEngine = new MediaPlayerEngine();
         }
+        videoPlayer = PictureSelectionConfig.videoPlayerEngine.onCreateVideoPlayer(itemView.getContext());
+        if (videoPlayer == null) {
+            throw new NullPointerException("onCreateVideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
+        }
+        if (videoPlayer.getLayoutParams() == null) {
+            videoPlayer.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        }
+        ViewGroup viewGroup = (ViewGroup) itemView;
+        if (viewGroup.indexOfChild(videoPlayer) != -1) {
+            viewGroup.removeView(videoPlayer);
+        }
+        viewGroup.addView(videoPlayer, 0);
+        videoPlayer.setVisibility(View.GONE);
     }
 
     @Override

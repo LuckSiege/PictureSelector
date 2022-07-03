@@ -1,4 +1,4 @@
-package com.luck.pictureselector;
+package com.luck.picture.lib.widget;
 
 import android.content.Context;
 import android.graphics.Color;
