@@ -147,8 +147,12 @@ public class TransformImageView extends AppCompatImageView {
      *
      * @param imageUri - image Uri
      */
-    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri) {
-        useDefaultLoaderCrop(imageUri, outputUri);
+    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) {
+        if (UCropDevelopConfig.imageEngine != null && isUseCustomBitmap) {
+            useCustomLoaderCrop(imageUri, outputUri);
+        } else {
+            useDefaultLoaderCrop(imageUri, outputUri);
+        }
     }
 
     /**
@@ -157,34 +161,23 @@ public class TransformImageView extends AppCompatImageView {
      * @param imageUri
      * @param outputUri
      */
-    @Deprecated
     private void useCustomLoaderCrop(@NonNull final Uri imageUri, @Nullable final Uri outputUri) {
         int[] maxImageSize = BitmapLoadUtils.getMaxImageSize(getContext(), imageUri);
-        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxImageSize[0], maxImageSize[1], new UCropImageEngine.OnCallbackListener<Bitmap>() {
-            @Override
-            public void onCall(Bitmap bitmap) {
-                if (bitmap == null) {
-                    useDefaultLoaderCrop(imageUri, outputUri);
-                } else {
-                    Bitmap copyBitmap = bitmap.copy(bitmap.getConfig(), true);
-                    int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), imageUri);
-                    int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
-                    int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
-                    ExifInfo exifInfo = new ExifInfo(exifOrientation, exifDegrees, exifTranslation);
-                    Matrix matrix = new Matrix();
-                    if (exifDegrees != 0) {
-                        matrix.preRotate(exifDegrees);
+        if (maxImageSize[0] > 0 && maxImageSize[1] > 0) {
+            UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxImageSize[0], maxImageSize[1], new UCropImageEngine.OnCallbackListener<Bitmap>() {
+                @Override
+                public void onCall(Bitmap bitmap) {
+                    if (bitmap == null) {
+                        useDefaultLoaderCrop(imageUri, outputUri);
+                    } else {
+                        Bitmap copyBitmap = bitmap.copy(bitmap.getConfig(), true);
+                        setBitmapLoadedResult(copyBitmap, new ExifInfo(0, 0, 0), imageUri, outputUri);
                     }
-                    if (exifTranslation != 1) {
-                        matrix.postScale(exifTranslation, 1);
-                    }
-                    if (!matrix.isIdentity()) {
-                        copyBitmap = BitmapLoadUtils.transformBitmap(copyBitmap, matrix);
-                    }
-                    setBitmapLoadedResult(copyBitmap, exifInfo, imageUri, outputUri);
                 }
-            }
-        });
+            });
+        } else {
+            useDefaultLoaderCrop(imageUri, outputUri);
+        }
     }
 
     /**
