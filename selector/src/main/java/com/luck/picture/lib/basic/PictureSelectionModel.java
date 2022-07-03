@@ -1186,7 +1186,7 @@ public final class PictureSelectionModel {
      * @param isPauseResumePlay
      * @return
      */
-    public PictureSelectionModel isPauseResumePlay(boolean isPauseResumePlay) {
+    public PictureSelectionModel isVideoPauseResumePlay(boolean isPauseResumePlay) {
         selectionConfig.isPauseResumePlay = isPauseResumePlay;
         return this;
     }

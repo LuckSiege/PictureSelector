@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isAutoVideoPlay(cb_auto_video.isChecked())
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                        .isPauseResumePlay(cb_video_resume.isChecked())
+                        .isVideoPauseResumePlay(cb_video_resume.isChecked())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
                             @Override
@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 //.setOutputCameraVideoFileName("luck.mp4")
                                 .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
                                 .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                                .isPauseResumePlay(cb_video_resume.isChecked())
+                                .isVideoPauseResumePlay(cb_video_resume.isChecked())
                                 .isPreviewZoomEffect(cb_preview_scale.isChecked())
                                 .isPreviewImage(cb_preview_img.isChecked())
                                 .isPreviewVideo(cb_preview_video.isChecked())
