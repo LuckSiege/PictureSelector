@@ -114,7 +114,7 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
     }
 
     @Override
-    public void release(MediaPlayerView player) {
+    public void destroy(MediaPlayerView player) {
         player.release();
     }
 }

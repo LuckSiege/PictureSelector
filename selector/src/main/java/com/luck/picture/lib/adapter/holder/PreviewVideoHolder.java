@@ -281,7 +281,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public void releaseVideo() {
         if (PictureSelectionConfig.videoPlayerEngine != null) {
             PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
-            PictureSelectionConfig.videoPlayerEngine.release(videoPlayer);
+            PictureSelectionConfig.videoPlayerEngine.destroy(videoPlayer);
         }
     }
 }

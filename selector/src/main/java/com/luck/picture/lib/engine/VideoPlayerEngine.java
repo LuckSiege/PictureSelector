@@ -77,9 +77,9 @@ public interface VideoPlayerEngine<T> {
     void onPlayerDetachedFromWindow(T player);
 
     /**
-     * Player release
+     * destroy release player
      *
      * @param player
      */
-    void release(T player);
+    void destroy(T player);
 }

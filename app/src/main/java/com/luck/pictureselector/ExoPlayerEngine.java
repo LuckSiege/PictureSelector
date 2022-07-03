@@ -116,7 +116,7 @@ public class ExoPlayerEngine implements VideoPlayerEngine<StyledPlayerView> {
     }
 
     @Override
-    public void release(StyledPlayerView exoPlayer) {
+    public void destroy(StyledPlayerView exoPlayer) {
         Player player = exoPlayer.getPlayer();
         if (player != null) {
             player.removeListener(mPlayerListener);
