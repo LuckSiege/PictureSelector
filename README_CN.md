@@ -1,8 +1,6 @@
 # PictureSelector 3.0
    一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
-   
-   ![](image/picture_framework_cn.png)
-   
+    
    [English🇺🇸](README.md)
 
    [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-06-26_060020_v3.10.3.apk)<br>
