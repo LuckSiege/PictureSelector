@@ -66,7 +66,7 @@ public final class PictureSelectionPreviewModel {
     /**
      * Set up player engine
      *  <p>
-     *   Used to preview custom player instances
+     *   Used to preview custom player instances，MediaPlayer by default
      *  </p>
      * @param engine
      * @return
