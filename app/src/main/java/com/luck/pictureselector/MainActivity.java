@@ -1382,7 +1382,35 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             UCrop uCrop = UCrop.of(inputUri, destinationUri);
             options.setHideBottomControls(false);
             uCrop.withOptions(options);
-            uCrop.startEdit(fragment.getActivity(), fragment, requestCode);
+            uCrop.setImageEngine(new UCropImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).load(url).override(180, 180).into(imageView);
+                }
+
+                @Override
+                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+                    Glide.with(context).asBitmap().load(url).override(maxWidth, maxHeight).into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (call != null) {
+                                call.onCall(resource);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            if (call != null) {
+                                call.onCall(null);
+                            }
+                        }
+                    });
+                }
+            });
+            uCrop.startEdit(fragment.requireActivity(), fragment, requestCode);
         }
     }
 
@@ -1492,6 +1520,21 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 @Override
                 public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+                    Glide.with(context).asBitmap().load(url).override(maxWidth, maxHeight).into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (call != null) {
+                                call.onCall(resource);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            if (call != null) {
+                                call.onCall(null);
+                            }
+                        }
+                    });
                 }
             });
             uCrop.start(fragment.requireActivity(), fragment, requestCode);

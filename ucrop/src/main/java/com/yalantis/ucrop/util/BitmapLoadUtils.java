@@ -109,25 +109,27 @@ public class BitmapLoadUtils {
      * @param mInputUri
      * @return
      */
-    @Deprecated
     public static int[] getMaxImageSize(Context context, Uri mInputUri) {
-        int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(context);
+        if (FileUtils.isHasHttp(mInputUri.toString())) {
+            return new int[]{0, 0};
+        }
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         try {
             InputStream stream = context.getContentResolver().openInputStream(mInputUri);
             BitmapFactory.decodeStream(stream, null, options);
-            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth, options.outHeight);
+            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth,options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
         }
         options.inJustDecodeBounds = false;
 
+        Bitmap decodeSampledBitmap = null;
+
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
             try {
                 InputStream stream = context.getContentResolver().openInputStream(mInputUri);
-                Bitmap decodeSampledBitmap;
                 try {
                     decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
                 } finally {
@@ -142,11 +144,10 @@ public class BitmapLoadUtils {
                 Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
             }
         }
-        if (options.outWidth <= 0 || options.outHeight <= 0) {
-            return new int[]{maxBitmapSize, maxBitmapSize};
-        } else {
-            return new int[]{options.outWidth / options.inSampleSize, options.outHeight / options.inSampleSize};
+        if (decodeSampledBitmap == null) {
+            return new int[]{0, 0};
         }
+        return new int[]{decodeSampledBitmap.getWidth(), decodeSampledBitmap.getHeight()};
     }
 
     public static boolean checkSize(Bitmap bitmap, BitmapFactory.Options options) {

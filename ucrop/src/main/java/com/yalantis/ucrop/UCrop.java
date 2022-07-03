@@ -442,7 +442,6 @@ public class UCrop {
          *
          * @param isUseBitmap
          */
-        @Deprecated
         public void isUseCustomLoaderBitmap(boolean isUseBitmap) {
             mOptionBundle.putBoolean(EXTRA_CROP_CUSTOM_LOADER_BITMAP, isUseBitmap);
         }

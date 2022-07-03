@@ -29,7 +29,6 @@ public interface UCropImageEngine {
      * @param maxHeight
      * @param call
      */
-    @Deprecated
     void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call);
 
 

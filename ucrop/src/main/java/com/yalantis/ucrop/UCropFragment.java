@@ -201,7 +201,7 @@ public class UCropFragment extends Fragment {
             try {
                 boolean isForbidCropGifWebp = bundle.getBoolean(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
                 outputUri = FileUtils.replaceOutputUri(getContext(), isForbidCropGifWebp, inputUri, outputUri);
-                mGestureCropImageView.setImageUri(inputUri, outputUri);
+                mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
             } catch (Exception e) {
                 callback.onCropFinish(getError(e));
             }
