@@ -3,15 +3,15 @@
    
    [简体中文🇨🇳](README_CN.md)
 
-   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-06-26_060020_v3.10.3.apk)<br>
+   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-07-03_054431_v3.10.4.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.3-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.4-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 
 ## Contents
--[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.3)<br>
+-[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.4)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
@@ -35,16 +35,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.10.3'
+  implementation 'io.github.lucksiege:pictureselector:v3.10.4'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.10.3'
+  implementation 'io.github.lucksiege:compress:v3.10.4'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.10.2'
+  implementation 'io.github.lucksiege:ucrop:v3.10.4'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.10.3'
+  implementation 'io.github.lucksiege:camerax:v3.10.4'
 }
 ```
 
@@ -54,25 +54,25 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.10.3</version>
+  <version>v3.10.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.10.3</version>
+  <version>v3.10.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.10.3</version>
+  <version>v3.10.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.10.3</version>
+  <version>v3.10.4</version>
 </dependency>
 ```
 
