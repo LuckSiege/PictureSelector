@@ -3,7 +3,7 @@
     
    [English🇺🇸](README.md)
 
-   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-07-03_054431_v3.10.4.apk)<br>
+   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-07-04_093704_v3.10.5.apk)<br>
 
 [![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.4-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
