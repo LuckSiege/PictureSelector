@@ -5,13 +5,13 @@
 
    [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-07-04_093704_v3.10.5.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.4-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.5-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 
 ## 目录
--[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.4)<br>
+-[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.5)<br>
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
 -[权限](#权限)<br>
@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
   // PictureSelector 基础 (必须)
-  implementation 'io.github.lucksiege:pictureselector:v3.10.4'
+  implementation 'io.github.lucksiege:pictureselector:v3.10.5'
 
   // 图片压缩 (按需引入)
   implementation 'io.github.lucksiege:compress:v3.10.4'
@@ -56,7 +56,7 @@ dependencies {
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.10.4</version>
+  <version>v3.10.5</version>
 </dependency>
 
 <dependency>
