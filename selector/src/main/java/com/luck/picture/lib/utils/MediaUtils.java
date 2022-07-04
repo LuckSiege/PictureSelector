@@ -211,6 +211,32 @@ public class MediaUtils {
      * @param url
      * @return
      */
+    public static void getVideoSize(Context context, String url, OnCallbackListener<MediaExtraInfo> call) {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaExtraInfo>() {
+
+            @Override
+            public MediaExtraInfo doInBackground() {
+                return getVideoSize(context, url);
+            }
+
+            @Override
+            public void onSuccess(MediaExtraInfo result) {
+                PictureThreadUtils.cancel(this);
+                if (call != null) {
+                    call.onCall(result);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * get Local video width or height
+     *
+     * @param context
+     * @param url
+     * @return
+     */
     public static MediaExtraInfo getVideoSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

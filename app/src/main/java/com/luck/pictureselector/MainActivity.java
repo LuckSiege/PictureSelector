@@ -1938,8 +1938,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             case R.id.rb_coil:
                 imageEngine = new CoilEngine();
                 break;
+            case R.id.rb_media_player:
+                videoPlayerEngine = null;
+                break;
             case R.id.rb_exo_player:
                 videoPlayerEngine = new ExoPlayerEngine();
+                break;
+            case R.id.rb_ijk_player:
+                videoPlayerEngine = new IjkPlayerEngine();
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

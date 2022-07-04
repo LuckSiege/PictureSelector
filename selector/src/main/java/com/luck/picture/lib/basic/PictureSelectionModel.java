@@ -1129,6 +1129,17 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * It is forbidden to correct or synchronize the width and height of the video
+     *
+     * @param isEnableVideoSize
+     * @return
+     */
+    public PictureSelectionModel isEnableVideoSize(boolean isEnableVideoSize) {
+        selectionConfig.isEnableVideoSize = isEnableVideoSize;
+        return this;
+    }
+
+    /**
      * Do you want to preview play the audio file?
      *
      * @param isPreviewAudio

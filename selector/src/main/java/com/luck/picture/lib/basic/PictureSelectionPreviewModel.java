@@ -154,6 +154,17 @@ public final class PictureSelectionPreviewModel {
     }
 
     /**
+     * It is forbidden to correct or synchronize the width and height of the video
+     *
+     * @param isEnableVideoSize
+     * @return
+     */
+    public PictureSelectionPreviewModel isEnableVideoSize(boolean isEnableVideoSize) {
+        selectionConfig.isEnableVideoSize = isEnableVideoSize;
+        return this;
+    }
+
+    /**
      * Preview Zoom Effect Mode
      *
      * @param isPreviewZoomEffect

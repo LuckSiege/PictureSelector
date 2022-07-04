@@ -281,6 +281,15 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/rb_media_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MediaPlayer"
+                        android:checked="true"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
                         android:id="@+id/rb_exo_player"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -288,6 +297,13 @@
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 
+                    <RadioButton
+                        android:id="@+id/rb_ijk_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="IjkPlayer"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
                 </RadioGroup>
 
                 <RadioGroup

@@ -1,7 +1,7 @@
 package com.luck.picture.lib.widget;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -49,20 +49,20 @@ public class MediaPlayerView extends FrameLayout implements SurfaceHolder.Callba
         surfaceView.setLayoutParams(layoutParams);
         addView(surfaceView);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.setFormat(Color.TRANSPARENT);
+        surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
         surfaceHolder.addCallback(this);
     }
 
     public MediaPlayer initMediaPlayer() {
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                @Override
-                public void onVideoSizeChanged(MediaPlayer mediaPlayer, int width, int height) {
-                    surfaceView.adjustVideoSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
-                }
-            });
         }
+        mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+            @Override
+            public void onVideoSizeChanged(MediaPlayer mediaPlayer, int width, int height) {
+                surfaceView.adjustVideoSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+            }
+        });
         return mediaPlayer;
     }
 
@@ -96,6 +96,12 @@ public class MediaPlayerView extends FrameLayout implements SurfaceHolder.Callba
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+    }
+
+
+    public void clearCanvas() {
+        surfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
+        surfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
     }
 
     public static class VideoSurfaceView extends SurfaceView {

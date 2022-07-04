@@ -94,6 +94,7 @@ public class MediaPlayerEngine implements VideoPlayerEngine<MediaPlayerView> {
                     OnPlayerListener playerListener = listeners.get(i);
                     playerListener.onPlayerEnd();
                 }
+                player.clearCanvas();
             }
         });
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {

@@ -42,8 +42,8 @@ public class AnimUtils {
      */
     public static void selectZoom(View view) {
         AnimatorSet animatorSet = new AnimatorSet();
-        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0F, 1.1F, 1.0F);
-        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0F, 1.1F, 1.0F);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0F, 1.05F, 1.0F);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0F, 1.05F, 1.0F);
         animatorSet.playTogether(objectAnimatorX, objectAnimatorY);
         animatorSet.setDuration(DURATION);
         animatorSet.setInterpolator(new LinearInterpolator());

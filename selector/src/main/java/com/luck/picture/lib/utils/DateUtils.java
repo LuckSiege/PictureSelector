@@ -102,8 +102,9 @@ public class DateUtils {
      */
     public static String formatDurationTime(long timeMs) {
         String prefix = timeMs < 0 ? "-" : "";
-        timeMs = abs(timeMs);
-        long totalSeconds = (timeMs + 500) / 1000;
+        timeMs = Math.abs(timeMs);
+        long repair = timeMs + 500;
+        long totalSeconds = repair > 500 && repair < 1000 ? 1 : repair / 1000;
         long seconds = totalSeconds % 60;
         long minutes = (totalSeconds / 60) % 60;
         long hours = totalSeconds / 3600;

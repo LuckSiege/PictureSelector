@@ -1,2 +1,3 @@
 include ':app', ':selector',':ucrop',':compress'
 include ':camerax'
+include ':ijkplayer-java'

@@ -3,7 +3,6 @@ package com.luck.picture.lib.config;
 import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
 
 import com.luck.picture.lib.basic.IBridgeLoaderFactory;
 import com.luck.picture.lib.basic.IBridgeViewLifecycle;
@@ -137,6 +136,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAllFilesAccess;
     public boolean isPageSyncAsCount;
     public boolean isPauseResumePlay;
+    public boolean isEnableVideoSize;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -256,6 +256,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAllFilesAccess = in.readByte() != 0;
         isPageSyncAsCount = in.readByte() != 0;
         isPauseResumePlay = in.readByte() != 0;
+        isEnableVideoSize = in.readByte() != 0;
     }
 
     @Override
@@ -344,6 +345,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAllFilesAccess ? 1 : 0));
         dest.writeByte((byte) (isPageSyncAsCount ? 1 : 0));
         dest.writeByte((byte) (isPauseResumePlay ? 1 : 0));
+        dest.writeByte((byte) (isEnableVideoSize ? 1 : 0));
     }
 
     @Override
@@ -449,6 +451,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAllFilesAccess = false;
         isPageSyncAsCount = false;
         isPauseResumePlay = false;
+        isEnableVideoSize = true;
     }
 
 

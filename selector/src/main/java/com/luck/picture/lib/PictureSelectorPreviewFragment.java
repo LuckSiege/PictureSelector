@@ -528,15 +528,27 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         super.onConfigurationChanged(newConfig);
         if (isHasMagicalEffect() && mData.size() > curPosition) {
             LocalMedia media = mData.get(curPosition);
-            int[] size = getRealSizeFromMedia(media);
-            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-            if (viewParams == null || size[0] == 0 || size[1] == 0) {
-                magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
-                magicalView.resetStartNormal(size[0], size[1], false);
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                getVideoRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
+                    @Override
+                    public void onCall(int[] size) {
+                        changeViewParams(size);
+                    }
+                });
             } else {
-                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
-                magicalView.resetStart();
+                changeViewParams(getImageRealSizeFromMedia(media, false));
             }
+        }
+    }
+
+    private void changeViewParams(int[] size) {
+        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+        if (viewParams == null || size[0] == 0 || size[1] == 0) {
+            magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+            magicalView.resetStartNormal(size[0], size[1], false);
+        } else {
+            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+            magicalView.resetStart();
         }
     }
 
@@ -1154,21 +1166,38 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     viewPageAdapter.setCoverScaleType(curPosition);
                 }
             });
-            int[] size = getRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath()));
-            magicalView.changeRealScreenHeight(size[0], size[1], false);
-            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-            if (viewParams == null || (size[0] == 0 && size[1] == 0)) {
-                magicalView.startNormal(size[0], size[1], false);
-                magicalView.setBackgroundAlpha(1.0F);
-                for (int i = 0; i < mAnimViews.size(); i++) {
-                    mAnimViews.get(i).setAlpha(1.0F);
-                }
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                getVideoRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath()), new OnCallbackListener<int[]>() {
+                    @Override
+                    public void onCall(int[] size) {
+                        start(size);
+                    }
+                });
             } else {
-                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
-                magicalView.start(false);
+                start(getImageRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath())));
             }
-            ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
         }
+    }
+
+    /**
+     * start magical
+     *
+     * @param size
+     */
+    private void start(int[] size) {
+        magicalView.changeRealScreenHeight(size[0], size[1], false);
+        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+        if (viewParams == null || (size[0] == 0 && size[1] == 0)) {
+            magicalView.startNormal(size[0], size[1], false);
+            magicalView.setBackgroundAlpha(1.0F);
+            for (int i = 0; i < mAnimViews.size(); i++) {
+                mAnimViews.get(i).setAlpha(1.0F);
+            }
+        } else {
+            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+            magicalView.start(false);
+        }
+        ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
     }
 
     /**
@@ -1417,8 +1446,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
-        int[] size = getRealSizeFromMedia(media);
-        setMagicalViewParams(size[0], size[1], position);
+        if (PictureMimeType.isHasVideo(media.getMimeType())){
+            getVideoRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
+                @Override
+                public void onCall(int[] size) {
+                    setMagicalViewParams(size[0], size[1], position);
+                }
+            });
+        } else {
+            int[] size = getImageRealSizeFromMedia(media, false);
+            setMagicalViewParams(size[0], size[1], position);
+        }
     }
 
     /**
@@ -1439,21 +1477,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     /**
-     * 获取Media的真实大小
-     *
-     * @param media
-     */
-    private int[] getRealSizeFromMedia(LocalMedia media) {
-        return getRealSizeFromMedia(media, false);
-    }
-
-    /**
-     * 获取Media的真实大小
+     * 获取图片Media的真实大小
      *
      * @param media
      * @param resize
      */
-    private int[] getRealSizeFromMedia(LocalMedia media, boolean resize) {
+    private int[] getImageRealSizeFromMedia(LocalMedia media, boolean resize) {
         int realWidth;
         int realHeight;
         if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
@@ -1464,12 +1493,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             realHeight = media.getHeight();
             if (resize) {
                 if ((realWidth <= 0 || realHeight <= 0) || (realWidth > realHeight)) {
-                    MediaExtraInfo extraInfo;
-                    if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                        extraInfo = MediaUtils.getVideoSize(getContext(), media.getAvailablePath());
-                    } else {
-                        extraInfo = MediaUtils.getImageSize(getContext(), media.getAvailablePath());
-                    }
+                    MediaExtraInfo extraInfo = MediaUtils.getImageSize(getContext(), media.getAvailablePath());
                     if (extraInfo.getWidth() > 0) {
                         realWidth = extraInfo.getWidth();
                         media.setWidth(realWidth);
@@ -1486,6 +1510,42 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             realHeight = media.getCropImageHeight();
         }
         return new int[]{realWidth, realHeight};
+    }
+
+    /**
+     * 获取视频Media的真实大小
+     *
+     * @param media
+     * @param resize
+     */
+    private void getVideoRealSizeFromMedia(LocalMedia media, boolean resize, OnCallbackListener<int[]> call) {
+        boolean isReturnNow = true;
+        if (resize) {
+            if ((media.getWidth() <= 0 || media.getHeight() <= 0) || (media.getWidth() > media.getHeight())) {
+                if (config.isEnableVideoSize) {
+                    isReturnNow = false;
+                    // 先不展现内容，异步获取可能耗时会导致界面先出现图片而后在放大出现
+                    viewPager.setAlpha(0F);
+                    MediaUtils.getVideoSize(getContext(), media.getAvailablePath(), new OnCallbackListener<MediaExtraInfo>() {
+                        @Override
+                        public void onCall(MediaExtraInfo extraInfo) {
+                            if (extraInfo.getWidth() > 0) {
+                                media.setWidth(extraInfo.getWidth());
+                            }
+                            if (extraInfo.getHeight() > 0) {
+                                media.setHeight(extraInfo.getHeight());
+                            }
+                            if (call != null) {
+                                call.onCall(new int[]{media.getWidth(), media.getHeight()});
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        if (isReturnNow) {
+            call.onCall(new int[]{media.getWidth(), media.getHeight()});
+        }
     }
 
     /**

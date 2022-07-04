@@ -53,6 +53,12 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
@@ -73,6 +79,9 @@ dependencies {
     implementation project(':compress')
     implementation project(':ucrop')
     implementation project(":camerax")
+    implementation project(":ijkplayer-java")
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
     implementation "androidx.appcompat:appcompat:1.4.2"
