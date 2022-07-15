@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -77,7 +78,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -240,7 +241,12 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
         mCameraPreviewView.post(new Runnable() {
             @Override
             public void run() {
-                displayId = mCameraPreviewView.getDisplay().getDisplayId();
+                if (mCameraPreviewView != null) {
+                    Display display = mCameraPreviewView.getDisplay();
+                    if (display != null) {
+                        displayId = display.getDisplayId();
+                    }
+                }
             }
         });
 
@@ -866,22 +872,22 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
      * 拍照回调
      */
     private static class MyImageResultCallback implements ImageCapture.OnImageSavedCallback {
-        private final WeakReference<ImageView> mImagePreviewReference;
-        private final WeakReference<View> mImagePreviewBgReference;
-        private final WeakReference<CaptureLayout> mCaptureLayoutReference;
-        private final WeakReference<ImageCallbackListener> mImageCallbackListenerReference;
-        private final WeakReference<CameraListener> mCameraListenerReference;
-        private final WeakReference<CustomCameraView> mCameraViewLayoutReference;
+        private final SoftReference<ImageView> mImagePreviewReference;
+        private final SoftReference<View> mImagePreviewBgReference;
+        private final SoftReference<CaptureLayout> mCaptureLayoutReference;
+        private final SoftReference<ImageCallbackListener> mImageCallbackListenerReference;
+        private final SoftReference<CameraListener> mCameraListenerReference;
+        private final SoftReference<CustomCameraView> mCameraViewLayoutReference;
 
         public MyImageResultCallback(CustomCameraView cameraView,ImageView imagePreview, View imagePreviewBg, CaptureLayout captureLayout,
                                      ImageCallbackListener imageCallbackListener,
                                      CameraListener cameraListener) {
-            this.mCameraViewLayoutReference = new WeakReference<>(cameraView);
-            this.mImagePreviewReference = new WeakReference<>(imagePreview);
-            this.mImagePreviewBgReference = new WeakReference<>(imagePreviewBg);
-            this.mCaptureLayoutReference = new WeakReference<>(captureLayout);
-            this.mImageCallbackListenerReference = new WeakReference<>(imageCallbackListener);
-            this.mCameraListenerReference = new WeakReference<>(cameraListener);
+            this.mCameraViewLayoutReference = new SoftReference<>(cameraView);
+            this.mImagePreviewReference = new SoftReference<>(imagePreview);
+            this.mImagePreviewBgReference = new SoftReference<>(imagePreviewBg);
+            this.mCaptureLayoutReference = new SoftReference<>(captureLayout);
+            this.mImageCallbackListenerReference = new SoftReference<>(imageCallbackListener);
+            this.mCameraListenerReference = new SoftReference<>(cameraListener);
         }
 
         @Override

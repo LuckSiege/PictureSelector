@@ -1,7 +1,5 @@
 package com.luck.picture.lib.utils;
 
-import static java.lang.Math.abs;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 
@@ -72,9 +70,7 @@ public class DateUtils {
      * @return
      */
     public static long millisecondToSecond(long duration) {
-        duration = abs(duration);
-        long totalSeconds = (duration + 500) / 1000;
-        return totalSeconds * 1000;
+        return (duration / 1000) * 1000;
     }
 
     /**
@@ -103,8 +99,7 @@ public class DateUtils {
     public static String formatDurationTime(long timeMs) {
         String prefix = timeMs < 0 ? "-" : "";
         timeMs = Math.abs(timeMs);
-        long repair = timeMs + 500;
-        long totalSeconds = repair > 500 && repair < 1000 ? 1 : repair / 1000;
+        long totalSeconds = timeMs / 1000;
         long seconds = totalSeconds % 60;
         long minutes = (totalSeconds / 60) % 60;
         long hours = totalSeconds / 3600;

@@ -12,6 +12,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnQueryDataSourceListener;
+import com.luck.picture.lib.interfaces.OnQueryFilterListener;
 import com.luck.picture.lib.loader.IBridgeMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
@@ -70,6 +71,17 @@ public class PictureSelectionQueryModel {
         selectionConfig.isPageStrategy = isPageStrategy;
         selectionConfig.pageSize = pageSize < PictureConfig.MIN_PAGE_SIZE ? PictureConfig.MAX_PAGE_SIZE : pageSize;
         selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
+        return this;
+    }
+
+    /**
+     * You need to filter out what doesn't meet the standards
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionQueryModel setQueryFilterListener(OnQueryFilterListener listener) {
+        PictureSelectionConfig.onQueryFilterListener = listener;
         return this;
     }
 

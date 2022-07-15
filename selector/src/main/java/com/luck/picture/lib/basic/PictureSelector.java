@@ -11,7 +11,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 
 /**
@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 public final class PictureSelector {
 
-    private final WeakReference<Activity> mActivity;
-    private final WeakReference<Fragment> mFragment;
+    private final SoftReference<Activity> mActivity;
+    private final SoftReference<Fragment> mFragment;
 
     private PictureSelector(Activity activity) {
         this(activity, null);
@@ -34,8 +34,8 @@ public final class PictureSelector {
     }
 
     private PictureSelector(Activity activity, Fragment fragment) {
-        mActivity = new WeakReference<>(activity);
-        mFragment = new WeakReference<>(fragment);
+        mActivity = new SoftReference<>(activity);
+        mFragment = new SoftReference<>(fragment);
     }
 
     /**

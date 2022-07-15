@@ -104,7 +104,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void initCropFragments() {
-        ArrayList<String> totalCropData = getIntent().getExtras().getStringArrayList(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
+        ArrayList<String> totalCropData = getIntent().getStringArrayListExtra(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
         if (totalCropData == null || totalCropData.size() <= 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
         }

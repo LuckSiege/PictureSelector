@@ -2298,6 +2298,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
             Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
             Log.i(TAG, "文件大小: " + PictureFileUtils.formatAccurateUnitFileSize(media.getSize()));
+            Log.i(TAG, "文件时长: " + media.getDuration());
         }
         runOnUiThread(new Runnable() {
             @Override
