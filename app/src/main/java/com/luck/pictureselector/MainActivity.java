@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
             cb_custom_preview, cb_permission_desc,cb_video_thumbnails, cb_auto_video, cb_selected_anim,
-            cb_video_resume;
+            cb_video_resume, cb_custom_loading;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -252,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_auto_video = findViewById(R.id.cb_auto_video);
         cb_selected_anim = findViewById(R.id.cb_selected_anim);
         cb_time_axis = findViewById(R.id.cb_time_axis);
+        cb_custom_loading = findViewById(R.id.cb_custom_loading);
         cb_crop = findViewById(R.id.cb_crop);
         cbPage = findViewById(R.id.cbPage);
         cbEditor = findViewById(R.id.cb_editor);
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
                         .isVideoPauseResumePlay(cb_video_resume.isChecked())
+                        .setCustomLoadingListener(getCustomLoadingListener())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
                             @Override
@@ -451,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setSkipCropMimeType(getNotSupportCrop())
                                 .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
+                                .setCustomLoadingListener(getCustomLoadingListener())
                                 .isOriginalControl(cb_original.isChecked())
                                 .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
@@ -477,13 +480,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                                 .isPageSyncAlbumCount(true)
-                                .setCustomLoadingListener(new OnCustomLoadingListener() {
-
-                                    @Override
-                                    public Dialog create(Context context) {
-                                        return new CustomLoadingDialog(context);
-                                    }
-                                })
+                                .setCustomLoadingListener(getCustomLoadingListener())
                                 .setQueryFilterListener(new OnQueryFilterListener() {
                                     @Override
                                     public boolean onFilter(LocalMedia media) {
@@ -560,6 +557,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setCompressEngine(getCompressFileEngine())
                             .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                             .setVideoThumbnailListener(getVideoThumbnailEventListener())
+                            .setCustomLoadingListener(getCustomLoadingListener())
                             .setLanguage(language)
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked())
@@ -984,6 +982,22 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
     }
 
+    /**
+     * 自定义loading
+     *
+     * @return
+     */
+    private OnCustomLoadingListener getCustomLoadingListener() {
+        if (cb_custom_loading.isChecked()) {
+            return new OnCustomLoadingListener() {
+                @Override
+                public Dialog create(Context context) {
+                    return new CustomLoadingDialog(context);
+                }
+            };
+        }
+        return null;
+    }
 
     /**
      * 给图片添加水印
