@@ -123,7 +123,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * Loading Dialog
      */
-    private PictureLoadingDialog mLoadingDialog;
+    private Dialog mLoadingDialog;
 
     /**
      * click sound
@@ -306,7 +306,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLoadingDialog = new PictureLoadingDialog(getAppContext());
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_PICTURE_SELECTOR_CONFIG);
         }
@@ -315,6 +314,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         if (PictureSelectionConfig.viewLifecycle != null) {
             PictureSelectionConfig.viewLifecycle.onViewCreated(this, view, savedInstanceState);
+        }
+        if (PictureSelectionConfig.onCustomLoadingListener != null) {
+            mLoadingDialog = PictureSelectionConfig.onCustomLoadingListener.create(getAppContext());
+        } else {
+            mLoadingDialog = new PictureLoadingDialog(getAppContext());
         }
         setRequestedOrientation();
         setTranslucentStatusBar();

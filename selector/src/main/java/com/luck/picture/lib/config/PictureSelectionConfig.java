@@ -19,6 +19,7 @@ import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
+import com.luck.picture.lib.interfaces.OnCustomLoadingListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnGridItemSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
@@ -169,6 +170,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static InterpolatorFactory interpolatorFactory;
     public static OnGridItemSelectAnimListener onItemSelectAnimListener;
     public static OnSelectAnimListener onSelectAnimListener;
+    public static OnCustomLoadingListener onCustomLoadingListener;
 
 
     private PictureSelectionConfig(Parcel in) {
@@ -512,6 +514,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onItemSelectAnimListener = null;
         PictureSelectionConfig.onSelectAnimListener = null;
         PictureSelectionConfig.videoPlayerEngine = null;
+        PictureSelectionConfig.onCustomLoadingListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

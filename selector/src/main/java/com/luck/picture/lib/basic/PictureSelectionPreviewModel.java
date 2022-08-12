@@ -19,6 +19,7 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnCustomLoadingListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
@@ -240,6 +241,17 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setInjectActivityPreviewFragment(OnInjectActivityPreviewListener listener) {
         PictureSelectionConfig.onInjectActivityPreviewListener = listener;
+        return this;
+    }
+
+    /**
+     * Custom show loading dialog
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionPreviewModel setCustomLoadingListener(OnCustomLoadingListener listener) {
+        PictureSelectionConfig.onCustomLoadingListener = listener;
         return this;
     }
 

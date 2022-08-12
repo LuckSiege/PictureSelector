@@ -26,6 +26,7 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
+import com.luck.picture.lib.interfaces.OnCustomLoadingListener;
 import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
 import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
@@ -325,6 +326,17 @@ public final class PictureSelectionSystemModel {
         if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
             PictureSelectionConfig.onVideoThumbnailEventListener = listener;
         }
+        return this;
+    }
+
+    /**
+     * Custom show loading dialog
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setCustomLoadingListener(OnCustomLoadingListener listener) {
+        PictureSelectionConfig.onCustomLoadingListener = listener;
         return this;
     }
 

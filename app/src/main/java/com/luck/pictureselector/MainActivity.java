@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -94,6 +95,7 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnBitmapWatermarkEventListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
+import com.luck.picture.lib.interfaces.OnCustomLoadingListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnGridItemSelectAnimListener;
 import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
@@ -475,6 +477,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                                 .isPageSyncAlbumCount(true)
+                                .setCustomLoadingListener(new OnCustomLoadingListener() {
+
+                                    @Override
+                                    public Dialog create(Context context) {
+                                        return new CustomLoadingDialog(context);
+                                    }
+                                })
                                 .setQueryFilterListener(new OnQueryFilterListener() {
                                     @Override
                                     public boolean onFilter(LocalMedia media) {
