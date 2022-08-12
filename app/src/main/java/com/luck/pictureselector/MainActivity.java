@@ -1095,7 +1095,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             dialog.setOnDialogClickListener(new RemindDialog.OnDialogClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PermissionUtil.goIntentSetting(fragment, true, requestCode);
+                    PermissionUtil.goIntentSetting(fragment, requestCode);
                     dialog.dismiss();
                 }
             });

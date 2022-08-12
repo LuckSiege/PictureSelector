@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -70,9 +69,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createSystemContracts();
-        boolean isCheckReadStorage = SdkVersionUtils.isR() && config.isAllFilesAccess
-                ? Environment.isExternalStorageManager() : PermissionChecker.isCheckReadStorage(getContext());
-        if (isCheckReadStorage) {
+        if (PermissionChecker.isCheckReadStorage(getContext())) {
             openSystemAlbum();
         } else {
             onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
@@ -372,11 +369,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
             isCheckReadStorage = PictureSelectionConfig.onPermissionsEventListener
                     .hasPermissions(this, permissions);
         } else {
-            if (SdkVersionUtils.isR() && config.isAllFilesAccess) {
-                isCheckReadStorage = Environment.isExternalStorageManager();
-            } else {
-                isCheckReadStorage = PermissionChecker.isCheckReadStorage(getContext());
-            }
+            isCheckReadStorage = PermissionChecker.isCheckReadStorage(getContext());
         }
         if (isCheckReadStorage) {
             openSystemAlbum();

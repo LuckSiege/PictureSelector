@@ -12,8 +12,6 @@ import androidx.annotation.Size;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.luck.picture.lib.utils.SdkVersionUtils;
-
 /**
  * @author：luck
  * @date：2021/11/18 10:12 上午
@@ -64,27 +62,16 @@ public class PermissionUtil {
         return isAllGranted;
     }
 
-    /**
-     * 跳转到系统设置页面
-     */
-    public static void goIntentSetting(Fragment fragment, int requestCode) {
-        goIntentSetting(fragment, false, requestCode);
-    }
 
     /**
      * 跳转到系统设置页面
      */
-    public static void goIntentSetting(Fragment fragment, boolean isAllManageFiles, int requestCode) {
+    public static void goIntentSetting(Fragment fragment,int requestCode) {
         try {
-            if (SdkVersionUtils.isR() && isAllManageFiles) {
-                fragment.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
-                        requestCode);
-            } else {
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", fragment.getActivity().getPackageName(), null);
-                intent.setData(uri);
-                fragment.startActivityForResult(intent, requestCode);
-            }
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", fragment.getActivity().getPackageName(), null);
+            intent.setData(uri);
+            fragment.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
             e.printStackTrace();
         }

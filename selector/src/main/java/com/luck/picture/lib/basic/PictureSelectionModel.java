@@ -1225,19 +1225,6 @@ public final class PictureSelectionModel {
     }
 
     /**
-     * Returns whether the calling app has All Files Access on the primary shared/external storage media.
-     * Declaring the permission Manifest.permission.MANAGE_EXTERNAL_STORAGE isn't enough to gain the access.
-     * To request access, use android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
-     *
-     * @param isAllFilesAccess
-     * @return
-     */
-    public PictureSelectionModel isAllFilesAccessOf11(boolean isAllFilesAccess) {
-        selectionConfig.isAllFilesAccess = isAllFilesAccess;
-        return this;
-    }
-
-    /**
      * Filter the validity of file size or duration of audio and video
      *
      * @param isFilterSizeDuration

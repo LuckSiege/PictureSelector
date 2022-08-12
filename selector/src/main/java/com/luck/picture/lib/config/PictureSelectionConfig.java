@@ -134,7 +134,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAutoVideoPlay;
     public boolean isLoopAutoPlay;
     public boolean isFilterSizeDuration;
-    public boolean isAllFilesAccess;
     public boolean isPageSyncAsCount;
     public boolean isPauseResumePlay;
     public boolean isEnableVideoSize;
@@ -173,7 +172,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnCustomLoadingListener onCustomLoadingListener;
 
 
-    private PictureSelectionConfig(Parcel in) {
+    protected PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
         isOnlyCamera = in.readByte() != 0;
         isDirectReturnSingle = in.readByte() != 0;
@@ -255,7 +254,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoVideoPlay = in.readByte() != 0;
         isLoopAutoPlay = in.readByte() != 0;
         isFilterSizeDuration = in.readByte() != 0;
-        isAllFilesAccess = in.readByte() != 0;
         isPageSyncAsCount = in.readByte() != 0;
         isPauseResumePlay = in.readByte() != 0;
         isEnableVideoSize = in.readByte() != 0;
@@ -344,7 +342,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoVideoPlay ? 1 : 0));
         dest.writeByte((byte) (isLoopAutoPlay ? 1 : 0));
         dest.writeByte((byte) (isFilterSizeDuration ? 1 : 0));
-        dest.writeByte((byte) (isAllFilesAccess ? 1 : 0));
         dest.writeByte((byte) (isPageSyncAsCount ? 1 : 0));
         dest.writeByte((byte) (isPauseResumePlay ? 1 : 0));
         dest.writeByte((byte) (isEnableVideoSize ? 1 : 0));
@@ -450,7 +447,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoVideoPlay = false;
         isLoopAutoPlay = false;
         isFilterSizeDuration = true;
-        isAllFilesAccess = false;
         isPageSyncAsCount = false;
         isPauseResumePlay = false;
         isEnableVideoSize = true;

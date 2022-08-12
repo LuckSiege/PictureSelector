@@ -274,19 +274,6 @@ public final class PictureSelectionCameraModel {
     }
 
     /**
-     * Returns whether the calling app has All Files Access on the primary shared/external storage media.
-     * Declaring the permission Manifest.permission.MANAGE_EXTERNAL_STORAGE isn't enough to gain the access.
-     * To request access, use android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
-     *
-     * @param isAllFilesAccess
-     * @return
-     */
-    public PictureSelectionCameraModel isAllFilesAccessOf11(boolean isAllFilesAccess) {
-        selectionConfig.isAllFilesAccess = isAllFilesAccess;
-        return this;
-    }
-
-    /**
      * Choose between photographing and shooting in ofAll mode
      *
      * @param ofAllCameraType {@link SelectMimeType.ofImage or SelectMimeType.ofVideo}

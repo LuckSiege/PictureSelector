@@ -270,18 +270,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                 }
                             });
         } else {
-            if (config.isAllFilesAccess) {
-                boolean isReadWrite = false;
-                if (permissionArray != null && permissionArray.length > 0) {
-                    for (String s : permissionArray) {
-                        isReadWrite = TextUtils.equals(s, Manifest.permission.READ_EXTERNAL_STORAGE)
-                                || TextUtils.equals(s, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    }
-                }
-                PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
-            } else {
-                PermissionUtil.goIntentSetting(this, PictureConfig.REQUEST_GO_SETTING);
-            }
+            PermissionUtil.goIntentSetting(this, PictureConfig.REQUEST_GO_SETTING);
         }
     }
 

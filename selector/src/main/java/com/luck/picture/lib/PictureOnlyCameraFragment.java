@@ -3,7 +3,6 @@ package com.luck.picture.lib;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -95,11 +94,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             isHasPermissions = PermissionChecker.isCheckCamera(getContext());
             if (SdkVersionUtils.isQ()) {
             } else {
-                if (SdkVersionUtils.isR() && config.isAllFilesAccess){
-                    isHasPermissions = Environment.isExternalStorageManager();
-                } else {
-                    isHasPermissions = PermissionChecker.isCheckWriteStorage(getContext());
-                }
+                isHasPermissions = PermissionChecker.isCheckWriteStorage(getContext());
             }
         }
         if (isHasPermissions) {
@@ -108,9 +103,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             if (!PermissionChecker.isCheckCamera(getContext())) {
                 ToastUtils.showToast(getContext(), getString(R.string.ps_camera));
             } else {
-                boolean isCheckWriteStorage = SdkVersionUtils.isR() && config.isAllFilesAccess
-                        ? Environment.isExternalStorageManager() : PermissionChecker.isCheckWriteStorage(getContext());
-                if (!isCheckWriteStorage) {
+                if (!PermissionChecker.isCheckWriteStorage(getContext())) {
                     ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
                 }
             }
