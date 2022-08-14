@@ -1434,6 +1434,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             if (PictureMimeType.isHasHttp(availablePath)) {
                 continue;
             }
+            if (config.isCheckOriginalImage && config.isOriginalSkipCompress) {
+                continue;
+            }
             if (PictureMimeType.isHasImage(media.getMimeType())) {
                 Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
                 source.add(uri);
@@ -1468,13 +1471,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onOldCompress(ArrayList<LocalMedia> result) {
         showLoading();
-        PictureSelectionConfig.compressEngine.onStartCompress(getAppContext(), result,
-                new OnCallbackListener<ArrayList<LocalMedia>>() {
-                    @Override
-                    public void onCall(ArrayList<LocalMedia> result) {
-                        onResultEvent(result);
-                    }
-                });
+        if (config.isCheckOriginalImage && config.isOriginalSkipCompress) {
+            onResultEvent(result);
+        } else {
+            PictureSelectionConfig.compressEngine.onStartCompress(getAppContext(), result,
+                    new OnCallbackListener<ArrayList<LocalMedia>>() {
+                        @Override
+                        public void onCall(ArrayList<LocalMedia> result) {
+                            onResultEvent(result);
+                        }
+                    });
+        }
     }
 
     @Override

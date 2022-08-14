@@ -98,6 +98,17 @@ public final class PictureSelectionSystemModel {
     }
 
     /**
+     * Select original image to skip compression
+     *
+     * @param isOriginalSkipCompress
+     * @return
+     */
+    public PictureSelectionSystemModel isOriginalSkipCompress(boolean isOriginalSkipCompress) {
+        selectionConfig.isOriginalSkipCompress = isOriginalSkipCompress;
+        return this;
+    }
+
+    /**
      * Image Compress the engine
      *
      * @param engine Image Compress the engine

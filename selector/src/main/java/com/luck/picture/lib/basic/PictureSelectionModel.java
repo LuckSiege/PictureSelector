@@ -1225,6 +1225,17 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Select original image to skip compression
+     *
+     * @param isOriginalSkipCompress
+     * @return
+     */
+    public PictureSelectionModel isOriginalSkipCompress(boolean isOriginalSkipCompress) {
+        selectionConfig.isOriginalSkipCompress = isOriginalSkipCompress;
+        return this;
+    }
+
+    /**
      * Filter the validity of file size or duration of audio and video
      *
      * @param isFilterSizeDuration

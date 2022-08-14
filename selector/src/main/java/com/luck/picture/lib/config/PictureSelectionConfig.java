@@ -137,6 +137,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isPageSyncAsCount;
     public boolean isPauseResumePlay;
     public boolean isEnableVideoSize;
+    public boolean isOriginalSkipCompress;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -172,7 +173,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnCustomLoadingListener onCustomLoadingListener;
 
 
-    protected PictureSelectionConfig(Parcel in) {
+    private PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
         isOnlyCamera = in.readByte() != 0;
         isDirectReturnSingle = in.readByte() != 0;
@@ -257,6 +258,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isPageSyncAsCount = in.readByte() != 0;
         isPauseResumePlay = in.readByte() != 0;
         isEnableVideoSize = in.readByte() != 0;
+        isOriginalSkipCompress = in.readByte() != 0;
     }
 
     @Override
@@ -345,6 +347,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isPageSyncAsCount ? 1 : 0));
         dest.writeByte((byte) (isPauseResumePlay ? 1 : 0));
         dest.writeByte((byte) (isEnableVideoSize ? 1 : 0));
+        dest.writeByte((byte) (isOriginalSkipCompress ? 1 : 0));
     }
 
     @Override
@@ -450,6 +453,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isPageSyncAsCount = false;
         isPauseResumePlay = false;
         isEnableVideoSize = true;
+        isOriginalSkipCompress = false;
     }
 
 

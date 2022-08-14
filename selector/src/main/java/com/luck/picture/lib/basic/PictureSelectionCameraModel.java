@@ -302,6 +302,17 @@ public final class PictureSelectionCameraModel {
     }
 
     /**
+     * Select original image to skip compression
+     *
+     * @param isOriginalSkipCompress
+     * @return
+     */
+    public PictureSelectionCameraModel isOriginalSkipCompress(boolean isOriginalSkipCompress) {
+        selectionConfig.isOriginalSkipCompress = isOriginalSkipCompress;
+        return this;
+    }
+
+    /**
      * The video quality output mode is only for system recording, and there are only two modes: poor quality or high quality
      *
      * @param videoQuality video quality and 0 or 1
