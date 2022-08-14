@@ -99,6 +99,12 @@ public class MediaUtils {
             return "video/mp4";
         } else if (url.toLowerCase().endsWith(".avi")) {
             return "video/avi";
+        } else if (url.toLowerCase().endsWith(".mp3")) {
+            return "audio/mpeg";
+        } else if (url.toLowerCase().endsWith(".amr")) {
+            return "audio/amr";
+        } else if (url.toLowerCase().endsWith(".m4a")) {
+            return "audio/mpeg";
         }
         return null;
     }
