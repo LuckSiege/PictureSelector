@@ -829,6 +829,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         if (newPosition == viewPager.getCurrentItem() && media.isChecked()) {
                             return;
                         }
+                        LocalMedia item = viewPageAdapter.getItem(newPosition);
+                        if (item != null && !TextUtils.equals(media.getPath(), item.getPath()) || media.getId() != item.getId()) {
+                            return;
+                        }
                         if (viewPager.getAdapter() != null) {
                             // 这里清空一下重新设置，发现频繁调用setCurrentItem会出现页面闪现之前图片
                             viewPager.setAdapter(null);
