@@ -190,6 +190,9 @@ public class MediaUtils {
      */
     public static MediaExtraInfo getImageSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        if (PictureMimeType.isHasHttp(url)) {
+            return mediaExtraInfo;
+        }
         InputStream inputStream = null;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -245,6 +248,9 @@ public class MediaUtils {
      */
     public static MediaExtraInfo getVideoSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        if (PictureMimeType.isHasHttp(url)) {
+            return mediaExtraInfo;
+        }
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             if (PictureMimeType.isContent(url)) {
@@ -282,6 +288,9 @@ public class MediaUtils {
      */
     public static MediaExtraInfo getAudioSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        if (PictureMimeType.isHasHttp(url)) {
+            return mediaExtraInfo;
+        }
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             if (PictureMimeType.isContent(url)) {

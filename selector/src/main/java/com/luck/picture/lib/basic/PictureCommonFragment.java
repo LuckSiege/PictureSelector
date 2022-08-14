@@ -1430,8 +1430,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         ArrayList<Uri> source = new ArrayList<>();
         for (int i = 0; i < result.size(); i++) {
             LocalMedia media = result.get(i);
+            String availablePath = media.getAvailablePath();
+            if (PictureMimeType.isHasHttp(availablePath)) {
+                continue;
+            }
             if (PictureMimeType.isHasImage(media.getMimeType())) {
-                String availablePath = media.getAvailablePath();
                 Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
                 source.add(uri);
                 queue.put(availablePath, media);

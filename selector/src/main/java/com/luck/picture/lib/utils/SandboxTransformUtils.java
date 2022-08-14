@@ -40,6 +40,9 @@ public class SandboxTransformUtils {
      */
     public static String copyPathToSandbox(Context ctx, String url, String mineType, String customFileName) {
         try {
+            if (PictureMimeType.isHasHttp(url)){
+                return null;
+            }
             InputStream inputStream;
             String sandboxPath = PictureFileUtils.createFilePath(ctx, "", mineType, customFileName);
             if (PictureMimeType.isContent(url)) {
