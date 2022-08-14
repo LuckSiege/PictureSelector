@@ -5,13 +5,13 @@
 
    [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-08-14_082114_v3.10.6.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.5-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.6-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 
 ## 目录
--[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.5)<br>
+-[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.6)<br>
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
 -[权限](#权限)<br>
@@ -37,16 +37,16 @@ repositories {
 
 dependencies {
   // PictureSelector 基础 (必须)
-  implementation 'io.github.lucksiege:pictureselector:v3.10.5'
+  implementation 'io.github.lucksiege:pictureselector:v3.10.6'
 
   // 图片压缩 (按需引入)
-  implementation 'io.github.lucksiege:compress:v3.10.4'
+  implementation 'io.github.lucksiege:compress:v3.10.6'
 
   // 图片裁剪 (按需引入)
-  implementation 'io.github.lucksiege:ucrop:v3.10.4'
+  implementation 'io.github.lucksiege:ucrop:v3.10.6'
 
   // 自定义相机 (按需引入)
-  implementation 'io.github.lucksiege:camerax:v3.10.4'
+  implementation 'io.github.lucksiege:camerax:v3.10.6'
 }
 ```
 
@@ -56,25 +56,25 @@ dependencies {
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.10.5</version>
+  <version>v3.10.6</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.10.4</version>
+  <version>v3.10.6</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.10.4</version>
+  <version>v3.10.6</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.10.4</version>
+  <version>v3.10.6</version>
 </dependency>
 ```
 
