@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -54,7 +56,17 @@ public final class PictureSelector {
      * @param activity
      * @return PictureSelector instance.
      */
-    public static PictureSelector create(Activity activity) {
+    public static PictureSelector create(AppCompatActivity activity) {
+        return new PictureSelector(activity);
+    }
+
+    /**
+     * Start PictureSelector for Activity.
+     *
+     * @param activity
+     * @return PictureSelector instance.
+     */
+    public static PictureSelector create(FragmentActivity activity) {
         return new PictureSelector(activity);
     }
 
