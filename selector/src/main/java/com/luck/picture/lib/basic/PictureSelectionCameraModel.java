@@ -75,6 +75,17 @@ public final class PictureSelectionCameraModel {
     }
 
     /**
+     * Set App default Language
+     *
+     * @param defaultLanguage default language {@link LanguageConfig}
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionCameraModel setDefaultLanguage(int defaultLanguage) {
+        selectionConfig.defaultLanguage = defaultLanguage;
+        return this;
+    }
+
+    /**
      * Image Compress the engine
      *
      * @param engine Image Compress the engine

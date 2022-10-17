@@ -17,9 +17,9 @@ public class PictureContextWrapper extends ContextWrapper {
         super(base);
     }
 
-    public static ContextWrapper wrap(Context context, int language) {
+    public static ContextWrapper wrap(Context context, int language, int defaultLanguage) {
         if (language != LanguageConfig.UNKNOWN_LANGUAGE) {
-            PictureLanguageUtils.setAppLanguage(context, language);
+            PictureLanguageUtils.setAppLanguage(context, language, defaultLanguage);
         }
         return new PictureContextWrapper(context);
     }

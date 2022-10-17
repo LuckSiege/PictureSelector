@@ -82,6 +82,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public long selectMaxFileSize;
     public long selectMinFileSize;
     public int language;
+    public int defaultLanguage;
     public boolean isDisplayCamera;
     public boolean isGif;
     public boolean isWebp;
@@ -203,6 +204,7 @@ public final class PictureSelectionConfig implements Parcelable {
         selectMaxFileSize = in.readLong();
         selectMinFileSize = in.readLong();
         language = in.readInt();
+        defaultLanguage = in.readInt();
         isDisplayCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
         isWebp = in.readByte() != 0;
@@ -292,6 +294,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeLong(selectMaxFileSize);
         dest.writeLong(selectMinFileSize);
         dest.writeInt(language);
+        dest.writeInt(defaultLanguage);
         dest.writeByte((byte) (isDisplayCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
         dest.writeByte((byte) (isWebp ? 1 : 0));
@@ -380,6 +383,7 @@ public final class PictureSelectionConfig implements Parcelable {
         minAudioSelectNum = 0;
         videoQuality = VideoQuality.VIDEO_QUALITY_HIGH;
         language = LanguageConfig.UNKNOWN_LANGUAGE;
+        defaultLanguage = LanguageConfig.SYSTEM_LANGUAGE;
         filterVideoMaxSecond = 0;
         filterVideoMinSecond = 0;
         selectMaxDurationSecond = 0;

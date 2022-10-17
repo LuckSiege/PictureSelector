@@ -60,7 +60,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     public void initAppLanguage() {
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         if (config.language != LanguageConfig.UNKNOWN_LANGUAGE && !config.isOnlyCamera) {
-            PictureLanguageUtils.setAppLanguage(this, config.language);
+            PictureLanguageUtils.setAppLanguage(this, config.language, config.defaultLanguage);
         }
     }
 
@@ -73,7 +73,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(PictureContextWrapper.wrap(newBase,
-                PictureSelectionConfig.getInstance().language));
+                PictureSelectionConfig.getInstance().language, PictureSelectionConfig.getInstance().defaultLanguage));
     }
 
     @Override

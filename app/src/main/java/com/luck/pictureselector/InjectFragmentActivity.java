@@ -146,7 +146,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(PictureContextWrapper.wrap(newBase,
-                PictureSelectionConfig.getInstance().language));
+                PictureSelectionConfig.getInstance().language,PictureSelectionConfig.getInstance().defaultLanguage));
     }
 
 }

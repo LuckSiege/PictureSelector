@@ -31,13 +31,18 @@ public class PictureLanguageUtils {
      *
      * @param context
      * @param languageId
+     * @param defaultLanguageId
      */
-    public static void setAppLanguage(Context context, int languageId) {
+    public static void setAppLanguage(Context context, int languageId, int defaultLanguageId) {
         WeakReference<Context> contextWeakReference = new WeakReference<>(context);
         if (languageId >= 0) {
             applyLanguage(contextWeakReference.get(), LocaleTransform.getLanguage(languageId));
         } else {
-            setDefaultLanguage(contextWeakReference.get());
+            if (defaultLanguageId >= 0) {
+                applyLanguage(contextWeakReference.get(), LocaleTransform.getLanguage(defaultLanguageId));
+            } else {
+                setDefaultLanguage(contextWeakReference.get());
+            }
         }
     }
 

@@ -110,6 +110,17 @@ public final class PictureSelectionPreviewModel {
     }
 
     /**
+     * Set App default Language
+     *
+     * @param defaultLanguage default language {@link LanguageConfig}
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionPreviewModel setDefaultLanguage(int defaultLanguage) {
+        selectionConfig.defaultLanguage = defaultLanguage;
+        return this;
+    }
+
+    /**
      * Intercept custom inject layout events, Users can implement their own layout
      * on the premise that the view ID must be consistent
      *

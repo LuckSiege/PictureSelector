@@ -1864,7 +1864,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void initAppLanguage() {
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         if (config.language != LanguageConfig.UNKNOWN_LANGUAGE) {
-            PictureLanguageUtils.setAppLanguage(getActivity(), config.language);
+            PictureLanguageUtils.setAppLanguage(getActivity(), config.language, config.defaultLanguage);
         }
     }
 
