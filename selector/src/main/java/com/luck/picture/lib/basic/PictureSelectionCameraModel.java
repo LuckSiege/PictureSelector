@@ -217,8 +217,8 @@ public final class PictureSelectionCameraModel {
      * Custom limit tips
      *
      * @param listener
-     * @return
      */
+    @Deprecated
     public PictureSelectionCameraModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
         PictureSelectionConfig.onSelectLimitTipsListener = listener;
         return this;

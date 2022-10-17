@@ -37,13 +37,9 @@ public class PreviewTitleBar extends TitleBar {
         } else if (StyleUtils.checkSizeValidity(titleBarStyle.getTitleBackgroundColor())) {
             setBackgroundColor(titleBarStyle.getTitleBackgroundColor());
         }
-
-        if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleLeftBackResource())) {
-            ivLeftBack.setImageResource(titleBarStyle.getTitleLeftBackResource());
-        } else if (StyleUtils.checkStyleValidity(titleBarStyle.getPreviewTitleLeftBackResource())) {
+        if (StyleUtils.checkStyleValidity(titleBarStyle.getPreviewTitleLeftBackResource())) {
             ivLeftBack.setImageResource(titleBarStyle.getPreviewTitleLeftBackResource());
         }
-
         rlAlbumBg.setOnClickListener(null);
         viewAlbumClickArea.setOnClickListener(null);
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) rlAlbumBg.getLayoutParams();

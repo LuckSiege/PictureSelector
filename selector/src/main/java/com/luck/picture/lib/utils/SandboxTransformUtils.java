@@ -44,7 +44,7 @@ public class SandboxTransformUtils {
                 return null;
             }
             InputStream inputStream;
-            String sandboxPath = PictureFileUtils.createFilePath(ctx, "", mineType, customFileName);
+            String sandboxPath = PictureFileUtils.createFilePath(ctx,  mineType, customFileName);
             if (PictureMimeType.isContent(url)) {
                 inputStream = PictureContentResolver.getContentResolverOpenInputStream(ctx, Uri.parse(url));
             } else {

@@ -413,6 +413,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                                 outPutCameraFileName, imageFormat, outPutCameraDir);
                         if (FileUtils.copyPath(activity, outputPath, cameraFile.getAbsolutePath())) {
                             outputPath = cameraFile.getAbsolutePath();
+                            SimpleCameraX.putOutputUri(activity.getIntent(), Uri.fromFile(cameraFile));
                         }
                     }
                 }

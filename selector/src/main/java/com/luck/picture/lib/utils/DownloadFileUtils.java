@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 
@@ -54,7 +55,7 @@ public class DownloadFileUtils {
                         } else {
                             File dir = TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)
                                     ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-                                    : context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+                                    : new File(FileDirMap.getFileDirPath(context, SelectMimeType.TYPE_AUDIO));
                             contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
                                     + DateUtils.getCreateFileName("AUD_") + PictureMimeType.AMR);
                         }
@@ -70,7 +71,7 @@ public class DownloadFileUtils {
                         } else {
                             File dir = TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)
                                     ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-                                    : context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+                                    : new File(FileDirMap.getFileDirPath(context, SelectMimeType.TYPE_VIDEO));
                             contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
                                     + DateUtils.getCreateFileName("VID_") + PictureMimeType.MP4);
                         }
@@ -87,7 +88,7 @@ public class DownloadFileUtils {
                             if (PictureMimeType.isHasGif(mimeType) || PictureMimeType.isUrlHasGif(path)) {
                                 File dir = TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)
                                         ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                                        : context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                                        : new File(FileDirMap.getFileDirPath(context, SelectMimeType.TYPE_IMAGE));
                                 contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
                                         + DateUtils.getCreateFileName("IMG_") + PictureMimeType.GIF);
                             }

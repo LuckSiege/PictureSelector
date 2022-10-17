@@ -283,8 +283,8 @@ public final class PictureSelectionSystemModel {
      * Custom limit tips
      *
      * @param listener
-     * @return
      */
+    @Deprecated
     public PictureSelectionSystemModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
         PictureSelectionConfig.onSelectLimitTipsListener = listener;
         return this;

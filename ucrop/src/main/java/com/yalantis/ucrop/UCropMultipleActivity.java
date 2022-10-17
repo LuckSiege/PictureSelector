@@ -80,6 +80,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private String outputCropFileName;
     private UCropGalleryAdapter galleryAdapter;
     private boolean isForbidCropGifWebp;
+    private boolean isSkipCropForbid;
     private ArrayList<AspectRatio> aspectRatioList;
     private final HashSet<String> filterSet = new HashSet<>();
 
@@ -104,6 +105,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void initCropFragments() {
+        isSkipCropForbid = getIntent().getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
         ArrayList<String> totalCropData = getIntent().getStringArrayListExtra(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
         if (totalCropData == null || totalCropData.size() <= 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
@@ -230,6 +232,9 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         galleryAdapter.setOnItemClickListener(new UCropGalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
+                if (isSkipCropForbid) {
+                    return;
+                }
                 String path = uCropSupportList.get(position);
                 String mimeType = getPathToMimeType(path);
                 if (filterSet.contains(mimeType)) {

@@ -451,6 +451,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCompressEngine(getCompressFileEngine())
                                 .setCropEngine(getCropFileEngine())
                                 .setSkipCropMimeType(getNotSupportCrop())
+                                .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                                 .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .setCustomLoadingListener(getCustomLoadingListener())
@@ -555,6 +556,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setRecordAudioInterceptListener(new MeOnRecordAudioInterceptListener())
                             .setCropEngine(getCropFileEngine())
                             .setCompressEngine(getCompressFileEngine())
+                            .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                             .setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
                             .setVideoThumbnailListener(getVideoThumbnailEventListener())
                             .setCustomLoadingListener(getCustomLoadingListener())
@@ -1296,9 +1298,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
 
         @Override
-        public boolean onSelectLimitTips(Context context, PictureSelectionConfig config, int limitType) {
-            if (limitType == SelectLimitType.SELECT_NOT_SUPPORT_SELECT_LIMIT) {
-                ToastUtils.showToast(context, "暂不支持的选择类型");
+        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, PictureSelectionConfig config, int limitType) {
+            if (limitType == SelectLimitType.SELECT_MIN_SELECT_LIMIT) {
+                ToastUtils.showToast(context, "图片最少不能低于" + config.minSelectNum + "张");
+                return true;
+            } else if (limitType == SelectLimitType.SELECT_MIN_VIDEO_SELECT_LIMIT) {
+                ToastUtils.showToast(context, "视频最少不能低于" + config.minVideoSelectNum + "个");
+                return true;
+            } else if (limitType == SelectLimitType.SELECT_MIN_AUDIO_SELECT_LIMIT) {
+                ToastUtils.showToast(context, "音频最少不能低于" + config.minAudioSelectNum + "个");
                 return true;
             }
             return false;
@@ -1647,7 +1655,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.isCropDragSmoothToCenter(false);
         options.setSkipCropMimeType(getNotSupportCrop());
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
-        options.isForbidSkipMultipleCrop(false);
+        options.isForbidSkipMultipleCrop(true);
         options.setMaxScaleMultiplier(100);
         if (selectorStyle != null && selectorStyle.getSelectMainStyle().getStatusBarColor() != 0) {
             SelectMainStyle mainStyle = selectorStyle.getSelectMainStyle();

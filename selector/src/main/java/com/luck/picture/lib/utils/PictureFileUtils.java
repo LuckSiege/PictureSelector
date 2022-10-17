@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -42,10 +43,9 @@ import java.util.Objects;
 
 public class PictureFileUtils {
     private static final int BYTE_SIZE = 1024;
-    public static final String POSTFIX_JPG = ".jpg";
-    public static final String POSTFIX_MP4 = ".mp4";
-    public static final String POSTFIX_AMR = ".amr";
-
+    private static final String POSTFIX_JPG = ".jpg";
+    private static final String POSTFIX_MP4 = ".mp4";
+    private static final String POSTFIX_AMR = ".amr";
 
     /**
      * @param context
@@ -132,14 +132,8 @@ public class PictureFileUtils {
      * @return
      */
     private static File getRootDirFile(Context context, int type) {
-        switch (type) {
-            case SelectMimeType.TYPE_VIDEO:
-                return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-            case SelectMimeType.TYPE_AUDIO:
-                return context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-            default:
-                return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        }
+        String fileDirPath = FileDirMap.getFileDirPath(context, type);
+        return new File(fileDirPath);
     }
 
     /**
@@ -443,41 +437,6 @@ public class PictureFileUtils {
         }
     }
 
-    /**
-     * @param ctx
-     * @return
-     */
-    public static String getDiskCacheDir(Context ctx) {
-        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (filesDir == null) {
-            return "";
-        }
-        return filesDir.getPath();
-    }
-
-    /**
-     * @param ctx
-     * @return
-     */
-    public static String getVideoDiskCacheDir(Context ctx) {
-        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-        if (filesDir == null) {
-            return "";
-        }
-        return filesDir.getPath();
-    }
-
-    /**
-     * @param ctx
-     * @return
-     */
-    public static String getAudioDiskCacheDir(Context ctx) {
-        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        if (filesDir == null) {
-            return "";
-        }
-        return filesDir.getPath();
-    }
 
     /**
      * 生成uri
@@ -502,44 +461,28 @@ public class PictureFileUtils {
      * 根据类型创建文件名
      *
      * @param context
-     * @param md5
      * @param mineType
      * @param customFileName
      * @return
      */
-    public static String createFilePath(Context context, String md5, String mineType, String customFileName) {
+    public static String createFilePath(Context context, String mineType, String customFileName) {
+        File filesDir;
+        String prefixTAG;
         String suffix = PictureMimeType.getLastImgSuffix(mineType);
         if (PictureMimeType.isHasVideo(mineType)) {
             // 视频
-            String filesDir = PictureFileUtils.getVideoDiskCacheDir(context) + File.separator;
-            if (TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
-                return filesDir + fileName;
-            } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? "VID_" + md5.toUpperCase() + suffix : customFileName;
-                return filesDir + fileName;
-            }
+            prefixTAG = "VID_";
+            filesDir = getRootDirFile(context, SelectMimeType.TYPE_VIDEO);
         } else if (PictureMimeType.isHasAudio(mineType)) {
             // 音频
-            String filesDir = PictureFileUtils.getAudioDiskCacheDir(context) + File.separator;
-            if (TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
-                return filesDir + fileName;
-            } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? "AUD_" + md5.toUpperCase() + suffix : customFileName;
-                return filesDir + fileName;
-            }
+            prefixTAG = "AUD_";
+            filesDir = getRootDirFile(context, SelectMimeType.TYPE_AUDIO);
         } else {
             // 图片
-            String filesDir = PictureFileUtils.getDiskCacheDir(context) + File.separator;
-            if (TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
-                return filesDir + fileName;
-            } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? "IMG_" + md5.toUpperCase() + suffix : customFileName;
-                return filesDir + fileName;
-            }
+            prefixTAG = "IMG_";
+            filesDir = getRootDirFile(context, SelectMimeType.TYPE_IMAGE);
         }
+        return filesDir.getPath() + File.separator + (TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName(prefixTAG) + suffix : customFileName);
     }
 
     /**

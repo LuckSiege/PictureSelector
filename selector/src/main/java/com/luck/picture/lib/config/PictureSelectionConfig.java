@@ -41,6 +41,7 @@ import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
@@ -518,6 +519,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();
+        FileDirMap.clear();
         LocalMedia.destroyPool();
         SelectedManager.setCurrentLocalMediaFolder(null);
     }
