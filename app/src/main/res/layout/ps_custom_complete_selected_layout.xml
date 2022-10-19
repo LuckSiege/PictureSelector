@@ -3,10 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <android.widget.Space
-        android:layout_width="15dp"
-        android:layout_height="wrap_content" />
-
     <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/ps_tv_select_num"
         android:layout_width="wrap_content"
@@ -28,7 +24,4 @@
         android:textColor="@color/ps_color_9b"
         android:textSize="14sp" />
 
-    <android.widget.Space
-        android:layout_width="15dp"
-        android:layout_height="wrap_content" />
 </merge>

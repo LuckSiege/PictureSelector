@@ -1,13 +1,12 @@
 package com.luck.pictureselector;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.media.AudioManager;
+import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.Surface;
+import android.view.TextureView;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -25,9 +24,10 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * @date：2022/7/1 23:57 上午
  * @describe：IjkPlayerView
  */
-public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback {
-    private IjkVideoSurfaceView surfaceView;
+public class IjkPlayerView extends FrameLayout implements TextureView.SurfaceTextureListener {
+    private IjkVideoTextureView textureView;
     private IjkMediaPlayer mediaPlayer;
+    private int mVideoRotation;
 
     public IjkPlayerView(@NonNull Context context) {
         super(context);
@@ -45,14 +45,12 @@ public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback
     }
 
     private void init() {
-        surfaceView = new IjkVideoSurfaceView(getContext());
+        textureView = new IjkVideoTextureView(getContext());
+        textureView.setSurfaceTextureListener(this);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        surfaceView.setLayoutParams(layoutParams);
-        addView(surfaceView);
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
-        surfaceHolder.addCallback(this);
+        textureView.setLayoutParams(layoutParams);
+        addView(textureView);
     }
 
     public IjkMediaPlayer initMediaPlayer() {
@@ -62,12 +60,22 @@ public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback
         mediaPlayer.setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
             @Override
             public void onVideoSizeChanged(IMediaPlayer mediaPlayer, int width, int height, int sar_num, int sar_den) {
-                surfaceView.adjustVideoSize(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+                textureView.adjustVideoSize(width, height, mVideoRotation);
+            }
+        });
+        mediaPlayer.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+                if (what == 10001) {
+                    mVideoRotation = extra;
+                }
+                return false;
             }
         });
         mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
         return mediaPlayer;
     }
+
 
     public IjkMediaPlayer getMediaPlayer() {
         return mediaPlayer;
@@ -80,7 +88,10 @@ public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback
             } else {
                 mediaPlayer.setDataSource(path);
             }
-            mediaPlayer.setDisplay(surfaceView.getHolder());
+            SurfaceTexture surfaceTexture = textureView.getSurfaceTexture();
+            if (surfaceTexture != null) {
+                mediaPlayer.setSurface(new Surface(surfaceTexture));
+            }
             mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,98 +99,116 @@ public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback
     }
 
     @Override
-    public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setDisplay(holder);
+    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+        mediaPlayer.setSurface(new Surface(surface));
     }
 
     @Override
-    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
+    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
     }
 
     @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
 
     }
 
-    public static class IjkVideoSurfaceView extends SurfaceView {
+    public static class IjkVideoTextureView extends TextureView {
         /**
          * 视频宽度
          */
-        private int videoWidth;
+        private int mVideoWidth;
         /**
          * 视频高度
          */
-        private int videoHeight;
+        private int mVideoHeight;
 
-        public IjkVideoSurfaceView(Context context) {
-            this(context, null);
+        /**
+         * 视频旋转角度
+         */
+        private int mVideoRotation;
+
+        public IjkVideoTextureView(@NonNull Context context) {
+            super(context);
         }
 
-        public IjkVideoSurfaceView(Context context, AttributeSet attrs) {
-            this(context, attrs, 0);
+        public void adjustVideoSize(int videoWidth, int videoHeight, int videoRotation) {
+            this.mVideoWidth = videoWidth;
+            this.mVideoHeight = videoHeight;
+            this.mVideoRotation = videoRotation;
+            this.setRotation(mVideoRotation);
+            this.requestLayout();
         }
-
-        public IjkVideoSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
-        public void adjustVideoSize(int videoWidth, int videoHeight) {
-            if (videoWidth == 0 || videoHeight == 0) {
-                return;
-            }
-            this.videoWidth = videoWidth;
-            this.videoHeight = videoHeight;
-            getHolder().setFixedSize(videoWidth, videoHeight);
-            requestLayout();
-        }
-
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int width = getDefaultSize(videoWidth, widthMeasureSpec);
-            int height = getDefaultSize(videoHeight, heightMeasureSpec);
-            if (videoWidth > 0 && videoHeight > 0) {
-                int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
-                int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-                int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-                int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+            int width = getDefaultSize(mVideoWidth, widthMeasureSpec);
+            int height = getDefaultSize(mVideoHeight, heightMeasureSpec);
+            int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+            int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+            int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+            int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+            if (mVideoWidth > 0 && mVideoHeight > 0) {
                 if (widthSpecMode == MeasureSpec.EXACTLY && heightSpecMode == MeasureSpec.EXACTLY) {
                     width = widthSpecSize;
                     height = heightSpecSize;
-                    if (videoWidth * height < width * videoHeight) {
-                        width = height * videoWidth / videoHeight;
-                    } else if (videoWidth * height > width * videoHeight) {
-                        height = width * videoHeight / videoWidth;
+
+                    if (mVideoWidth * height < width * mVideoHeight) {
+                        width = height * mVideoWidth / mVideoHeight;
+                    } else if (mVideoWidth * height > width * mVideoHeight) {
+                        height = width * mVideoHeight / mVideoWidth;
                     }
                 } else if (widthSpecMode == MeasureSpec.EXACTLY) {
                     width = widthSpecSize;
-                    height = width * videoHeight / videoWidth;
+                    height = width * mVideoHeight / mVideoWidth;
                     if (heightSpecMode == MeasureSpec.AT_MOST && height > heightSpecSize) {
                         height = heightSpecSize;
                     }
                 } else if (heightSpecMode == MeasureSpec.EXACTLY) {
                     height = heightSpecSize;
-                    width = height * videoWidth / videoHeight;
+                    width = height * mVideoWidth / mVideoHeight;
                     if (widthSpecMode == MeasureSpec.AT_MOST && width > widthSpecSize) {
                         width = widthSpecSize;
                     }
                 } else {
-                    width = videoWidth;
-                    height = videoHeight;
+                    width = mVideoWidth;
+                    height = mVideoHeight;
                     if (heightSpecMode == MeasureSpec.AT_MOST && height > heightSpecSize) {
                         height = heightSpecSize;
-                        width = height * videoWidth / videoHeight;
+                        width = height * mVideoWidth / mVideoHeight;
                     }
                     if (widthSpecMode == MeasureSpec.AT_MOST && width > widthSpecSize) {
                         width = widthSpecSize;
-                        height = width * videoHeight / videoWidth;
+                        height = width * mVideoHeight / mVideoWidth;
                     }
                 }
             }
             setMeasuredDimension(width, height);
+            if ((mVideoRotation + 180) % 180 != 0) {
+                int[] size = scaleSize(widthSpecSize, heightSpecSize, height, width);
+                setScaleX(size[0] / ((float) height));
+                setScaleY(size[1] / ((float) width));
+            }
         }
+    }
+
+    public static int[] scaleSize(int textureWidth, int textureHeight, int realWidth, int realHeight) {
+        float deviceRate = (float) textureWidth / (float) textureHeight;
+        float rate = (float) realWidth / (float) realHeight;
+        int width;
+        int height;
+        if (rate < deviceRate) {
+            height = textureHeight;
+            width = (int) (textureHeight * rate);
+        } else {
+            width = textureWidth;
+            height = (int) (textureWidth / rate);
+        }
+        return new int[]{width, height};
     }
 
     public void release() {
@@ -188,12 +217,11 @@ public class IjkPlayerView extends FrameLayout implements SurfaceHolder.Callback
             mediaPlayer.setOnPreparedListener(null);
             mediaPlayer.setOnCompletionListener(null);
             mediaPlayer.setOnErrorListener(null);
+            mediaPlayer.setOnInfoListener(null);
             mediaPlayer = null;
         }
     }
 
     public void clearCanvas() {
-        surfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
-        surfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
     }
 }

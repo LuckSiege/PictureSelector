@@ -95,7 +95,6 @@ public class IjkPlayerEngine implements VideoPlayerEngine<IjkPlayerView> {
             @Override
             public void onCompletion(IMediaPlayer mediaPlayer) {
                 mediaPlayer.reset();
-                mediaPlayer.setDisplay(null);
                 for (int i = 0; i < listeners.size(); i++) {
                     OnPlayerListener playerListener = listeners.get(i);
                     playerListener.onPlayerEnd();
