@@ -61,6 +61,7 @@ import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
@@ -434,15 +435,15 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private void requestLoadData() {
         mAdapter.setDisplayCamera(isDisplayCamera);
-        if (PermissionChecker.isCheckReadStorage(getContext())) {
+        if (PermissionChecker.isCheckReadStorage(config.chooseMode, getContext())) {
             beginLoadData();
         } else {
-            onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+            String[] storagePermissionArray = PermissionConfig.getReadWritePermissionArray(config.chooseMode);
+            onPermissionExplainEvent(true, storagePermissionArray);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, storagePermissionArray);
             } else {
-                PermissionChecker.getInstance().requestPermissions(this,
-                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                PermissionChecker.getInstance().requestPermissions(this,storagePermissionArray, new PermissionResultCallback() {
                             @Override
                             public void onGranted() {
                                 beginLoadData();
@@ -450,7 +451,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
                             @Override
                             public void onDenied() {
-                                handlePermissionDenied(PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                                handlePermissionDenied(storagePermissionArray);
                             }
                         });
             }

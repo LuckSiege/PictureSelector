@@ -274,7 +274,11 @@ public class MediaUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            retriever.release();
+            try {
+                retriever.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return mediaExtraInfo;
     }
@@ -302,7 +306,11 @@ public class MediaUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            retriever.release();
+            try {
+                retriever.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return mediaExtraInfo;
     }

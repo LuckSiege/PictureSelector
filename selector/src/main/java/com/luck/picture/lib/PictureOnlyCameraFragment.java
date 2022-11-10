@@ -49,18 +49,18 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             if (SdkVersionUtils.isQ()) {
                 openSelectedCamera();
             } else {
-                PermissionChecker.getInstance().requestPermissions(this,
-                        PermissionConfig.WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
-                            @Override
-                            public void onGranted() {
-                                openSelectedCamera();
-                            }
+                String[] writePermissionArray = PermissionConfig.getWritePermissionArray(config.chooseMode);
+                PermissionChecker.getInstance().requestPermissions(this, writePermissionArray, new PermissionResultCallback() {
+                    @Override
+                    public void onGranted() {
+                        openSelectedCamera();
+                    }
 
-                            @Override
-                            public void onDenied() {
-                                handlePermissionDenied(PermissionConfig.WRITE_EXTERNAL_STORAGE);
-                            }
-                        });
+                    @Override
+                    public void onDenied() {
+                        handlePermissionDenied(writePermissionArray);
+                    }
+                });
             }
         }
     }

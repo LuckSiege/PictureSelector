@@ -11,10 +11,10 @@ public class SdkVersionUtils {
 
     public static final int R = 30;
 
+    public static final int TIRAMISU = 33;
+
     /**
      * 判断是否是低于Android LOLLIPOP版本
-     *
-     * @return
      */
     public static boolean isMinM() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
@@ -22,8 +22,6 @@ public class SdkVersionUtils {
 
     /**
      * 判断是否是Android O版本
-     *
-     * @return
      */
     public static boolean isO() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
@@ -32,8 +30,6 @@ public class SdkVersionUtils {
 
     /**
      * 判断是否是Android N版本
-     *
-     * @return
      */
     public static boolean isMaxN() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
@@ -42,8 +38,6 @@ public class SdkVersionUtils {
 
     /**
      * 判断是否是Android N版本
-     *
-     * @return
      */
     public static boolean isN() {
         return Build.VERSION.SDK_INT == Build.VERSION_CODES.N;
@@ -51,8 +45,6 @@ public class SdkVersionUtils {
 
     /**
      * 判断是否是Android Q版本
-     *
-     * @return
      */
     public static boolean isQ() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
@@ -60,10 +52,15 @@ public class SdkVersionUtils {
 
     /**
      * 判断是否是Android R版本
-     *
-     * @return
      */
     public static boolean isR() {
         return Build.VERSION.SDK_INT >= R;
+    }
+
+    /**
+     * 判断是否是Android TIRAMISU版本
+     */
+    public static boolean isTIRAMISU() {
+        return Build.VERSION.SDK_INT >= TIRAMISU;
     }
 }

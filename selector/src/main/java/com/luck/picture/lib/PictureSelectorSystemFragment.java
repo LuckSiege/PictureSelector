@@ -69,15 +69,15 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createSystemContracts();
-        if (PermissionChecker.isCheckReadStorage(getContext())) {
+        if (PermissionChecker.isCheckReadStorage(config.chooseMode,getContext())) {
             openSystemAlbum();
         } else {
-            onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+            String[] storagePermissionArray = PermissionConfig.getReadWritePermissionArray(config.chooseMode);
+            onPermissionExplainEvent(true, storagePermissionArray);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(PermissionEvent.EVENT_SYSTEM_SOURCE_DATA, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                onApplyPermissionsEvent(PermissionEvent.EVENT_SYSTEM_SOURCE_DATA, storagePermissionArray);
             } else {
-                PermissionChecker.getInstance().requestPermissions(this,
-                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                PermissionChecker.getInstance().requestPermissions(this,storagePermissionArray, new PermissionResultCallback() {
                             @Override
                             public void onGranted() {
                                 openSystemAlbum();
@@ -85,7 +85,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
 
                             @Override
                             public void onDenied() {
-                                handlePermissionDenied(PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                                handlePermissionDenied(storagePermissionArray);
                             }
                         });
             }
@@ -96,7 +96,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onApplyPermissionsEvent(int event, String[] permissionArray) {
         if (event == PermissionEvent.EVENT_SYSTEM_SOURCE_DATA) {
             PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                    PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
+                    PermissionConfig.getReadWritePermissionArray(config.chooseMode), new OnRequestPermissionListener() {
                         @Override
                         public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {
@@ -369,7 +369,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
             isCheckReadStorage = PictureSelectionConfig.onPermissionsEventListener
                     .hasPermissions(this, permissions);
         } else {
-            isCheckReadStorage = PermissionChecker.isCheckReadStorage(getContext());
+            isCheckReadStorage = PermissionChecker.isCheckReadStorage(config.chooseMode, getContext());
         }
         if (isCheckReadStorage) {
             openSystemAlbum();

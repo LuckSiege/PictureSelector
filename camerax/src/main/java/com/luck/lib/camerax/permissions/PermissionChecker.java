@@ -89,7 +89,7 @@ public class PermissionChecker {
     }
 
     public void onRequestPermissionsResult(int[] grantResults, PermissionResultCallback action) {
-        if (PermissionUtil.isAllGranted(grantResults)) {
+        if (SimpleXPermissionUtil.isAllGranted(grantResults)) {
             action.onGranted();
         } else {
             action.onDenied();
