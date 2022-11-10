@@ -79,13 +79,37 @@ public class DensityUtil {
      */
     public static int getStatusBarHeight(Context context) {
         int result = 0;
-        int resourceId = Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
+        Resources resources = Resources.getSystem();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        try {
+            if (resourceId > 0) {
+                int sizeOne = context.getResources().getDimensionPixelSize(resourceId);
+                int sizeTwo = resources.getDimensionPixelSize(resourceId);
+                if (sizeTwo >= sizeOne) {
+                    result = sizeTwo;
+                } else {
+                    float densityOne = context.getResources().getDisplayMetrics().density;
+                    float densityTwo = resources.getDisplayMetrics().density;
+                    float f = sizeOne * densityTwo / densityOne;
+                    result = f >= 0 ? (int) (f + 0.5f) : (int) (f - 0.5f);
+                }
+            }
+        } catch (Exception ignored) {
+            result = getStatusBarHeight();
         }
         return result == 0 ? dip2px(context, 26) : result;
     }
 
+    /**
+     * Return the status bar's height.
+     *
+     * @return the status bar's height
+     */
+    public static int getStatusBarHeight() {
+        Resources resources = Resources.getSystem();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        return resources.getDimensionPixelSize(resourceId);
+    }
 
     /**
      * Return whether the navigation bar visible.
