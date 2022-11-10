@@ -909,13 +909,13 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                         // 这种角度拍出来的图片宽比高大，所以使用ScaleType.FIT_CENTER缩放模式
                         if (targetRotation == Surface.ROTATION_90 || targetRotation == Surface.ROTATION_270) {
                             mImagePreview.setAdjustViewBounds(true);
-                            View mImagePreviewBackground = mImagePreviewBgReference.get();
-                            if (mImagePreviewBackground != null) {
-                                mImagePreviewBackground.animate().alpha(1F).setDuration(220).start();
-                            }
                         } else {
                             mImagePreview.setAdjustViewBounds(false);
-                            mImagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            mImagePreview.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        }
+                        View mImagePreviewBackground = mImagePreviewBgReference.get();
+                        if (mImagePreviewBackground != null) {
+                            mImagePreviewBackground.animate().alpha(1F).setDuration(220).start();
                         }
                     }
                     ImageCallbackListener imageCallbackListener = mImageCallbackListenerReference.get();
