@@ -160,6 +160,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         return null;
     }
 
+
     @Override
     public void loadPageMediaData(long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
@@ -248,8 +249,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {
-                Cursor data = getContext().getContentResolver().query(QUERY_URI,
-                        isWithAllQuery() ? PROJECTION : ALL_PROJECTION,
+                Cursor data = getContext().getContentResolver().query(QUERY_URI, isWithAllQuery() ? PROJECTION : ALL_PROJECTION,
                         getSelection(), getSelectionArgs(), getSortOrder());
                 try {
                     if (data != null) {
@@ -259,6 +259,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                         if (count > 0) {
                             if (isWithAllQuery()) {
                                 Map<Long, Long> countMap = new HashMap<>();
+                                Set<Long> hashSet = new HashSet<>();
                                 while (data.moveToNext()) {
                                     if (getConfig().isPageSyncAsCount) {
                                         LocalMedia media = parseLocalMedia(data, true);
@@ -275,32 +276,31 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         newCount++;
                                     }
                                     countMap.put(bucketId, newCount);
+
+                                    if (hashSet.contains(bucketId)) {
+                                        continue;
+                                    }
+                                    LocalMediaFolder mediaFolder = new LocalMediaFolder();
+                                    mediaFolder.setBucketId(bucketId);
+                                    String bucketDisplayName = data.getString(
+                                            data.getColumnIndexOrThrow(COLUMN_BUCKET_DISPLAY_NAME));
+                                    String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE));
+                                    if (!countMap.containsKey(bucketId)) {
+                                        continue;
+                                    }
+                                    long size = countMap.get(bucketId);
+                                    long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
+                                    mediaFolder.setFolderName(bucketDisplayName);
+                                    mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
+                                    mediaFolder.setFirstImagePath(MediaUtils.getRealPathUri(id, mimeType));
+                                    mediaFolder.setFirstMimeType(mimeType);
+                                    mediaFolders.add(mediaFolder);
+                                    hashSet.add(bucketId);
                                 }
-                                if (data.moveToFirst()) {
-                                    Set<Long> hashSet = new HashSet<>();
-                                    do {
-                                        long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
-                                        if (hashSet.contains(bucketId)) {
-                                            continue;
-                                        }
-                                        LocalMediaFolder mediaFolder = new LocalMediaFolder();
-                                        mediaFolder.setBucketId(bucketId);
-                                        String bucketDisplayName = data.getString(
-                                                data.getColumnIndexOrThrow(COLUMN_BUCKET_DISPLAY_NAME));
-                                        String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE));
-                                        if (!countMap.containsKey(bucketId)) {
-                                            continue;
-                                        }
-                                        long size = countMap.get(bucketId);
-                                        long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
-                                        mediaFolder.setFolderName(bucketDisplayName);
-                                        mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
-                                        mediaFolder.setFirstImagePath(MediaUtils.getRealPathUri(id, mimeType));
-                                        mediaFolder.setFirstMimeType(mimeType);
-                                        mediaFolders.add(mediaFolder);
-                                        hashSet.add(bucketId);
-                                        totalCount += size;
-                                    } while (data.moveToNext());
+                                for (LocalMediaFolder mediaFolder : mediaFolders) {
+                                    int size = ValueOf.toInt(countMap.get(mediaFolder.getBucketId()));
+                                    mediaFolder.setFolderTotalNum(size);
+                                    totalCount += size;
                                 }
                             } else {
                                 data.moveToFirst();

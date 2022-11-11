@@ -31,6 +31,7 @@ public abstract class IBridgeMediaLoader {
     protected static final String ORDER_BY = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
     protected static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif')";
     protected static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
+    protected static final String DISTINCT_BUCKET_Id = "DISTINCT bucket_id";
     protected static final String COLUMN_COUNT = "count";
     protected static final String COLUMN_BUCKET_ID = "bucket_id";
     protected static final String COLUMN_DURATION = "duration";
@@ -100,7 +101,6 @@ public abstract class IBridgeMediaLoader {
      * @param bucketId
      */
     public abstract String getAlbumFirstCover(long bucketId);
-
 
     /**
      * query album list

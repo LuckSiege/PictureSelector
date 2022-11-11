@@ -478,6 +478,18 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Android 10 preloads data first, then asynchronously obtains album list
+     * <p>
+     * Please consult the developer for detailed reasons
+     * </p>
+     *
+     * @param isPreloadFirst Enable preload by default
+     */
+    public PictureSelectionModel isPreloadFirst(boolean isPreloadFirst) {
+        selectionConfig.isPreloadFirst = isPreloadFirst;
+        return this;
+    }
 
     /**
      * Change the desired orientation of this activity.  If the activity

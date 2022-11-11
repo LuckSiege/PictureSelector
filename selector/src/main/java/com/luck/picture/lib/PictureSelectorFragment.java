@@ -61,7 +61,6 @@ import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
@@ -622,36 +621,64 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     new OnQueryAllAlbumListener<LocalMediaFolder>() {
                         @Override
                         public void onComplete(List<LocalMediaFolder> result) {
-                            handleAllAlbumData(result);
+                            handleAllAlbumData(false, result);
                         }
                     });
         } else {
+            boolean isPreload = preloadPageFirstData();
             mLoader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
 
                 @Override
                 public void onComplete(List<LocalMediaFolder> result) {
-                    handleAllAlbumData(result);
+                    handleAllAlbumData(isPreload, result);
                 }
             });
         }
     }
 
-    private void handleAllAlbumData(List<LocalMediaFolder> result) {
+    private boolean preloadPageFirstData() {
+        boolean isPreload = false;
+        if (config.isPageStrategy && config.isPreloadFirst) {
+            LocalMediaFolder firstFolder = new LocalMediaFolder();
+            firstFolder.setBucketId(PictureConfig.ALL);
+            if (TextUtils.isEmpty(config.defaultAlbumName)) {
+                titleBar.setTitle(config.chooseMode == SelectMimeType.ofAudio() ? requireContext().getString(R.string.ps_all_audio) : requireContext().getString(R.string.ps_camera_roll));
+            } else {
+                titleBar.setTitle(config.defaultAlbumName);
+            }
+            firstFolder.setFolderName(titleBar.getTitleText());
+            SelectedManager.setCurrentLocalMediaFolder(firstFolder);
+            loadFirstPageMediaData(firstFolder.getBucketId());
+            isPreload = true;
+        }
+        return isPreload;
+    }
+
+    private void handleAllAlbumData(boolean isPreload, List<LocalMediaFolder> result) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
         if (result.size() > 0) {
             LocalMediaFolder firstFolder;
-            if (SelectedManager.getCurrentLocalMediaFolder() != null) {
-                firstFolder = SelectedManager.getCurrentLocalMediaFolder();
-            } else {
+            if (isPreload) {
                 firstFolder = result.get(0);
                 SelectedManager.setCurrentLocalMediaFolder(firstFolder);
+            } else {
+                if (SelectedManager.getCurrentLocalMediaFolder() != null) {
+                    firstFolder = SelectedManager.getCurrentLocalMediaFolder();
+                } else {
+                    firstFolder = result.get(0);
+                    SelectedManager.setCurrentLocalMediaFolder(firstFolder);
+                }
             }
             titleBar.setTitle(firstFolder.getFolderName());
             albumListPopWindow.bindAlbumData(result);
             if (config.isPageStrategy) {
-                loadFirstPageMediaData(firstFolder.getBucketId());
+                if (config.isPreloadFirst) {
+                    mRecycler.setEnabledLoadMore(true);
+                } else {
+                    loadFirstPageMediaData(firstFolder.getBucketId());
+                }
             } else {
                 setAdapterData(firstFolder.getData());
             }
@@ -662,6 +689,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void loadFirstPageMediaData(long firstBucketId) {
+        mPage = 1;
         mRecycler.setEnabledLoadMore(true);
         if (PictureSelectionConfig.loaderDataEngine != null) {
             PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(), firstBucketId,
@@ -673,7 +701,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         }
                     });
         } else {
-            mLoader.loadPageMediaData(firstBucketId, 1, mPage * config.pageSize,
+            mLoader.loadPageMediaData(firstBucketId, mPage, mPage * config.pageSize,
                     new OnQueryDataResultListener<LocalMedia>() {
                         @Override
                         public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {

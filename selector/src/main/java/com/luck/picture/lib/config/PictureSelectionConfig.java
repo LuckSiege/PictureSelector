@@ -140,6 +140,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isPauseResumePlay;
     public boolean isEnableVideoSize;
     public boolean isOriginalSkipCompress;
+    public boolean isPreloadFirst;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -262,6 +263,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isPauseResumePlay = in.readByte() != 0;
         isEnableVideoSize = in.readByte() != 0;
         isOriginalSkipCompress = in.readByte() != 0;
+        isPreloadFirst = in.readByte() != 0;
     }
 
     @Override
@@ -352,6 +354,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isPauseResumePlay ? 1 : 0));
         dest.writeByte((byte) (isEnableVideoSize ? 1 : 0));
         dest.writeByte((byte) (isOriginalSkipCompress ? 1 : 0));
+        dest.writeByte((byte) (isPreloadFirst ? 1 : 0));
     }
 
     @Override
@@ -459,6 +462,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isPauseResumePlay = false;
         isEnableVideoSize = true;
         isOriginalSkipCompress = false;
+        isPreloadFirst = true;
     }
 
 
