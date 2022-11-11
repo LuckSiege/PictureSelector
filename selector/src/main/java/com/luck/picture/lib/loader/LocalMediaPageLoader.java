@@ -259,6 +259,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                         if (count > 0) {
                             if (isWithAllQuery()) {
                                 Map<Long, Long> countMap = new HashMap<>();
+                                Set<Long> bucketIdSet = new HashSet<>();
                                 while (data.moveToNext()) {
                                     if (getConfig().isPageSyncAsCount) {
                                         LocalMedia media = parseLocalMedia(data, true);
@@ -267,6 +268,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         }
                                         media.recycle();
                                     }
+                                    // handle bucket count
                                     long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                     Long newCount = countMap.get(bucketId);
                                     if (newCount == null) {
@@ -275,12 +277,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         newCount++;
                                     }
                                     countMap.put(bucketId, newCount);
-                                }
-                                if (data.moveToFirst()) {
-                                    Set<Long> hashSet = new HashSet<>();
-                                    do {
-                                        long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
-                                        if (hashSet.contains(bucketId)) {
+
+                                    {  // read folder info
+                                        if (bucketIdSet.contains(bucketId)) {
                                             continue;
                                         }
                                         LocalMediaFolder mediaFolder = new LocalMediaFolder();
@@ -288,19 +287,20 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         String bucketDisplayName = data.getString(
                                                 data.getColumnIndexOrThrow(COLUMN_BUCKET_DISPLAY_NAME));
                                         String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE));
-                                        if (!countMap.containsKey(bucketId)) {
-                                            continue;
-                                        }
-                                        long size = countMap.get(bucketId);
+
                                         long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
                                         mediaFolder.setFolderName(bucketDisplayName);
-                                        mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
                                         mediaFolder.setFirstImagePath(MediaUtils.getRealPathUri(id, mimeType));
                                         mediaFolder.setFirstMimeType(mimeType);
                                         mediaFolders.add(mediaFolder);
-                                        hashSet.add(bucketId);
-                                        totalCount += size;
-                                    } while (data.moveToNext());
+                                        bucketIdSet.add(bucketId);
+                                    }
+                                }
+
+                                for (LocalMediaFolder mediaFolder : mediaFolders) {
+                                    final int size = ValueOf.toInt(countMap.get(mediaFolder.getBucketId()));
+                                    mediaFolder.setFolderTotalNum(size);
+                                    totalCount += size;
                                 }
                             } else {
                                 data.moveToFirst();
