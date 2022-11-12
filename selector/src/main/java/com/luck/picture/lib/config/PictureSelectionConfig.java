@@ -138,7 +138,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFilterSizeDuration;
     public boolean isPageSyncAsCount;
     public boolean isPauseResumePlay;
-    public boolean isEnableVideoSize;
+    public boolean isSyncWidthAndHeight;
     public boolean isOriginalSkipCompress;
     public boolean isPreloadFirst;
 
@@ -261,7 +261,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isFilterSizeDuration = in.readByte() != 0;
         isPageSyncAsCount = in.readByte() != 0;
         isPauseResumePlay = in.readByte() != 0;
-        isEnableVideoSize = in.readByte() != 0;
+        isSyncWidthAndHeight = in.readByte() != 0;
         isOriginalSkipCompress = in.readByte() != 0;
         isPreloadFirst = in.readByte() != 0;
     }
@@ -352,7 +352,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isFilterSizeDuration ? 1 : 0));
         dest.writeByte((byte) (isPageSyncAsCount ? 1 : 0));
         dest.writeByte((byte) (isPauseResumePlay ? 1 : 0));
-        dest.writeByte((byte) (isEnableVideoSize ? 1 : 0));
+        dest.writeByte((byte) (isSyncWidthAndHeight ? 1 : 0));
         dest.writeByte((byte) (isOriginalSkipCompress ? 1 : 0));
         dest.writeByte((byte) (isPreloadFirst ? 1 : 0));
     }
@@ -460,7 +460,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isFilterSizeDuration = true;
         isPageSyncAsCount = false;
         isPauseResumePlay = false;
-        isEnableVideoSize = true;
+        isSyncWidthAndHeight = true;
         isOriginalSkipCompress = false;
         isPreloadFirst = true;
     }

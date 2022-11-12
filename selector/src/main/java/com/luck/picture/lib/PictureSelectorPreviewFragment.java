@@ -255,6 +255,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         magicalView.setMagicalContent(viewPager);
         setMagicalViewBackgroundColor();
+        setMagicalViewAction();
         addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, completeSelectView, bottomNarBar);
         onCreateLoader();
         initTitleBar();
@@ -321,7 +322,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void iniMagicalView() {
         if (isHasMagicalEffect()) {
-            setMagicalViewAction();
             float alpha = isSaveInstanceState ? 1.0F : 0.0F;
             magicalView.setBackgroundAlpha(alpha);
             for (int i = 0; i < mAnimViews.size(); i++) {
@@ -343,33 +343,35 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 设置MagicalView监听器
      */
     protected void setMagicalViewAction() {
-        magicalView.setOnMojitoViewCallback(new OnMagicalViewCallback() {
+        if (isHasMagicalEffect()) {
+            magicalView.setOnMojitoViewCallback(new OnMagicalViewCallback() {
 
-            @Override
-            public void onBeginBackMinAnim() {
-                onMojitoBeginBackMinAnim();
-            }
+                @Override
+                public void onBeginBackMinAnim() {
+                    onMojitoBeginBackMinAnim();
+                }
 
-            @Override
-            public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
-                onMojitoBeginAnimComplete(mojitoView, showImmediately);
-            }
+                @Override
+                public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
+                    onMojitoBeginAnimComplete(mojitoView, showImmediately);
+                }
 
-            @Override
-            public void onBackgroundAlpha(float alpha) {
-                onMojitoBackgroundAlpha(alpha);
-            }
+                @Override
+                public void onBackgroundAlpha(float alpha) {
+                    onMojitoBackgroundAlpha(alpha);
+                }
 
-            @Override
-            public void onMagicalViewFinish() {
-                onMojitoMagicalViewFinish();
-            }
+                @Override
+                public void onMagicalViewFinish() {
+                    onMojitoMagicalViewFinish();
+                }
 
-            @Override
-            public void onBeginBackMinMagicalFinish(boolean isResetSize) {
-                onMojitoBeginBackMinFinish(isResetSize);
-            }
-        });
+                @Override
+                public void onBeginBackMinMagicalFinish(boolean isResetSize) {
+                    onMojitoBeginBackMinFinish(isResetSize);
+                }
+            });
+        }
     }
 
     /**
@@ -536,7 +538,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     }
                 });
             } else {
-                changeViewParams(getImageRealSizeFromMedia(media, false));
+                getImageRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
+                    @Override
+                    public void onCall(int[] size) {
+                        changeViewParams(size);
+                    }
+                });
             }
         }
     }
@@ -1178,7 +1185,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     }
                 });
             } else {
-                start(getImageRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath())));
+                getImageRealSizeFromMedia(media, !PictureMimeType.isHasHttp(media.getAvailablePath()), new OnCallbackListener<int[]>() {
+                    @Override
+                    public void onCall(int[] size) {
+                        start(size);
+                    }
+                });
             }
         }
     }
@@ -1192,7 +1204,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         magicalView.changeRealScreenHeight(size[0], size[1], false);
         ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
         if (viewParams == null || (size[0] == 0 && size[1] == 0)) {
-            magicalView.startNormal(size[0], size[1], false);
+            viewPager.post(new Runnable() {
+                @Override
+                public void run() {
+                    magicalView.startNormal(size[0], size[1], false);
+                }
+            });
             magicalView.setBackgroundAlpha(1.0F);
             for (int i = 0; i < mAnimViews.size(); i++) {
                 mAnimViews.get(i).setAlpha(1.0F);
@@ -1458,8 +1475,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
             });
         } else {
-            int[] size = getImageRealSizeFromMedia(media, false);
-            setMagicalViewParams(size[0], size[1], position);
+            getImageRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
+                @Override
+                public void onCall(int[] size) {
+                    setMagicalViewParams(size[0], size[1], position);
+                }
+            });
         }
     }
 
@@ -1486,9 +1507,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param media
      * @param resize
      */
-    private int[] getImageRealSizeFromMedia(LocalMedia media, boolean resize) {
+    private void getImageRealSizeFromMedia(LocalMedia media, boolean resize, OnCallbackListener<int[]> call) {
         int realWidth;
         int realHeight;
+        boolean isReturnNow = true;
         if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
             realWidth = screenWidth;
             realHeight = screenHeight;
@@ -1497,14 +1519,24 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             realHeight = media.getHeight();
             if (resize) {
                 if ((realWidth <= 0 || realHeight <= 0) || (realWidth > realHeight)) {
-                    MediaExtraInfo extraInfo = MediaUtils.getImageSize(getContext(), media.getAvailablePath());
-                    if (extraInfo.getWidth() > 0) {
-                        realWidth = extraInfo.getWidth();
-                        media.setWidth(realWidth);
-                    }
-                    if (extraInfo.getHeight() > 0) {
-                        realHeight = extraInfo.getHeight();
-                        media.setHeight(realHeight);
+                    if (config.isSyncWidthAndHeight) {
+                        isReturnNow = false;
+                        // 先不展现内容，异步获取可能耗时会导致界面先出现图片而后在放大出现
+                        viewPager.setAlpha(0F);
+                        MediaUtils.getImageSize(getContext(), media.getAvailablePath(), new OnCallbackListener<MediaExtraInfo>() {
+                            @Override
+                            public void onCall(MediaExtraInfo extraInfo) {
+                                if (extraInfo.getWidth() > 0) {
+                                    media.setWidth(extraInfo.getWidth());
+                                }
+                                if (extraInfo.getHeight() > 0) {
+                                    media.setHeight(extraInfo.getHeight());
+                                }
+                                if (call != null) {
+                                    call.onCall(new int[]{media.getWidth(), media.getHeight()});
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -1513,8 +1545,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             realWidth = media.getCropImageWidth();
             realHeight = media.getCropImageHeight();
         }
-        return new int[]{realWidth, realHeight};
+        if (isReturnNow) {
+            call.onCall(new int[]{realWidth, realHeight});
+        }
     }
+
 
     /**
      * 获取视频Media的真实大小
@@ -1526,7 +1561,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         boolean isReturnNow = true;
         if (resize) {
             if ((media.getWidth() <= 0 || media.getHeight() <= 0) || (media.getWidth() > media.getHeight())) {
-                if (config.isEnableVideoSize) {
+                if (config.isSyncWidthAndHeight) {
                     isReturnNow = false;
                     // 先不展现内容，异步获取可能耗时会导致界面先出现图片而后在放大出现
                     viewPager.setAlpha(0F);

@@ -168,11 +168,22 @@ public final class PictureSelectionPreviewModel {
     /**
      * It is forbidden to correct or synchronize the width and height of the video
      *
-     * @param isEnableVideoSize
+     * @param isEnableVideoSize Use {@link .isSyncWidthAndHeight()}
+     */
+    @Deprecated
+    public PictureSelectionPreviewModel isEnableVideoSize(boolean isEnableVideoSize) {
+        selectionConfig.isSyncWidthAndHeight = isEnableVideoSize;
+        return this;
+    }
+
+    /**
+     * It is forbidden to correct or synchronize the width and height of the video
+     *
+     * @param isSyncWidthAndHeight
      * @return
      */
-    public PictureSelectionPreviewModel isEnableVideoSize(boolean isEnableVideoSize) {
-        selectionConfig.isEnableVideoSize = isEnableVideoSize;
+    public PictureSelectionPreviewModel isSyncWidthAndHeight(boolean isSyncWidthAndHeight) {
+        selectionConfig.isSyncWidthAndHeight = isSyncWidthAndHeight;
         return this;
     }
 
