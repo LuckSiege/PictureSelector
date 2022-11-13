@@ -1203,7 +1203,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
         allFolder.setData(mAdapter.getData());
         allFolder.setBucketId(PictureConfig.ALL);
         allFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum()) ? allFolder.getFolderTotalNum() : allFolder.getFolderTotalNum() + 1);
-        if (SelectedManager.getCurrentLocalMediaFolder() == null) {
+        LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
+        if (currentLocalMediaFolder == null || currentLocalMediaFolder.getFolderTotalNum() == 0) {
             SelectedManager.setCurrentLocalMediaFolder(allFolder);
         }
         // 先查找Camera目录，没有找到则创建一个Camera目录
