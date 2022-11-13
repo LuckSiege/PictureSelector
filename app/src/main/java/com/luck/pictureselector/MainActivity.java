@@ -1703,10 +1703,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     if (PictureMimeType.isUrlHasImage(path) && !PictureMimeType.isHasHttp(path)) {
                         return true;
                     }
-                    if (!PictureMimeType.isUrlHasGif(path)) {
-                        return true;
-                    }
-                    return false;
+                    return !PictureMimeType.isUrlHasGif(path);
                 }
             }).setCompressListener(new OnNewCompressListener() {
                 @Override
