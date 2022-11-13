@@ -1697,6 +1697,17 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
                     return DateUtils.getCreateFileName("CMP_") + postfix;
                 }
+            }).filter(new CompressionPredicate() {
+                @Override
+                public boolean apply(String path) {
+                    if (PictureMimeType.isUrlHasImage(path) && !PictureMimeType.isHasHttp(path)) {
+                        return true;
+                    }
+                    if (!PictureMimeType.isUrlHasGif(path)) {
+                        return true;
+                    }
+                    return false;
+                }
             }).setCompressListener(new OnNewCompressListener() {
                 @Override
                 public void onStart() {
