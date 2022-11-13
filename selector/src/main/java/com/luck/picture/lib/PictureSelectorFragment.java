@@ -495,11 +495,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             isHasPermissions = PictureSelectionConfig.onPermissionsEventListener.hasPermissions(this, permissions);
         } else {
-            if (isHasCamera) {
-                isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
-            } else {
-                isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
-            }
+            isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
         }
         if (isHasPermissions) {
             if (isHasCamera) {
