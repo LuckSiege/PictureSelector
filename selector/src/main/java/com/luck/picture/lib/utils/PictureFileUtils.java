@@ -468,7 +468,7 @@ public class PictureFileUtils {
     public static String createFilePath(Context context, String mineType, String customFileName) {
         File filesDir;
         String prefixTAG;
-        String suffix = PictureMimeType.getLastImgSuffix(mineType);
+        String suffix = PictureMimeType.getLastSourceSuffix(mineType);
         if (PictureMimeType.isHasVideo(mineType)) {
             // 视频
             prefixTAG = "VID_";

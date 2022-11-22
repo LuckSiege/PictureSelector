@@ -989,8 +989,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 totalNum = data.size();
             } else {
                 data = new ArrayList<>(mAdapter.getData());
-                totalNum = SelectedManager.getCurrentLocalMediaFolder().getFolderTotalNum();
-                currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
+                LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
+                totalNum = currentLocalMediaFolder != null ? currentLocalMediaFolder.getFolderTotalNum() : data.size();
+                currentBucketId = currentLocalMediaFolder != null ? currentLocalMediaFolder.getBucketId()
+                        : data.size() > 0 ? data.get(0).getBucketId() : PictureConfig.ALL;
             }
             if (!isBottomPreview && config.isPreviewZoomEffect) {
                 BuildRecycleItemViewParams.generateViewParams(mRecycler,

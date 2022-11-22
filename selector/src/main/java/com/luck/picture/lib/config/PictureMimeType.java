@@ -200,12 +200,12 @@ public final class PictureMimeType {
     }
 
     /**
-     * Get image suffix
+     * Get source suffix
      *
      * @param mineType
      * @return
      */
-    public static String getLastImgSuffix(String mineType) {
+    public static String getLastSourceSuffix(String mineType) {
         try {
             return mineType.substring(mineType.lastIndexOf("/")).replace("/", ".");
         } catch (Exception e) {
