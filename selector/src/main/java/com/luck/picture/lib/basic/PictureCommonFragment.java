@@ -1170,6 +1170,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     onScannerScanFile(result);
                     dispatchCameraMediaResult(result);
                 }
+                config.cameraPath = "";
             }
         });
     }
@@ -1233,11 +1234,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             return;
         }
         if (SdkVersionUtils.isQ()) {
-            if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
+            if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(media.getPath())) {
                 new PictureMediaScannerConnection(getActivity(), media.getRealPath());
             }
         } else {
-            String path = PictureMimeType.isContent(config.cameraPath) ? media.getRealPath() : config.cameraPath;
+            String path = PictureMimeType.isContent(media.getPath()) ? media.getRealPath() : media.getPath();
             new PictureMediaScannerConnection(getActivity(), path);
             if (PictureMimeType.isHasImage(media.getMimeType())) {
                 File dirFile = new File(path);
