@@ -1135,7 +1135,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
-                MediaUtils.deleteUri(getAppContext(), config.cameraPath);
+                if (!TextUtils.isEmpty(config.cameraPath)) {
+                    MediaUtils.deleteUri(getAppContext(), config.cameraPath);
+                    config.cameraPath = "";
+                }
             } else if (requestCode == PictureConfig.REQUEST_GO_SETTING) {
                 handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
             }
