@@ -842,7 +842,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             return;
                         }
                         LocalMedia item = viewPageAdapter.getItem(newPosition);
-                        if (item != null && !TextUtils.equals(media.getPath(), item.getPath()) || media.getId() != item.getId()) {
+                        if (item != null && (!TextUtils.equals(media.getPath(), item.getPath()) || media.getId() != item.getId())) {
                             return;
                         }
                         if (viewPager.getAdapter() != null) {
