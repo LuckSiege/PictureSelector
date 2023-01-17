@@ -489,6 +489,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
+        if (permissions == null){
+            return;
+        }
         onPermissionExplainEvent(false, null);
         boolean isHasCamera = permissions.length > 0 && TextUtils.equals(permissions[0], PermissionConfig.CAMERA[0]);
         boolean isHasPermissions;

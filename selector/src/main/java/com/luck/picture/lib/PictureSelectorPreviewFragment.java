@@ -37,6 +37,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
+import com.luck.picture.lib.adapter.holder.PreviewAudioHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
@@ -159,6 +160,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     protected List<View> mAnimViews = new ArrayList<>();
 
+    private boolean isPause = false;
 
     public static PictureSelectorPreviewFragment newInstance() {
         PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
@@ -1467,7 +1469,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
-        if (PictureMimeType.isHasVideo(media.getMimeType())){
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
             getVideoRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
                 @Override
                 public void onCall(int[] size) {
@@ -1664,6 +1666,47 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (isPause) {
+            resumePausePlay();
+            isPause = false;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isPlaying()) {
+            resumePausePlay();
+            isPause = true;
+        }
+    }
+
+    private void resumePausePlay() {
+        if (viewPageAdapter != null) {
+            BasePreviewHolder holder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+            if (holder instanceof PreviewVideoHolder) {
+                ((PreviewVideoHolder) holder).resumePausePlay();
+            } else if (holder instanceof PreviewAudioHolder) {
+                ((PreviewAudioHolder) holder).resumePausePlay();
+            }
+        }
+    }
+
+    private boolean isPlaying() {
+        if (viewPageAdapter != null) {
+            BasePreviewHolder holder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+            if (holder instanceof PreviewVideoHolder) {
+                return ((PreviewVideoHolder) holder).isPlaying();
+            } else if (holder instanceof PreviewAudioHolder) {
+                return ((PreviewAudioHolder) holder).isPlaying();
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void onDestroy() {
         if (viewPageAdapter != null) {
             viewPageAdapter.destroy();
@@ -1673,4 +1716,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         super.onDestroy();
     }
+
+
 }

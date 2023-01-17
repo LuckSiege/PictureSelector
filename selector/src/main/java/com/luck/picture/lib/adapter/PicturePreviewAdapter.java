@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
-import com.luck.picture.lib.adapter.holder.PreviewAudioHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -165,12 +164,8 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public void destroy() {
         for (Integer key : mHolderCache.keySet()) {
             BasePreviewHolder holder = mHolderCache.get(key);
-            if (holder instanceof PreviewVideoHolder) {
-                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-                videoHolder.releaseVideo();
-            } else if (holder instanceof PreviewAudioHolder) {
-                PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
-                audioHolder.releaseAudio();
+            if (holder != null) {
+                holder.release();
             }
         }
     }

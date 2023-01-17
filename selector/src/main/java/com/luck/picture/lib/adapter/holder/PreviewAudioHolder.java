@@ -228,6 +228,10 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         }
     }
 
+    public boolean isPlaying() {
+        return mPlayer.isPlaying();
+    }
+
     /**
      * 暂停播放
      */
@@ -411,9 +415,18 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     }
 
     /**
-     * 释放PlayerView
+     * resume and pause play
      */
-    public void releaseAudio() {
+    public void resumePausePlay() {
+        if (mPlayer.isPlaying()) {
+            pausePlayer();
+        } else {
+            resumePlayer();
+        }
+    }
+
+    @Override
+    public void release() {
         mHandler.removeCallbacks(mTickerRunnable);
         if (mPlayer != null) {
             setNullMediaPlayerListener();
