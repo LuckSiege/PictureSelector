@@ -276,10 +276,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 快进
      */
     private void fastAudioPlay() {
-        if (seekBar.getProgress() > MAX_BACK_FAST_MS) {
+        long progress = seekBar.getProgress() + MAX_BACK_FAST_MS;
+        if (progress >= seekBar.getMax()) {
             seekBar.setProgress(seekBar.getMax());
         } else {
-            seekBar.setProgress((int) (seekBar.getProgress() + MAX_BACK_FAST_MS));
+            seekBar.setProgress((int) progress);
         }
         setCurrentPlayTime(seekBar.getProgress());
         mPlayer.seekTo(seekBar.getProgress());
@@ -289,10 +290,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 回退
      */
     private void slowAudioPlay() {
-        if (seekBar.getProgress() < MAX_BACK_FAST_MS) {
+        long progress = seekBar.getProgress() - MAX_BACK_FAST_MS;
+        if (progress <= 0) {
             seekBar.setProgress(0);
         } else {
-            seekBar.setProgress((int) (seekBar.getProgress() - MAX_BACK_FAST_MS));
+            seekBar.setProgress((int) progress);
         }
         setCurrentPlayTime(seekBar.getProgress());
         mPlayer.seekTo(seekBar.getProgress());
