@@ -152,10 +152,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
      */
     public boolean isPlaying(int position) {
         BasePreviewHolder currentHolder = getCurrentHolder(position);
-        if (currentHolder instanceof PreviewVideoHolder) {
-            return ((PreviewVideoHolder) currentHolder).isPlaying();
-        }
-        return false;
+        return currentHolder != null && currentHolder.isPlaying();
     }
 
     /**

@@ -166,6 +166,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     /**
      * 是否正在播放中
      */
+    @Override
     public boolean isPlaying() {
         return PictureSelectionConfig.videoPlayerEngine != null
                 && PictureSelectionConfig.videoPlayerEngine.isPlaying(videoPlayer);
@@ -280,6 +281,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     /**
      * resume and pause play
      */
+    @Override
     public void resumePausePlay() {
         if (isPlaying()) {
             onPause();

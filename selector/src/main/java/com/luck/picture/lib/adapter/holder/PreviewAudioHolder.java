@@ -151,7 +151,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
                 if (fromUser) {
                     seekBar.setProgress(progress);
                     setCurrentPlayTime(progress);
-                    if (mPlayer.isPlaying()) {
+                    if (isPlaying()) {
                         mPlayer.seekTo(seekBar.getProgress());
                     }
                 }
@@ -181,7 +181,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
                         return;
                     }
                     mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                    if (mPlayer.isPlaying()) {
+                    if (isPlaying()) {
                         pausePlayer();
                     } else {
                         if (isPausePlayer) {
@@ -228,6 +228,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         }
     }
 
+    @Override
     public boolean isPlaying() {
         return mPlayer.isPlaying();
     }
@@ -417,8 +418,9 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     /**
      * resume and pause play
      */
+    @Override
     public void resumePausePlay() {
-        if (mPlayer.isPlaying()) {
+        if (isPlaying()) {
             pausePlayer();
         } else {
             resumePlayer();

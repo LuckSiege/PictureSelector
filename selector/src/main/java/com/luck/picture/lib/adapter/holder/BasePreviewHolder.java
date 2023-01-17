@@ -151,6 +151,20 @@ public abstract class BasePreviewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
+     * resume and pause play
+     */
+    public void resumePausePlay() {
+
+    }
+
+    /**
+     * play ing
+     */
+    public boolean isPlaying() {
+        return false;
+    }
+
+    /**
      * release
      */
     public void release() {

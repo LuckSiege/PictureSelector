@@ -470,7 +470,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 startAutoVideoPlay(viewPager.getCurrentItem());
             } else {
                 if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                    if (!viewPageAdapter.isPlaying(viewPager.getCurrentItem())) {
+                    if (!isPlaying()) {
                         videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
                     }
                 }
@@ -1686,24 +1686,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void resumePausePlay() {
         if (viewPageAdapter != null) {
             BasePreviewHolder holder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
-            if (holder instanceof PreviewVideoHolder) {
-                ((PreviewVideoHolder) holder).resumePausePlay();
-            } else if (holder instanceof PreviewAudioHolder) {
-                ((PreviewAudioHolder) holder).resumePausePlay();
+            if (holder != null) {
+                holder.resumePausePlay();
             }
         }
     }
 
     private boolean isPlaying() {
-        if (viewPageAdapter != null) {
-            BasePreviewHolder holder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
-            if (holder instanceof PreviewVideoHolder) {
-                return ((PreviewVideoHolder) holder).isPlaying();
-            } else if (holder instanceof PreviewAudioHolder) {
-                return ((PreviewAudioHolder) holder).isPlaying();
-            }
-        }
-        return false;
+        return viewPageAdapter != null && viewPageAdapter.isPlaying(viewPager.getCurrentItem());
     }
 
     @Override
