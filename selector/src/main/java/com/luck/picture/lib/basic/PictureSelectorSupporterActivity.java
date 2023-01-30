@@ -17,6 +17,7 @@ import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**
@@ -30,6 +31,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FileDirMap.init(this);
         immersive();
         setContentView(R.layout.ps_activity_container);
         setupFragment();

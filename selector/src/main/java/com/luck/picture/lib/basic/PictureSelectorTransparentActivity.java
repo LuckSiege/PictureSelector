@@ -23,6 +23,7 @@ import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         immersive();
+        FileDirMap.init(this);
         setContentView(R.layout.ps_empty);
         if (isExternalPreview()) {
             // TODO ignore

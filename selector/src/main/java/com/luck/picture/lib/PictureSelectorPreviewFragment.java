@@ -37,7 +37,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
-import com.luck.picture.lib.adapter.holder.PreviewAudioHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;

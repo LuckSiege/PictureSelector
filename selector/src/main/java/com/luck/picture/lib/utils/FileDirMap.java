@@ -16,6 +16,9 @@ public final class FileDirMap {
     private static final HashMap<Integer, String> dirMap = new HashMap<>();
 
     public static void init(Context context) {
+        if (!ActivityCompatHelper.assertValidRequest(context)) {
+            return;
+        }
         if (null == dirMap.get(SelectMimeType.TYPE_IMAGE)) {
             dirMap.put(SelectMimeType.TYPE_IMAGE, context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath());
         }

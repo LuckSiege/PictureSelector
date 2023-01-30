@@ -300,6 +300,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
+        FileDirMap.init(requireContext());
         if (PictureSelectionConfig.viewLifecycle != null) {
             PictureSelectionConfig.viewLifecycle.onViewCreated(this, view, savedInstanceState);
         }
@@ -308,7 +309,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             mLoadingDialog = new PictureLoadingDialog(getAppContext());
         }
-        FileDirMap.init(requireContext());
         setRequestedOrientation();
         setTranslucentStatusBar();
         setRootViewKeyListener(requireView());
@@ -1968,12 +1968,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 }
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        }
-        List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof PictureCommonFragment) {
-                ((PictureCommonFragment) fragment).onFragmentResume();
+
+            List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+            for (int i = 0; i < fragments.size(); i++) {
+                Fragment fragment = fragments.get(i);
+                if (fragment instanceof PictureCommonFragment) {
+                    ((PictureCommonFragment) fragment).onFragmentResume();
+                }
             }
         }
     }

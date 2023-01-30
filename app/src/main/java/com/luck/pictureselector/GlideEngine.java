@@ -89,11 +89,17 @@ public class GlideEngine implements ImageEngine {
 
     @Override
     public void pauseRequests(Context context) {
+        if (!ActivityCompatHelper.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context).pauseRequests();
     }
 
     @Override
     public void resumeRequests(Context context) {
+        if (!ActivityCompatHelper.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context).resumeRequests();
     }
 
