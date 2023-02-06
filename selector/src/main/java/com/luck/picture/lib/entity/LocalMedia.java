@@ -194,6 +194,12 @@ public class LocalMedia implements Parcelable {
      */
     private boolean isEditorImage;
 
+    /**
+     * Whether the image or video is from the camera
+     * Only valid once
+     */
+    private boolean fromCamera = false;
+
     public LocalMedia() {
     }
 
@@ -232,6 +238,7 @@ public class LocalMedia implements Parcelable {
         isMaxSelectEnabledMask = in.readByte() != 0;
         isGalleryEnabledMask = in.readByte() != 0;
         isEditorImage = in.readByte() != 0;
+        fromCamera = in.readByte() != 0;
     }
 
     @Override
@@ -270,6 +277,7 @@ public class LocalMedia implements Parcelable {
         dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
         dest.writeByte((byte) (isGalleryEnabledMask ? 1 : 0));
         dest.writeByte((byte) (isEditorImage ? 1 : 0));
+        dest.writeByte((byte) (fromCamera ? 1 : 0));
     }
 
     @Override
@@ -720,6 +728,14 @@ public class LocalMedia implements Parcelable {
 
     public void setVideoThumbnailPath(String videoThumbnailPath) {
         this.videoThumbnailPath = videoThumbnailPath;
+    }
+
+    public boolean isFromCamera() {
+        return fromCamera;
+    }
+
+    public void setFromCamera(boolean fromCamera) {
+        this.fromCamera = fromCamera;
     }
 
     /**

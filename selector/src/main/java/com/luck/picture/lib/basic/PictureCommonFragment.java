@@ -1163,7 +1163,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 if (config.chooseMode == SelectMimeType.ofAudio()) {
                     copyOutputAudioToDir();
                 }
-                return buildLocalMedia(config.cameraPath);
+                return buildLocalMedia(config.cameraPath, true);
             }
 
             @Override
@@ -1257,10 +1257,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * buildLocalMedia
      *
      * @param absolutePath
+     * @param fromCamera
      */
-    protected LocalMedia buildLocalMedia(String absolutePath) {
+    protected LocalMedia buildLocalMedia(String absolutePath,boolean fromCamera) {
         LocalMedia media = LocalMedia.generateLocalMedia(getAppContext(), absolutePath);
         media.setChooseModel(config.chooseMode);
+        media.setFromCamera(fromCamera);
         if (SdkVersionUtils.isQ() && !PictureMimeType.isContent(absolutePath)) {
             media.setSandboxPath(absolutePath);
         } else {
@@ -1272,6 +1274,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return media;
     }
 
+    public LocalMedia buildLocalMedia(String absolutePath) {
+        return buildLocalMedia(absolutePath, false);
+    }
     /**
      * 验证完成选择的先决条件
      *
