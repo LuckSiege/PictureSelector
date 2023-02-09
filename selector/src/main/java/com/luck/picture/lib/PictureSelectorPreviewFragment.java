@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -69,6 +71,7 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
@@ -1316,9 +1319,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         set.start();
         isAnimationStart = true;
         set.addListener(new AnimatorListenerAdapter() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
+                if (SdkVersionUtils.isP()) {
+                    Window window = requireActivity().getWindow();
+                    WindowManager.LayoutParams lp = window.getAttributes();
+                    if (isAnimInit) {
+                        lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        lp.layoutInDisplayCutoutMode =
+                                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                        window.setAttributes(lp);
+                        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                    } else {
+                        lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        window.setAttributes(lp);
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                    }
+                }
             }
         });
 
