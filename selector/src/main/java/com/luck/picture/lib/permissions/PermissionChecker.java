@@ -124,16 +124,17 @@ public class PermissionChecker {
     public static boolean isCheckReadStorage(int chooseMode, Context context) {
         if (SdkVersionUtils.isTIRAMISU()) {
             if (chooseMode == SelectMimeType.ofImage()) {
-                return PermissionChecker.isCheckReadImages(context);
+                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadExternalStorage(context);
             } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return PermissionChecker.isCheckReadVideo(context);
+                return PermissionChecker.isCheckReadVideo(context) && PermissionChecker.isCheckReadExternalStorage(context);
             } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return PermissionChecker.isCheckReadAudio(context);
+                return PermissionChecker.isCheckReadAudio(context) && PermissionChecker.isCheckReadExternalStorage(context);
             } else {
-                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context);
+                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context) && PermissionChecker.isCheckReadExternalStorage(context);
             }
+        } else {
+            return PermissionChecker.isCheckReadExternalStorage(context);
         }
-        return PermissionChecker.checkSelfPermission(context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 
 
@@ -167,10 +168,19 @@ public class PermissionChecker {
     /**
      * 检查写入权限是否存在
      */
-    public static boolean isCheckWriteStorage(Context context) {
+    public static boolean isCheckWriteExternalStorage(Context context) {
         return PermissionChecker.checkSelfPermission(context,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
     }
+
+    /**
+     * 检查读取权限是否存在
+     */
+    public static boolean isCheckReadExternalStorage(Context context) {
+        return PermissionChecker.checkSelfPermission(context,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
+    }
+
 
     /**
      * 检查相机权限是否存在

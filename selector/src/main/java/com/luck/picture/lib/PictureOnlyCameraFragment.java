@@ -1,5 +1,6 @@
 package com.luck.picture.lib;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             if (SdkVersionUtils.isQ()) {
                 openSelectedCamera();
             } else {
-                String[] writePermissionArray = PermissionConfig.getWritePermissionArray(config.chooseMode);
+                String[] writePermissionArray = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
                 PermissionChecker.getInstance().requestPermissions(this, writePermissionArray, new PermissionResultCallback() {
                     @Override
                     public void onGranted() {
@@ -94,7 +95,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             isHasPermissions = PermissionChecker.isCheckCamera(getContext());
             if (SdkVersionUtils.isQ()) {
             } else {
-                isHasPermissions = PermissionChecker.isCheckWriteStorage(getContext());
+                isHasPermissions = PermissionChecker.isCheckWriteExternalStorage(getContext());
             }
         }
         if (isHasPermissions) {
@@ -103,7 +104,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             if (!PermissionChecker.isCheckCamera(getContext())) {
                 ToastUtils.showToast(getContext(), getString(R.string.ps_camera));
             } else {
-                if (!PermissionChecker.isCheckWriteStorage(getContext())) {
+                if (!PermissionChecker.isCheckWriteExternalStorage(getContext())) {
                     ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
                 }
             }

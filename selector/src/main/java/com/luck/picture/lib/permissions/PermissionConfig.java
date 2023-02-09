@@ -27,38 +27,21 @@ public class PermissionConfig {
     public final static String[] CAMERA = new String[]{Manifest.permission.CAMERA};
 
     /**
-     * 获取外部读写权限
+     * 获取外部读取权限
      */
-    public static String[] getReadWritePermissionArray(int chooseMode) {
+    public static String[] getReadPermissionArray(int chooseMode) {
         if (SdkVersionUtils.isTIRAMISU()) {
             if (chooseMode == SelectMimeType.ofImage()) {
-                return new String[]{READ_MEDIA_IMAGES};
+                return new String[]{READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE};
             } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return new String[]{READ_MEDIA_VIDEO};
+                return new String[]{READ_MEDIA_VIDEO, Manifest.permission.READ_EXTERNAL_STORAGE};
             } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return new String[]{READ_MEDIA_AUDIO};
+                return new String[]{READ_MEDIA_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE};
             } else {
-                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
+                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, Manifest.permission.READ_EXTERNAL_STORAGE};
             }
         }
-        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
     }
 
-    /**
-     * 获取外部写入权限
-     */
-    public static String[] getWritePermissionArray(int chooseMode) {
-        if (SdkVersionUtils.isTIRAMISU()) {
-            if (chooseMode == SelectMimeType.ofImage()) {
-                return new String[]{READ_MEDIA_IMAGES};
-            } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return new String[]{READ_MEDIA_VIDEO};
-            } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return new String[]{READ_MEDIA_AUDIO};
-            } else {
-                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
-            }
-        }
-        return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    }
 }

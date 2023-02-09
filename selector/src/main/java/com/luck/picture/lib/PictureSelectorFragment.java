@@ -437,22 +437,22 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PermissionChecker.isCheckReadStorage(config.chooseMode, getContext())) {
             beginLoadData();
         } else {
-            String[] storagePermissionArray = PermissionConfig.getReadWritePermissionArray(config.chooseMode);
-            onPermissionExplainEvent(true, storagePermissionArray);
+            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(config.chooseMode);
+            onPermissionExplainEvent(true, readPermissionArray);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, storagePermissionArray);
+                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, readPermissionArray);
             } else {
-                PermissionChecker.getInstance().requestPermissions(this,storagePermissionArray, new PermissionResultCallback() {
-                            @Override
-                            public void onGranted() {
-                                beginLoadData();
-                            }
+                PermissionChecker.getInstance().requestPermissions(this, readPermissionArray, new PermissionResultCallback() {
+                    @Override
+                    public void onGranted() {
+                        beginLoadData();
+                    }
 
-                            @Override
-                            public void onDenied() {
-                                handlePermissionDenied(storagePermissionArray);
-                            }
-                        });
+                    @Override
+                    public void onDenied() {
+                        handlePermissionDenied(readPermissionArray);
+                    }
+                });
             }
         }
     }
