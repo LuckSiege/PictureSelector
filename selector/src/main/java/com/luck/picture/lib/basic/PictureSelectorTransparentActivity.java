@@ -38,7 +38,6 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         immersive();
-        FileDirMap.init(this);
         setContentView(R.layout.ps_empty);
         if (isExternalPreview()) {
             // TODO ignore

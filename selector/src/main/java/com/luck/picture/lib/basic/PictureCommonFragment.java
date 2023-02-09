@@ -300,7 +300,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
-        FileDirMap.init(requireContext());
+        FileDirMap.init(view.getContext());
         if (PictureSelectionConfig.viewLifecycle != null) {
             PictureSelectionConfig.viewLifecycle.onViewCreated(this, view, savedInstanceState);
         }
