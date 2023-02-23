@@ -1375,7 +1375,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void onExternalLongPressDownload(LocalMedia media) {
         if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
-            if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(media)) {
+            if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(getContext(), media)) {
                 String content;
                 if (PictureMimeType.isHasAudio(media.getMimeType())
                         || PictureMimeType.isUrlHasAudio(media.getAvailablePath())) {
