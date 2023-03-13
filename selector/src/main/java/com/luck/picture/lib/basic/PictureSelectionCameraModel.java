@@ -577,9 +577,7 @@ public final class PictureSelectionCameraModel {
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
             FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
+            if (activity instanceof FragmentActivity) {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {
@@ -622,9 +620,7 @@ public final class PictureSelectionCameraModel {
             selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.onResultCallListener = call;
             FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
+            if (activity instanceof FragmentActivity) {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {
@@ -683,9 +679,7 @@ public final class PictureSelectionCameraModel {
         selectionConfig.isActivityResultBack = false;
         PictureSelectionConfig.onResultCallListener = call;
         FragmentManager fragmentManager = null;
-        if (activity instanceof AppCompatActivity) {
-            fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-        } else if (activity instanceof FragmentActivity) {
+        if (activity instanceof FragmentActivity) {
             fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
         }
         if (fragmentManager == null) {

@@ -1,5 +1,7 @@
 package com.luck.picture.lib.interfaces;
 
+import android.content.Context;
+
 import com.luck.picture.lib.entity.LocalMedia;
 
 /**
@@ -21,6 +23,6 @@ public interface OnExternalPreviewEventListener {
      * @param media 资源
      * @return false 自己实现下载逻辑；默认true
      */
-    boolean onLongPressDownload(LocalMedia media);
+    boolean onLongPressDownload(Context context, LocalMedia media);
 
 }

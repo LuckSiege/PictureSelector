@@ -844,7 +844,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
 
         @Override
-        public boolean onLongPressDownload(LocalMedia media) {
+        public boolean onLongPressDownload(Context context, LocalMedia media) {
             return false;
         }
     }

@@ -23,6 +23,7 @@ import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.ArrayList;

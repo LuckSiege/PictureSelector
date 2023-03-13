@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -69,6 +71,7 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
@@ -159,6 +162,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     protected List<View> mAnimViews = new ArrayList<>();
 
+    private boolean isPause = false;
 
     public static PictureSelectorPreviewFragment newInstance() {
         PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
@@ -468,7 +472,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 startAutoVideoPlay(viewPager.getCurrentItem());
             } else {
                 if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                    if (!viewPageAdapter.isPlaying(viewPager.getCurrentItem())) {
+                    if (!isPlaying()) {
                         videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
                     }
                 }
@@ -829,6 +833,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position, LocalMedia media, View v) {
+                    if (position == RecyclerView.NO_POSITION) {
+                        return;
+                    }
                     String albumName = TextUtils.isEmpty(config.defaultAlbumName) ? getString(R.string.ps_camera_roll) : config.defaultAlbumName;
                     if (isInternalBottomPreview || TextUtils.equals(currentAlbum, albumName)
                             || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
@@ -837,7 +844,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             return;
                         }
                         LocalMedia item = viewPageAdapter.getItem(newPosition);
-                        if (item != null && !TextUtils.equals(media.getPath(), item.getPath()) || media.getId() != item.getId()) {
+                        if (item != null && (!TextUtils.equals(media.getPath(), item.getPath()) || media.getId() != item.getId())) {
                             return;
                         }
                         if (viewPager.getAdapter() != null) {
@@ -1312,9 +1319,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         set.start();
         isAnimationStart = true;
         set.addListener(new AnimatorListenerAdapter() {
+            @SuppressLint("WrongConstant")
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
+                if (SdkVersionUtils.isP()) {
+                    Window window = requireActivity().getWindow();
+                    WindowManager.LayoutParams lp = window.getAttributes();
+                    if (isAnimInit) {
+                        lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        lp.layoutInDisplayCutoutMode =
+                                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                        window.setAttributes(lp);
+                        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                    } else {
+                        lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        window.setAttributes(lp);
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                    }
+                }
             }
         });
 
@@ -1352,7 +1375,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void onExternalLongPressDownload(LocalMedia media) {
         if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
-            if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(media)) {
+            if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(getContext(), media)) {
                 String content;
                 if (PictureMimeType.isHasAudio(media.getMimeType())
                         || PictureMimeType.isUrlHasAudio(media.getAvailablePath())) {
@@ -1467,7 +1490,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
-        if (PictureMimeType.isHasVideo(media.getMimeType())){
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
             getVideoRealSizeFromMedia(media, false, new OnCallbackListener<int[]>() {
                 @Override
                 public void onCall(int[] size) {
@@ -1664,6 +1687,37 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (isPause) {
+            resumePausePlay();
+            isPause = false;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isPlaying()) {
+            resumePausePlay();
+            isPause = true;
+        }
+    }
+
+    private void resumePausePlay() {
+        if (viewPageAdapter != null) {
+            BasePreviewHolder holder = viewPageAdapter.getCurrentHolder(viewPager.getCurrentItem());
+            if (holder != null) {
+                holder.resumePausePlay();
+            }
+        }
+    }
+
+    private boolean isPlaying() {
+        return viewPageAdapter != null && viewPageAdapter.isPlaying(viewPager.getCurrentItem());
+    }
+
+    @Override
     public void onDestroy() {
         if (viewPageAdapter != null) {
             viewPageAdapter.destroy();
@@ -1673,4 +1727,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         super.onDestroy();
     }
+
+
 }

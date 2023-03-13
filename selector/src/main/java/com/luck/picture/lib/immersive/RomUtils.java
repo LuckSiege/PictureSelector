@@ -31,7 +31,7 @@ public class RomUtils {
 
     private static Integer romType;
 
-    public static int getLightStatausBarAvailableRomType() {
+    public static int getLightStatusBarAvailableRomType() {
         if (romType != null) {
             return romType;
         }

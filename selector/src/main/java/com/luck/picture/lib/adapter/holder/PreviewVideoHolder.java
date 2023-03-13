@@ -156,7 +156,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     /**
      * 暂停播放
      */
-    private void onPause() {
+    public void onPause() {
         ivPlayButton.setVisibility(View.VISIBLE);
         if (PictureSelectionConfig.videoPlayerEngine != null) {
             PictureSelectionConfig.videoPlayerEngine.onPause(videoPlayer);
@@ -166,6 +166,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     /**
      * 是否正在播放中
      */
+    @Override
     public boolean isPlaying() {
         return PictureSelectionConfig.videoPlayerEngine != null
                 && PictureSelectionConfig.videoPlayerEngine.isPlaying(videoPlayer);
@@ -217,22 +218,22 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         super.setScaleDisplaySize(media);
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
             ViewGroup.LayoutParams layoutParams = videoPlayer.getLayoutParams();
-            if (layoutParams instanceof FrameLayout.LayoutParams){
+            if (layoutParams instanceof FrameLayout.LayoutParams) {
                 FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) layoutParams;
                 playerLayoutParams.width = screenWidth;
                 playerLayoutParams.height = screenAppInHeight;
                 playerLayoutParams.gravity = Gravity.CENTER;
-            } else if (layoutParams instanceof RelativeLayout.LayoutParams){
+            } else if (layoutParams instanceof RelativeLayout.LayoutParams) {
                 RelativeLayout.LayoutParams playerLayoutParams = (RelativeLayout.LayoutParams) layoutParams;
                 playerLayoutParams.width = screenWidth;
                 playerLayoutParams.height = screenAppInHeight;
-                playerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);;
-            } else if (layoutParams instanceof LinearLayout.LayoutParams){
+                playerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            } else if (layoutParams instanceof LinearLayout.LayoutParams) {
                 LinearLayout.LayoutParams playerLayoutParams = (LinearLayout.LayoutParams) layoutParams;
                 playerLayoutParams.width = screenWidth;
                 playerLayoutParams.height = screenAppInHeight;
                 playerLayoutParams.gravity = Gravity.CENTER;
-            } else if (layoutParams instanceof ConstraintLayout.LayoutParams){
+            } else if (layoutParams instanceof ConstraintLayout.LayoutParams) {
                 ConstraintLayout.LayoutParams playerLayoutParams = (ConstraintLayout.LayoutParams) layoutParams;
                 playerLayoutParams.width = screenWidth;
                 playerLayoutParams.height = screenAppInHeight;
@@ -278,9 +279,19 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     }
 
     /**
-     * 释放VideoView
+     * resume and pause play
      */
-    public void releaseVideo() {
+    @Override
+    public void resumePausePlay() {
+        if (isPlaying()) {
+            onPause();
+        } else {
+            onResume();
+        }
+    }
+
+    @Override
+    public void release() {
         if (PictureSelectionConfig.videoPlayerEngine != null) {
             PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
             PictureSelectionConfig.videoPlayerEngine.destroy(videoPlayer);

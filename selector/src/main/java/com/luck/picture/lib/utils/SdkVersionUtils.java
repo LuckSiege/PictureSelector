@@ -44,6 +44,13 @@ public class SdkVersionUtils {
     }
 
     /**
+     * 判断是否是Android P版本
+     */
+    public static boolean isP() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+    }
+
+    /**
      * 判断是否是Android Q版本
      */
     public static boolean isQ() {

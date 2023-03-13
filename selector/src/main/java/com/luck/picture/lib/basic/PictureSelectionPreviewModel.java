@@ -318,9 +318,7 @@ public final class PictureSelectionPreviewModel {
                 throw new NullPointerException("preview data is null");
             }
             FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
+            if (activity instanceof FragmentActivity) {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {

@@ -358,9 +358,7 @@ public final class PictureSelectionSystemModel {
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
+            if (activity instanceof FragmentActivity) {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {
@@ -401,9 +399,7 @@ public final class PictureSelectionSystemModel {
             selectionConfig.isResultListenerBack = false;
 
             FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
+            if (activity instanceof FragmentActivity) {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {

@@ -17,6 +17,7 @@ import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -148,6 +147,27 @@ public abstract class BasePreviewHolder extends RecyclerView.ViewHolder {
      * onViewDetachedFromWindow
      */
     public void onViewDetachedFromWindow() {
+
+    }
+
+    /**
+     * resume and pause play
+     */
+    public void resumePausePlay() {
+
+    }
+
+    /**
+     * play ing
+     */
+    public boolean isPlaying() {
+        return false;
+    }
+
+    /**
+     * release
+     */
+    public void release() {
 
     }
 

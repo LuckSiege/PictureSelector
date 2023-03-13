@@ -151,7 +151,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
                 if (fromUser) {
                     seekBar.setProgress(progress);
                     setCurrentPlayTime(progress);
-                    if (mPlayer.isPlaying()) {
+                    if (isPlaying()) {
                         mPlayer.seekTo(seekBar.getProgress());
                     }
                 }
@@ -181,7 +181,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
                         return;
                     }
                     mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                    if (mPlayer.isPlaying()) {
+                    if (isPlaying()) {
                         pausePlayer();
                     } else {
                         if (isPausePlayer) {
@@ -228,6 +228,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         }
     }
 
+    @Override
+    public boolean isPlaying() {
+        return mPlayer.isPlaying();
+    }
+
     /**
      * 暂停播放
      */
@@ -271,10 +276,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 快进
      */
     private void fastAudioPlay() {
-        if (seekBar.getProgress() > MAX_BACK_FAST_MS) {
+        long progress = seekBar.getProgress() + MAX_BACK_FAST_MS;
+        if (progress >= seekBar.getMax()) {
             seekBar.setProgress(seekBar.getMax());
         } else {
-            seekBar.setProgress((int) (seekBar.getProgress() + MAX_BACK_FAST_MS));
+            seekBar.setProgress((int) progress);
         }
         setCurrentPlayTime(seekBar.getProgress());
         mPlayer.seekTo(seekBar.getProgress());
@@ -284,10 +290,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 回退
      */
     private void slowAudioPlay() {
-        if (seekBar.getProgress() < MAX_BACK_FAST_MS) {
+        long progress = seekBar.getProgress() - MAX_BACK_FAST_MS;
+        if (progress <= 0) {
             seekBar.setProgress(0);
         } else {
-            seekBar.setProgress((int) (seekBar.getProgress() - MAX_BACK_FAST_MS));
+            seekBar.setProgress((int) progress);
         }
         setCurrentPlayTime(seekBar.getProgress());
         mPlayer.seekTo(seekBar.getProgress());
@@ -411,9 +418,19 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     }
 
     /**
-     * 释放PlayerView
+     * resume and pause play
      */
-    public void releaseAudio() {
+    @Override
+    public void resumePausePlay() {
+        if (isPlaying()) {
+            pausePlayer();
+        } else {
+            resumePlayer();
+        }
+    }
+
+    @Override
+    public void release() {
         mHandler.removeCallbacks(mTickerRunnable);
         if (mPlayer != null) {
             setNullMediaPlayerListener();

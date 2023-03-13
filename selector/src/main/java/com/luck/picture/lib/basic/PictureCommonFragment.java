@@ -300,6 +300,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
+        FileDirMap.init(view.getContext());
         if (PictureSelectionConfig.viewLifecycle != null) {
             PictureSelectionConfig.viewLifecycle.onViewCreated(this, view, savedInstanceState);
         }
@@ -308,7 +309,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             mLoadingDialog = new PictureLoadingDialog(getAppContext());
         }
-        FileDirMap.init(requireContext());
         setRequestedOrientation();
         setTranslucentStatusBar();
         setRootViewKeyListener(requireView());
@@ -1135,7 +1135,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
-                MediaUtils.deleteUri(getAppContext(), config.cameraPath);
+                if (!TextUtils.isEmpty(config.cameraPath)) {
+                    MediaUtils.deleteUri(getAppContext(), config.cameraPath);
+                    config.cameraPath = "";
+                }
             } else if (requestCode == PictureConfig.REQUEST_GO_SETTING) {
                 handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
             }
@@ -1170,6 +1173,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     onScannerScanFile(result);
                     dispatchCameraMediaResult(result);
                 }
+                config.cameraPath = "";
             }
         });
     }
@@ -1233,11 +1237,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             return;
         }
         if (SdkVersionUtils.isQ()) {
-            if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
+            if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(media.getPath())) {
                 new PictureMediaScannerConnection(getActivity(), media.getRealPath());
             }
         } else {
-            String path = PictureMimeType.isContent(config.cameraPath) ? media.getRealPath() : config.cameraPath;
+            String path = PictureMimeType.isContent(media.getPath()) ? media.getRealPath() : media.getPath();
             new PictureMediaScannerConnection(getActivity(), path);
             if (PictureMimeType.isHasImage(media.getMimeType())) {
                 File dirFile = new File(path);
@@ -1964,12 +1968,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 }
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        }
-        List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof PictureCommonFragment) {
-                ((PictureCommonFragment) fragment).onFragmentResume();
+
+            List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+            for (int i = 0; i < fragments.size(); i++) {
+                Fragment fragment = fragments.get(i);
+                if (fragment instanceof PictureCommonFragment) {
+                    ((PictureCommonFragment) fragment).onFragmentResume();
+                }
             }
         }
     }
