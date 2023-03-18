@@ -1324,6 +1324,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
                 if (SdkVersionUtils.isP()) {
+                    if(getActivity() == null) return;
                     Window window = requireActivity().getWindow();
                     WindowManager.LayoutParams lp = window.getAttributes();
                     if (isAnimInit) {
