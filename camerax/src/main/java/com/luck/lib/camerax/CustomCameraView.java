@@ -373,7 +373,11 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 tvCurrentTime.setVisibility(GONE);
                 mCaptureLayout.resetCaptureLayout();
                 mCaptureLayout.setTextWithAnimation(getContext().getString(R.string.picture_recording_time_is_short));
-                mVideoCapture.stopRecording();
+                try {
+                    mVideoCapture.stopRecording();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
