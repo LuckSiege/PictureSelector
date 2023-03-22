@@ -124,13 +124,13 @@ public class PermissionChecker {
     public static boolean isCheckReadStorage(int chooseMode, Context context) {
         if (SdkVersionUtils.isTIRAMISU()) {
             if (chooseMode == SelectMimeType.ofImage()) {
-                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadExternalStorage(context);
+                return PermissionChecker.isCheckReadImages(context);
             } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return PermissionChecker.isCheckReadVideo(context) && PermissionChecker.isCheckReadExternalStorage(context);
+                return PermissionChecker.isCheckReadVideo(context);
             } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return PermissionChecker.isCheckReadAudio(context) && PermissionChecker.isCheckReadExternalStorage(context);
+                return PermissionChecker.isCheckReadAudio(context);
             } else {
-                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context) && PermissionChecker.isCheckReadExternalStorage(context);
+                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context);
             }
         } else {
             return PermissionChecker.isCheckReadExternalStorage(context);
