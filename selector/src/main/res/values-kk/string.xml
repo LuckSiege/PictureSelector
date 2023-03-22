@@ -10,7 +10,7 @@
     <string name="ps_message_audio_max_num">%1$s аудио таңдауға болады</string>
     <string name="ps_message_video_max_num">%1$s бейне таңдауға болады</string>
     <string name="ps_preview">Алдын ала қарау</string>
-    <string name="ps_please">Кейінірек растау ...</string>
+    <string name="ps_please">Кейінірек растау …</string>
     <string name="ps_done_front_num">%1$d/%2$d Ок</string>
     <string name="ps_completed">Толтырылды</string>
     <string name="ps_done">Толтыру</string>
