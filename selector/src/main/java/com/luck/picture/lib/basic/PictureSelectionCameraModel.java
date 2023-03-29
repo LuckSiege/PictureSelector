@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -338,6 +337,25 @@ public final class PictureSelectionCameraModel {
         return this;
     }
 
+    /**
+     * Select the maximum number of files
+     *
+     * @param maxSelectNum PictureSelector max selection
+     */
+    private PictureSelectionCameraModel setMaxSelectNum(int maxSelectNum) {
+        selectionConfig.maxSelectNum = selectionConfig.selectionMode == SelectModeConfig.SINGLE ? 1 : maxSelectNum;
+        return this;
+    }
+
+    /**
+     * Select the maximum video number of files
+     *
+     * @param maxVideoSelectNum PictureSelector video max selection
+     */
+    public PictureSelectionCameraModel setMaxVideoSelectNum(int maxVideoSelectNum) {
+        selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == SelectMimeType.ofVideo() ? 0 : maxVideoSelectNum;
+        return this;
+    }
 
     /**
      * # file size The unit is KB
@@ -522,6 +540,8 @@ public final class PictureSelectionCameraModel {
         if (selectedList == null) {
             return this;
         }
+        setMaxSelectNum(selectedList.size() + 1);
+        setMaxVideoSelectNum(selectedList.size() + 1);
         if (selectionConfig.selectionMode == SelectModeConfig.SINGLE && selectionConfig.isDirectReturnSingle) {
             SelectedManager.clearSelectResult();
         } else {
