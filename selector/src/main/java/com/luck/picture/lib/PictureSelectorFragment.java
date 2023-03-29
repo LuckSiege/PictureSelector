@@ -993,9 +993,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
             } else {
                 data = new ArrayList<>(mAdapter.getData());
                 LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
-                totalNum = currentLocalMediaFolder != null ? currentLocalMediaFolder.getFolderTotalNum() : data.size();
-                currentBucketId = currentLocalMediaFolder != null ? currentLocalMediaFolder.getBucketId()
-                        : data.size() > 0 ? data.get(0).getBucketId() : PictureConfig.ALL;
+                if (currentLocalMediaFolder != null) {
+                    totalNum = currentLocalMediaFolder.getFolderTotalNum();
+                    currentBucketId = currentLocalMediaFolder.getBucketId();
+                } else {
+                    totalNum = data.size();
+                    currentBucketId = data.size() > 0 ? data.get(0).getBucketId() : PictureConfig.ALL;
+                }
             }
             if (!isBottomPreview && config.isPreviewZoomEffect) {
                 BuildRecycleItemViewParams.generateViewParams(mRecycler,
