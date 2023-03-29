@@ -126,8 +126,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 Uri inputUri = FileUtils.isContent(path) || FileUtils.isHasHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
                 String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
                         isForbidCropGifWebp, inputUri);
-                String fileName = TextUtils.isEmpty(outputCropFileName) ? FileUtils.getCreateFileName("CROP_") + postfix
-                        : FileUtils.getCreateFileName() + "_" + outputCropFileName;
+                String fileName = TextUtils.isEmpty(outputCropFileName) ? FileUtils.getCreateFileName("CROP_" + (i + 1)) + postfix
+                        : (i + 1) + FileUtils.getCreateFileName() + "_" + outputCropFileName;
                 Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
                 extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
                 extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
