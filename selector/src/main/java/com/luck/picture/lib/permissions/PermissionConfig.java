@@ -32,13 +32,13 @@ public class PermissionConfig {
     public static String[] getReadPermissionArray(int chooseMode) {
         if (SdkVersionUtils.isTIRAMISU()) {
             if (chooseMode == SelectMimeType.ofImage()) {
-                return new String[]{READ_MEDIA_IMAGES, Manifest.permission.READ_EXTERNAL_STORAGE};
+                return new String[]{READ_MEDIA_IMAGES};
             } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return new String[]{READ_MEDIA_VIDEO, Manifest.permission.READ_EXTERNAL_STORAGE};
+                return new String[]{READ_MEDIA_VIDEO};
             } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return new String[]{READ_MEDIA_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE};
+                return new String[]{READ_MEDIA_AUDIO};
             } else {
-                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, Manifest.permission.READ_EXTERNAL_STORAGE};
+                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
             }
         }
         return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};

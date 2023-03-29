@@ -1323,7 +1323,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
-                if (SdkVersionUtils.isP()) {
+                if (SdkVersionUtils.isP() && isAdded()) {
                     Window window = requireActivity().getWindow();
                     WindowManager.LayoutParams lp = window.getAttributes();
                     if (isAnimInit) {
