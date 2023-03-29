@@ -169,6 +169,22 @@ public final class PictureSelectionCameraModel {
     }
 
     /**
+     * Change the desired orientation of this activity.  If the activity
+     * is currently in the foreground or otherwise impacting the screen
+     * orientation, the screen will immediately be changed (possibly causing
+     * the activity to be restarted). Otherwise, this will be used the next
+     * time the activity is visible.
+     *
+     * @param requestedOrientation An orientation constant as used in
+     *                             {@link android.content.pm.ActivityInfo.screenOrientation ActivityInfo.screenOrientation}.
+     */
+    public PictureSelectionCameraModel setRequestedOrientation(int requestedOrientation) {
+        selectionConfig.requestedOrientation = requestedOrientation;
+        return this;
+    }
+
+
+    /**
      * Intercept camera click events, and users can implement their own camera framework
      *
      * @param listener
