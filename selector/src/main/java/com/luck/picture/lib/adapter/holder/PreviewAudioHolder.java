@@ -230,7 +230,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
 
     @Override
     public boolean isPlaying() {
-        return mPlayer.isPlaying();
+        return mPlayer != null && mPlayer.isPlaying();
     }
 
     /**
