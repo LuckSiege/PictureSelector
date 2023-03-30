@@ -72,7 +72,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
         if (PermissionChecker.isCheckReadStorage(config.chooseMode,getContext())) {
             openSystemAlbum();
         } else {
-            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(config.chooseMode);
+            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(getAppContext(), config.chooseMode);
             onPermissionExplainEvent(true, readPermissionArray);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
                 onApplyPermissionsEvent(PermissionEvent.EVENT_SYSTEM_SOURCE_DATA, readPermissionArray);
@@ -96,7 +96,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onApplyPermissionsEvent(int event, String[] permissionArray) {
         if (event == PermissionEvent.EVENT_SYSTEM_SOURCE_DATA) {
             PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                    PermissionConfig.getReadPermissionArray(config.chooseMode), new OnRequestPermissionListener() {
+                    PermissionConfig.getReadPermissionArray(getAppContext(), config.chooseMode), new OnRequestPermissionListener() {
                         @Override
                         public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {

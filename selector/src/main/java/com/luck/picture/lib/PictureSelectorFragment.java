@@ -437,7 +437,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PermissionChecker.isCheckReadStorage(config.chooseMode, getContext())) {
             beginLoadData();
         } else {
-            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(config.chooseMode);
+            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(getAppContext(), config.chooseMode);
             onPermissionExplainEvent(true, readPermissionArray);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
                 onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, readPermissionArray);

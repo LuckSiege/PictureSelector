@@ -1,6 +1,7 @@
 package com.luck.picture.lib.permissions;
 
 import android.Manifest;
+import android.content.Context;
 
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.utils.SdkVersionUtils;
@@ -15,7 +16,7 @@ public class PermissionConfig {
     public static final String READ_MEDIA_AUDIO = "android.permission.READ_MEDIA_AUDIO";
     public static final String READ_MEDIA_IMAGES = "android.permission.READ_MEDIA_IMAGES";
     public static final String READ_MEDIA_VIDEO = "android.permission.READ_MEDIA_VIDEO";
-
+    public static final String READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     /**
      * 当前申请权限
      */
@@ -29,19 +30,28 @@ public class PermissionConfig {
     /**
      * 获取外部读取权限
      */
-    public static String[] getReadPermissionArray(int chooseMode) {
+    public static String[] getReadPermissionArray(Context context, int chooseMode) {
         if (SdkVersionUtils.isTIRAMISU()) {
+            int targetSdkVersion = context.getApplicationInfo().targetSdkVersion;
             if (chooseMode == SelectMimeType.ofImage()) {
-                return new String[]{READ_MEDIA_IMAGES};
+                return targetSdkVersion >= SdkVersionUtils.TIRAMISU
+                        ? new String[]{READ_MEDIA_IMAGES}
+                        : new String[]{READ_MEDIA_IMAGES, READ_EXTERNAL_STORAGE};
             } else if (chooseMode == SelectMimeType.ofVideo()) {
-                return new String[]{READ_MEDIA_VIDEO};
+                return targetSdkVersion >= SdkVersionUtils.TIRAMISU
+                        ? new String[]{READ_MEDIA_VIDEO}
+                        : new String[]{READ_MEDIA_VIDEO, READ_EXTERNAL_STORAGE};
             } else if (chooseMode == SelectMimeType.ofAudio()) {
-                return new String[]{READ_MEDIA_AUDIO};
+                return targetSdkVersion >= SdkVersionUtils.TIRAMISU
+                        ? new String[]{READ_MEDIA_AUDIO}
+                        : new String[]{READ_MEDIA_AUDIO, READ_EXTERNAL_STORAGE};
             } else {
-                return new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
+                return targetSdkVersion >= SdkVersionUtils.TIRAMISU
+                        ? new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO}
+                        : new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_EXTERNAL_STORAGE};
             }
         }
-        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        return new String[]{READ_EXTERNAL_STORAGE};
     }
 
 }
