@@ -192,9 +192,9 @@ public class PictureSelectionQueryModel {
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");
         }
-        IBridgeMediaLoader loader = selectionConfig.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
-        loader.initConfig(activity, selectionConfig);
-        return loader;
+        return selectionConfig.isPageStrategy
+                ? new LocalMediaPageLoader(activity, selectionConfig)
+                : new LocalMediaLoader(activity, selectionConfig);
     }
 
 
@@ -211,8 +211,9 @@ public class PictureSelectionQueryModel {
         if (call == null) {
             throw new NullPointerException("OnQueryDataSourceListener cannot be null");
         }
-        IBridgeMediaLoader loader = selectionConfig.isPageStrategy?new LocalMediaPageLoader():new LocalMediaLoader();
-        loader.initConfig(activity, selectionConfig);
+        IBridgeMediaLoader loader = selectionConfig.isPageStrategy
+                ? new LocalMediaPageLoader(activity, selectionConfig)
+                : new LocalMediaLoader(activity, selectionConfig);
         loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
@@ -235,8 +236,9 @@ public class PictureSelectionQueryModel {
         if (call == null) {
             throw new NullPointerException("OnQueryDataSourceListener cannot be null");
         }
-        IBridgeMediaLoader loader = selectionConfig.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
-        loader.initConfig(activity, selectionConfig);
+        IBridgeMediaLoader loader = selectionConfig.isPageStrategy
+                ? new LocalMediaPageLoader(activity, selectionConfig)
+                : new LocalMediaLoader(activity, selectionConfig);
         loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {

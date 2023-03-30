@@ -1,5 +1,6 @@
 package com.luck.picture.lib.loader;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -29,6 +30,10 @@ import java.util.List;
  * @describe: Local media database query class
  */
 public final class LocalMediaLoader extends IBridgeMediaLoader {
+
+    public LocalMediaLoader(Context context, PictureSelectionConfig config) {
+        super(context, config);
+    }
 
     /**
      * Video mode conditions

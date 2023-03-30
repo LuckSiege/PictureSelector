@@ -1,5 +1,6 @@
 package com.luck.picture.lib.loader;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,10 @@ import java.util.Set;
  */
 public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
+
+    public LocalMediaPageLoader(Context context, PictureSelectionConfig config) {
+        super(context, config);
+    }
 
     /**
      * Query conditions in all modes

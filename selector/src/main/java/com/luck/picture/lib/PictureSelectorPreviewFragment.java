@@ -574,9 +574,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 throw new NullPointerException("No available " + IBridgeMediaLoader.class + " loader found");
             }
         } else {
-            mLoader = config.isPageStrategy ? new LocalMediaPageLoader() : new LocalMediaLoader();
+            mLoader = config.isPageStrategy
+                    ? new LocalMediaPageLoader(getAppContext(), config)
+                    : new LocalMediaLoader(getAppContext(), config);
         }
-        mLoader.initConfig(getContext(), config);
     }
 
     /**

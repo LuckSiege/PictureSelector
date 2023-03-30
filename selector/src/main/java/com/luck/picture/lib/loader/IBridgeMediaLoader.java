@@ -38,16 +38,11 @@ public abstract class IBridgeMediaLoader {
     protected static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
     protected static final String COLUMN_ORIENTATION = "orientation";
     protected static final int MAX_SORT_SIZE = 60;
-    private Context mContext;
-    private PictureSelectionConfig mConfig;
+    private final Context mContext;
+    private final PictureSelectionConfig mConfig;
 
-    /**
-     * init config
-     *
-     * @param context
-     * @param config  {@link PictureSelectionConfig}
-     */
-    public void initConfig(Context context, PictureSelectionConfig config) {
+    public IBridgeMediaLoader(Context context, PictureSelectionConfig config) {
+        super();
         this.mContext = context;
         this.mConfig = config;
     }
