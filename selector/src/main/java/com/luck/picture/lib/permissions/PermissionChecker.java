@@ -130,7 +130,7 @@ public class PermissionChecker {
             } else if (chooseMode == SelectMimeType.ofAudio()) {
                 return PermissionChecker.isCheckReadAudio(context);
             } else {
-                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context) && PermissionChecker.isCheckReadExternalStorage(context);
+                return PermissionChecker.isCheckReadImages(context) && PermissionChecker.isCheckReadVideo(context);
             }
         } else {
             return PermissionChecker.isCheckReadExternalStorage(context);
