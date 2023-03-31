@@ -38,7 +38,7 @@ public class MediaStoreUtils {
         }
         if (SdkVersionUtils.isQ() && TextUtils.isEmpty(config.outPutCameraDir)) {
             imageUri = createImageUri(context, cameraFileName, config.cameraImageFormatForQ);
-            config.cameraPath = imageUri != null ? imageUri.toString() : null;
+            config.cameraPath = imageUri != null ? imageUri.toString() : "";
         } else {
             File cameraFile = PictureFileUtils.createCameraFile(context, SelectMimeType.TYPE_IMAGE,
                     cameraFileName, config.cameraImageFormat, config.outPutCameraDir);
