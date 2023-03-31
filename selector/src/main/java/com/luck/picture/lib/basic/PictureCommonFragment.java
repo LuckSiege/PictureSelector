@@ -1163,7 +1163,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 if (config.chooseMode == SelectMimeType.ofAudio()) {
                     copyOutputAudioToDir();
                 }
-                return buildLocalMedia(config.cameraPath);
+                LocalMedia media = buildLocalMedia(config.cameraPath);
+                media.setCameraSource(true);
+                return media;
             }
 
             @Override
