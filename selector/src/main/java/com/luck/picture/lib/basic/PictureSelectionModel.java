@@ -663,6 +663,7 @@ public final class PictureSelectionModel {
      * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
      * @return
      */
+    @Deprecated
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, boolean isFilterInvalidFile) {
         selectionConfig.isPageStrategy = isPageStrategy;
         selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
@@ -677,6 +678,7 @@ public final class PictureSelectionModel {
      * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
      * @return
      */
+    @Deprecated
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize, boolean isFilterInvalidFile) {
         selectionConfig.isPageStrategy = isPageStrategy;
         selectionConfig.pageSize = pageSize < PictureConfig.MIN_PAGE_SIZE ? PictureConfig.MAX_PAGE_SIZE : pageSize;
