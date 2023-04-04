@@ -17,8 +17,8 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureContextWrapper;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.immersive.ImmersiveManager;
@@ -146,7 +146,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(PictureContextWrapper.wrap(newBase,
-                PictureSelectionConfig.getInstance().language,PictureSelectionConfig.getInstance().defaultLanguage));
+                SelectorProviders.getInstance().getSelectorConfig().language,SelectorProviders.getInstance().getSelectorConfig().defaultLanguage));
     }
 
 }

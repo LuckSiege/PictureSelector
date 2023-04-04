@@ -75,7 +75,7 @@ import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -1298,7 +1298,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
 
         @Override
-        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, PictureSelectionConfig config, int limitType) {
+        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, SelectorConfig config, int limitType) {
             if (limitType == SelectLimitType.SELECT_MIN_SELECT_LIMIT) {
                 ToastUtils.showToast(context, "图片最少不能低于" + config.minSelectNum + "张");
                 return true;

@@ -6,7 +6,8 @@ import android.text.TextUtils;
 
 import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
@@ -26,12 +27,13 @@ import java.util.List;
  * @describe：PictureSelectionQueryModel
  */
 public class PictureSelectionQueryModel {
-    private final PictureSelectionConfig selectionConfig;
+    private final SelectorConfig selectionConfig;
     private final PictureSelector selector;
 
     public PictureSelectionQueryModel(PictureSelector selector, int selectMimeType) {
         this.selector = selector;
-        selectionConfig = PictureSelectionConfig.getCleanInstance();
+        selectionConfig = new SelectorConfig();
+        SelectorProviders.getInstance().addSelectorConfigQueue(selectionConfig);
         selectionConfig.chooseMode = selectMimeType;
     }
 
@@ -81,7 +83,7 @@ public class PictureSelectionQueryModel {
      * @return
      */
     public PictureSelectionQueryModel setQueryFilterListener(OnQueryFilterListener listener) {
-        PictureSelectionConfig.onQueryFilterListener = listener;
+        selectionConfig.onQueryFilterListener = listener;
         return this;
     }
 

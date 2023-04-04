@@ -16,8 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -37,12 +38,12 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     public TextView tvCheck;
     public View btnCheck;
     public Context mContext;
-    public PictureSelectionConfig config;
+    public SelectorConfig selectorConfig;
     public boolean isSelectNumberStyle;
     public boolean isHandleMask;
     private ColorFilter defaultColorFilter, selectColorFilter, maskWhiteColorFilter;
 
-    public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
+    public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, SelectorConfig config) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         switch (viewType) {
             case PictureImageGridAdapter.ADAPTER_TYPE_CAMERA:
@@ -60,14 +61,14 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public BaseRecyclerMediaHolder(@NonNull View itemView, PictureSelectionConfig config) {
+    public BaseRecyclerMediaHolder(@NonNull View itemView, SelectorConfig config) {
         super(itemView);
-        this.config = config;
+        this.selectorConfig = config;
         this.mContext = itemView.getContext();
         defaultColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_20);
         selectColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_80);
         maskWhiteColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_half_white);
-        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        SelectMainStyle selectMainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
         isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
         tvCheck = itemView.findViewById(R.id.tvCheck);
@@ -134,7 +135,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             notifySelectNumberStyle(media);
         }
 
-        if (isHandleMask && config.isMaxSelectEnabledMask) {
+        if (isHandleMask && selectorConfig.isMaxSelectEnabledMask) {
             dispatchHandleMask(media);
         }
 
@@ -163,17 +164,17 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                     return;
                 }
                 if (resultCode == SelectedManager.ADD_SUCCESS) {
-                    if (config.isSelectZoomAnim) {
-                        if (PictureSelectionConfig.onItemSelectAnimListener != null) {
-                            PictureSelectionConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, true);
+                    if (selectorConfig.isSelectZoomAnim) {
+                        if (selectorConfig.onItemSelectAnimListener != null) {
+                            selectorConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, true);
                         } else {
                             AnimUtils.selectZoom(ivPicture);
                         }
                     }
                 } else if (resultCode == SelectedManager.REMOVE) {
-                    if (config.isSelectZoomAnim) {
-                        if (PictureSelectionConfig.onItemSelectAnimListener != null) {
-                            PictureSelectionConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, false);
+                    if (selectorConfig.isSelectZoomAnim) {
+                        if (selectorConfig.onItemSelectAnimListener != null) {
+                            selectorConfig.onItemSelectAnimListener.onSelectItemAnim(ivPicture, false);
                         }
                     }
                 }
@@ -197,12 +198,12 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 if (media.isMaxSelectEnabledMask() || listener == null) {
                     return;
                 }
-                boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && config.isEnablePreviewImage
-                        || config.isDirectReturnSingle
-                        || PictureMimeType.isHasVideo(media.getMimeType()) && (config.isEnablePreviewVideo
-                        || config.selectionMode == SelectModeConfig.SINGLE)
-                        || PictureMimeType.isHasAudio(media.getMimeType()) && (config.isEnablePreviewAudio
-                        || config.selectionMode == SelectModeConfig.SINGLE);
+                boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && selectorConfig.isEnablePreviewImage
+                        || selectorConfig.isDirectReturnSingle
+                        || PictureMimeType.isHasVideo(media.getMimeType()) && (selectorConfig.isEnablePreviewVideo
+                        || selectorConfig.selectionMode == SelectModeConfig.SINGLE)
+                        || PictureMimeType.isHasAudio(media.getMimeType()) && (selectorConfig.isEnablePreviewAudio
+                        || selectorConfig.selectionMode == SelectModeConfig.SINGLE);
                 if (isPreview) {
                     listener.onItemClick(tvCheck, position, media);
                 } else {
@@ -216,8 +217,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      * 加载资源封面
      */
     protected void loadCover(String path) {
-        if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
+        if (selectorConfig.imageEngine != null) {
+            selectorConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
         }
     }
 
@@ -227,32 +228,32 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private void dispatchHandleMask(LocalMedia media) {
         boolean isEnabledMask = false;
-        if (SelectedManager.getSelectCount() > 0 && !SelectedManager.getSelectedResult().contains(media)) {
-            if (config.isWithVideoImage) {
-                if (config.selectionMode == SelectModeConfig.SINGLE) {
-                    isEnabledMask = SelectedManager.getSelectCount() == Integer.MAX_VALUE;
+        if (selectorConfig.getSelectCount() > 0 && !selectorConfig.getSelectedResult().contains(media)) {
+            if (selectorConfig.isWithVideoImage) {
+                if (selectorConfig.selectionMode == SelectModeConfig.SINGLE) {
+                    isEnabledMask = selectorConfig.getSelectCount() == Integer.MAX_VALUE;
                 } else {
-                    isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum;
+                    isEnabledMask = selectorConfig.getSelectCount() == selectorConfig.maxSelectNum;
                 }
             } else {
-                if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
+                if (PictureMimeType.isHasVideo(selectorConfig.getResultFirstMimeType())) {
                     int maxSelectNum;
-                    if (config.selectionMode == SelectModeConfig.SINGLE) {
+                    if (selectorConfig.selectionMode == SelectModeConfig.SINGLE) {
                         maxSelectNum = Integer.MAX_VALUE;
                     } else {
-                        maxSelectNum = config.maxVideoSelectNum > 0
-                                ? config.maxVideoSelectNum : config.maxSelectNum;
+                        maxSelectNum = selectorConfig.maxVideoSelectNum > 0
+                                ? selectorConfig.maxVideoSelectNum : selectorConfig.maxSelectNum;
                     }
-                    isEnabledMask = SelectedManager.getSelectCount() == maxSelectNum
+                    isEnabledMask = selectorConfig.getSelectCount() == maxSelectNum
                             || PictureMimeType.isHasImage(media.getMimeType());
                 } else {
                     int maxSelectNum;
-                    if (config.selectionMode == SelectModeConfig.SINGLE) {
+                    if (selectorConfig.selectionMode == SelectModeConfig.SINGLE) {
                         maxSelectNum = Integer.MAX_VALUE;
                     } else {
-                        maxSelectNum = config.maxSelectNum;
+                        maxSelectNum = selectorConfig.maxSelectNum;
                     }
-                    isEnabledMask = SelectedManager.getSelectCount() == maxSelectNum
+                    isEnabledMask = selectorConfig.getSelectCount() == maxSelectNum
                             || PictureMimeType.isHasVideo(media.getMimeType());
                 }
             }
@@ -274,7 +275,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         if (tvCheck.isSelected() != isChecked) {
             tvCheck.setSelected(isChecked);
         }
-        if (config.isDirectReturnSingle) {
+        if (selectorConfig.isDirectReturnSingle) {
             ivPicture.setColorFilter(defaultColorFilter);
         } else {
             ivPicture.setColorFilter(isChecked ? selectColorFilter : defaultColorFilter);
@@ -288,7 +289,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      * @return
      */
     private boolean isSelected(LocalMedia currentMedia) {
-        List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+        List<LocalMedia> selectedResult = selectorConfig.getSelectedResult();
         boolean isSelected = selectedResult.contains(currentMedia);
         if (isSelected) {
             LocalMedia compare = currentMedia.getCompareLocalMedia();
@@ -306,8 +307,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private void notifySelectNumberStyle(LocalMedia currentMedia) {
         tvCheck.setText("");
-        for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
-            LocalMedia media = SelectedManager.getSelectedResult().get(i);
+        for (int i = 0; i < selectorConfig.getSelectCount(); i++) {
+            LocalMedia media = selectorConfig.getSelectedResult().get(i);
             if (TextUtils.equals(media.getPath(), currentMedia.getPath())
                     || media.getId() == currentMedia.getId()) {
                 currentMedia.setNum(media.getNum());

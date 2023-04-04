@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -15,9 +14,10 @@ import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropEngine;
@@ -45,12 +45,13 @@ import java.util.Arrays;
  * @describe：PictureSelectionSystemModel
  */
 public final class PictureSelectionSystemModel {
-    private final PictureSelectionConfig selectionConfig;
+    private final SelectorConfig selectionConfig;
     private final PictureSelector selector;
 
     public PictureSelectionSystemModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
-        selectionConfig = PictureSelectionConfig.getCleanInstance();
+        selectionConfig = new SelectorConfig();
+        SelectorProviders.getInstance().addSelectorConfigQueue(selectionConfig);
         selectionConfig.chooseMode = chooseMode;
         selectionConfig.isPreviewFullScreenMode = false;
         selectionConfig.isPreviewZoomEffect = false;
@@ -117,7 +118,7 @@ public final class PictureSelectionSystemModel {
      */
     @Deprecated
     public PictureSelectionSystemModel setCompressEngine(CompressEngine engine) {
-        PictureSelectionConfig.compressEngine = engine;
+        selectionConfig.compressEngine = engine;
         selectionConfig.isCompressEngine = true;
         return this;
     }
@@ -130,7 +131,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setCompressEngine(CompressFileEngine engine) {
-        PictureSelectionConfig.compressFileEngine = engine;
+        selectionConfig.compressFileEngine = engine;
         selectionConfig.isCompressEngine = true;
         return this;
     }
@@ -144,7 +145,7 @@ public final class PictureSelectionSystemModel {
      */
     @Deprecated
     public PictureSelectionSystemModel setCropEngine(CropEngine engine) {
-        PictureSelectionConfig.cropEngine = engine;
+        selectionConfig.cropEngine = engine;
         return this;
     }
 
@@ -155,7 +156,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setCropEngine(CropFileEngine engine) {
-        PictureSelectionConfig.cropFileEngine = engine;
+        selectionConfig.cropFileEngine = engine;
         return this;
     }
 
@@ -169,7 +170,7 @@ public final class PictureSelectionSystemModel {
     @Deprecated
     public PictureSelectionSystemModel setSandboxFileEngine(SandboxFileEngine engine) {
         if (SdkVersionUtils.isQ()) {
-            PictureSelectionConfig.sandboxFileEngine = engine;
+            selectionConfig.sandboxFileEngine = engine;
             selectionConfig.isSandboxFileEngine = true;
         } else {
             selectionConfig.isSandboxFileEngine = false;
@@ -185,7 +186,7 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setSandboxFileEngine(UriToFileTransformEngine engine) {
         if (SdkVersionUtils.isQ()) {
-            PictureSelectionConfig.uriToFileTransformEngine = engine;
+            selectionConfig.uriToFileTransformEngine = engine;
             selectionConfig.isSandboxFileEngine = true;
         } else {
             selectionConfig.isSandboxFileEngine = false;
@@ -253,7 +254,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
-        PictureSelectionConfig.onPermissionsEventListener = listener;
+        selectionConfig.onPermissionsEventListener = listener;
         return this;
     }
 
@@ -264,7 +265,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setPermissionDescriptionListener(OnPermissionDescriptionListener listener) {
-        PictureSelectionConfig.onPermissionDescriptionListener = listener;
+        selectionConfig.onPermissionDescriptionListener = listener;
         return this;
     }
 
@@ -275,7 +276,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setPermissionDeniedListener(OnPermissionDeniedListener listener) {
-        PictureSelectionConfig.onPermissionDeniedListener = listener;
+        selectionConfig.onPermissionDeniedListener = listener;
         return this;
     }
 
@@ -285,7 +286,7 @@ public final class PictureSelectionSystemModel {
      * @param listener
      */
     public PictureSelectionSystemModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
-        PictureSelectionConfig.onSelectLimitTipsListener = listener;
+        selectionConfig.onSelectLimitTipsListener = listener;
         return this;
     }
 
@@ -296,7 +297,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setSelectFilterListener(OnSelectFilterListener listener) {
-        PictureSelectionConfig.onSelectFilterListener = listener;
+        selectionConfig.onSelectFilterListener = listener;
         return this;
     }
 
@@ -308,7 +309,7 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setAddBitmapWatermarkListener(OnBitmapWatermarkEventListener listener) {
         if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
-            PictureSelectionConfig.onBitmapWatermarkListener = listener;
+            selectionConfig.onBitmapWatermarkListener = listener;
         }
         return this;
     }
@@ -321,7 +322,7 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setVideoThumbnailListener(OnVideoThumbnailEventListener listener) {
         if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
-            PictureSelectionConfig.onVideoThumbnailEventListener = listener;
+            selectionConfig.onVideoThumbnailEventListener = listener;
         }
         return this;
     }
@@ -333,7 +334,7 @@ public final class PictureSelectionSystemModel {
      * @return
      */
     public PictureSelectionSystemModel setCustomLoadingListener(OnCustomLoadingListener listener) {
-        PictureSelectionConfig.onCustomLoadingListener = listener;
+        selectionConfig.onCustomLoadingListener = listener;
         return this;
     }
 
@@ -354,7 +355,7 @@ public final class PictureSelectionSystemModel {
             if (call == null) {
                 throw new NullPointerException("OnResultCallbackListener cannot be null");
             }
-            PictureSelectionConfig.onResultCallListener = call;
+            selectionConfig.onResultCallListener = call;
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             FragmentManager fragmentManager = null;
@@ -395,7 +396,7 @@ public final class PictureSelectionSystemModel {
                         "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
             }
             selectionConfig.isActivityResultBack = true;
-            PictureSelectionConfig.onResultCallListener = null;
+            selectionConfig.onResultCallListener = null;
             selectionConfig.isResultListenerBack = false;
 
             FragmentManager fragmentManager = null;
@@ -480,7 +481,7 @@ public final class PictureSelectionSystemModel {
             // 绑定回调监听
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
-            PictureSelectionConfig.onResultCallListener = call;
+            selectionConfig.onResultCallListener = call;
             Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
             intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_SYSTEM_SOURCE);
             activity.startActivity(intent);

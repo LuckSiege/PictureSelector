@@ -15,13 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.utils.DensityUtil;
 
 /**
@@ -54,7 +54,7 @@ public class MagicalView extends FrameLayout {
     private final View backgroundView;
     private final MagicalViewWrapper magicalWrapper;
     private final boolean isPreviewFullScreenMode;
-
+    private final SelectorConfig selectorConfig;
     public MagicalView(Context context) {
         this(context, null);
     }
@@ -65,8 +65,8 @@ public class MagicalView extends FrameLayout {
 
     public MagicalView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
-        isPreviewFullScreenMode = config.isPreviewFullScreenMode;
+        selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
+        isPreviewFullScreenMode = selectorConfig.isPreviewFullScreenMode;
         appInScreenHeight = DensityUtil.getRealScreenHeight(getContext());
         getScreenSize();
         backgroundView = new View(context);
@@ -220,8 +220,9 @@ public class MagicalView extends FrameLayout {
                     setShowEndParams();
                 }
             });
-            if (PictureSelectionConfig.interpolatorFactory != null) {
-                Interpolator interpolator = PictureSelectionConfig.interpolatorFactory.newInterpolator();
+
+            if (selectorConfig.interpolatorFactory != null) {
+                Interpolator interpolator = selectorConfig.interpolatorFactory.newInterpolator();
                 if (interpolator != null) {
                     valueAnimator.setInterpolator(interpolator);
                 }

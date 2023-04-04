@@ -17,7 +17,8 @@ import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -33,9 +34,12 @@ import java.util.ArrayList;
  * @describe：PictureSelectorTransparentActivity
  */
 public class PictureSelectorTransparentActivity extends AppCompatActivity {
+    private SelectorConfig selectorConfig;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initSelectorConfig();
         immersive();
         setContentView(R.layout.ps_empty);
         if (isExternalPreview()) {
@@ -46,16 +50,20 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
         setupFragment();
     }
 
+    private void initSelectorConfig() {
+        selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
+    }
+
     private boolean isExternalPreview() {
         int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
         return modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE;
     }
 
     private void immersive() {
-        if (PictureSelectionConfig.selectorStyle == null) {
-            PictureSelectionConfig.getInstance();
+        if (selectorConfig.selectorStyle == null) {
+            SelectorProviders.getInstance().getSelectorConfig();
         }
-        SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        SelectMainStyle mainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
         int statusBarColor = mainStyle.getStatusBarColor();
         int navigationBarColor = mainStyle.getNavigationBarColor();
         boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
@@ -76,8 +84,8 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
             fragmentTag = PictureSelectorSystemFragment.TAG;
             targetFragment = PictureSelectorSystemFragment.newInstance();
         } else if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE) {
-            if (PictureSelectionConfig.onInjectActivityPreviewListener != null) {
-                targetFragment = PictureSelectionConfig.onInjectActivityPreviewListener.onInjectPreviewFragment();
+            if (selectorConfig.onInjectActivityPreviewListener != null) {
+                targetFragment = selectorConfig.onInjectActivityPreviewListener.onInjectPreviewFragment();
             }
             if (targetFragment != null) {
                 fragmentTag = ((PictureSelectorPreviewFragment) targetFragment).getFragmentTag();
@@ -86,8 +94,7 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
                 targetFragment = PictureSelectorPreviewFragment.newInstance();
             }
             int position = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, 0);
-            ArrayList<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
-            ArrayList<LocalMedia> previewData = new ArrayList<>(previewResult);
+            ArrayList<LocalMedia> previewData = new ArrayList<>(selectorConfig.selectedPreviewResult);
             boolean isDisplayDelete = getIntent()
                     .getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
             ((PictureSelectorPreviewFragment) targetFragment).setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
@@ -118,10 +125,9 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
-        if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE && !config.isPreviewZoomEffect) {
-            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+        if (modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE && !selectorConfig.isPreviewZoomEffect) {
+            PictureWindowAnimationStyle windowAnimationStyle = selectorConfig.selectorStyle.getWindowAnimationStyle();
             overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
         } else {
             overridePendingTransition(0, R.anim.ps_anim_fade_out);

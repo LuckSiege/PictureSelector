@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -14,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -40,12 +40,13 @@ import java.util.ArrayList;
  * @describe：PictureSelectionPreviewModel
  */
 public final class PictureSelectionPreviewModel {
-    private final PictureSelectionConfig selectionConfig;
+    private final SelectorConfig selectionConfig;
     private final PictureSelector selector;
 
     public PictureSelectionPreviewModel(PictureSelector selector) {
         this.selector = selector;
-        selectionConfig = PictureSelectionConfig.getCleanInstance();
+        selectionConfig = new SelectorConfig();
+        SelectorProviders.getInstance().addSelectorConfigQueue(selectionConfig);
         selectionConfig.isPreviewZoomEffect = false;
     }
 
@@ -60,7 +61,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setImageEngine(ImageEngine engine) {
-        PictureSelectionConfig.imageEngine = engine;
+        selectionConfig.imageEngine = engine;
         return this;
     }
 
@@ -73,7 +74,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setVideoPlayerEngine(VideoPlayerEngine engine) {
-        PictureSelectionConfig.videoPlayerEngine = engine;
+        selectionConfig.videoPlayerEngine = engine;
         return this;
     }
 
@@ -93,7 +94,7 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setSelectorUIStyle(PictureSelectorStyle uiStyle) {
         if (uiStyle != null) {
-            PictureSelectionConfig.selectorStyle = uiStyle;
+            selectionConfig.selectorStyle = uiStyle;
         }
         return this;
     }
@@ -129,7 +130,7 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
         selectionConfig.isInjectLayoutResource = listener != null;
-        PictureSelectionConfig.onLayoutResourceListener = listener;
+        selectionConfig.onLayoutResourceListener = listener;
         return this;
     }
 
@@ -140,7 +141,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setAttachViewLifecycle(IBridgeViewLifecycle viewLifecycle) {
-        PictureSelectionConfig.viewLifecycle = viewLifecycle;
+        selectionConfig.viewLifecycle = viewLifecycle;
         return this;
     }
 
@@ -251,7 +252,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setExternalPreviewEventListener(OnExternalPreviewEventListener listener) {
-        PictureSelectionConfig.onExternalPreviewEventListener = listener;
+        selectionConfig.onExternalPreviewEventListener = listener;
         return this;
     }
 
@@ -262,7 +263,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setInjectActivityPreviewFragment(OnInjectActivityPreviewListener listener) {
-        PictureSelectionConfig.onInjectActivityPreviewListener = listener;
+        selectionConfig.onInjectActivityPreviewListener = listener;
         return this;
     }
 
@@ -273,7 +274,7 @@ public final class PictureSelectionPreviewModel {
      * @return
      */
     public PictureSelectionPreviewModel setCustomLoadingListener(OnCustomLoadingListener listener) {
-        PictureSelectionConfig.onCustomLoadingListener = listener;
+        selectionConfig.onCustomLoadingListener = listener;
         return this;
     }
 
@@ -311,7 +312,7 @@ public final class PictureSelectionPreviewModel {
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
-            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            if (selectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             if (list == null || list.size() == 0) {
@@ -355,14 +356,14 @@ public final class PictureSelectionPreviewModel {
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
-            if (PictureSelectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
+            if (selectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             if (list == null || list.size() == 0) {
                 throw new NullPointerException("preview data is null");
             }
             Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
-            SelectedManager.addSelectedPreviewResult(list);
+            selectionConfig.addSelectedPreviewResult(list);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
             intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
@@ -376,7 +377,7 @@ public final class PictureSelectionPreviewModel {
             if (selectionConfig.isPreviewZoomEffect) {
                 activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in);
             } else {
-                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+                PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.selectorStyle.getWindowAnimationStyle();
                 activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
             }
         }

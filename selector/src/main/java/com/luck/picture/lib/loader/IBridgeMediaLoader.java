@@ -7,7 +7,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -39,9 +39,9 @@ public abstract class IBridgeMediaLoader {
     protected static final String COLUMN_ORIENTATION = "orientation";
     protected static final int MAX_SORT_SIZE = 60;
     private final Context mContext;
-    private final PictureSelectionConfig mConfig;
+    protected final SelectorConfig mConfig;
 
-    public IBridgeMediaLoader(Context context, PictureSelectionConfig config) {
+    public IBridgeMediaLoader(Context context, SelectorConfig config) {
         super();
         this.mContext = context;
         this.mConfig = config;
@@ -51,7 +51,7 @@ public abstract class IBridgeMediaLoader {
         return mContext;
     }
 
-    protected PictureSelectionConfig getConfig() {
+    protected SelectorConfig getConfig() {
         return mConfig;
     }
 

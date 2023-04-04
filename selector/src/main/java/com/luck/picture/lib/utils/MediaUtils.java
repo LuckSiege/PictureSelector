@@ -543,7 +543,7 @@ public class MediaUtils {
      */
     public static void deleteUri(Context context, String path) {
         try {
-            if (PictureMimeType.isContent(path)) {
+            if (!TextUtils.isEmpty(path) && PictureMimeType.isContent(path)) {
                 context.getContentResolver().delete(Uri.parse(path), null, null);
             }
         } catch (Exception e) {
