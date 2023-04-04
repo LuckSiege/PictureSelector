@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -555,29 +554,24 @@ public class PictureFileUtils {
      */
     @SuppressLint("DefaultLocale")
     public static String formatAccurateUnitFileSize(final long byteSize) {
+        String unit = "";
+        double newByteSize;
         if (byteSize < 0) {
             throw new IllegalArgumentException("byteSize shouldn't be less than zero!");
         } else if (byteSize < FileSizeUnit.ACCURATE_KB) {
-            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize);
-            double num = ValueOf.toDouble(format);
-            long round = Math.round(num);
-            return (round - num == 0 ? round : format) + "B";
+            newByteSize = (double) byteSize;
         } else if (byteSize < FileSizeUnit.ACCURATE_MB) {
-            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_KB);
-            double num = ValueOf.toDouble(format);
-            long round = Math.round(num);
-            return (round - num == 0 ? round : format) + "KB";
+            unit = "KB";
+            newByteSize = (double) byteSize / FileSizeUnit.ACCURATE_KB;
         } else if (byteSize < FileSizeUnit.ACCURATE_GB) {
-            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_MB);
-            double num = ValueOf.toDouble(format);
-            long round = Math.round(num);
-            return (round - num == 0 ? round : format) + "MB";
+            unit = "MB";
+            newByteSize = (double) byteSize / FileSizeUnit.ACCURATE_MB;
         } else {
-            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_GB);
-            double num = ValueOf.toDouble(format);
-            long round = Math.round(num);
-            return (round - num == 0 ? round : format) + "GB";
+            unit = "GB";
+            newByteSize = (double) byteSize / FileSizeUnit.ACCURATE_GB;
         }
+        String format = String.format(new Locale("zh"), "%." + 2 + "f", newByteSize);
+        return (Math.round(ValueOf.toDouble(format)) - ValueOf.toDouble(format) == 0 ? Math.round(ValueOf.toDouble(format)) : format) + unit;
     }
 
 
