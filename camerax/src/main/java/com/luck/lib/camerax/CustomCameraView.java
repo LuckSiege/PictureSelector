@@ -495,6 +495,9 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
      */
     public void setCameraConfig(Intent intent) {
         Bundle extras = intent.getExtras();
+        if (extras == null) {
+            return;
+        }
         boolean isCameraAroundState = extras.getBoolean(SimpleCameraX.EXTRA_CAMERA_AROUND_STATE, false);
         buttonFeatures = extras.getInt(SimpleCameraX.EXTRA_CAMERA_MODE, CustomCameraConfig.BUTTON_STATE_BOTH);
         lensFacing = isCameraAroundState ? CameraSelector.LENS_FACING_FRONT : CameraSelector.LENS_FACING_BACK;

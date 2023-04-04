@@ -94,7 +94,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         immersive();
         setContentView(R.layout.ucrop_activity_multiple);
         setupViews(getIntent());
-        initCropFragments();
+        initCropFragments(getIntent());
     }
 
     private void immersive() {
@@ -104,9 +104,9 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         ImmersiveManager.immersiveAboveAPI23(this, mStatusBarColor, mStatusBarColor, isDarkStatusBarBlack);
     }
 
-    private void initCropFragments() {
-        isSkipCropForbid = getIntent().getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
-        ArrayList<String> totalCropData = getIntent().getStringArrayListExtra(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
+    private void initCropFragments(Intent intent) {
+        isSkipCropForbid = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
+        ArrayList<String> totalCropData = intent.getStringArrayListExtra(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
         if (totalCropData == null || totalCropData.size() <= 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
         }
@@ -122,7 +122,10 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 uCropNotSupportList.add(path);
             } else {
                 uCropSupportList.add(path);
-                Bundle extras = getIntent().getExtras();
+                Bundle extras = intent.getExtras();
+                if (extras == null) {
+                    continue;
+                }
                 Uri inputUri = FileUtils.isContent(path) || FileUtils.isHasHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
                 String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
                         isForbidCropGifWebp, inputUri);
@@ -155,7 +158,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
      */
     private int getCropSupportPosition() {
         int position = 0;
-        ArrayList<String> skipCropMimeType = getIntent().getExtras().getStringArrayList(UCrop.Options.EXTRA_SKIP_CROP_MIME_TYPE);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            return position;
+        }
+        ArrayList<String> skipCropMimeType = extras.getStringArrayList(UCrop.Options.EXTRA_SKIP_CROP_MIME_TYPE);
         if (skipCropMimeType != null && skipCropMimeType.size() > 0) {
             position = -1;
             filterSet.addAll(skipCropMimeType);
