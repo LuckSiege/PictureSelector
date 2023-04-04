@@ -493,6 +493,16 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * Using the system player
+     *
+     * @param isUseSystemVideoPlayer
+     */
+    public PictureSelectionModel isUseSystemVideoPlayer(boolean isUseSystemVideoPlayer) {
+        selectionConfig.isUseSystemVideoPlayer = isUseSystemVideoPlayer;
+        return this;
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing

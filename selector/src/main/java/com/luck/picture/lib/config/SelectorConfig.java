@@ -139,6 +139,7 @@ public final class SelectorConfig {
     public boolean isSyncWidthAndHeight;
     public boolean isOriginalSkipCompress;
     public boolean isPreloadFirst;
+    public boolean isUseSystemVideoPlayer;
     public PictureSelectorStyle selectorStyle;
 
     public SelectorConfig() {
@@ -234,6 +235,7 @@ public final class SelectorConfig {
         isSyncWidthAndHeight = true;
         isOriginalSkipCompress = false;
         isPreloadFirst = true;
+        isUseSystemVideoPlayer = false;
     }
 
     /**

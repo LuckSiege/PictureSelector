@@ -20,6 +20,7 @@ import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
 import com.luck.picture.lib.photoview.OnViewTapListener;
+import com.luck.picture.lib.utils.IntentUtils;
 
 
 /**
@@ -199,15 +200,19 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      * 开始播放视频
      */
     public void startPlay() {
-        if (videoPlayer == null) {
-            throw new NullPointerException("VideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
-        }
-        if (selectorConfig.videoPlayerEngine != null) {
-            progress.setVisibility(View.VISIBLE);
-            ivPlayButton.setVisibility(View.GONE);
-            mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-            isPlayed = true;
-            selectorConfig.videoPlayerEngine.onStarPlayer(videoPlayer, media);
+        if (selectorConfig.isUseSystemVideoPlayer) {
+            IntentUtils.startSystemPlayerVideo(itemView.getContext(), media.getAvailablePath());
+        } else {
+            if (videoPlayer == null) {
+                throw new NullPointerException("VideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
+            }
+            if (selectorConfig.videoPlayerEngine != null) {
+                progress.setVisibility(View.VISIBLE);
+                ivPlayButton.setVisibility(View.GONE);
+                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                isPlayed = true;
+                selectorConfig.videoPlayerEngine.onStarPlayer(videoPlayer, media);
+            }
         }
     }
 

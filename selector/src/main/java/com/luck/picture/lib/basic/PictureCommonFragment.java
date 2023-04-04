@@ -1187,6 +1187,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         selectorConfig.chooseMode, audioFileName, "", selectorConfig.outPutAudioDir);
                 FileOutputStream outputStream = new FileOutputStream(outputFile.getAbsolutePath());
                 boolean isCopyStatus = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
+                ToastUtils.showToast(getAppContext(),isCopyStatus+"--->"+outputFile.getAbsolutePath());
                 if (isCopyStatus) {
                     MediaUtils.deleteUri(getAppContext(), selectorConfig.cameraPath);
                     selectorConfig.cameraPath = outputFile.getAbsolutePath();
@@ -1208,7 +1209,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             return null;
         }
         Uri outPutUri = data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-        if (selectorConfig.chooseMode == SelectMimeType.ofAudio() && outPutUri == null) {
+        String cameraPath = selectorConfig.cameraPath;
+        boolean isCameraFileExists = TextUtils.isEmpty(cameraPath) || PictureMimeType.isContent(cameraPath) || new File(cameraPath).exists();
+        if ((selectorConfig.chooseMode == SelectMimeType.ofAudio() || !isCameraFileExists) && outPutUri == null) {
             outPutUri = data.getData();
         }
         if (outPutUri == null) {

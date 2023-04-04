@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
     private boolean needScaleSmall = false;
+    private boolean isUseSystemPlayer = false;
     private int language = LanguageConfig.UNKNOWN_LANGUAGE;
     private int x = 0, y = 0;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -384,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
                         .isVideoPauseResumePlay(cb_video_resume.isChecked())
+                        .isUseSystemVideoPlayer(isUseSystemPlayer)
                         .setCustomLoadingListener(getCustomLoadingListener())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
@@ -480,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
+                                .isUseSystemVideoPlayer(isUseSystemPlayer)
                                 .isPageSyncAlbumCount(true)
                                 .setCustomLoadingListener(getCustomLoadingListener())
                                 .setQueryFilterListener(new OnQueryFilterListener() {
@@ -1979,12 +1982,18 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_media_player:
                 videoPlayerEngine = null;
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_exo_player:
                 videoPlayerEngine = new ExoPlayerEngine();
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_ijk_player:
                 videoPlayerEngine = new IjkPlayerEngine();
+                isUseSystemPlayer = false;
+                break;
+            case R.id.rb_system_player:
+                isUseSystemPlayer = true;
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

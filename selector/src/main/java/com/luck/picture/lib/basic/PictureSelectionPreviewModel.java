@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
@@ -25,7 +25,6 @@ import com.luck.picture.lib.interfaces.OnInjectActivityPreviewListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -142,6 +141,16 @@ public final class PictureSelectionPreviewModel {
      */
     public PictureSelectionPreviewModel setAttachViewLifecycle(IBridgeViewLifecycle viewLifecycle) {
         selectionConfig.viewLifecycle = viewLifecycle;
+        return this;
+    }
+
+    /**
+     * Using the system player
+     *
+     * @param isUseSystemVideoPlayer
+     */
+    public PictureSelectionPreviewModel isUseSystemVideoPlayer(boolean isUseSystemVideoPlayer) {
+        selectionConfig.isUseSystemVideoPlayer = isUseSystemVideoPlayer;
         return this;
     }
 
