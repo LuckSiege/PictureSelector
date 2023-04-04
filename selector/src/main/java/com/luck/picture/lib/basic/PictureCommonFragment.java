@@ -1187,7 +1187,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         selectorConfig.chooseMode, audioFileName, "", selectorConfig.outPutAudioDir);
                 FileOutputStream outputStream = new FileOutputStream(outputFile.getAbsolutePath());
                 boolean isCopyStatus = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
-                ToastUtils.showToast(getAppContext(),isCopyStatus+"--->"+outputFile.getAbsolutePath());
                 if (isCopyStatus) {
                     MediaUtils.deleteUri(getAppContext(), selectorConfig.cameraPath);
                     selectorConfig.cameraPath = outputFile.getAbsolutePath();
