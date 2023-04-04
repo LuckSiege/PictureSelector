@@ -558,22 +558,22 @@ public class PictureFileUtils {
         if (byteSize < 0) {
             throw new IllegalArgumentException("byteSize shouldn't be less than zero!");
         } else if (byteSize < FileSizeUnit.ACCURATE_KB) {
-            String format = String.format("%." + 2 + "f", (double) byteSize);
+            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize);
             double num = ValueOf.toDouble(format);
             long round = Math.round(num);
             return (round - num == 0 ? round : format) + "B";
         } else if (byteSize < FileSizeUnit.ACCURATE_MB) {
-            String format = String.format("%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_KB);
+            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_KB);
             double num = ValueOf.toDouble(format);
             long round = Math.round(num);
             return (round - num == 0 ? round : format) + "KB";
         } else if (byteSize < FileSizeUnit.ACCURATE_GB) {
-            String format = String.format("%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_MB);
+            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_MB);
             double num = ValueOf.toDouble(format);
             long round = Math.round(num);
             return (round - num == 0 ? round : format) + "MB";
         } else {
-            String format = String.format("%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_GB);
+            String format = String.format(new Locale("zh"), "%." + 2 + "f", (double) byteSize / FileSizeUnit.ACCURATE_GB);
             double num = ValueOf.toDouble(format);
             long round = Math.round(num);
             return (round - num == 0 ? round : format) + "GB";
