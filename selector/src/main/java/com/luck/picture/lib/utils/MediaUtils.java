@@ -167,7 +167,7 @@ public class MediaUtils {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             if (PictureMimeType.isContent(url)) {
-                inputStream = PictureContentResolver.getContentResolverOpenInputStream(PictureAppMaster.getInstance().getAppContext(), Uri.parse(url));
+                inputStream = PictureContentResolver.openInputStream(PictureAppMaster.getInstance().getAppContext(), Uri.parse(url));
             } else {
                 inputStream = new FileInputStream(url);
             }
@@ -198,7 +198,7 @@ public class MediaUtils {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             if (PictureMimeType.isContent(url)) {
-                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
+                inputStream = PictureContentResolver.openInputStream(context, Uri.parse(url));
             } else {
                 inputStream = new FileInputStream(url);
             }

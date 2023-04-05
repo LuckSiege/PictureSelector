@@ -20,7 +20,7 @@ public final class PictureContentResolver {
      * @param uri
      * @return
      */
-    public static InputStream getContentResolverOpenInputStream(Context context, Uri uri) {
+    public static InputStream openInputStream(Context context, Uri uri) {
         try {
             return context.getContentResolver().openInputStream(uri);
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public final class PictureContentResolver {
      * @param uri
      * @return
      */
-    public static OutputStream getContentResolverOpenOutputStream(Context context, Uri uri) {
+    public static OutputStream openOutputStream(Context context, Uri uri) {
         try {
             return context.getContentResolver().openOutputStream(uri);
         } catch (Exception e) {

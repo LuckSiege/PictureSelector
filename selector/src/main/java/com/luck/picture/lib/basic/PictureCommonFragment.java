@@ -79,6 +79,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -1173,9 +1174,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void copyOutputAudioToDir() {
         try {
-            if (!TextUtils.isEmpty(selectorConfig.outPutAudioDir) && PictureMimeType.isContent(selectorConfig.cameraPath)) {
-                InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(getAppContext(),
-                        Uri.parse(selectorConfig.cameraPath));
+            if (!TextUtils.isEmpty(selectorConfig.outPutAudioDir)) {
+                InputStream inputStream = PictureMimeType.isContent(selectorConfig.cameraPath)
+                        ? PictureContentResolver.openInputStream(getAppContext(), Uri.parse(selectorConfig.cameraPath)) : new FileInputStream(selectorConfig.cameraPath);
                 String audioFileName;
                 if (TextUtils.isEmpty(selectorConfig.outPutAudioFileName)) {
                     audioFileName = "";
@@ -1186,8 +1187,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 File outputFile = PictureFileUtils.createCameraFile(getAppContext(),
                         selectorConfig.chooseMode, audioFileName, "", selectorConfig.outPutAudioDir);
                 FileOutputStream outputStream = new FileOutputStream(outputFile.getAbsolutePath());
-                boolean isCopyStatus = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
-                if (isCopyStatus) {
+                if (PictureFileUtils.writeFileFromIS(inputStream, outputStream)) {
                     MediaUtils.deleteUri(getAppContext(), selectorConfig.cameraPath);
                     selectorConfig.cameraPath = outputFile.getAbsolutePath();
                 }
