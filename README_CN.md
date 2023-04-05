@@ -93,7 +93,6 @@ dependencies {
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="android.permission.BLUETOOTH" />
 
 Android 13版本适配，细化存储权限
 <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
