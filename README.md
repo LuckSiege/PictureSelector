@@ -11,7 +11,7 @@
 
 
 ## Contents
--[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.9)<br>
+-[Latest version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.9)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
