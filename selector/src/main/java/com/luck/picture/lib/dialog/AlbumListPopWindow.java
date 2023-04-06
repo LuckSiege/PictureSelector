@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumAdapter;
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -38,9 +38,11 @@ public class AlbumListPopWindow extends PopupWindow {
     private boolean isDismiss = false;
     private int windowMaxHeight;
     private PictureAlbumAdapter mAdapter;
+    private SelectorConfig selectorConfig;
 
-    public AlbumListPopWindow(Context context) {
+    public AlbumListPopWindow(Context context, SelectorConfig config) {
         this.mContext = context;
+        this.selectorConfig = config;
         setContentView(LayoutInflater.from(context).inflate(R.layout.ps_window_folder, null));
         setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
         setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -56,7 +58,7 @@ public class AlbumListPopWindow extends PopupWindow {
         mRecyclerView = getContentView().findViewById(R.id.folder_list);
         windMask = getContentView().findViewById(R.id.rootViewBg);
         mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext));
-        mAdapter = new PictureAlbumAdapter();
+        mAdapter = new PictureAlbumAdapter(selectorConfig);
         mRecyclerView.setAdapter(mAdapter);
         windMask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +110,8 @@ public class AlbumListPopWindow extends PopupWindow {
         mAdapter.setOnIBridgeAlbumWidget(listener);
     }
 
-    public static AlbumListPopWindow buildPopWindow(Context context) {
-        return new AlbumListPopWindow(context);
+    public static AlbumListPopWindow buildPopWindow(Context context, SelectorConfig config) {
+        return new AlbumListPopWindow(context, config);
     }
 
     @Override
@@ -141,8 +143,8 @@ public class AlbumListPopWindow extends PopupWindow {
             LocalMediaFolder folder = folders.get(i);
             folder.setSelectTag(false);
             mAdapter.notifyItemChanged(i);
-            for (int j = 0; j < SelectedManager.getSelectCount(); j++) {
-                LocalMedia media = SelectedManager.getSelectedResult().get(j);
+            for (int j = 0; j < selectorConfig.getSelectCount(); j++) {
+                LocalMedia media = selectorConfig.getSelectedResult().get(j);
                 if (TextUtils.equals(folder.getFolderName(), media.getParentFolderName())
                         || folder.getBucketId() == PictureConfig.ALL) {
                     folder.setSelectTag(true);

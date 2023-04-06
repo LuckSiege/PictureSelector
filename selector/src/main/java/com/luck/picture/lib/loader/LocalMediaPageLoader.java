@@ -1,5 +1,6 @@
 package com.luck.picture.lib.loader;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +12,9 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaData;
@@ -41,6 +43,10 @@ import java.util.Set;
  */
 public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
+
+    public LocalMediaPageLoader(Context context, SelectorConfig config) {
+        super(context, config);
+    }
 
     /**
      * Query conditions in all modes
@@ -699,8 +705,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         media.setHeight(height);
         media.setSize(size);
         media.setDateAddedTime(dateAdded);
-        if (PictureSelectionConfig.onQueryFilterListener != null) {
-            if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
+        if (mConfig.onQueryFilterListener != null) {
+            if (mConfig.onQueryFilterListener.onFilter(media)) {
                 return null;
             }
         }

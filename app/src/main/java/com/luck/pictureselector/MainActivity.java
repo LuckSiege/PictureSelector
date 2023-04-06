@@ -75,10 +75,10 @@ import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
     private boolean needScaleSmall = false;
+    private boolean isUseSystemPlayer = false;
     private int language = LanguageConfig.UNKNOWN_LANGUAGE;
     private int x = 0, y = 0;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -308,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         launcherResult = createActivityResultLauncher();
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateHttpAsLocalMedia("https://fdfs.test-kepu.weiyilewen.com/group1/M00/00/01/wKhkY2Iv936EMKWzAAAAAHuLNY8762.mp4"));
+//        list.add(LocalMedia.generateHttpAsLocalMedia("https://gossv.cfp.cn/videos/mts_videos/medium/temp/VCG42483198574.mp4"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg"));
@@ -384,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
                         .isVideoPauseResumePlay(cb_video_resume.isChecked())
+                        .isUseSystemVideoPlayer(isUseSystemPlayer)
                         .setCustomLoadingListener(getCustomLoadingListener())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
@@ -480,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
+                                .isUseSystemVideoPlayer(isUseSystemPlayer)
                                 .isPageSyncAlbumCount(true)
                                 .setCustomLoadingListener(getCustomLoadingListener())
                                 .setQueryFilterListener(new OnQueryFilterListener() {
@@ -1298,7 +1301,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
 
         @Override
-        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, PictureSelectionConfig config, int limitType) {
+        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, SelectorConfig config, int limitType) {
             if (limitType == SelectLimitType.SELECT_MIN_SELECT_LIMIT) {
                 ToastUtils.showToast(context, "图片最少不能低于" + config.minSelectNum + "张");
                 return true;
@@ -1979,12 +1982,18 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_media_player:
                 videoPlayerEngine = null;
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_exo_player:
                 videoPlayerEngine = new ExoPlayerEngine();
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_ijk_player:
                 videoPlayerEngine = new IjkPlayerEngine();
+                isUseSystemPlayer = false;
+                break;
+            case R.id.rb_system_player:
+                isUseSystemPlayer = true;
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

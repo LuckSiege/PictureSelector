@@ -15,12 +15,12 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.MediaPlayerEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
 import com.luck.picture.lib.photoview.OnViewTapListener;
+import com.luck.picture.lib.utils.IntentUtils;
 
 
 /**
@@ -38,12 +38,11 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         super(itemView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         progress = itemView.findViewById(R.id.progress);
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
-        ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
-        if (PictureSelectionConfig.videoPlayerEngine == null) {
-            PictureSelectionConfig.videoPlayerEngine = new MediaPlayerEngine();
+        ivPlayButton.setVisibility(selectorConfig.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
+        if (selectorConfig.videoPlayerEngine == null) {
+            selectorConfig.videoPlayerEngine = new MediaPlayerEngine();
         }
-        videoPlayer = PictureSelectionConfig.videoPlayerEngine.onCreateVideoPlayer(itemView.getContext());
+        videoPlayer = selectorConfig.videoPlayerEngine.onCreateVideoPlayer(itemView.getContext());
         if (videoPlayer == null) {
             throw new NullPointerException("onCreateVideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
         }
@@ -65,12 +64,12 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     @Override
     protected void loadImage(LocalMedia media, int maxWidth, int maxHeight) {
-        if (PictureSelectionConfig.imageEngine != null) {
+        if (selectorConfig.imageEngine != null) {
             String availablePath = media.getAvailablePath();
             if (maxWidth == PictureConfig.UNSET && maxHeight == PictureConfig.UNSET) {
-                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), availablePath, coverImageView);
+                selectorConfig.imageEngine.loadImage(itemView.getContext(), availablePath, coverImageView);
             } else {
-                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), coverImageView, availablePath, maxWidth, maxHeight);
+                selectorConfig.imageEngine.loadImage(itemView.getContext(), coverImageView, availablePath, maxWidth, maxHeight);
             }
         }
     }
@@ -107,7 +106,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (config.isPauseResumePlay) {
+                if (selectorConfig.isPauseResumePlay) {
                     dispatchPlay();
                 } else {
                     startPlay();
@@ -117,7 +116,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (config.isPauseResumePlay) {
+                if (selectorConfig.isPauseResumePlay) {
                     dispatchPlay();
                 } else {
                     if (mPreviewEventListener != null) {
@@ -148,8 +147,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      */
     private void onResume() {
         ivPlayButton.setVisibility(View.GONE);
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onResume(videoPlayer);
+        if (selectorConfig.videoPlayerEngine != null) {
+            selectorConfig.videoPlayerEngine.onResume(videoPlayer);
         }
     }
 
@@ -158,8 +157,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      */
     public void onPause() {
         ivPlayButton.setVisibility(View.VISIBLE);
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onPause(videoPlayer);
+        if (selectorConfig.videoPlayerEngine != null) {
+            selectorConfig.videoPlayerEngine.onPause(videoPlayer);
         }
     }
 
@@ -168,8 +167,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      */
     @Override
     public boolean isPlaying() {
-        return PictureSelectionConfig.videoPlayerEngine != null
-                && PictureSelectionConfig.videoPlayerEngine.isPlaying(videoPlayer);
+        return selectorConfig.videoPlayerEngine != null
+                && selectorConfig.videoPlayerEngine.isPlaying(videoPlayer);
     }
 
     /**
@@ -201,22 +200,26 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      * 开始播放视频
      */
     public void startPlay() {
-        if (videoPlayer == null) {
-            throw new NullPointerException("VideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
-        }
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            progress.setVisibility(View.VISIBLE);
-            ivPlayButton.setVisibility(View.GONE);
-            mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-            isPlayed = true;
-            PictureSelectionConfig.videoPlayerEngine.onStarPlayer(videoPlayer, media);
+        if (selectorConfig.isUseSystemVideoPlayer) {
+            IntentUtils.startSystemPlayerVideo(itemView.getContext(), media.getAvailablePath());
+        } else {
+            if (videoPlayer == null) {
+                throw new NullPointerException("VideoPlayer cannot be empty,Please implement " + VideoPlayerEngine.class);
+            }
+            if (selectorConfig.videoPlayerEngine != null) {
+                progress.setVisibility(View.VISIBLE);
+                ivPlayButton.setVisibility(View.GONE);
+                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                isPlayed = true;
+                selectorConfig.videoPlayerEngine.onStarPlayer(videoPlayer, media);
+            }
         }
     }
 
     @Override
     protected void setScaleDisplaySize(LocalMedia media) {
         super.setScaleDisplaySize(media);
-        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
+        if (!selectorConfig.isPreviewZoomEffect && screenWidth < screenHeight) {
             ViewGroup.LayoutParams layoutParams = videoPlayer.getLayoutParams();
             if (layoutParams instanceof FrameLayout.LayoutParams) {
                 FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) layoutParams;
@@ -263,17 +266,17 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     @Override
     public void onViewAttachedToWindow() {
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onPlayerAttachedToWindow(videoPlayer);
-            PictureSelectionConfig.videoPlayerEngine.addPlayListener(mPlayerListener);
+        if (selectorConfig.videoPlayerEngine != null) {
+            selectorConfig.videoPlayerEngine.onPlayerAttachedToWindow(videoPlayer);
+            selectorConfig.videoPlayerEngine.addPlayListener(mPlayerListener);
         }
     }
 
     @Override
     public void onViewDetachedFromWindow() {
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.onPlayerDetachedFromWindow(videoPlayer);
-            PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
+        if (selectorConfig.videoPlayerEngine != null) {
+            selectorConfig.videoPlayerEngine.onPlayerDetachedFromWindow(videoPlayer);
+            selectorConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
         }
         playerDefaultUI();
     }
@@ -292,9 +295,9 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     @Override
     public void release() {
-        if (PictureSelectionConfig.videoPlayerEngine != null) {
-            PictureSelectionConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
-            PictureSelectionConfig.videoPlayerEngine.destroy(videoPlayer);
+        if (selectorConfig.videoPlayerEngine != null) {
+            selectorConfig.videoPlayerEngine.removePlayListener(mPlayerListener);
+            selectorConfig.videoPlayerEngine.destroy(videoPlayer);
         }
     }
 }

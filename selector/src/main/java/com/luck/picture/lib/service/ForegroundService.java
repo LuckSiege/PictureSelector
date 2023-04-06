@@ -14,8 +14,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.luck.picture.lib.BuildConfig;
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
 /**
@@ -73,7 +74,7 @@ public class ForegroundService extends Service {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        SelectorConfig config = SelectorProviders.getInstance().getSelectorConfig();
         String contentText = config.chooseMode == SelectMimeType.ofAudio()
                 ? getString(R.string.ps_use_sound) : getString(R.string.ps_use_camera);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -99,9 +100,9 @@ public class ForegroundService extends Service {
      *
      * @param context
      */
-    public static void startForegroundService(Context context) {
+    public static void startForegroundService(Context context, boolean isCameraForegroundService) {
         try {
-            if (!isForegroundServiceIng && PictureSelectionConfig.getInstance().isCameraForegroundService) {
+            if (!isForegroundServiceIng && isCameraForegroundService) {
                 Intent intent = new Intent(context, ForegroundService.class);
                 if (SdkVersionUtils.isO()) {
                     context.startForegroundService(intent);

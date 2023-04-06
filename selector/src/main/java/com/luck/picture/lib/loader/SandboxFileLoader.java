@@ -4,8 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
@@ -74,7 +75,7 @@ public final class SandboxFileLoader {
             if (files == null) {
                 return list;
             }
-            PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+            SelectorConfig config = SelectorProviders.getInstance().getSelectorConfig();
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance("MD5");
@@ -169,8 +170,8 @@ public final class SandboxFileLoader {
                 media.setSize(size);
                 media.setBucketId(bucketId);
                 media.setDateAddedTime(dateAdded);
-                if (PictureSelectionConfig.onQueryFilterListener != null) {
-                    if (PictureSelectionConfig.onQueryFilterListener.onFilter(media)) {
+                if (config.onQueryFilterListener != null) {
+                    if (config.onQueryFilterListener.onFilter(media)) {
                         continue;
                     }
                 }

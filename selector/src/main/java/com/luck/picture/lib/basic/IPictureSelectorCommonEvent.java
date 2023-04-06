@@ -3,10 +3,9 @@ package com.luck.picture.lib.basic;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.loader.IBridgeMediaLoader;
 
 import java.util.ArrayList;
 
@@ -161,7 +160,7 @@ public interface IPictureSelectorCommonEvent {
     void sendFixedSelectedChangeEvent(LocalMedia currentMedia);
 
     /**
-     * {@link PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
+     * {@link SelectorConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
      * <p>
      * isSelectNumberStyle模式下对选择结果编号进行排序
      * </p>

@@ -12,7 +12,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BaseRecyclerMediaHolder;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import java.util.ArrayList;
 
@@ -44,7 +44,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     private ArrayList<LocalMedia> mData = new ArrayList<>();
 
-    private final PictureSelectionConfig mConfig;
+    private final SelectorConfig mConfig;
 
     private final Context mContext;
 
@@ -53,7 +53,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         this.notifyItemChanged(position);
     }
 
-    public PictureImageGridAdapter(Context context, PictureSelectionConfig mConfig) {
+    public PictureImageGridAdapter(Context context, SelectorConfig mConfig) {
         this.mConfig = mConfig;
         this.mContext = context;
     }

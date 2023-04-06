@@ -41,7 +41,7 @@ public class BitmapUtils {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 if (PictureMimeType.isContent(path)) {
-                    inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                    inputStream = PictureContentResolver.openInputStream(context, Uri.parse(path));
                     BitmapFactory.decodeStream(inputStream, null, options);
                 } else {
                     BitmapFactory.decodeFile(path, options);
@@ -49,7 +49,7 @@ public class BitmapUtils {
                 options.inSampleSize = computeSize(options.outWidth, options.outHeight);
                 options.inJustDecodeBounds = false;
                 if (PictureMimeType.isContent(path)) {
-                    inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                    inputStream = PictureContentResolver.openInputStream(context, Uri.parse(path));
                     bitmap = BitmapFactory.decodeStream(inputStream, null, options);
                 } else {
                     bitmap = BitmapFactory.decodeFile(path, options);
@@ -57,7 +57,7 @@ public class BitmapUtils {
                 if (bitmap != null) {
                     bitmap = rotatingImage(bitmap, degree);
                     if (PictureMimeType.isContent(path)) {
-                        outputStream = (FileOutputStream) PictureContentResolver.getContentResolverOpenOutputStream(context, Uri.parse(path));
+                        outputStream = (FileOutputStream) PictureContentResolver.openOutputStream(context, Uri.parse(path));
                     } else {
                         outputStream = new FileOutputStream(path);
                     }
@@ -123,7 +123,7 @@ public class BitmapUtils {
         InputStream inputStream = null;
         try {
             if (PictureMimeType.isContent(filePath)) {
-                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(filePath));
+                inputStream = PictureContentResolver.openInputStream(context, Uri.parse(filePath));
                 exifInterface = new ExifInterface(inputStream);
             } else {
                 exifInterface = new ExifInterface(filePath);

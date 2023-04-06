@@ -14,7 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -31,7 +32,7 @@ public class CompleteSelectView extends LinearLayout {
     private TextView tvSelectNum;
     private TextView tvComplete;
     private Animation numberChangeAnimation;
-    private PictureSelectionConfig config;
+    private SelectorConfig config;
 
     public CompleteSelectView(Context context) {
         super(context);
@@ -55,7 +56,7 @@ public class CompleteSelectView extends LinearLayout {
         tvComplete = findViewById(R.id.ps_tv_complete);
         setGravity(Gravity.CENTER_VERTICAL);
         numberChangeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
-        config = PictureSelectionConfig.getInstance();
+        config = SelectorProviders.getInstance().getSelectorConfig();
     }
 
     protected void inflateLayout() {
@@ -66,7 +67,7 @@ public class CompleteSelectView extends LinearLayout {
      * 完成选择按钮样式
      */
     public void setCompleteSelectViewStyle() {
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        PictureSelectorStyle selectorStyle = config.selectorStyle;
         SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
         if (StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalBackgroundResources())) {
             setBackgroundResource(selectMainStyle.getSelectNormalBackgroundResources());
@@ -74,7 +75,7 @@ public class CompleteSelectView extends LinearLayout {
         String selectNormalText = selectMainStyle.getSelectNormalText();
         if (StyleUtils.checkTextValidity(selectNormalText)) {
             if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
-                tvComplete.setText(String.format(selectNormalText, SelectedManager.getSelectCount(), config.maxSelectNum));
+                tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));
             } else {
                 tvComplete.setText(selectNormalText);
             }
@@ -113,9 +114,9 @@ public class CompleteSelectView extends LinearLayout {
      * 选择结果发生变化
      */
     public void setSelectedChange(boolean isPreview) {
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        PictureSelectorStyle selectorStyle = config.selectorStyle;
         SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
-        if (SelectedManager.getSelectCount() > 0) {
+        if (config.getSelectCount() > 0) {
             setEnabled(true);
             int selectBackground = selectMainStyle.getSelectBackgroundResources();
             if (StyleUtils.checkStyleValidity(selectBackground)) {
@@ -126,7 +127,7 @@ public class CompleteSelectView extends LinearLayout {
             String selectText = selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectText)) {
-                    tvComplete.setText(String.format(selectText, SelectedManager.getSelectCount(), config.maxSelectNum));
+                    tvComplete.setText(String.format(selectText, config.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectText);
                 }
@@ -147,12 +148,12 @@ public class CompleteSelectView extends LinearLayout {
                 if (tvSelectNum.getVisibility() == GONE || tvSelectNum.getVisibility() == INVISIBLE) {
                     tvSelectNum.setVisibility(VISIBLE);
                 }
-                if (TextUtils.equals(ValueOf.toString(SelectedManager.getSelectCount()), tvSelectNum.getText())) {
+                if (TextUtils.equals(ValueOf.toString(config.getSelectCount()), tvSelectNum.getText())) {
                     // ignore
                 } else {
-                    tvSelectNum.setText(ValueOf.toString(SelectedManager.getSelectCount()));
-                    if (PictureSelectionConfig.onSelectAnimListener != null) {
-                        PictureSelectionConfig.onSelectAnimListener.onSelectAnim(tvSelectNum);
+                    tvSelectNum.setText(ValueOf.toString(config.getSelectCount()));
+                    if (config.onSelectAnimListener != null) {
+                        config.onSelectAnimListener.onSelectAnim(tvSelectNum);
                     } else {
                         tvSelectNum.startAnimation(numberChangeAnimation);
                     }
@@ -195,7 +196,7 @@ public class CompleteSelectView extends LinearLayout {
             String selectNormalText = selectMainStyle.getSelectNormalText();
             if (StyleUtils.checkTextValidity(selectNormalText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
-                    tvComplete.setText(String.format(selectNormalText, SelectedManager.getSelectCount(), config.maxSelectNum));
+                    tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectNormalText);
                 }

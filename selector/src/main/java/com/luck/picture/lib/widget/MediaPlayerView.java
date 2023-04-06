@@ -47,6 +47,7 @@ public class MediaPlayerView extends FrameLayout implements SurfaceHolder.Callba
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
         surfaceView.setLayoutParams(layoutParams);
+
         addView(surfaceView);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
@@ -68,6 +69,10 @@ public class MediaPlayerView extends FrameLayout implements SurfaceHolder.Callba
 
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
+    }
+
+    public VideoSurfaceView getSurfaceView() {
+        return surfaceView;
     }
 
     public void start(String path) {
