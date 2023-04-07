@@ -14,7 +14,6 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -96,7 +95,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             if (StyleUtils.checkStyleValidity(originalDrawableLeft)) {
                 originalCheckbox.setButtonDrawable(originalDrawableLeft);
             }
-            String bottomOriginalText = bottomBarStyle.getBottomOriginalText();
+            String bottomOriginalText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomOriginalTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomOriginalTextResId()) : bottomBarStyle.getBottomOriginalText();
             if (StyleUtils.checkTextValidity(bottomOriginalText)) {
                 originalCheckbox.setText(bottomOriginalText);
             }
@@ -130,12 +130,14 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         if (StyleUtils.checkSizeValidity(previewTextSize)) {
             tvPreview.setTextSize(previewTextSize);
         }
-        String bottomPreviewText = bottomBarStyle.getBottomPreviewNormalText();
+        String bottomPreviewText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNormalTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomPreviewNormalTextResId()) : bottomBarStyle.getBottomPreviewNormalText();
         if (StyleUtils.checkTextValidity(bottomPreviewText)) {
             tvPreview.setText(bottomPreviewText);
         }
 
-        String editorText = bottomBarStyle.getBottomEditorText();
+        String editorText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomEditorTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomEditorTextResId()) : bottomBarStyle.getBottomEditorText();
         if (StyleUtils.checkTextValidity(editorText)) {
             tvImageEditor.setText(editorText);
         }
@@ -153,7 +155,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             originalCheckbox.setButtonDrawable(originalDrawableLeft);
         }
 
-        String originalText = bottomBarStyle.getBottomOriginalText();
+        String originalText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomOriginalTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomOriginalTextResId()) : bottomBarStyle.getBottomOriginalText();
         if (StyleUtils.checkTextValidity(originalText)) {
             originalCheckbox.setText(originalText);
         }
@@ -191,7 +194,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             } else {
                 tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
             }
-            String previewSelectText = bottomBarStyle.getBottomPreviewSelectText();
+            String previewSelectText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewSelectTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomPreviewSelectTextResId()) : bottomBarStyle.getBottomPreviewSelectText();
             if (StyleUtils.checkTextValidity(previewSelectText)) {
                 if (StyleUtils.checkTextFormatValidity(previewSelectText)) {
                     tvPreview.setText(String.format(previewSelectText, config.getSelectCount()));
@@ -209,7 +213,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             } else {
                 tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
             }
-            String previewText = bottomBarStyle.getBottomPreviewNormalText();
+            String previewText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNormalTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomPreviewNormalTextResId()) : bottomBarStyle.getBottomPreviewNormalText();
             if (StyleUtils.checkTextValidity(previewText)) {
                 tvPreview.setText(previewText);
             } else {

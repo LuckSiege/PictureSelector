@@ -58,6 +58,11 @@ public class SelectMainStyle {
     private String previewSelectText;
 
     /**
+     * 预览页选择按钮文本
+     */
+    private int previewSelectTextResId;
+
+    /**
      * 预览页选择按钮字体大小
      */
     private int previewSelectTextSize;
@@ -97,6 +102,12 @@ public class SelectMainStyle {
      * 选择按钮默认文本
      */
     private String selectNormalText;
+
+    /**
+     * 选择按钮默认文本
+     */
+    private int selectNormalTextResId;
+
     /**
      * 选择按钮默认文本字体大小
      */
@@ -115,6 +126,12 @@ public class SelectMainStyle {
      * 选择按钮文本
      */
     private String selectText;
+
+    /**
+     * 选择按钮文本
+     */
+    private int selectTextResId;
+
     /**
      * 选择按钮文本字体大小
      */
@@ -206,6 +223,11 @@ public class SelectMainStyle {
      * 拍照按钮文本
      */
     private String adapterCameraText;
+
+    /**
+     * 拍照按钮文本
+     */
+    private int adapterCameraTextResId;
 
     /**
      * 拍照按钮文本字体色值
@@ -329,6 +351,14 @@ public class SelectMainStyle {
         this.previewSelectText = previewSelectText;
     }
 
+    public int getPreviewSelectTextResId() {
+        return previewSelectTextResId;
+    }
+
+    public void setPreviewSelectText(int resId) {
+        this.previewSelectTextResId = resId;
+    }
+
     public int getPreviewSelectTextSize() {
         return previewSelectTextSize;
     }
@@ -393,6 +423,14 @@ public class SelectMainStyle {
         this.selectNormalText = selectNormalText;
     }
 
+    public int getSelectNormalTextResId() {
+        return selectNormalTextResId;
+    }
+
+    public void setSelectNormalText(int resId) {
+        this.selectNormalTextResId = resId;
+    }
+
     public int getSelectNormalTextSize() {
         return selectNormalTextSize;
     }
@@ -423,6 +461,14 @@ public class SelectMainStyle {
 
     public void setSelectText(String selectText) {
         this.selectText = selectText;
+    }
+
+    public int getSelectTextResId() {
+        return selectTextResId;
+    }
+
+    public void setSelectText(int resId) {
+        this.selectTextResId = resId;
     }
 
     public int getSelectTextSize() {
@@ -559,6 +605,14 @@ public class SelectMainStyle {
 
     public void setAdapterCameraText(String adapterCameraText) {
         this.adapterCameraText = adapterCameraText;
+    }
+
+    public int getAdapterCameraTextResId() {
+        return adapterCameraTextResId;
+    }
+
+    public void setAdapterCameraText(int resId) {
+        this.adapterCameraTextResId = resId;
     }
 
     public int getAdapterCameraTextColor() {

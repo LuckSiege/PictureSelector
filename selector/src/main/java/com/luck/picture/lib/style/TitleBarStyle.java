@@ -24,6 +24,12 @@ public class TitleBarStyle {
      * 标题栏默认文案
      */
     private String titleDefaultText;
+
+    /**
+     * 标题栏默认文案
+     */
+    private int titleDefaultTextResId;
+
     /**
      * 标题栏字体大小
      */
@@ -85,6 +91,12 @@ public class TitleBarStyle {
      * 标题栏右边默认文本
      */
     private String titleCancelText;
+
+    /**
+     * 标题栏右边默认文本
+     */
+    private int titleCancelTextResId;
+
     /**
      * 标题栏右边文本字体大小
      */
@@ -137,6 +149,14 @@ public class TitleBarStyle {
 
     public void setTitleDefaultText(String titleDefaultText) {
         this.titleDefaultText = titleDefaultText;
+    }
+
+    public int getTitleDefaultTextResId() {
+        return titleDefaultTextResId;
+    }
+
+    public void setTitleDefaultText(int resId) {
+        this.titleDefaultTextResId = resId;
     }
 
     public int getTitleTextSize() {
@@ -233,6 +253,14 @@ public class TitleBarStyle {
 
     public void setTitleCancelText(String titleCancelText) {
         this.titleCancelText = titleCancelText;
+    }
+
+    public int getTitleCancelTextResId() {
+        return titleCancelTextResId;
+    }
+
+    public void setTitleCancelText(int resId) {
+        this.titleCancelTextResId = resId;
     }
 
     public int getTitleCancelTextSize() {

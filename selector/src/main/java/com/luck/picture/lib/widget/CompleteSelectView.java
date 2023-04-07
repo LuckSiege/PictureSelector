@@ -72,7 +72,8 @@ public class CompleteSelectView extends LinearLayout {
         if (StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalBackgroundResources())) {
             setBackgroundResource(selectMainStyle.getSelectNormalBackgroundResources());
         }
-        String selectNormalText = selectMainStyle.getSelectNormalText();
+        String selectNormalText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalTextResId())
+                ? getContext().getString(selectMainStyle.getSelectNormalTextResId()) : selectMainStyle.getSelectNormalText();
         if (StyleUtils.checkTextValidity(selectNormalText)) {
             if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
                 tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));
@@ -124,7 +125,8 @@ public class CompleteSelectView extends LinearLayout {
             } else {
                 setBackgroundResource(R.drawable.ps_ic_trans_1px);
             }
-            String selectText = selectMainStyle.getSelectText();
+            String selectText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectTextResId())
+                    ? getContext().getString(selectMainStyle.getSelectTextResId()) : selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectText)) {
                     tvComplete.setText(String.format(selectText, config.getSelectCount(), config.maxSelectNum));
@@ -193,7 +195,8 @@ public class CompleteSelectView extends LinearLayout {
             }
 
             tvSelectNum.setVisibility(GONE);
-            String selectNormalText = selectMainStyle.getSelectNormalText();
+            String selectNormalText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalTextResId())
+                    ? getContext().getString(selectMainStyle.getSelectNormalTextResId()) : selectMainStyle.getSelectNormalText();
             if (StyleUtils.checkTextValidity(selectNormalText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
                     tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));

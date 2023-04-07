@@ -30,6 +30,11 @@ public class BottomNavBarStyle {
     private String bottomPreviewNormalText;
 
     /**
+     * 底部预览文本
+     */
+    private int bottomPreviewNormalTextResId;
+
+    /**
      * 底部预览文本字体大小
      */
     private int bottomPreviewNormalTextSize;
@@ -44,6 +49,11 @@ public class BottomNavBarStyle {
     private String bottomPreviewSelectText;
 
     /**
+     * 底部选中预览文本
+     */
+    private int bottomPreviewSelectTextResId;
+
+    /**
      * 底部预览文本选中字体色值
      */
     private int bottomPreviewSelectTextColor;
@@ -52,6 +62,12 @@ public class BottomNavBarStyle {
      * 底部编辑文字
      */
     private String bottomEditorText;
+
+    /**
+     * 底部编辑文字
+     */
+    private int bottomEditorTextResId;
+
     /**
      * 底部编辑文字大小
      */
@@ -68,6 +84,12 @@ public class BottomNavBarStyle {
      * 底部原图文字
      */
     private String bottomOriginalText;
+
+    /**
+     * 底部原图文字
+     */
+    private int bottomOriginalTextResId;
+
     /**
      * 底部原图文字大小
      */
@@ -131,6 +153,14 @@ public class BottomNavBarStyle {
         this.bottomPreviewNormalText = bottomPreviewNormalText;
     }
 
+    public int getBottomPreviewNormalTextResId() {
+        return bottomPreviewNormalTextResId;
+    }
+
+    public void setBottomPreviewNormalText(int resId) {
+        this.bottomPreviewNormalTextResId = resId;
+    }
+
     public int getBottomPreviewNormalTextSize() {
         return bottomPreviewNormalTextSize;
     }
@@ -155,6 +185,14 @@ public class BottomNavBarStyle {
         this.bottomPreviewSelectText = bottomPreviewSelectText;
     }
 
+    public int getBottomPreviewSelectTextResId() {
+        return bottomPreviewSelectTextResId;
+    }
+
+    public void setBottomPreviewSelectText(int resId) {
+        this.bottomPreviewSelectTextResId = resId;
+    }
+
     public int getBottomPreviewSelectTextColor() {
         return bottomPreviewSelectTextColor;
     }
@@ -169,6 +207,14 @@ public class BottomNavBarStyle {
 
     public void setBottomEditorText(String bottomEditorText) {
         this.bottomEditorText = bottomEditorText;
+    }
+
+    public int getBottomEditorTextResId() {
+        return bottomEditorTextResId;
+    }
+
+    public void setBottomEditorText(int resId) {
+        this.bottomEditorTextResId = resId;
     }
 
     public int getBottomEditorTextSize() {
@@ -201,6 +247,14 @@ public class BottomNavBarStyle {
 
     public void setBottomOriginalText(String bottomOriginalText) {
         this.bottomOriginalText = bottomOriginalText;
+    }
+
+    public int getBottomOriginalTextResId() {
+        return bottomOriginalTextResId;
+    }
+
+    public void setBottomOriginalText(int resId) {
+        this.bottomOriginalTextResId = resId;
     }
 
     public int getBottomOriginalTextSize() {

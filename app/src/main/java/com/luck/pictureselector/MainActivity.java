@@ -2104,7 +2104,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
                 selectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_white_preview_selector);
                 selectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
-                selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
+                selectMainStyle.setSelectText(R.string.ps_done_front_num);
                 selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
                 selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
@@ -2134,7 +2134,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
-                numberBlueSelectMainStyle.setSelectText(getString(R.string.ps_completed));
+                numberBlueSelectMainStyle.setSelectText(R.string.ps_completed);
 
                 selectorStyle.setTitleBarStyle(blueTitleBarStyle);
                 selectorStyle.setBottomBarStyle(numberBlueBottomNavBarStyle);
@@ -2150,15 +2150,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_preview_checkbox_selector);
                 numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
                 numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));
+                numberSelectMainStyle.setSelectNormalText(R.string.ps_send);
                 numberSelectMainStyle.setAdapterPreviewGalleryBackgroundResource(R.drawable.ps_preview_gallery_bg);
                 numberSelectMainStyle.setAdapterPreviewGalleryItemSize(DensityUtil.dip2px(getContext(), 52));
-                numberSelectMainStyle.setPreviewSelectText(getString(R.string.ps_select));
+                numberSelectMainStyle.setPreviewSelectText(R.string.ps_select);
                 numberSelectMainStyle.setPreviewSelectTextSize(14);
                 numberSelectMainStyle.setPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 numberSelectMainStyle.setPreviewSelectMarginRight(DensityUtil.dip2px(getContext(), 6));
                 numberSelectMainStyle.setSelectBackgroundResources(R.drawable.ps_select_complete_bg);
-                numberSelectMainStyle.setSelectText(getString(R.string.ps_send_num));
+                numberSelectMainStyle.setSelectText(R.string.ps_send_num);
                 numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 numberSelectMainStyle.setCompleteSelectRelativeTop(true);
@@ -2180,11 +2180,11 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 // 底部NavBar 风格
                 BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();
                 numberBottomNavBarStyle.setBottomPreviewNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_half_grey));
-                numberBottomNavBarStyle.setBottomPreviewNormalText(getString(R.string.ps_preview));
+                numberBottomNavBarStyle.setBottomPreviewNormalText(R.string.ps_preview);
                 numberBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBottomNavBarStyle.setBottomPreviewNormalTextSize(16);
                 numberBottomNavBarStyle.setCompleteCountTips(false);
-                numberBottomNavBarStyle.setBottomPreviewSelectText(getString(R.string.ps_preview_num));
+                numberBottomNavBarStyle.setBottomPreviewSelectText(R.string.ps_preview_num);
                 numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
 

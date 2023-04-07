@@ -29,7 +29,8 @@ public class CameraViewHolder extends BaseRecyclerMediaHolder {
         if (StyleUtils.checkStyleValidity(drawableTop)) {
             tvCamera.setCompoundDrawablesRelativeWithIntrinsicBounds(0, drawableTop, 0, 0);
         }
-        String text = adapterStyle.getAdapterCameraText();
+        String text = StyleUtils.checkStyleValidity(adapterStyle.getAdapterCameraTextResId())
+                ? itemView.getContext().getString(adapterStyle.getAdapterCameraTextResId()) : adapterStyle.getAdapterCameraText();
         if (StyleUtils.checkTextValidity(text)) {
             tvCamera.setText(text);
         } else {

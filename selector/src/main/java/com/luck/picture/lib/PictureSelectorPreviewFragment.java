@@ -628,7 +628,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else if (StyleUtils.checkStyleValidity(selectMainStyle.getSelectBackground())) {
             tvSelected.setBackgroundResource(selectMainStyle.getSelectBackground());
         }
-        if (StyleUtils.checkTextValidity(selectMainStyle.getPreviewSelectText())) {
+        if (StyleUtils.checkStyleValidity(selectMainStyle.getPreviewSelectTextResId())) {
+            tvSelectedWord.setText(getString(selectMainStyle.getPreviewSelectTextResId()));
+        } else if (StyleUtils.checkTextValidity(selectMainStyle.getPreviewSelectText())) {
             tvSelectedWord.setText(selectMainStyle.getPreviewSelectText());
         } else {
             tvSelectedWord.setText("");

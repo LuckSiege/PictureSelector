@@ -13,8 +13,8 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
@@ -162,7 +162,8 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         if (StyleUtils.checkStyleValidity(backResId)) {
             ivLeftBack.setImageResource(backResId);
         }
-        String titleDefaultText = titleBarStyle.getTitleDefaultText();
+        String titleDefaultText = StyleUtils.checkStyleValidity(titleBarStyle.getTitleDefaultTextResId())
+                ? getContext().getString(titleBarStyle.getTitleDefaultTextResId()) : titleBarStyle.getTitleDefaultText();
         if (StyleUtils.checkTextValidity(titleDefaultText)) {
             tvTitle.setText(titleDefaultText);
         }
@@ -195,7 +196,8 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             if (StyleUtils.checkStyleValidity(titleCancelBackgroundResource)) {
                 tvCancel.setBackgroundResource(titleCancelBackgroundResource);
             }
-            String titleCancelText = titleBarStyle.getTitleCancelText();
+            String titleCancelText = StyleUtils.checkStyleValidity(titleBarStyle.getTitleCancelTextResId())
+                    ? getContext().getString(titleBarStyle.getTitleCancelTextResId()) : titleBarStyle.getTitleCancelText();
             if (StyleUtils.checkTextValidity(titleCancelText)) {
                 tvCancel.setText(titleCancelText);
             }
