@@ -86,7 +86,7 @@ public final class InjectResourceSource {
      */
     public static int getLayoutResource(Context context, int resourceSource) {
         SelectorConfig selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
-        if (selectorConfig.onLayoutResourceListener != null) {
+        if (selectorConfig != null && selectorConfig.onLayoutResourceListener != null) {
             return selectorConfig.onLayoutResourceListener.getLayoutResourceId(context, resourceSource);
         }
         return DEFAULT_LAYOUT_RESOURCE;

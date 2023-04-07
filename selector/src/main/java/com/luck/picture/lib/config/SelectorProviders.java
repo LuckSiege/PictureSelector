@@ -16,7 +16,7 @@ public class SelectorProviders {
     }
 
     public SelectorConfig getSelectorConfig() {
-        return selectionConfigsQueue.getLast();
+        return selectionConfigsQueue.size() > 0 ? selectionConfigsQueue.getLast() : null;
     }
 
     public void destroy() {

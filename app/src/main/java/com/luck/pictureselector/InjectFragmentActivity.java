@@ -1,6 +1,5 @@
 package com.luck.pictureselector;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +13,9 @@ import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
-import com.luck.picture.lib.basic.PictureContextWrapper;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
-import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.immersive.ImmersiveManager;
@@ -141,12 +138,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
      */
     private void setTranslucentStatusBar() {
         ImmersiveManager.translucentStatusBar(InjectFragmentActivity.this, true);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(PictureContextWrapper.wrap(newBase,
-                SelectorProviders.getInstance().getSelectorConfig().language,SelectorProviders.getInstance().getSelectorConfig().defaultLanguage));
     }
 
 }
