@@ -1,7 +1,5 @@
 package com.luck.picture.lib.style;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.widget.RelativeLayout;
 
 /**
@@ -9,7 +7,7 @@ import android.widget.RelativeLayout;
  * @date：2021/11/15 4:14 下午
  * @describe：SelectMainStyle
  */
-public class SelectMainStyle implements Parcelable {
+public class SelectMainStyle {
 
     /**
      * 状态栏背景色
@@ -266,129 +264,6 @@ public class SelectMainStyle implements Parcelable {
     public SelectMainStyle() {
 
     }
-
-
-    protected SelectMainStyle(Parcel in) {
-        statusBarColor = in.readInt();
-        navigationBarColor = in.readInt();
-        isDarkStatusBarBlack = in.readByte() != 0;
-        isCompleteSelectRelativeTop = in.readByte() != 0;
-        isPreviewSelectRelativeBottom = in.readByte() != 0;
-        isPreviewDisplaySelectGallery = in.readByte() != 0;
-        previewSelectMarginRight = in.readInt();
-        previewBackgroundColor = in.readInt();
-        previewSelectText = in.readString();
-        previewSelectTextSize = in.readInt();
-        previewSelectTextColor = in.readInt();
-        selectBackground = in.readInt();
-        previewSelectBackground = in.readInt();
-        isSelectNumberStyle = in.readByte() != 0;
-        isPreviewSelectNumberStyle = in.readByte() != 0;
-        mainListBackgroundColor = in.readInt();
-        selectNormalText = in.readString();
-        selectNormalTextSize = in.readInt();
-        selectNormalTextColor = in.readInt();
-        selectNormalBackgroundResources = in.readInt();
-        selectText = in.readString();
-        selectTextSize = in.readInt();
-        selectTextColor = in.readInt();
-        selectBackgroundResources = in.readInt();
-        adapterItemSpacingSize = in.readInt();
-        isAdapterItemIncludeEdge = in.readByte() != 0;
-        adapterSelectTextSize = in.readInt();
-        adapterSelectClickArea = in.readInt();
-        adapterSelectTextColor = in.readInt();
-        adapterSelectStyleGravity = in.createIntArray();
-        adapterDurationDrawableLeft = in.readInt();
-        adapterDurationTextSize = in.readInt();
-        adapterDurationTextColor = in.readInt();
-        adapterDurationGravity = in.createIntArray();
-        adapterDurationBackgroundResources = in.readInt();
-        adapterCameraBackgroundColor = in.readInt();
-        adapterCameraDrawableTop = in.readInt();
-        adapterCameraText = in.readString();
-        adapterCameraTextColor = in.readInt();
-        adapterCameraTextSize = in.readInt();
-        adapterTagBackgroundResources = in.readInt();
-        adapterTagTextSize = in.readInt();
-        adapterTagTextColor = in.readInt();
-        adapterTagGravity = in.createIntArray();
-        adapterImageEditorResources = in.readInt();
-        adapterImageEditorGravity = in.createIntArray();
-        adapterPreviewGalleryFrameResource = in.readInt();
-        adapterPreviewGalleryBackgroundResource = in.readInt();
-        adapterPreviewGalleryItemSize = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(statusBarColor);
-        dest.writeInt(navigationBarColor);
-        dest.writeByte((byte) (isDarkStatusBarBlack ? 1 : 0));
-        dest.writeByte((byte) (isCompleteSelectRelativeTop ? 1 : 0));
-        dest.writeByte((byte) (isPreviewSelectRelativeBottom ? 1 : 0));
-        dest.writeByte((byte) (isPreviewDisplaySelectGallery ? 1 : 0));
-        dest.writeInt(previewSelectMarginRight);
-        dest.writeInt(previewBackgroundColor);
-        dest.writeString(previewSelectText);
-        dest.writeInt(previewSelectTextSize);
-        dest.writeInt(previewSelectTextColor);
-        dest.writeInt(selectBackground);
-        dest.writeInt(previewSelectBackground);
-        dest.writeByte((byte) (isSelectNumberStyle ? 1 : 0));
-        dest.writeByte((byte) (isPreviewSelectNumberStyle ? 1 : 0));
-        dest.writeInt(mainListBackgroundColor);
-        dest.writeString(selectNormalText);
-        dest.writeInt(selectNormalTextSize);
-        dest.writeInt(selectNormalTextColor);
-        dest.writeInt(selectNormalBackgroundResources);
-        dest.writeString(selectText);
-        dest.writeInt(selectTextSize);
-        dest.writeInt(selectTextColor);
-        dest.writeInt(selectBackgroundResources);
-        dest.writeInt(adapterItemSpacingSize);
-        dest.writeByte((byte) (isAdapterItemIncludeEdge ? 1 : 0));
-        dest.writeInt(adapterSelectTextSize);
-        dest.writeInt(adapterSelectClickArea);
-        dest.writeInt(adapterSelectTextColor);
-        dest.writeIntArray(adapterSelectStyleGravity);
-        dest.writeInt(adapterDurationDrawableLeft);
-        dest.writeInt(adapterDurationTextSize);
-        dest.writeInt(adapterDurationTextColor);
-        dest.writeIntArray(adapterDurationGravity);
-        dest.writeInt(adapterDurationBackgroundResources);
-        dest.writeInt(adapterCameraBackgroundColor);
-        dest.writeInt(adapterCameraDrawableTop);
-        dest.writeString(adapterCameraText);
-        dest.writeInt(adapterCameraTextColor);
-        dest.writeInt(adapterCameraTextSize);
-        dest.writeInt(adapterTagBackgroundResources);
-        dest.writeInt(adapterTagTextSize);
-        dest.writeInt(adapterTagTextColor);
-        dest.writeIntArray(adapterTagGravity);
-        dest.writeInt(adapterImageEditorResources);
-        dest.writeIntArray(adapterImageEditorGravity);
-        dest.writeInt(adapterPreviewGalleryFrameResource);
-        dest.writeInt(adapterPreviewGalleryBackgroundResource);
-        dest.writeInt(adapterPreviewGalleryItemSize);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<SelectMainStyle> CREATOR = new Creator<SelectMainStyle>() {
-        @Override
-        public SelectMainStyle createFromParcel(Parcel in) {
-            return new SelectMainStyle(in);
-        }
-
-        @Override
-        public SelectMainStyle[] newArray(int size) {
-            return new SelectMainStyle[size];
-        }
-    };
 
     public int getStatusBarColor() {
         return statusBarColor;
