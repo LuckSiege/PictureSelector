@@ -43,6 +43,12 @@ public class LocaleTransform {
             case LanguageConfig.RU:
                 // 俄语
                 return new Locale("ru", "rRU");
+            case LanguageConfig.CS:
+                // 捷克
+                return new Locale("cs", "rCZ");
+            case LanguageConfig.KK:
+                // 哈萨克斯坦
+                return new Locale("kk", "rKZ");
             default:
                 // 简体中文
                 return Locale.CHINESE;

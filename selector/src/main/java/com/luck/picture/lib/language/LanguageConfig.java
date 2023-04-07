@@ -72,4 +72,14 @@ public class LanguageConfig {
      * 俄语
      */
     public static final int RU = 11;
+
+    /**
+     * 捷克
+     */
+    public static final int CS = 12;
+
+    /**
+     * 哈萨克斯坦
+     */
+    public static final int KK = 13;
 }
