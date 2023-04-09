@@ -11,7 +11,7 @@
 
 
 ## 目录
--[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.10.9)<br>
+-[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.11.0)<br>
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
 -[权限](#权限)<br>
