@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
   // PictureSelector 基础 (必须)
-  implementation 'io.github.lucksiege:pictureselector:v3.10.9'
+  implementation 'io.github.lucksiege:pictureselector:v3.11.0'
 
   // 图片压缩 (按需引入)
   implementation 'io.github.lucksiege:compress:v3.10.9'
@@ -56,7 +56,7 @@ dependencies {
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.10.9</version>
+  <version>v3.11.0</version>
 </dependency>
 
 <dependency>
