@@ -35,7 +35,7 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.10.9'
+  implementation 'io.github.lucksiege:pictureselector:v3.11.0'
 
   // image compress library (Not necessary)
   implementation 'io.github.lucksiege:compress:v3.10.9'
@@ -54,7 +54,7 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.10.9</version>
+  <version>v3.11.0</version>
 </dependency>
 
 <dependency>
