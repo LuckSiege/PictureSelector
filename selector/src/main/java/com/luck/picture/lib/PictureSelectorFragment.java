@@ -127,7 +127,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public int getResourceId() {
-        int layoutResourceId = InjectResourceSource.getLayoutResource(getContext(), InjectResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
+        int layoutResourceId = InjectResourceSource.getLayoutResource(getContext(), InjectResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE, selectorConfig);
         if (layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE) {
             return layoutResourceId;
         }

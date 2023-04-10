@@ -47,7 +47,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(),
-                InjectResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE);
+                InjectResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE, selectorConfig);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId
                         : R.layout.ps_preview_gallery_item, parent, false);

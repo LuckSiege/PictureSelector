@@ -12,6 +12,8 @@ import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.LinkedHashMap;
@@ -27,6 +29,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     private List<LocalMedia> mData;
     private BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
     private final LinkedHashMap<Integer, BasePreviewHolder> mHolderCache = new LinkedHashMap<>();
+    private final SelectorConfig selectorConfig;
+
+    public PicturePreviewAdapter() {
+        this.selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
+    }
 
     public BasePreviewHolder getCurrentHolder(int position) {
         return mHolderCache.get(position);
@@ -45,13 +52,13 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public BasePreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layoutResourceId;
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
-            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE);
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE, selectorConfig);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_preview_video);
         } else if (viewType == BasePreviewHolder.ADAPTER_TYPE_AUDIO) {
-            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_AUDIO_LAYOUT_RESOURCE);
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_AUDIO_LAYOUT_RESOURCE, selectorConfig);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_preview_audio);
         } else {
-            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE);
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE, selectorConfig);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != InjectResourceSource.DEFAULT_LAYOUT_RESOURCE ? layoutResourceId : R.layout.ps_preview_image);
         }
     }
