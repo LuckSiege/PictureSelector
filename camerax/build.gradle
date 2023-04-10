@@ -33,10 +33,11 @@ ext {
 apply from: '../publish.gradle'
 
 dependencies {
-    api "androidx.camera:camera-core:1.2.0-alpha01"
-    api "androidx.camera:camera-camera2:1.2.0-alpha01"
-    implementation "androidx.camera:camera-view:1.2.0-alpha01"
-    implementation "androidx.camera:camera-lifecycle:1.2.0-alpha01"
+    def camerax_version = "1.2.1"
+    api "androidx.camera:camera-core:${camerax_version}"
+    api "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "androidx.transition:transition:${cfgs.transition}"
     implementation "androidx.concurrent:concurrent-futures:${cfgs.futures}"
