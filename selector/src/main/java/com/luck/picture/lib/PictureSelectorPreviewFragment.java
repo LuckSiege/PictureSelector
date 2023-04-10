@@ -1138,7 +1138,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     protected PicturePreviewAdapter createAdapter() {
-        return new PicturePreviewAdapter();
+        return new PicturePreviewAdapter(selectorConfig);
     }
 
     public PicturePreviewAdapter getAdapter() {

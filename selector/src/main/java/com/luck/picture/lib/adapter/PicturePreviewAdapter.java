@@ -32,7 +32,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     private final SelectorConfig selectorConfig;
 
     public PicturePreviewAdapter() {
-        this.selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
+        this(SelectorProviders.getInstance().getSelectorConfig());
+    }
+
+    public PicturePreviewAdapter(SelectorConfig config) {
+        this.selectorConfig = config;
     }
 
     public BasePreviewHolder getCurrentHolder(int position) {
