@@ -64,7 +64,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
      * set app language
      */
     public void initAppLanguage() {
-        if (selectorConfig.language != LanguageConfig.UNKNOWN_LANGUAGE && !selectorConfig.isOnlyCamera) {
+        if (selectorConfig != null && selectorConfig.language != LanguageConfig.UNKNOWN_LANGUAGE && !selectorConfig.isOnlyCamera) {
             PictureLanguageUtils.setAppLanguage(this, selectorConfig.language, selectorConfig.defaultLanguage);
         }
     }
