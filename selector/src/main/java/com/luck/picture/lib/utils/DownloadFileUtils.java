@@ -101,14 +101,13 @@ public class DownloadFileUtils {
                             inputStream = new URL(path).openStream();
                         } else {
                             if (PictureMimeType.isContent(path)) {
-                                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                                inputStream = PictureContentResolver.openInputStream(context, Uri.parse(path));
                             } else {
                                 inputStream = new FileInputStream(path);
                             }
                         }
-                        OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(context, uri);
-                        boolean bufferCopy = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
-                        if (bufferCopy) {
+                        OutputStream outputStream = PictureContentResolver.openOutputStream(context, uri);
+                        if (PictureFileUtils.writeFileFromIS(inputStream, outputStream)) {
                             return PictureFileUtils.getPath(context, uri);
                         }
                     }

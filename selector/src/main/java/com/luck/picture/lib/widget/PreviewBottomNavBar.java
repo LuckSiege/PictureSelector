@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -33,11 +33,11 @@ public class PreviewBottomNavBar extends BottomNavBar {
     protected void handleLayoutUI() {
         tvPreview.setVisibility(GONE);
         tvImageEditor.setOnClickListener(this);
-        tvImageEditor.setVisibility(PictureSelectionConfig.onEditMediaEventListener != null ? View.VISIBLE : GONE);
+        tvImageEditor.setVisibility(config.onEditMediaEventListener != null ? View.VISIBLE : GONE);
     }
 
     public void isDisplayEditor(boolean isHasVideo) {
-        tvImageEditor.setVisibility(PictureSelectionConfig.onEditMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
+        tvImageEditor.setVisibility(config.onEditMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
     }
 
     public TextView getEditor() {
@@ -47,7 +47,7 @@ public class PreviewBottomNavBar extends BottomNavBar {
     @Override
     public void setBottomNavBarStyle() {
         super.setBottomNavBarStyle();
-        BottomNavBarStyle bottomBarStyle = PictureSelectionConfig.selectorStyle.getBottomBarStyle();
+        BottomNavBarStyle bottomBarStyle = config.selectorStyle.getBottomBarStyle();
         if (StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNarBarBackgroundColor())) {
             setBackgroundColor(bottomBarStyle.getBottomPreviewNarBarBackgroundColor());
         } else if (StyleUtils.checkSizeValidity(bottomBarStyle.getBottomNarBarBackgroundColor())) {

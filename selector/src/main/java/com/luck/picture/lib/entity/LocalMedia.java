@@ -98,6 +98,11 @@ public class LocalMedia implements Parcelable {
     private int chooseModel;
 
     /**
+     * Camera generated data source，Only for taking photos once
+     */
+    private boolean isCameraSource;
+
+    /**
      * If the compressed
      */
     private boolean compressed;
@@ -214,6 +219,7 @@ public class LocalMedia implements Parcelable {
         num = in.readInt();
         mimeType = in.readString();
         chooseModel = in.readInt();
+        isCameraSource = in.readByte() != 0;
         compressed = in.readByte() != 0;
         width = in.readInt();
         height = in.readInt();
@@ -252,6 +258,7 @@ public class LocalMedia implements Parcelable {
         dest.writeInt(num);
         dest.writeString(mimeType);
         dest.writeInt(chooseModel);
+        dest.writeByte((byte) (isCameraSource ? 1 : 0));
         dest.writeByte((byte) (compressed ? 1 : 0));
         dest.writeInt(width);
         dest.writeInt(height);
@@ -552,6 +559,14 @@ public class LocalMedia implements Parcelable {
 
     public void setChooseModel(int chooseModel) {
         this.chooseModel = chooseModel;
+    }
+
+    public boolean isCameraSource() {
+        return isCameraSource;
+    }
+
+    public void setCameraSource(boolean cameraSource) {
+        isCameraSource = cameraSource;
     }
 
     public boolean isCompressed() {

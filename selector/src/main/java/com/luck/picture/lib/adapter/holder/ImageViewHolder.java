@@ -7,7 +7,8 @@ import android.widget.TextView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -22,11 +23,11 @@ public class ImageViewHolder extends BaseRecyclerMediaHolder {
     private final ImageView ivEditor;
     private final TextView tvMediaTag;
 
-    public ImageViewHolder(View itemView, PictureSelectionConfig config) {
+    public ImageViewHolder(View itemView, SelectorConfig config) {
         super(itemView, config);
         tvMediaTag = itemView.findViewById(R.id.tv_media_tag);
         ivEditor = itemView.findViewById(R.id.ivEditor);
-        SelectMainStyle adapterStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        SelectMainStyle adapterStyle = selectorConfig.selectorStyle.getSelectMainStyle();
         int imageEditorRes = adapterStyle.getAdapterImageEditorResources();
         if (StyleUtils.checkStyleValidity(imageEditorRes)) {
             ivEditor.setImageResource(imageEditorRes);

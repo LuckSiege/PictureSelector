@@ -2,7 +2,7 @@ package com.luck.picture.lib.engine;
 
 import android.content.Context;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
@@ -52,7 +52,7 @@ public interface ExtendLoaderEngine {
 
     /**
      * load the first item of data in the album list
-     * {@link PictureSelectionConfig} Valid only in isPageStrategy mode
+     * {@link SelectorConfig} Valid only in isPageStrategy mode
      * <p>
      * Users can implement some interfaces to access their own query data,
      * provided that they comply with the {@link LocalMedia} standard
@@ -76,7 +76,7 @@ public interface ExtendLoaderEngine {
 
     /**
      * load the first item of data in the album list
-     * {@link PictureSelectionConfig} Valid only in isPageStrategy mode
+     * {@link SelectorConfig} Valid only in isPageStrategy mode
      * <p>
      * <p>
      * Users can implement some interfaces to access their own query data,

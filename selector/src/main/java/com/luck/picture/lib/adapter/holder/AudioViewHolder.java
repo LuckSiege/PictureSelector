@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.DateUtils;
@@ -21,10 +21,10 @@ import com.luck.picture.lib.utils.StyleUtils;
 public class AudioViewHolder extends BaseRecyclerMediaHolder {
     private final TextView tvDuration;
 
-    public AudioViewHolder(@NonNull View itemView, PictureSelectionConfig config) {
+    public AudioViewHolder(@NonNull View itemView, SelectorConfig config) {
         super(itemView, config);
         tvDuration = itemView.findViewById(R.id.tv_duration);
-        SelectMainStyle adapterStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        SelectMainStyle adapterStyle = selectorConfig.selectorStyle.getSelectMainStyle();
         int drawableLeft = adapterStyle.getAdapterDurationDrawableLeft();
         if (StyleUtils.checkStyleValidity(drawableLeft)) {
             tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableLeft, 0, 0, 0);

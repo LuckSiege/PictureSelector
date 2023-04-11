@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PermissionEvent;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -69,12 +68,12 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createSystemContracts();
-        if (PermissionChecker.isCheckReadStorage(config.chooseMode,getContext())) {
+        if (PermissionChecker.isCheckReadStorage(selectorConfig.chooseMode,getContext())) {
             openSystemAlbum();
         } else {
-            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(config.chooseMode);
+            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(getAppContext(), selectorConfig.chooseMode);
             onPermissionExplainEvent(true, readPermissionArray);
-            if (PictureSelectionConfig.onPermissionsEventListener != null) {
+            if (selectorConfig.onPermissionsEventListener != null) {
                 onApplyPermissionsEvent(PermissionEvent.EVENT_SYSTEM_SOURCE_DATA, readPermissionArray);
             } else {
                 PermissionChecker.getInstance().requestPermissions(this, readPermissionArray, new PermissionResultCallback() {
@@ -95,8 +94,8 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     @Override
     public void onApplyPermissionsEvent(int event, String[] permissionArray) {
         if (event == PermissionEvent.EVENT_SYSTEM_SOURCE_DATA) {
-            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                    PermissionConfig.getReadPermissionArray(config.chooseMode), new OnRequestPermissionListener() {
+            selectorConfig.onPermissionsEventListener.requestPermission(this,
+                    PermissionConfig.getReadPermissionArray(getAppContext(), selectorConfig.chooseMode), new OnRequestPermissionListener() {
                         @Override
                         public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {
@@ -114,14 +113,14 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      */
     private void openSystemAlbum() {
         onPermissionExplainEvent(false, null);
-        if (config.selectionMode == SelectModeConfig.SINGLE) {
-            if (config.chooseMode == SelectMimeType.ofAll()) {
+        if (selectorConfig.selectionMode == SelectModeConfig.SINGLE) {
+            if (selectorConfig.chooseMode == SelectMimeType.ofAll()) {
                 mDocSingleLauncher.launch(SelectMimeType.SYSTEM_ALL);
             } else {
                 mContentLauncher.launch(getInput());
             }
         } else {
-            if (config.chooseMode == SelectMimeType.ofAll()) {
+            if (selectorConfig.chooseMode == SelectMimeType.ofAll()) {
                 mDocMultipleLauncher.launch(SelectMimeType.SYSTEM_ALL);
             } else {
                 mContentsLauncher.launch(getInput());
@@ -133,14 +132,14 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      * createSystemContracts
      */
     private void createSystemContracts() {
-        if (config.selectionMode == SelectModeConfig.SINGLE) {
-            if (config.chooseMode == SelectMimeType.ofAll()) {
+        if (selectorConfig.selectionMode == SelectModeConfig.SINGLE) {
+            if (selectorConfig.chooseMode == SelectMimeType.ofAll()) {
                 createSingleDocuments();
             } else {
                 createContent();
             }
         } else {
-            if (config.chooseMode == SelectMimeType.ofAll()) {
+            if (selectorConfig.chooseMode == SelectMimeType.ofAll()) {
                 createMultipleDocuments();
             } else {
                 createMultipleContents();
@@ -192,7 +191,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
                     for (int i = 0; i < result.size(); i++) {
                         LocalMedia media = buildLocalMedia(result.get(i).toString());
                         media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                        SelectedManager.addSelectResult(media);
+                        selectorConfig.addSelectResult(media);
                     }
                     dispatchTransformResult();
                 }
@@ -292,7 +291,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
                     for (int i = 0; i < result.size(); i++) {
                         LocalMedia media = buildLocalMedia(result.get(i).toString());
                         media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                        SelectedManager.addSelectResult(media);
+                        selectorConfig.addSelectResult(media);
                     }
                     dispatchTransformResult();
                 }
@@ -352,9 +351,9 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
      * @return
      */
     private String getInput() {
-        if (config.chooseMode == SelectMimeType.ofVideo()) {
+        if (selectorConfig.chooseMode == SelectMimeType.ofVideo()) {
             return SelectMimeType.SYSTEM_VIDEO;
-        } else if (config.chooseMode == SelectMimeType.ofAudio()) {
+        } else if (selectorConfig.chooseMode == SelectMimeType.ofAudio()) {
             return SelectMimeType.SYSTEM_AUDIO;
         } else {
             return SelectMimeType.SYSTEM_IMAGE;
@@ -365,11 +364,11 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
     public void handlePermissionSettingResult(String[] permissions) {
         onPermissionExplainEvent(false, null);
         boolean isCheckReadStorage;
-        if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            isCheckReadStorage = PictureSelectionConfig.onPermissionsEventListener
+        if (selectorConfig.onPermissionsEventListener != null) {
+            isCheckReadStorage = selectorConfig.onPermissionsEventListener
                     .hasPermissions(this, permissions);
         } else {
-            isCheckReadStorage = PermissionChecker.isCheckReadStorage(config.chooseMode, getContext());
+            isCheckReadStorage = PermissionChecker.isCheckReadStorage(selectorConfig.chooseMode, getContext());
         }
         if (isCheckReadStorage) {
             openSystemAlbum();

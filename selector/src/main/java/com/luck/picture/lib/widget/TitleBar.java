@@ -13,8 +13,9 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -35,7 +36,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     protected TextView tvCancel;
     protected View titleBarLine;
     protected View viewAlbumClickArea;
-    protected PictureSelectionConfig config;
+    protected SelectorConfig config;
     protected View viewTopStatusBar;
     protected RelativeLayout titleBarLayout;
 
@@ -62,7 +63,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         inflateLayout();
         setClickable(true);
         setFocusable(true);
-        config = PictureSelectionConfig.getInstance();
+        config = SelectorProviders.getInstance().getSelectorConfig();
         viewTopStatusBar = findViewById(R.id.top_status_bar);
         titleBarLayout = findViewById(R.id.rl_title_bar);
         ivLeftBack = findViewById(R.id.ps_iv_left_back);
@@ -133,7 +134,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             ViewGroup.LayoutParams layoutParams = viewTopStatusBar.getLayoutParams();
             layoutParams.height = DensityUtil.getStatusBarHeight(getContext());
         }
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        PictureSelectorStyle selectorStyle = config.selectorStyle;
         TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
         int titleBarHeight = titleBarStyle.getTitleBarHeight();
         if (StyleUtils.checkSizeValidity(titleBarHeight)) {
@@ -161,7 +162,8 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         if (StyleUtils.checkStyleValidity(backResId)) {
             ivLeftBack.setImageResource(backResId);
         }
-        String titleDefaultText = titleBarStyle.getTitleDefaultText();
+        String titleDefaultText = StyleUtils.checkStyleValidity(titleBarStyle.getTitleDefaultTextResId())
+                ? getContext().getString(titleBarStyle.getTitleDefaultTextResId()) : titleBarStyle.getTitleDefaultText();
         if (StyleUtils.checkTextValidity(titleDefaultText)) {
             tvTitle.setText(titleDefaultText);
         }
@@ -194,7 +196,8 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             if (StyleUtils.checkStyleValidity(titleCancelBackgroundResource)) {
                 tvCancel.setBackgroundResource(titleCancelBackgroundResource);
             }
-            String titleCancelText = titleBarStyle.getTitleCancelText();
+            String titleCancelText = StyleUtils.checkStyleValidity(titleBarStyle.getTitleCancelTextResId())
+                    ? getContext().getString(titleBarStyle.getTitleCancelTextResId()) : titleBarStyle.getTitleCancelText();
             if (StyleUtils.checkTextValidity(titleCancelText)) {
                 tvCancel.setText(titleCancelText);
             }

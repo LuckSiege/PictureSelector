@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
@@ -30,10 +30,12 @@ import java.util.List;
 public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAdapter.ViewHolder> {
     private final List<LocalMedia> mData;
     private final boolean isBottomPreview;
+    private final SelectorConfig selectorConfig;
 
-    public PreviewGalleryAdapter(boolean isBottomPreview, List<LocalMedia> list) {
+    public PreviewGalleryAdapter(SelectorConfig config, boolean isBottomPreview) {
+        this.selectorConfig = config;
         this.isBottomPreview = isBottomPreview;
-        this.mData = new ArrayList<>(list);
+        this.mData = new ArrayList<>(selectorConfig.getSelectedResult());
         for (int i = 0; i < this.mData.size(); i++) {
             LocalMedia media = mData.get(i);
             media.setGalleryEnabledMask(false);
@@ -175,8 +177,8 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
             holder.ivEditor.setVisibility(View.GONE);
         }
         holder.ivImage.setColorFilter(colorFilter);
-        if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadGridImage(holder.itemView.getContext(), path, holder.ivImage);
+        if (selectorConfig.imageEngine != null) {
+            selectorConfig.imageEngine.loadGridImage(holder.itemView.getContext(), path, holder.ivImage);
         }
         holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -200,7 +202,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     }
 
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImage;
         ImageView ivPlay;
         ImageView ivEditor;
@@ -212,7 +214,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
             ivPlay = itemView.findViewById(R.id.ivPlay);
             ivEditor = itemView.findViewById(R.id.ivEditor);
             viewBorder = itemView.findViewById(R.id.viewBorder);
-            SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+            SelectMainStyle selectMainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
             if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterImageEditorResources())) {
                 ivEditor.setImageResource(selectMainStyle.getAdapterImageEditorResources());
             }

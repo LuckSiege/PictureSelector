@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -23,5 +23,5 @@ public interface OnSelectLimitTipsListener {
      * @return If true is returned, the user needs to customize the implementation prompt content，
      * Otherwise, use the system default prompt
      */
-    boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, PictureSelectionConfig config, int limitType);
+    boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, SelectorConfig config, int limitType);
 }

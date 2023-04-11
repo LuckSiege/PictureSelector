@@ -3,7 +3,8 @@ package com.luck.pictureselector;
 import android.content.Context;
 import android.view.View;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPlayerListener;
@@ -33,7 +34,7 @@ public class IjkPlayerEngine implements VideoPlayerEngine<IjkPlayerView> {
     @Override
     public void onStarPlayer(IjkPlayerView player, LocalMedia media) {
         IjkMediaPlayer mediaPlayer = player.getMediaPlayer();
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        SelectorConfig config = SelectorProviders.getInstance().getSelectorConfig();
         mediaPlayer.setLooping(config.isLoopAutoPlay);
         player.start(media.getAvailablePath());
     }

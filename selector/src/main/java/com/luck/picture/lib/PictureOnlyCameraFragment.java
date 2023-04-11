@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -88,8 +87,8 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     public void handlePermissionSettingResult(String[] permissions) {
         onPermissionExplainEvent(false, null);
         boolean isHasPermissions;
-        if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener
+        if (selectorConfig.onPermissionsEventListener != null) {
+            isHasPermissions = selectorConfig.onPermissionsEventListener
                     .hasPermissions(this, permissions);
         } else {
             isHasPermissions = PermissionChecker.isCheckCamera(getContext());

@@ -313,6 +313,14 @@
                         android:text="IjkPlayer"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_system_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="系统"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
                 </RadioGroup>
 
                 <RadioGroup
@@ -431,6 +439,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="俄语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_cs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="捷克"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_kk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="哈萨克斯坦"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 

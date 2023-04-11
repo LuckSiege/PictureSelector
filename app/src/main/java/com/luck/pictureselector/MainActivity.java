@@ -75,10 +75,10 @@ import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
     private boolean needScaleSmall = false;
+    private boolean isUseSystemPlayer = false;
     private int language = LanguageConfig.UNKNOWN_LANGUAGE;
     private int x = 0, y = 0;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -308,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         launcherResult = createActivityResultLauncher();
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateHttpAsLocalMedia("https://fdfs.test-kepu.weiyilewen.com/group1/M00/00/01/wKhkY2Iv936EMKWzAAAAAHuLNY8762.mp4"));
+//        list.add(LocalMedia.generateHttpAsLocalMedia("https://gossv.cfp.cn/videos/mts_videos/medium/temp/VCG42483198574.mp4"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx1.sinaimg.cn/mw2000/0073ozWdly1h0afogn4vij30u05keb29.jpg"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx3.sinaimg.cn/mw2000/0073ozWdly1h0afohdkygj30u05791kx.jpg"));
 //        list.add(LocalMedia.generateHttpAsLocalMedia("https://wx2.sinaimg.cn/mw2000/0073ozWdly1h0afoi70m2j30u05fq1kx.jpg"));
@@ -384,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .isLoopAutoVideoPlay(cb_auto_video.isChecked())
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
                         .isVideoPauseResumePlay(cb_video_resume.isChecked())
+                        .isUseSystemVideoPlayer(isUseSystemPlayer)
                         .setCustomLoadingListener(getCustomLoadingListener())
                         .isPreviewZoomEffect(chooseMode != SelectMimeType.ofAudio() && cb_preview_scale.isChecked(), mRecyclerView)
                         .setAttachViewLifecycle(new IBridgeViewLifecycle() {
@@ -480,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setVideoThumbnailListener(getVideoThumbnailEventListener())
                                 .isAutoVideoPlay(cb_auto_video.isChecked())
                                 .isLoopAutoVideoPlay(cb_auto_video.isChecked())
+                                .isUseSystemVideoPlayer(isUseSystemPlayer)
                                 .isPageSyncAlbumCount(true)
                                 .setCustomLoadingListener(getCustomLoadingListener())
                                 .setQueryFilterListener(new OnQueryFilterListener() {
@@ -1298,7 +1301,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
 
         @Override
-        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, PictureSelectionConfig config, int limitType) {
+        public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, SelectorConfig config, int limitType) {
             if (limitType == SelectLimitType.SELECT_MIN_SELECT_LIMIT) {
                 ToastUtils.showToast(context, "图片最少不能低于" + config.minSelectNum + "张");
                 return true;
@@ -1979,12 +1982,18 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.rb_media_player:
                 videoPlayerEngine = null;
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_exo_player:
                 videoPlayerEngine = new ExoPlayerEngine();
+                isUseSystemPlayer = false;
                 break;
             case R.id.rb_ijk_player:
                 videoPlayerEngine = new IjkPlayerEngine();
+                isUseSystemPlayer = false;
+                break;
+            case R.id.rb_system_player:
+                isUseSystemPlayer = true;
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;
@@ -2017,6 +2026,12 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 language = LanguageConfig.AR;
             case R.id.rb_ru:
                 language = LanguageConfig.RU;
+                break;
+            case R.id.rb_cs:
+                language = LanguageConfig.CS;
+                break;
+            case R.id.rb_kk:
+                language = LanguageConfig.KK;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = -1;
@@ -2089,7 +2104,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
                 selectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_white_preview_selector);
                 selectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
-                selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
+                selectMainStyle.setSelectText(R.string.ps_done_front_num);
                 selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
                 selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
@@ -2119,7 +2134,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                 numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
-                numberBlueSelectMainStyle.setSelectText(getString(R.string.ps_completed));
+                numberBlueSelectMainStyle.setSelectText(R.string.ps_completed);
 
                 selectorStyle.setTitleBarStyle(blueTitleBarStyle);
                 selectorStyle.setBottomBarStyle(numberBlueBottomNavBarStyle);
@@ -2135,15 +2150,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_preview_checkbox_selector);
                 numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
                 numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));
+                numberSelectMainStyle.setSelectNormalText(R.string.ps_send);
                 numberSelectMainStyle.setAdapterPreviewGalleryBackgroundResource(R.drawable.ps_preview_gallery_bg);
                 numberSelectMainStyle.setAdapterPreviewGalleryItemSize(DensityUtil.dip2px(getContext(), 52));
-                numberSelectMainStyle.setPreviewSelectText(getString(R.string.ps_select));
+                numberSelectMainStyle.setPreviewSelectText(R.string.ps_select);
                 numberSelectMainStyle.setPreviewSelectTextSize(14);
                 numberSelectMainStyle.setPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 numberSelectMainStyle.setPreviewSelectMarginRight(DensityUtil.dip2px(getContext(), 6));
                 numberSelectMainStyle.setSelectBackgroundResources(R.drawable.ps_select_complete_bg);
-                numberSelectMainStyle.setSelectText(getString(R.string.ps_send_num));
+                numberSelectMainStyle.setSelectText(R.string.ps_send_num);
                 numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 numberSelectMainStyle.setCompleteSelectRelativeTop(true);
@@ -2165,11 +2180,11 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 // 底部NavBar 风格
                 BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();
                 numberBottomNavBarStyle.setBottomPreviewNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_half_grey));
-                numberBottomNavBarStyle.setBottomPreviewNormalText(getString(R.string.ps_preview));
+                numberBottomNavBarStyle.setBottomPreviewNormalText(R.string.ps_preview);
                 numberBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBottomNavBarStyle.setBottomPreviewNormalTextSize(16);
                 numberBottomNavBarStyle.setCompleteCountTips(false);
-                numberBottomNavBarStyle.setBottomPreviewSelectText(getString(R.string.ps_preview_num));
+                numberBottomNavBarStyle.setBottomPreviewSelectText(R.string.ps_preview_num);
                 numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
 

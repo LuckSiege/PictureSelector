@@ -8,7 +8,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 
 import java.io.File;
@@ -27,7 +27,7 @@ public class MediaStoreUtils {
      * @param config  PictureSelector配制类
      * @return
      */
-    public static Uri createCameraOutImageUri(Context context, PictureSelectionConfig config) {
+    public static Uri createCameraOutImageUri(Context context, SelectorConfig config) {
         Uri imageUri;
         String cameraFileName;
         if (TextUtils.isEmpty(config.outPutCameraImageFileName)) {
@@ -38,7 +38,7 @@ public class MediaStoreUtils {
         }
         if (SdkVersionUtils.isQ() && TextUtils.isEmpty(config.outPutCameraDir)) {
             imageUri = createImageUri(context, cameraFileName, config.cameraImageFormatForQ);
-            config.cameraPath = imageUri != null ? imageUri.toString() : null;
+            config.cameraPath = imageUri != null ? imageUri.toString() : "";
         } else {
             File cameraFile = PictureFileUtils.createCameraFile(context, SelectMimeType.TYPE_IMAGE,
                     cameraFileName, config.cameraImageFormat, config.outPutCameraDir);
@@ -56,7 +56,7 @@ public class MediaStoreUtils {
      * @param config  PictureSelector配制类
      * @return
      */
-    public static Uri createCameraOutVideoUri(Context context, PictureSelectionConfig config) {
+    public static Uri createCameraOutVideoUri(Context context, SelectorConfig config) {
         Uri videoUri;
         String cameraFileName;
         if (TextUtils.isEmpty(config.outPutCameraVideoFileName)) {

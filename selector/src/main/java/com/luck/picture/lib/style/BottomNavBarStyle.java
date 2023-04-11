@@ -1,14 +1,11 @@
 package com.luck.picture.lib.style;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * @author：luck
  * @date：2021/11/15 4:15 下午
  * @describe：NavBarbottomStyle
  */
-public class BottomNavBarStyle implements Parcelable {
+public class BottomNavBarStyle {
     /**
      * 底部导航栏背景色
      */
@@ -33,6 +30,11 @@ public class BottomNavBarStyle implements Parcelable {
     private String bottomPreviewNormalText;
 
     /**
+     * 底部预览文本
+     */
+    private int bottomPreviewNormalTextResId;
+
+    /**
      * 底部预览文本字体大小
      */
     private int bottomPreviewNormalTextSize;
@@ -47,6 +49,11 @@ public class BottomNavBarStyle implements Parcelable {
     private String bottomPreviewSelectText;
 
     /**
+     * 底部选中预览文本
+     */
+    private int bottomPreviewSelectTextResId;
+
+    /**
      * 底部预览文本选中字体色值
      */
     private int bottomPreviewSelectTextColor;
@@ -55,6 +62,12 @@ public class BottomNavBarStyle implements Parcelable {
      * 底部编辑文字
      */
     private String bottomEditorText;
+
+    /**
+     * 底部编辑文字
+     */
+    private int bottomEditorTextResId;
+
     /**
      * 底部编辑文字大小
      */
@@ -71,6 +84,12 @@ public class BottomNavBarStyle implements Parcelable {
      * 底部原图文字
      */
     private String bottomOriginalText;
+
+    /**
+     * 底部原图文字
+     */
+    private int bottomOriginalTextResId;
+
     /**
      * 底部原图文字大小
      */
@@ -101,68 +120,6 @@ public class BottomNavBarStyle implements Parcelable {
 
     public BottomNavBarStyle() {
     }
-
-    protected BottomNavBarStyle(Parcel in) {
-        bottomNarBarBackgroundColor = in.readInt();
-        bottomPreviewNarBarBackgroundColor = in.readInt();
-        bottomNarBarHeight = in.readInt();
-        bottomPreviewNormalText = in.readString();
-        bottomPreviewNormalTextSize = in.readInt();
-        bottomPreviewNormalTextColor = in.readInt();
-        bottomPreviewSelectText = in.readString();
-        bottomPreviewSelectTextColor = in.readInt();
-        bottomEditorText = in.readString();
-        bottomEditorTextSize = in.readInt();
-        bottomEditorTextColor = in.readInt();
-        bottomOriginalDrawableLeft = in.readInt();
-        bottomOriginalText = in.readString();
-        bottomOriginalTextSize = in.readInt();
-        bottomOriginalTextColor = in.readInt();
-        bottomSelectNumResources = in.readInt();
-        bottomSelectNumTextSize = in.readInt();
-        bottomSelectNumTextColor = in.readInt();
-        isCompleteCountTips = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(bottomNarBarBackgroundColor);
-        dest.writeInt(bottomPreviewNarBarBackgroundColor);
-        dest.writeInt(bottomNarBarHeight);
-        dest.writeString(bottomPreviewNormalText);
-        dest.writeInt(bottomPreviewNormalTextSize);
-        dest.writeInt(bottomPreviewNormalTextColor);
-        dest.writeString(bottomPreviewSelectText);
-        dest.writeInt(bottomPreviewSelectTextColor);
-        dest.writeString(bottomEditorText);
-        dest.writeInt(bottomEditorTextSize);
-        dest.writeInt(bottomEditorTextColor);
-        dest.writeInt(bottomOriginalDrawableLeft);
-        dest.writeString(bottomOriginalText);
-        dest.writeInt(bottomOriginalTextSize);
-        dest.writeInt(bottomOriginalTextColor);
-        dest.writeInt(bottomSelectNumResources);
-        dest.writeInt(bottomSelectNumTextSize);
-        dest.writeInt(bottomSelectNumTextColor);
-        dest.writeByte((byte) (isCompleteCountTips ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<BottomNavBarStyle> CREATOR = new Creator<BottomNavBarStyle>() {
-        @Override
-        public BottomNavBarStyle createFromParcel(Parcel in) {
-            return new BottomNavBarStyle(in);
-        }
-
-        @Override
-        public BottomNavBarStyle[] newArray(int size) {
-            return new BottomNavBarStyle[size];
-        }
-    };
 
     public int getBottomNarBarBackgroundColor() {
         return bottomNarBarBackgroundColor;
@@ -196,6 +153,14 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomPreviewNormalText = bottomPreviewNormalText;
     }
 
+    public int getBottomPreviewNormalTextResId() {
+        return bottomPreviewNormalTextResId;
+    }
+
+    public void setBottomPreviewNormalText(int resId) {
+        this.bottomPreviewNormalTextResId = resId;
+    }
+
     public int getBottomPreviewNormalTextSize() {
         return bottomPreviewNormalTextSize;
     }
@@ -220,6 +185,14 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomPreviewSelectText = bottomPreviewSelectText;
     }
 
+    public int getBottomPreviewSelectTextResId() {
+        return bottomPreviewSelectTextResId;
+    }
+
+    public void setBottomPreviewSelectText(int resId) {
+        this.bottomPreviewSelectTextResId = resId;
+    }
+
     public int getBottomPreviewSelectTextColor() {
         return bottomPreviewSelectTextColor;
     }
@@ -234,6 +207,14 @@ public class BottomNavBarStyle implements Parcelable {
 
     public void setBottomEditorText(String bottomEditorText) {
         this.bottomEditorText = bottomEditorText;
+    }
+
+    public int getBottomEditorTextResId() {
+        return bottomEditorTextResId;
+    }
+
+    public void setBottomEditorText(int resId) {
+        this.bottomEditorTextResId = resId;
     }
 
     public int getBottomEditorTextSize() {
@@ -266,6 +247,14 @@ public class BottomNavBarStyle implements Parcelable {
 
     public void setBottomOriginalText(String bottomOriginalText) {
         this.bottomOriginalText = bottomOriginalText;
+    }
+
+    public int getBottomOriginalTextResId() {
+        return bottomOriginalTextResId;
+    }
+
+    public void setBottomOriginalText(int resId) {
+        this.bottomOriginalTextResId = resId;
     }
 
     public int getBottomOriginalTextSize() {

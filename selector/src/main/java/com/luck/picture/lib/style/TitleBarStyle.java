@@ -1,14 +1,11 @@
 package com.luck.picture.lib.style;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * @author：luck
  * @date：2021/11/15 4:15 下午
  * @describe：titleBarStyle
  */
-public class TitleBarStyle implements Parcelable {
+public class TitleBarStyle {
     /**
      * 是否隐藏标题栏
      */
@@ -27,6 +24,12 @@ public class TitleBarStyle implements Parcelable {
      * 标题栏默认文案
      */
     private String titleDefaultText;
+
+    /**
+     * 标题栏默认文案
+     */
+    private int titleDefaultTextResId;
+
     /**
      * 标题栏字体大小
      */
@@ -88,6 +91,12 @@ public class TitleBarStyle implements Parcelable {
      * 标题栏右边默认文本
      */
     private String titleCancelText;
+
+    /**
+     * 标题栏右边默认文本
+     */
+    private int titleCancelTextResId;
+
     /**
      * 标题栏右边文本字体大小
      */
@@ -109,71 +118,6 @@ public class TitleBarStyle implements Parcelable {
 
     public TitleBarStyle() {
     }
-
-
-    protected TitleBarStyle(Parcel in) {
-        isHideTitleBar = in.readByte() != 0;
-        titleLeftBackResource = in.readInt();
-        previewTitleLeftBackResource = in.readInt();
-        titleDefaultText = in.readString();
-        titleTextSize = in.readInt();
-        titleTextColor = in.readInt();
-        titleBackgroundColor = in.readInt();
-        previewTitleBackgroundColor = in.readInt();
-        titleBarHeight = in.readInt();
-        titleAlbumBackgroundResource = in.readInt();
-        isAlbumTitleRelativeLeft = in.readByte() != 0;
-        titleDrawableRightResource = in.readInt();
-        titleCancelBackgroundResource = in.readInt();
-        isHideCancelButton = in.readByte() != 0;
-        previewDeleteBackgroundResource = in.readInt();
-        titleCancelText = in.readString();
-        titleCancelTextSize = in.readInt();
-        titleCancelTextColor = in.readInt();
-        titleBarLineColor = in.readInt();
-        isDisplayTitleBarLine = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isHideTitleBar ? 1 : 0));
-        dest.writeInt(titleLeftBackResource);
-        dest.writeInt(previewTitleLeftBackResource);
-        dest.writeString(titleDefaultText);
-        dest.writeInt(titleTextSize);
-        dest.writeInt(titleTextColor);
-        dest.writeInt(titleBackgroundColor);
-        dest.writeInt(previewTitleBackgroundColor);
-        dest.writeInt(titleBarHeight);
-        dest.writeInt(titleAlbumBackgroundResource);
-        dest.writeByte((byte) (isAlbumTitleRelativeLeft ? 1 : 0));
-        dest.writeInt(titleDrawableRightResource);
-        dest.writeInt(titleCancelBackgroundResource);
-        dest.writeByte((byte) (isHideCancelButton ? 1 : 0));
-        dest.writeInt(previewDeleteBackgroundResource);
-        dest.writeString(titleCancelText);
-        dest.writeInt(titleCancelTextSize);
-        dest.writeInt(titleCancelTextColor);
-        dest.writeInt(titleBarLineColor);
-        dest.writeByte((byte) (isDisplayTitleBarLine ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<TitleBarStyle> CREATOR = new Creator<TitleBarStyle>() {
-        @Override
-        public TitleBarStyle createFromParcel(Parcel in) {
-            return new TitleBarStyle(in);
-        }
-
-        @Override
-        public TitleBarStyle[] newArray(int size) {
-            return new TitleBarStyle[size];
-        }
-    };
 
     public boolean isHideTitleBar() {
         return isHideTitleBar;
@@ -205,6 +149,14 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleDefaultText(String titleDefaultText) {
         this.titleDefaultText = titleDefaultText;
+    }
+
+    public int getTitleDefaultTextResId() {
+        return titleDefaultTextResId;
+    }
+
+    public void setTitleDefaultText(int resId) {
+        this.titleDefaultTextResId = resId;
     }
 
     public int getTitleTextSize() {
@@ -301,6 +253,14 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleCancelText(String titleCancelText) {
         this.titleCancelText = titleCancelText;
+    }
+
+    public int getTitleCancelTextResId() {
+        return titleCancelTextResId;
+    }
+
+    public void setTitleCancelText(int resId) {
+        this.titleCancelTextResId = resId;
     }
 
     public int getTitleCancelTextSize() {

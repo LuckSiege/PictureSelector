@@ -1,8 +1,5 @@
 package com.luck.picture.lib.style;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.AnimRes;
 
 import com.luck.picture.lib.R;
@@ -12,7 +9,7 @@ import com.luck.picture.lib.R;
  * @date：2021/11/16 6:41 下午
  * @describe：PictureWindowAnimationStyle
  */
-public class PictureWindowAnimationStyle implements Parcelable {
+public class PictureWindowAnimationStyle {
     /**
      * 相册启动动画
      */
@@ -57,38 +54,6 @@ public class PictureWindowAnimationStyle implements Parcelable {
         this.activityPreviewEnterAnimation = activityEnterAnimation;
         this.activityPreviewExitAnimation = activityExitAnimation;
     }
-
-    protected PictureWindowAnimationStyle(Parcel in) {
-        activityEnterAnimation = in.readInt();
-        activityExitAnimation = in.readInt();
-        activityPreviewEnterAnimation = in.readInt();
-        activityPreviewExitAnimation = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(activityEnterAnimation);
-        dest.writeInt(activityExitAnimation);
-        dest.writeInt(activityPreviewEnterAnimation);
-        dest.writeInt(activityPreviewExitAnimation);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<PictureWindowAnimationStyle> CREATOR = new Creator<PictureWindowAnimationStyle>() {
-        @Override
-        public PictureWindowAnimationStyle createFromParcel(Parcel in) {
-            return new PictureWindowAnimationStyle(in);
-        }
-
-        @Override
-        public PictureWindowAnimationStyle[] newArray(int size) {
-            return new PictureWindowAnimationStyle[size];
-        }
-    };
 
     public int getActivityEnterAnimation() {
         return activityEnterAnimation;

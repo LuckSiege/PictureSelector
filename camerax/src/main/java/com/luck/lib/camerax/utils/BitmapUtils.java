@@ -20,6 +20,7 @@ public class BitmapUtils {
         int h = bmp.getHeight();
         Matrix matrix = new Matrix();
         matrix.postScale(-1F, 1F);
+        matrix.postRotate(w > h ? 90 : 0);
         return Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
     }
 

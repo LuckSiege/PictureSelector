@@ -1,14 +1,11 @@
 package com.luck.picture.lib.style;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * @author：luck
  * @date：2021/11/16 7:56 下午
  * @describe：AlbumWindowStyle
  */
-public class AlbumWindowStyle implements Parcelable {
+public class AlbumWindowStyle {
     /**
      * 专辑列表item背景色值
      */
@@ -29,38 +26,6 @@ public class AlbumWindowStyle implements Parcelable {
     public AlbumWindowStyle() {
 
     }
-
-    protected AlbumWindowStyle(Parcel in) {
-        albumAdapterItemBackground = in.readInt();
-        albumAdapterItemSelectStyle = in.readInt();
-        albumAdapterItemTitleSize = in.readInt();
-        albumAdapterItemTitleColor = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(albumAdapterItemBackground);
-        dest.writeInt(albumAdapterItemSelectStyle);
-        dest.writeInt(albumAdapterItemTitleSize);
-        dest.writeInt(albumAdapterItemTitleColor);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<AlbumWindowStyle> CREATOR = new Creator<AlbumWindowStyle>() {
-        @Override
-        public AlbumWindowStyle createFromParcel(Parcel in) {
-            return new AlbumWindowStyle(in);
-        }
-
-        @Override
-        public AlbumWindowStyle[] newArray(int size) {
-            return new AlbumWindowStyle[size];
-        }
-    };
 
     public int getAlbumAdapterItemBackground() {
         return albumAdapterItemBackground;

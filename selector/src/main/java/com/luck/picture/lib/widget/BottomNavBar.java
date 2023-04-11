@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -29,7 +29,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
     protected TextView tvPreview;
     protected TextView tvImageEditor;
     private CheckBox originalCheckbox;
-    protected PictureSelectionConfig config;
+    protected SelectorConfig config;
 
     public BottomNavBar(Context context) {
         super(context);
@@ -50,7 +50,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         inflateLayout();
         setClickable(true);
         setFocusable(true);
-        config = PictureSelectionConfig.getInstance();
+        config = SelectorProviders.getInstance().getSelectorConfig();
         tvPreview = findViewById(R.id.ps_tv_preview);
         tvImageEditor = findViewById(R.id.ps_tv_editor);
         originalCheckbox = findViewById(R.id.cb_original);
@@ -65,7 +65,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                 originalCheckbox.setChecked(config.isCheckOriginalImage);
                 if (bottomNavBarListener != null) {
                     bottomNavBarListener.onCheckOriginalChange();
-                    if (isChecked && SelectedManager.getSelectCount() == 0) {
+                    if (isChecked && config.getSelectCount() == 0) {
                         bottomNavBarListener.onFirstCheckOriginalSelectedChange();
                     }
                 }
@@ -87,7 +87,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             setVisibility(GONE);
             return;
         }
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        PictureSelectorStyle selectorStyle = config.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
         if (config.isOriginalControl) {
             originalCheckbox.setVisibility(View.VISIBLE);
@@ -95,7 +95,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             if (StyleUtils.checkStyleValidity(originalDrawableLeft)) {
                 originalCheckbox.setButtonDrawable(originalDrawableLeft);
             }
-            String bottomOriginalText = bottomBarStyle.getBottomOriginalText();
+            String bottomOriginalText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomOriginalTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomOriginalTextResId()) : bottomBarStyle.getBottomOriginalText();
             if (StyleUtils.checkTextValidity(bottomOriginalText)) {
                 originalCheckbox.setText(bottomOriginalText);
             }
@@ -129,12 +130,14 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         if (StyleUtils.checkSizeValidity(previewTextSize)) {
             tvPreview.setTextSize(previewTextSize);
         }
-        String bottomPreviewText = bottomBarStyle.getBottomPreviewNormalText();
+        String bottomPreviewText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNormalTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomPreviewNormalTextResId()) : bottomBarStyle.getBottomPreviewNormalText();
         if (StyleUtils.checkTextValidity(bottomPreviewText)) {
             tvPreview.setText(bottomPreviewText);
         }
 
-        String editorText = bottomBarStyle.getBottomEditorText();
+        String editorText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomEditorTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomEditorTextResId()) : bottomBarStyle.getBottomEditorText();
         if (StyleUtils.checkTextValidity(editorText)) {
             tvImageEditor.setText(editorText);
         }
@@ -152,7 +155,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             originalCheckbox.setButtonDrawable(originalDrawableLeft);
         }
 
-        String originalText = bottomBarStyle.getBottomOriginalText();
+        String originalText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomOriginalTextResId())
+                ? getContext().getString(bottomBarStyle.getBottomOriginalTextResId()) : bottomBarStyle.getBottomOriginalText();
         if (StyleUtils.checkTextValidity(originalText)) {
             originalCheckbox.setText(originalText);
         }
@@ -180,9 +184,9 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
      */
     public void setSelectedChange() {
         calculateFileTotalSize();
-        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        PictureSelectorStyle selectorStyle = config.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        if (SelectedManager.getSelectCount() > 0) {
+        if (config.getSelectCount() > 0) {
             tvPreview.setEnabled(true);
             int previewSelectTextColor = bottomBarStyle.getBottomPreviewSelectTextColor();
             if (StyleUtils.checkStyleValidity(previewSelectTextColor)) {
@@ -190,15 +194,16 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             } else {
                 tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
             }
-            String previewSelectText = bottomBarStyle.getBottomPreviewSelectText();
+            String previewSelectText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewSelectTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomPreviewSelectTextResId()) : bottomBarStyle.getBottomPreviewSelectText();
             if (StyleUtils.checkTextValidity(previewSelectText)) {
                 if (StyleUtils.checkTextFormatValidity(previewSelectText)) {
-                    tvPreview.setText(String.format(previewSelectText, SelectedManager.getSelectCount()));
+                    tvPreview.setText(String.format(previewSelectText, config.getSelectCount()));
                 } else {
                     tvPreview.setText(previewSelectText);
                 }
             } else {
-                tvPreview.setText(getContext().getString(R.string.ps_preview_num, SelectedManager.getSelectCount()));
+                tvPreview.setText(getContext().getString(R.string.ps_preview_num, config.getSelectCount()));
             }
         } else {
             tvPreview.setEnabled(false);
@@ -208,7 +213,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             } else {
                 tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
             }
-            String previewText = bottomBarStyle.getBottomPreviewNormalText();
+            String previewText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNormalTextResId())
+                    ? getContext().getString(bottomBarStyle.getBottomPreviewNormalTextResId()) : bottomBarStyle.getBottomPreviewNormalText();
             if (StyleUtils.checkTextValidity(previewText)) {
                 tvPreview.setText(previewText);
             } else {
@@ -223,8 +229,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
     private void calculateFileTotalSize() {
         if (config.isOriginalControl) {
             long totalSize = 0;
-            for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
-                LocalMedia media = SelectedManager.getSelectedResult().get(i);
+            for (int i = 0; i < config.getSelectCount(); i++) {
+                LocalMedia media = config.getSelectedResult().get(i);
                 totalSize += media.getSize();
             }
             if (totalSize > 0) {
