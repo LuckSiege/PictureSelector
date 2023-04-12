@@ -6,7 +6,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -43,6 +45,7 @@ import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
+import com.luck.picture.lib.basic.PictureWatermark;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
@@ -269,6 +272,21 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initComplete();
         }
         iniMagicalView();
+        if (getActivity() != null) {
+            SharedPreferences sp = getActivity().getSharedPreferences("userParts", Context.MODE_PRIVATE);
+            String userId = sp.getString("userId", "**");
+            String userName = sp.getString("userName", "**");
+            String phoneNumberWithoutLastTwoDigits = "";
+            if (userId.length() == 11) {
+                phoneNumberWithoutLastTwoDigits = userId.substring(0, 3) + "****" + userId.substring(7);
+            } else {
+                phoneNumberWithoutLastTwoDigits = userId;
+            }
+
+            PictureWatermark.getInstance().setText(phoneNumberWithoutLastTwoDigits + "\n" + userName).show(requireActivity());
+        }
+
+
     }
 
     /**

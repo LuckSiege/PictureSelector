@@ -1,6 +1,7 @@
 package com.luck.picture.lib.basic;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -35,6 +36,18 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
         immersive();
         setContentView(R.layout.ps_activity_container);
         setupFragment();
+        SharedPreferences sp = getSharedPreferences("userParts", Context.MODE_PRIVATE);
+        String userId = sp.getString("userId", "**");
+        String userName = sp.getString("userName", "**");
+        String phoneNumberWithoutLastTwoDigits = "";
+        if (userId.length() == 11) {
+            phoneNumberWithoutLastTwoDigits = userId.substring(0, 3) + "****" + userId.substring(7);
+        } else {
+            phoneNumberWithoutLastTwoDigits = userId;
+        }
+
+        PictureWatermark.getInstance().setText(phoneNumberWithoutLastTwoDigits + "\n" + userName).show(this);
+
     }
 
     private void initSelectorConfig() {
