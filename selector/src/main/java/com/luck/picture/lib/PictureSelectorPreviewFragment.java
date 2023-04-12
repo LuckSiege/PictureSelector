@@ -1156,7 +1156,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         selectorConfig.selectedPreviewResult.clear();
-        if (data.size() == 0 || curPosition > data.size()) {
+        if (data.size() == 0 || curPosition >= data.size() || curPosition < 0) {
             onKeyBackFragmentFinish();
             return;
         }
