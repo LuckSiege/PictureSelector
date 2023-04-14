@@ -88,7 +88,9 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        PictureWindowAnimationStyle windowAnimationStyle = selectorConfig.selectorStyle.getWindowAnimationStyle();
-        overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
+        if (selectorConfig != null) {
+            PictureWindowAnimationStyle windowAnimationStyle = selectorConfig.selectorStyle.getWindowAnimationStyle();
+            overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
+        }
     }
 }
