@@ -5,7 +5,7 @@
 
    [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2023-04-07_061809_v3.11.0.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.10.9-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.0-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
@@ -38,13 +38,13 @@ dependencies {
   implementation 'io.github.lucksiege:pictureselector:v3.11.0'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.10.9'
+  implementation 'io.github.lucksiege:compress:v3.11.0'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.10.9'
+  implementation 'io.github.lucksiege:ucrop:v3.11.0'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.10.9'
+  implementation 'io.github.lucksiege:camerax:v3.11.0'
 }
 ```
 
@@ -60,19 +60,19 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.10.9</version>
+  <version>v3.11.0</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.10.9</version>
+  <version>v3.11.0</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.10.9</version>
+  <version>v3.11.0</version>
 </dependency>
 ```
 
