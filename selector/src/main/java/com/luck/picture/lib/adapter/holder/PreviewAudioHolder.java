@@ -358,7 +358,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     }
 
     /**
-     * 黑夜UI样式
+     * 默认UI样式
      *
      * @param isResetProgress 是否重置进度条
      */
