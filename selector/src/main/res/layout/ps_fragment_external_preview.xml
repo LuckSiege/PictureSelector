@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--content area star-->
+    <com.luck.picture.lib.magical.MagicalView
+        android:id="@+id/magical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--content area end-->
+
+
+    <!--titleBar area star-->
+    <View
+        android:id="@+id/ps_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ps_color_grey"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/ps_title_bar_bg"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="@color/ps_color_grey"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ps_status_bar" />
+
+    <ImageView
+        android:id="@+id/ps_iv_left_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:src="@drawable/ps_ic_white_back"
+        app:layout_constraintBottom_toBottomOf="@+id/ps_title_bar_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ps_title_bar_bg" />
+
+    <com.luck.picture.lib.widget.MarqueeTextView
+        android:id="@+id/ps_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxEms="6"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="0/0"
+        android:textColor="@color/ps_color_white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ps_title_bar_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ps_title_bar_bg" />
+
+
+    <ImageView
+        android:id="@+id/ps_iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ps_ic_delete"
+        app:layout_constraintBottom_toBottomOf="@+id/ps_title_bar_bg"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ps_title_bar_bg" />
+
+    <!--titleBar area end-->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

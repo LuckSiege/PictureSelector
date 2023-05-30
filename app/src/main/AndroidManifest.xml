@@ -3,8 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.luck.pictureselector">
 
+    <uses-sdk tools:overrideLibrary="androidx.camera.view,
+    androidx.camera:camera-camera2,
+    androidx.camera.camera2,androidx.camera.lifecycle,
+    androidx.camera.core" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,20 +25,19 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature android:name="android.hardware.camera.any" />
-
 
     <!--适配Android R包可见性 开始-->
     <queries package="${applicationId}">
         <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" >
+            <action android:name="android.media.action.IMAGE_CAPTURE">
 
             </action>
         </intent>
         <intent>
-            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" >
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE">
 
             </action>
         </intent>
@@ -42,33 +49,46 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="q">
         <!-- 全面屏-->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1"></meta-data>
+            android:value="2.1" />
 
-        <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait">
 
-        </activity>
-        <activity
-            android:name=".PhotoFragmentActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:screenOrientation="portrait"></activity>
+        <service
+            android:name="com.luck.picture.lib.service.ForegroundService"
+            android:enabled="true"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name=".SimpleActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".InjectFragmentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".QueryDataActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="fullSensor" />
+
     </application>
 
 </manifest>

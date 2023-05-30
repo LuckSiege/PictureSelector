@@ -2,8 +2,7 @@
 <com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/fiv"
@@ -20,7 +19,7 @@
         android:paddingLeft="10dp"
         android:paddingBottom="10dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_delete_menu"
+        android:src="@drawable/ic_item_delete"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -31,8 +30,8 @@
         android:layout_alignLeft="@id/fiv"
         android:layout_alignRight="@id/fiv"
         android:layout_alignBottom="@id/fiv"
-        android:background="@drawable/picture_icon_shadow_bg"
-        android:drawableLeft="@drawable/picture_icon_video"
+        android:background="@drawable/ps_ic_shadow_bg"
+        android:drawableLeft="@drawable/ps_ic_video"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"

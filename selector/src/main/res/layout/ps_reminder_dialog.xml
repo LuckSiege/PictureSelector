@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp"
+    android:background="@drawable/ps_dialog_shadow"
+    android:orientation="vertical">
+
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingTop="25dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="25dp"
+        android:textColor="@color/ps_color_53575e"
+        android:textSize="14sp" />
+
+    <View
+        android:id="@+id/bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.6dp"
+        android:background="@color/ps_color_e" />
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/ps_btn_selector"
+        android:gravity="center"
+        android:text="@string/ps_know"
+        android:textColor="@color/ps_color_bd"
+        android:textSize="16sp" />
+</LinearLayout>

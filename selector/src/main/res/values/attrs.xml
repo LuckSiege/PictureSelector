@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SelectorLongScaleImageView">
+        <attr name="src" format="reference" />
+        <attr name="assetName" format="string" />
+        <attr name="panEnabled" format="boolean" />
+        <attr name="zoomEnabled" format="boolean" />
+        <attr name="quickScaleEnabled" format="boolean" />
+        <attr name="tileBackgroundColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectorMediumBoldTextView">
+        <attr name="stroke_Width" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectorRoundCornerRelativeLayout">
+        <attr name="psCorners" format="dimension" />
+        <attr name="psTopNormal" format="boolean" />
+        <attr name="psBottomNormal" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectorStyleTextView">
+        <attr name="psNormalTextColor" format="color" />
+        <attr name="psSelectedTextColor" format="color" />
+
+        <attr name="psNormalTextSize" format="dimension" />
+        <attr name="psSelectedTextSize" format="dimension" />
+
+        <attr name="psNormalText" format="string" localization="suggested" />
+        <attr name="psSelectedText" format="string" localization="suggested" />
+
+        <attr name="psNormalBackground" format="reference|color" />
+        <attr name="psSelectedBackground" format="reference|color" />
+
+        <attr name="psNumMode" format="boolean" />
+    </declare-styleable>
+
+</resources>

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 static def releaseTime() {
     def date = new Date()
@@ -6,12 +7,12 @@ static def releaseTime() {
 }
 
 android {
-    compileSdkVersion cfgs.compileSdkVersion
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.luck.pictureselector"
-        minSdkVersion cfgs.minSdkVersion
-        targetSdkVersion cfgs.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode cfgs.versionCode
         versionName cfgs.versionName
     }
@@ -52,6 +53,12 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
@@ -68,11 +75,18 @@ android {
 }
 
 dependencies {
-    implementation project(':picture_library')
-    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
-    implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
-    implementation "androidx.camera:camera-core:${cfgs.camera_core_version}"
-    implementation "androidx.camera:camera-camera2:${cfgs.camerax_version}"
-    implementation "com.github.bumptech.glide:glide:${cfgs.glide_version}"
-    implementation "com.squareup.picasso:picasso:${cfgs.picasso_version}"
+    implementation project(':selector')
+    implementation project(":ijkplayer-java")
+    implementation 'id.zelory:compressor:3.0.1'
+    implementation 'io.github.lucksiege:ucrop:v3.11.1'
+    implementation "androidx.appcompat:appcompat:1.4.2"
+    implementation "com.github.bumptech.glide:glide:4.15.1"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "com.google.android.exoplayer:exoplayer:2.18.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.luck.picture.lib">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="false">
+        <provider
+            android:name=".provider.PictureFileProvider"
+            android:authorities="${applicationId}.luckProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/ps_file_paths" />
+        </provider>
+
+        <activity
+            android:name=".SelectorSupporterActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Base.Theme.NoActionBar" />
+
+        <activity
+            android:name=".SelectorTransparentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Picture.Theme.Translucent" />
+    </application>
+</manifest>

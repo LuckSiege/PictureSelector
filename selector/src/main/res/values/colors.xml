@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--PictureSelector-->
+    <color name="ps_color_grey">#393a3e</color>
+    <color name="ps_color_black">#000000</color>
+    <color name="ps_color_99_black">#99000000</color>
+    <color name="ps_color_white">#FFFFFF</color>
+    <color name="ps_color_blue">#7D7DFF</color>
+    <color name="ps_color_light_grey">#999999</color>
+    <color name="ps_color_a83">#a8333333</color>
+    <color name="ps_color_33">#333333</color>
+    <color name="ps_color_70">#70000000</color>
+    <color name="ps_color_80">#80000000</color>
+    <color name="ps_color_20">#20000000</color>
+    <color name="ps_color_e">#EEEEEE</color>
+    <color name="ps_color_bd">#BDBDBD</color>
+    <color name="ps_color_fa">#FAFAFA</color>
+    <color name="ps_color_66">#666666</color>
+    <color name="ps_color_fa632d">#FA632D</color>
+    <color name="ps_color_9b">#9b9b9b</color>
+    <color name="ps_color_f2">#F2F2F2</color>
+    <color name="ps_color_transparent">#00000000</color>
+    <color name="ps_color_transparent_white">#F0FFFFFF</color>
+    <color name="ps_color_transparent_e0db">#E0DBDBDB</color>
+    <color name="ps_color_53575e">#53575e</color>
+    <color name="ps_color_f0">#F0F0F0</color>
+    <color name="ps_color_grey_3e">#dd393a3e</color>
+    <color name="ps_color_4d">#4d4d4d</color>
+    <color name="ps_color_e0ff6100">#E0FF6100</color>
+    <color name="ps_color_eb">#ebebeb</color>
+    <color name="ps_color_ba3">#b0567ba3</color>
+    <color name="ps_color_bfe85d">#BF96E85D</color>
+    <color name="ps_color_ffe85d">#FF96E85D</color>
+    <color name="ps_color_ffd042">#FFFFD042</color>
+    <color name="ps_color_20c064">#20c064</color>
+    <color name="ps_color_394a3e">#394a3e</color>
+    <color name="ps_color_half_grey">#E6393a3e</color>
+    <color name="ps_color_ec">#ececec</color>
+    <color name="ps_color_4e4d4e">#4e4d4e</color>
+    <color name="ps_color_aab2bd">#AAB2BD</color>
+    <color name="ps_color_half_white">#99FFFFFF</color>
+    <color name="ps_color_ff572e">#ff572e</color>
+    <color name="ps_color_529BeA">#529BeA</color>
+    <color name="ps_color_8D57FC">#8D57FC</color>
+    <color name="ps_color_0077F6">#0077F6</color>
+    <color name="ps_color_E4E4E4">#E4E4E4</color>
+</resources>

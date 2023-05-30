@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <FrameLayout
+        android:id="@+id/ps_fl_select_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="20dp">
+
+        <com.luck.picture.lib.widget.StyleTextView
+            android:id="@+id/ps_tv_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ps_checkbox_selector"
+            android:gravity="center"
+            android:textColor="@color/ps_color_white"
+            android:textSize="12sp" />
+    </FrameLayout>
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/ps_ic_shadow_bg"
+        android:drawableLeft="@drawable/ps_ic_audio"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:text="00:00"
+        android:textColor="@color/ps_color_white"
+        android:textSize="11sp" />
+
+
+</com.luck.picture.lib.widget.SquareRelativeLayout>

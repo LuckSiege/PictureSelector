@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_select_video_size"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="6dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="视频"
+        android:textColor="@color/ps_color_33" />
+
+    <ImageView
+        android:id="@+id/video_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/app_color_9b"
+        android:padding="3dp"
+        android:src="@drawable/ic_minus" />
+
+    <TextView
+        android:id="@+id/tv_select_video_num"
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="1" />
+
+    <ImageView
+        android:id="@+id/video_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/app_color_9b"
+        android:padding="3dp"
+        android:src="@drawable/ic_plus" />
+
+    <CheckBox
+        android:id="@+id/check_merge_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="合并至总数内"
+        android:textColor="@color/ps_color_black"
+        android:textSize="14sp" />
+
+</LinearLayout>

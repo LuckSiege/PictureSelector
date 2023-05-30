@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ps_color_light_grey"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:drawableTop="@drawable/ps_ic_camera"
+        android:gravity="center"
+        android:text="@string/ps_take_picture"
+        android:textColor="@color/ps_color_white"
+        android:textSize="14sp" />
+
+</com.luck.picture.lib.widget.SquareRelativeLayout>

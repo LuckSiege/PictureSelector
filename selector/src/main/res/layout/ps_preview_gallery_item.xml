@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/iv_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_image"
+        android:layout_margin="3dp"
+        android:src="@drawable/ps_ic_editor"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ps_ic_video_play"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/view_border"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignStart="@id/iv_image"
+        android:layout_alignTop="@id/iv_image"
+        android:layout_alignEnd="@id/iv_image"
+        android:layout_alignBottom="@id/iv_image"
+        android:background="@drawable/ps_preview_gallery_frame" />
+
+</com.luck.picture.lib.widget.SquareRelativeLayout>

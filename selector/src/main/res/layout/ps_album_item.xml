@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ps_item_select_bg"
+    android:padding="6dp">
+
+    <ImageView
+        android:id="@+id/ps_iv_first_cover"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@color/ps_color_9b" />
+
+    <TextView
+        android:id="@+id/ps_tv_select_tag"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignEnd="@id/ps_iv_first_cover"
+        android:layout_margin="4dp"
+        android:background="@drawable/ps_default_album_oval"
+        android:visibility="invisible"
+        app:layout_constraintRight_toRightOf="@id/ps_iv_first_cover"
+        app:layout_constraintTop_toTopOf="@id/ps_iv_first_cover"
+        tools:visibility="visible" />
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/ps_tv_album_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/ps_camera_roll_num"
+        android:textColor="@color/ps_color_4d"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/ps_iv_first_cover"
+        app:layout_constraintTop_toTopOf="@id/ps_iv_first_cover"
+        tools:text="Album (999)" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

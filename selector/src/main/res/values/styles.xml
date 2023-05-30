@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Base.Theme.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/ps_color_grey</item>
+        <item name="colorPrimaryDark">@color/ps_color_grey</item>
+        <item name="colorAccent">@color/ps_color_grey</item>
+    </style>
+
+    <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">
+        <item name="android:windowBackground">@color/ps_color_transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="PictureThemeWindowStyle">
+        <item name="android:windowEnterAnimation">@anim/ps_anim_album_show</item>
+        <item name="android:windowExitAnimation">@anim/ps_anim_album_dismiss</item>
+    </style>
+
+    <style name="PictureThemeDialogWindowStyle">
+        <item name="android:windowEnterAnimation">@anim/ps_anim_modal_in</item>
+        <item name="android:windowExitAnimation">@anim/ps_anim_modal_out</item>
+    </style>
+
+    <style name="Picture.Theme.Dialog.AudioStyle">
+        <item name="android:windowEnterAnimation">@anim/ps_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/ps_anim_exit</item>
+    </style>
+
+    <style name="Picture.Theme.AlertDialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@color/ps_color_transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
+    <style name="PictureThemeDialogFragmentAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/ps_anim_up_in</item>
+        <item name="android:windowExitAnimation">@anim/ps_anim_down_out</item>
+    </style>
+
+    <style name="Picture.Theme.Dialog" parent="@android:style/Theme.Dialog">
+
+        <!-- 边框 -->
+        <item name="android:windowFrame">@android:color/transparent</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
+        <!-- 自己想要的背景 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+</resources>
