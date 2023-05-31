@@ -8,6 +8,6 @@ import android.view.View
  * @describe：MediaPlayer Controller
  */
 interface Controller {
-    fun getVideoPlay(): View
-    fun getVideoLoading(): View
+    fun getViewPlay(): View
+    fun getViewLoading(): View
 }

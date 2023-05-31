@@ -50,7 +50,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
 
     override fun bindData(media: LocalMedia, position: Int) {
         super.bindData(media, position)
-        val videoPlay = videoController.getVideoPlay()
+        val videoPlay = videoController.getViewPlay()
         videoPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         videoPlay.setOnClickListener {
             if (config.isPauseResumePlay) {
@@ -96,8 +96,8 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         }
 
         override fun onPlayerLoading() {
-            videoController.getVideoLoading().visibility = View.VISIBLE
-            videoController.getVideoPlay().visibility = View.GONE
+            videoController.getViewLoading().visibility = View.VISIBLE
+            videoController.getViewPlay().visibility = View.GONE
         }
 
         override fun onPlayerComplete() {
@@ -116,15 +116,15 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
 
     open fun onPlayingVideoState() {
         ivCover.visibility = View.GONE
-        videoController.getVideoPlay().visibility = View.GONE
-        videoController.getVideoLoading().visibility = View.GONE
+        videoController.getViewPlay().visibility = View.GONE
+        videoController.getViewLoading().visibility = View.GONE
         setPreviewVideoTitle(media.displayName)
     }
 
     open fun onDefaultVideoState() {
         ivCover.visibility = View.VISIBLE
-        videoController.getVideoPlay().visibility = View.VISIBLE
-        videoController.getVideoLoading().visibility = View.GONE
+        videoController.getViewPlay().visibility = View.VISIBLE
+        videoController.getViewLoading().visibility = View.GONE
         setPreviewVideoTitle(null)
     }
 

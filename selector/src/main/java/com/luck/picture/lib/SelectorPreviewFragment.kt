@@ -587,8 +587,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
         if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getVideoPlay().visibility == View.GONE) {
-                currentHolder.videoController.getVideoPlay().visibility = View.VISIBLE
+            if (currentHolder.videoController.getViewPlay().visibility == View.GONE) {
+                currentHolder.videoController.getViewPlay().visibility = View.VISIBLE
             }
         }
     }
@@ -672,8 +672,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             currentHolder.ivCover.visibility = View.VISIBLE
         }
         if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getVideoPlay().visibility == View.VISIBLE) {
-                currentHolder.videoController.getVideoPlay().visibility = View.GONE
+            if (currentHolder.videoController.getViewPlay().visibility == View.VISIBLE) {
+                currentHolder.videoController.getViewPlay().visibility = View.GONE
             }
         }
     }
@@ -692,8 +692,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             currentHolder.ivCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
         if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getVideoPlay().visibility == View.GONE && !currentHolder.mediaPlayer.isPlaying()) {
-                currentHolder.videoController.getVideoPlay().visibility = View.VISIBLE
+            if (currentHolder.videoController.getViewPlay().visibility == View.GONE && !currentHolder.mediaPlayer.isPlaying()) {
+                currentHolder.videoController.getViewPlay().visibility = View.VISIBLE
             }
         }
     }

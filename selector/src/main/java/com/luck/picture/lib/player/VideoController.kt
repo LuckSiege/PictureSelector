@@ -1,10 +1,11 @@
 package com.luck.picture.lib.player
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.ProgressBar
 import com.luck.picture.lib.R
 
 /**
@@ -13,6 +14,8 @@ import com.luck.picture.lib.R
  * @describe：Player controller
  */
 class VideoController : FrameLayout, Controller {
+    private lateinit var pbLoading: ProgressBar
+    private lateinit var ivPlayVideo: ImageView
 
     constructor(context: Context) : super(context) {
         init()
@@ -32,15 +35,15 @@ class VideoController : FrameLayout, Controller {
 
     private fun init() {
         inflate(context, R.layout.ps_video_controller, this)
+        pbLoading = findViewById(R.id.pb_loading)
+        ivPlayVideo = findViewById(R.id.iv_play_video)
     }
 
-    @SuppressLint("WrongViewCast")
-    override fun getVideoPlay(): View {
-        return findViewById(R.id.iv_play_video)
+    override fun getViewPlay(): View {
+        return ivPlayVideo
     }
 
-    @SuppressLint("WrongViewCast")
-    override fun getVideoLoading(): View {
-        return findViewById(R.id.pb_loading)
+    override fun getViewLoading(): View {
+        return pbLoading
     }
 }
