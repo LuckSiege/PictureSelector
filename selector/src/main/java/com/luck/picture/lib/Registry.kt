@@ -86,8 +86,8 @@ class Registry : BaseRegistry() {
     }
 
     override fun clear() {
-        adapterRegistry.clear()
-        fragmentRegistry.clear()
-        viewHolderRegistry.clear()
+        getAdapterRegistry().clear()
+        getFragmentRegistry().clear()
+        getViewHolderRegistry().clear()
     }
 }
