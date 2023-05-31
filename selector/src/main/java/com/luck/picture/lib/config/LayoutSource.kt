@@ -34,6 +34,11 @@ enum class LayoutSource {
     SELECTOR_NUMBER_PREVIEW,
 
     /**
+     * User Overload [SelectorNumberPreviewFragment.GalleryAdapter]#[R.layout.ps_preview_gallery_item]
+     */
+    SELECTOR_NUMBER_PREVIEW_GALLERY,
+
+    /**
      * User Overload [SelectorExternalPreviewFragment]#[R.layout.ps_fragment_external_preview]
      */
     SELECTOR_EXTERNAL_PREVIEW,

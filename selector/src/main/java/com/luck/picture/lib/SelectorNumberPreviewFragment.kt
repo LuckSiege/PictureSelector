@@ -365,9 +365,11 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         var selectResult: MutableList<LocalMedia>? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
+            val resource = config.layoutSource[LayoutSource.SELECTOR_NUMBER_PREVIEW_GALLERY]
+                ?: R.layout.ps_preview_gallery_item
             return GalleryViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ps_preview_gallery_item, parent, false)
+                    .inflate(resource, parent, false)
             )
         }
 
