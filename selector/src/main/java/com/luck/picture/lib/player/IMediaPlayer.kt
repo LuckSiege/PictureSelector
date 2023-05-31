@@ -9,6 +9,8 @@ import com.luck.picture.lib.interfaces.OnPlayerListener
  */
 interface IMediaPlayer {
     fun initMediaPlayer(l: OnPlayerListener?)
+    fun getCurrentPosition(): Long
+    fun getDuration(): Long
     fun onStart(path: String, isLoopAutoPlay: Boolean)
     fun onResume()
     fun onPause()

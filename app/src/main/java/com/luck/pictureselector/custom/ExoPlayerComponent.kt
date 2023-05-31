@@ -80,6 +80,14 @@ class ExoPlayerComponent(context: Context) : StyledPlayerView(context), IMediaPl
         return player?.isPlaying == true
     }
 
+    override fun getCurrentPosition(): Long {
+        return player?.currentPosition ?: 0L
+    }
+
+    override fun getDuration(): Long {
+        return player?.duration ?: 0L
+    }
+
     override fun destroy() {
         player?.release()
         player?.removeListener(exoPlayerListener)

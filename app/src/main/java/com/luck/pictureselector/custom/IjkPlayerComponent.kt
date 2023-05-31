@@ -105,6 +105,14 @@ class IjkPlayerComponent : FrameLayout, TextureView.SurfaceTextureListener, IMed
         return mediaPlayer?.isPlaying == true
     }
 
+    override fun getCurrentPosition(): Long {
+        return mediaPlayer?.currentPosition ?: 0L
+    }
+
+    override fun getDuration(): Long {
+        return mediaPlayer?.duration ?: 0L
+    }
+
     override fun destroy() {
         if (mediaPlayer != null) {
             mediaPlayer?.release()

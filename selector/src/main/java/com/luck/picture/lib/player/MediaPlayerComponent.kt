@@ -85,6 +85,14 @@ class MediaPlayerComponent : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
         return mediaPlayer?.isPlaying ?: false
     }
 
+    override fun getCurrentPosition(): Long {
+        return mediaPlayer?.currentPosition?.toLong() ?: 0L
+    }
+
+    override fun getDuration(): Long {
+        return mediaPlayer?.duration?.toLong() ?: 0L
+    }
+
     override fun initMediaPlayer(l: OnPlayerListener?) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
@@ -108,7 +116,6 @@ class MediaPlayerComponent : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
             false
         }
     }
-
 
     override fun destroy() {
         if (mediaPlayer != null) {
