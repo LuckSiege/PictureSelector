@@ -8,6 +8,7 @@ import com.luck.picture.lib.component.IBasePreviewComponent
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnLongClickListener
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.utils.DensityUtil
 
 /**
  * @author：luck
@@ -16,10 +17,21 @@ import com.luck.picture.lib.provider.SelectorProviders
  */
 abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val config = SelectorProviders.getInstance().getSelectorConfig()
+    var screenWidth = DensityUtil.getRealScreenWidth(itemView.context)
+    var screenHeight = DensityUtil.getScreenHeight(itemView.context)
+    var screenAppInHeight = DensityUtil.getRealScreenHeight(itemView.context)
     val component = this.createPreviewComponent()
 
     init {
         (itemView as ViewGroup).addView(component as View)
+    }
+
+    open fun getRealSizeFromMedia(media: LocalMedia): IntArray {
+        return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
+            intArrayOf(media.cropWidth, media.cropHeight)
+        } else {
+            intArrayOf(media.width, media.height)
+        }
     }
 
     /**

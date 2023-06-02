@@ -840,9 +840,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     private fun resumePausePlay() {
-        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
-        if (currentHolder is IMediaPlayer) {
-            currentHolder.onResume()
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
+        if (currentHolder.component is IMediaPlayer) {
+            if (currentHolder.component.isPlaying()) {
+                currentHolder.component.onPause()
+            } else {
+                currentHolder.component.onResume()
+            }
         }
     }
 

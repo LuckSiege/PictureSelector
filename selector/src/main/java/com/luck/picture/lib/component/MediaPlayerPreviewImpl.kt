@@ -14,9 +14,6 @@ import android.widget.ImageView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.utils.BitmapUtils
-import com.luck.picture.lib.utils.DensityUtil
-import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.MediaUtils.isContent
 import com.luck.picture.lib.widget.VideoSurfaceView
 
@@ -26,14 +23,10 @@ import com.luck.picture.lib.widget.VideoSurfaceView
  * @describe：MediaPlayer Component
  */
 class MediaPlayerPreviewImpl : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
-    private var screenWidth = 0
-    private var screenHeight = 0
-    private var screenAppInHeight = 0
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var surfaceView: VideoSurfaceView
     private lateinit var ivCover: ImageView
     private lateinit var videoController: VideoControllerImpl
-    private var isPlayed = false
 
     constructor(context: Context) : super(context) {
         init()
@@ -52,68 +45,22 @@ class MediaPlayerPreviewImpl : FrameLayout, SurfaceHolder.Callback, IMediaPlayer
     }
 
     private fun init() {
-        screenWidth = DensityUtil.getRealScreenWidth(context)
-        screenHeight = DensityUtil.getScreenHeight(context)
-        screenAppInHeight = DensityUtil.getRealScreenHeight(context)
         inflate(context, R.layout.ps_preview_video_component, this)
         ivCover = findViewById(R.id.iv_preview_cover)
         videoController = VideoControllerImpl(context)
         addView(videoController)
         surfaceView = VideoSurfaceView(context)
+        surfaceView.layoutParams =
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                this.gravity = Gravity.CENTER
+            }
         addView(surfaceView, 0)
         surfaceView.holder.setFormat(PixelFormat.TRANSPARENT)
         surfaceView.holder.addCallback(this)
     }
 
     override fun bindData(config: SelectorConfig, media: LocalMedia) {
-        videoController.getViewPlay().visibility =
-            if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
-        val size = getRealSizeFromMedia(media)
-        val mediaComputeSize = BitmapUtils.getComputeImageSize(size[0], size[1])
-        val width = mediaComputeSize[0]
-        val height = mediaComputeSize[1]
-        if (width > 0 && height > 0) {
-            config.imageEngine?.loadImage(context, media.getAvailablePath(), width, height, ivCover)
-        } else {
-            config.imageEngine?.loadImage(context, media.getAvailablePath(), ivCover)
-        }
-        if (MediaUtils.isLongImage(media.width, media.height)) {
-            ivCover.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            ivCover.scaleType = ImageView.ScaleType.FIT_CENTER
-        }
-        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            if (media.width > 0 && media.height > 0) {
-                (ivCover.layoutParams as LayoutParams).apply {
-                    this.width = screenWidth
-                    this.height = screenAppInHeight
-                    this.gravity = Gravity.CENTER
-                }
-            }
-        }
-        videoController.getViewPlay().setOnClickListener {
-            if (config.isPauseResumePlay) {
-                if (isPlayed) {
-                    if (isPlaying()) {
-                        onPause()
-                    } else {
-                        onResume()
-                    }
-                } else {
-                    onStart(media.getAvailablePath()!!, config.isLoopAutoPlay)
-                }
-            } else {
-                onStart(media.getAvailablePath()!!, config.isLoopAutoPlay)
-            }
-        }
-    }
 
-    private fun getRealSizeFromMedia(media: LocalMedia): IntArray {
-        return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
-            intArrayOf(media.cropWidth, media.cropHeight)
-        } else {
-            intArrayOf(media.width, media.height)
-        }
     }
 
     override fun onViewAttachedToWindow() {
@@ -176,7 +123,6 @@ class MediaPlayerPreviewImpl : FrameLayout, SurfaceHolder.Callback, IMediaPlayer
             mediaPlayer?.setDataSource(path)
         }
         mediaPlayer?.prepareAsync()
-        isPlayed = true
     }
 
     override fun onResume() {
@@ -222,7 +168,6 @@ class MediaPlayerPreviewImpl : FrameLayout, SurfaceHolder.Callback, IMediaPlayer
         ivCover.visibility = View.VISIBLE
         videoController.getViewPlay().visibility = View.VISIBLE
         videoController.getViewLoading().visibility = View.GONE
-        isPlayed = false
     }
 
 }
