@@ -63,6 +63,7 @@ class PreviewLongImagePreviewComponent : FrameLayout, IBasePreviewComponent {
     override fun bindData(config: SelectorConfig, media: LocalMedia) {
         if (MediaUtils.isLongImage(media.width, media.height)) {
             ivCover.scaleType = ImageView.ScaleType.CENTER_CROP
+            ivCover.visibility = View.GONE
             Glide.with(context).asBitmap().load(media.getAvailablePath())
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
@@ -86,46 +87,13 @@ class PreviewLongImagePreviewComponent : FrameLayout, IBasePreviewComponent {
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                     }
                 })
-
         } else {
-            val size = getRealSizeFromMedia(media)
-            val mediaComputeSize = BitmapUtils.getComputeImageSize(size[0], size[1])
-            val width = mediaComputeSize[0]
-            val height = mediaComputeSize[1]
-            ivCover.scaleType = ImageView.ScaleType.FIT_CENTER
-            if (width > 0 && height > 0) {
-                config.imageEngine?.loadImage(
-                    context,
-                    media.getAvailablePath(),
-                    width,
-                    height,
-                    ivCover
-                )
-            } else {
-                config.imageEngine?.loadImage(context, media.getAvailablePath(), ivCover)
-            }
-        }
-        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            if (media.width > 0 && media.height > 0) {
-                (ivCover.layoutParams as LayoutParams).apply {
-                    this.width = screenWidth
-                    this.height = screenAppInHeight
-                    this.gravity = Gravity.CENTER
-                }
-            }
+            ivCover.visibility = View.VISIBLE
         }
     }
 
     override fun getImageCover(): ImageView {
         return ivCover
-    }
-
-    private fun getRealSizeFromMedia(media: LocalMedia): IntArray {
-        return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
-            intArrayOf(media.cropWidth, media.cropHeight)
-        } else {
-            intArrayOf(media.width, media.height)
-        }
     }
 
     override fun onViewAttachedToWindow() {

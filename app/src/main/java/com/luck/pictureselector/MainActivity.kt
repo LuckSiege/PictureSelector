@@ -29,6 +29,7 @@ import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import com.luck.pictureselector.adapter.GridImageAdapter
+import com.luck.pictureselector.custom.CustomMediaPreviewAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 
@@ -190,11 +191,13 @@ class MainActivity : AppCompatActivity() {
                             maxSelectVideoNum,
                             checkMergeTotal.isChecked
                         )
+                        registry.register(CustomMediaPreviewAdapter::class.java)
+                        buildGalleryStyle(registry, gallery)
+                        buildCustomPlayer(registry)
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
-                        gallery.registry(buildGalleryStyle(registry, gallery))
-                        gallery.registry(buildCustomPlayer(registry))
+                        gallery.registry(registry)
                         gallery.isPreviewZoomEffect(
                             checkPreviewEffect.isChecked,
                             checkPreviewFull.isChecked
@@ -298,7 +301,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * 选择器风格样式
      */
-    private fun buildGalleryStyle(registry: Registry, mainModel: SelectionMainModel): Registry {
+    private fun buildGalleryStyle(registry: Registry, mainModel: SelectionMainModel) {
         val statusBarColor: Int
         val navigationBarColor: Int
         var isDarkStatusBar = false
@@ -339,13 +342,12 @@ class MainActivity : AppCompatActivity() {
             selectorStyle.getWindowAnimation().of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
         }
         mainModel.setSelectorUIStyle(selectorStyle)
-        return registry
     }
 
     /**
      * 自定义视频播放器引擎的VideoHolder
      */
-    private fun buildCustomPlayer(registry: Registry): Registry {
+    private fun buildCustomPlayer(registry: Registry) {
         when {
             rbExoPlayer.isChecked -> {
                 registry.register(CustomPreviewExoVideoHolder::class.java)
@@ -357,6 +359,5 @@ class MainActivity : AppCompatActivity() {
                 registry.register(PreviewVideoHolder::class.java)
             }
         }
-        return registry
     }
 }
