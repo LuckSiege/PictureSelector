@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * @author：luck
  * @date：2021/12/17 1:19 下午
- * @describe：BuildRecycleItemViewParams
+ * @describe：RecycleItemViewParams
  */
-object BuildRecycleItemViewParams {
+object RecycleItemViewParams {
     private val viewParams: MutableList<ViewParams> = ArrayList()
 
     fun clear() {

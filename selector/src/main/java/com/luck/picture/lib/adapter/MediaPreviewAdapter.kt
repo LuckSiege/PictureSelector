@@ -93,7 +93,6 @@ open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() 
         mViewHolderCache[position] = holder
         holder.setOnClickListener(mClickListener)
         holder.setOnLongClickListener(mLongClickListener)
-        holder.setOnTitleChangeListener(mTitleChangeListener)
         holder.bindData(mData[position], position)
     }
 
@@ -149,31 +148,6 @@ open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() 
 
     fun setOnLongClickListener(l: OnLongClickListener<LocalMedia>?) {
         this.mLongClickListener = l
-    }
-
-
-    private var mTitleChangeListener: OnTitleChangeListener? = null
-
-    fun setOnTitleChangeListener(l: OnTitleChangeListener?) {
-        this.mTitleChangeListener = l
-    }
-
-    interface OnTitleChangeListener {
-        fun onTitle(title: String?)
-    }
-
-    /**
-     * isPlaying
-     *
-     * @param position
-     * @return
-     */
-    fun isPlaying(position: Int): Boolean {
-        val currentHolder = mViewHolderCache[position]
-        if (currentHolder is PreviewAudioHolder) {
-            return currentHolder.isPlaying()
-        }
-        return false
     }
 
     open fun destroy() {

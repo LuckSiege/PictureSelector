@@ -28,7 +28,7 @@ import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.loader.MediaLoader
-import com.luck.picture.lib.magical.BuildRecycleItemViewParams
+import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
@@ -470,9 +470,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      * @param isFullScreenModel
      */
     fun isPreviewFullScreenMode(isFullScreenModel: Boolean): SelectionMainModel {
-        if (this.config.selectorMode != SelectorMode.AUDIO) {
-            this.config.isPreviewFullScreenMode = isFullScreenModel
-        }
+        this.config.isPreviewFullScreenMode = isFullScreenModel
         return this
     }
 
@@ -500,8 +498,8 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     ): SelectionMainModel {
         if (this.config.selectorMode != SelectorMode.AUDIO) {
             this.config.isPreviewZoomEffect = isPreviewEffect
-            this.config.isPreviewFullScreenMode = isFullScreen
         }
+        this.config.isPreviewFullScreenMode = isFullScreen
         return this
     }
 
@@ -519,14 +517,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     ): SelectionMainModel {
         if (this.config.selectorMode != SelectorMode.AUDIO) {
             this.config.isPreviewZoomEffect = isPreviewEffect
-            this.config.isPreviewFullScreenMode = isFullScreen
             if (isPreviewEffect) {
-                BuildRecycleItemViewParams.generateViewParams(
+                RecycleItemViewParams.generateViewParams(
                     listView,
                     if (isFullScreen) 0 else getStatusBarHeight(listView.context)
                 )
             }
         }
+        this.config.isPreviewFullScreenMode = isFullScreen
         return this
     }
 

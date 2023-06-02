@@ -22,10 +22,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.luck.picture.lib.adapter.MediaPreviewAdapter
-import com.luck.picture.lib.adapter.PreviewAudioHolder
-import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.base.BaseSelectorFragment
+import com.luck.picture.lib.component.IMediaPlayer
+import com.luck.picture.lib.component.IPreviewCoverComponent
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
@@ -33,9 +33,9 @@ import com.luck.picture.lib.constant.CropWrap
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.magical.BuildRecycleItemViewParams
 import com.luck.picture.lib.magical.MagicalView
 import com.luck.picture.lib.magical.OnMagicalViewCallback
+import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -284,20 +284,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
-    open fun onTitleChange(title: String?) {
-        if (TextUtils.isEmpty(title)) {
-            setTitleText(viewModel.previewWrap.position + 1)
-        } else {
-            mTvTitle?.text = title
-        }
-    }
-
     open fun onFirstViewAttachedToWindow(holder: BasePreviewMediaHolder) {
         if (isHasMagicalEffect()) {
-            startZoomEffect(
-                holder,
-                viewModel.previewWrap.source[viewModel.previewWrap.position]
-            )
+            startZoomEffect(holder, viewModel.previewWrap.source[viewModel.previewWrap.position])
         }
     }
 
@@ -408,11 +397,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 onPreviewItemClick(media)
             }
         })
-        mAdapter.setOnTitleChangeListener(object : MediaPreviewAdapter.OnTitleChangeListener {
-            override fun onTitle(title: String?) {
-                onTitleChange(title)
-            }
-        })
     }
 
     open fun onMediaSourceChange(result: MutableList<LocalMedia>) {
@@ -425,15 +409,17 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun startZoomEffect(holder: BasePreviewMediaHolder, media: LocalMedia) {
         viewPager.alpha = 0F
-        holder.ivCover.scaleType =
-            if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
+        if (holder.component is IPreviewCoverComponent) {
+            holder.component.getImageCover().scaleType =
+                if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
+        }
         viewModel.viewModelScope.launch {
             val mediaRealSize = getMediaRealSizeFromMedia(media)
             val width = mediaRealSize[0]
             val height = mediaRealSize[1]
             mMagicalView?.changeRealScreenHeight(width, height, false)
             val viewParams =
-                BuildRecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
+                RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
             if (viewParams == null || width == 0 && height == 0) {
                 mMagicalView?.startNormal(width, height, false)
                 mMagicalView?.setBackgroundAlpha(1F)
@@ -467,7 +453,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 val height = mediaSize[1]
                 mMagicalView?.changeRealScreenHeight(width, height, true)
                 val viewParams =
-                    BuildRecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) position + 1 else position)
+                    RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) position + 1 else position)
                 if (viewParams == null || width == 0 || height == 0) {
                     mMagicalView?.setViewParams(0, 0, 0, 0, width, height)
                 } else {
@@ -585,10 +571,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isLoadMore(position)) {
             loadMediaMore()
         }
-        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
-        if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getViewPlay().visibility == View.GONE) {
-                currentHolder.videoController.getViewPlay().visibility = View.VISIBLE
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
+        if (currentHolder.component is IMediaPlayer) {
+            val controller = currentHolder.component.getController()
+            if (controller.getViewPlay().visibility == View.GONE) {
+                controller.getViewPlay().visibility = View.VISIBLE
             }
         }
     }
@@ -665,35 +652,37 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onMojitoBeginBackMinAnim() {
-        val currentHolder: BasePreviewMediaHolder =
-            mAdapter.getCurrentViewHolder(viewPager.currentItem)
-                ?: return
-        if (currentHolder.ivCover.visibility == View.GONE) {
-            currentHolder.ivCover.visibility = View.VISIBLE
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
+        if (currentHolder.component is IPreviewCoverComponent) {
+            if (currentHolder.component.getImageCover().visibility == View.GONE) {
+                currentHolder.component.getImageCover().visibility = View.VISIBLE
+            }
         }
-        if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getViewPlay().visibility == View.VISIBLE) {
-                currentHolder.videoController.getViewPlay().visibility = View.GONE
+        if (currentHolder.component is IMediaPlayer) {
+            val controller = currentHolder.component.getController()
+            if (controller.getViewPlay().visibility == View.VISIBLE) {
+                controller.getViewPlay().visibility = View.GONE
             }
         }
     }
 
     open fun onMojitoBeginAnimComplete(mojitoView: MagicalView?, showImmediately: Boolean) {
-        val currentHolder: BasePreviewMediaHolder =
-            mAdapter.getCurrentViewHolder(viewPager.currentItem)
-                ?: return
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
         val media = viewModel.previewWrap.source[viewPager.currentItem]
         val isResetSize = media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
-        if (MediaUtils.isLongImage(realWidth, realHeight)) {
-            currentHolder.ivCover.scaleType = ImageView.ScaleType.CENTER_CROP
-        } else {
-            currentHolder.ivCover.scaleType = ImageView.ScaleType.FIT_CENTER
+        if (currentHolder.component is IPreviewCoverComponent) {
+            if (MediaUtils.isLongImage(realWidth, realHeight)) {
+                currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.CENTER_CROP
+            } else {
+                currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.FIT_CENTER
+            }
         }
-        if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.videoController.getViewPlay().visibility == View.GONE && !currentHolder.mediaPlayer.isPlaying()) {
-                currentHolder.videoController.getViewPlay().visibility = View.VISIBLE
+        if (currentHolder.component is IMediaPlayer) {
+            val controller = currentHolder.component.getController()
+            if (controller.getViewPlay().visibility == View.GONE && !isPlaying()) {
+                controller.getViewPlay().visibility = View.VISIBLE
             }
         }
     }
@@ -711,14 +700,18 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBeginBackMinFinish(isResetSize: Boolean) {
         val itemViewParams =
-            BuildRecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
-                ?: return
-        val currentHolder: BasePreviewMediaHolder =
-            mAdapter.getCurrentViewHolder(viewPager.currentItem)
-                ?: return
-        currentHolder.ivCover.layoutParams.width = itemViewParams.width
-        currentHolder.ivCover.layoutParams.height = itemViewParams.height
-        currentHolder.ivCover.scaleType = ImageView.ScaleType.CENTER_CROP
+            RecycleItemViewParams.getItemViewParams(
+                if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1
+                else viewPager.currentItem
+            ) ?: return
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
+        if (currentHolder.component is IPreviewCoverComponent) {
+            currentHolder.component.getImageCover().apply {
+                this.layoutParams?.width = itemViewParams.width
+                this.layoutParams?.height = itemViewParams.height
+                this.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        }
     }
 
     private fun isFullScreen(): Boolean {
@@ -856,15 +849,19 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     private fun resumePausePlay() {
-        val currentViewHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
-        if (currentViewHolder is PreviewAudioHolder) {
-            currentViewHolder.resumePausePlay()
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
+        if (currentHolder is IMediaPlayer) {
+            currentHolder.onResume()
         }
     }
 
 
     private fun isPlaying(): Boolean {
-        return mAdapter.isPlaying(viewPager.currentItem)
+        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
+        if (currentHolder?.component is IMediaPlayer) {
+            return (currentHolder.component as IMediaPlayer).isPlaying()
+        }
+        return false
     }
 
     override fun onDestroy() {

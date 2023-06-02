@@ -35,7 +35,7 @@ import com.luck.picture.lib.entity.PreviewDataWrap
 import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
-import com.luck.picture.lib.magical.BuildRecycleItemViewParams.generateViewParams
+import com.luck.picture.lib.magical.RecycleItemViewParams.generateViewParams
 import com.luck.picture.lib.media.PictureMediaScannerConnection
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener

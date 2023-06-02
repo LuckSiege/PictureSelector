@@ -20,7 +20,7 @@ import com.luck.picture.lib.interfaces.OnCustomLoadingListener
 import com.luck.picture.lib.interfaces.OnExternalPreviewListener
 import com.luck.picture.lib.interfaces.OnFragmentLifecycleListener
 import com.luck.picture.lib.language.Language
-import com.luck.picture.lib.magical.BuildRecycleItemViewParams
+import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil
@@ -176,7 +176,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
             this.config.isPreviewZoomEffect = isPreviewEffect
             this.config.isPreviewFullScreenMode = isFullScreen
             if (isPreviewEffect) {
-                BuildRecycleItemViewParams.generateViewParams(
+                RecycleItemViewParams.generateViewParams(
                     listView,
                     if (isFullScreen) 0 else DensityUtil.getStatusBarHeight(listView.context)
                 )

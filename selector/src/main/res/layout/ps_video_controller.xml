@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ProgressBar
         android:id="@+id/pb_loading"
@@ -13,11 +13,11 @@
         android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/iv_play_video"
+        android:id="@+id/iv_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/ps_ic_video_play"
         android:visibility="gone" />
 
-</FrameLayout>
+</merge>

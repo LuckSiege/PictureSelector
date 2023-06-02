@@ -1,9 +1,8 @@
-package com.luck.picture.lib.player
+package com.luck.picture.lib.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.SurfaceView
-
 
 /**
  * @author：luck
