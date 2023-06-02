@@ -1,7 +1,6 @@
 package com.luck.picture.lib.component
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.media.AudioManager
 import android.media.MediaPlayer
