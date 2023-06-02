@@ -17,7 +17,7 @@ import com.luck.picture.lib.utils.MediaUtils
  * @date：2023/1/4 3:52 下午
  * @describe：PreviewImagePreviewImpl
  */
-class PreviewImagePreviewImpl : FrameLayout, IPreviewCoverComponent {
+class PreviewImagePreviewImpl : FrameLayout, IBasePreviewComponent {
     private var screenWidth = 0
     private var screenHeight = 0
     private var screenAppInHeight = 0

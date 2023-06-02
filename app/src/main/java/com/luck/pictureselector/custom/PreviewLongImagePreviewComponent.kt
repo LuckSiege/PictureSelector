@@ -116,6 +116,10 @@ class PreviewLongImagePreviewComponent : FrameLayout, IBasePreviewComponent {
         }
     }
 
+    override fun getImageCover(): ImageView {
+        return ivCover
+    }
+
     private fun getRealSizeFromMedia(media: LocalMedia): IntArray {
         return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
             intArrayOf(media.cropWidth, media.cropHeight)

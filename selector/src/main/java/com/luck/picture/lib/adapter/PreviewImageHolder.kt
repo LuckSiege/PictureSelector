@@ -3,7 +3,6 @@ package com.luck.picture.lib.adapter
 import android.view.View
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.component.IBasePreviewComponent
-import com.luck.picture.lib.component.IPreviewCoverComponent
 import com.luck.picture.lib.component.PreviewImagePreviewImpl
 import com.luck.picture.lib.entity.LocalMedia
 
@@ -20,15 +19,13 @@ open class PreviewImageHolder(itemView: View) : BasePreviewMediaHolder(itemView)
 
     override fun bindData(media: LocalMedia, position: Int) {
         component.bindData(config, media)
-        if (component is IPreviewCoverComponent) {
-            val imageCover = component.getImageCover()
-            imageCover.setOnClickListener {
-                setClickEvent(media)
-            }
-            imageCover.setOnLongClickListener {
-                setLongClickEvent(this, position, media)
-                return@setOnLongClickListener false
-            }
+        val imageCover = component.getImageCover()
+        imageCover.setOnClickListener {
+            setClickEvent(media)
+        }
+        imageCover.setOnLongClickListener {
+            setLongClickEvent(this, position, media)
+            return@setOnLongClickListener false
         }
     }
 

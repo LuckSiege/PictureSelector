@@ -1,7 +1,9 @@
 package com.luck.picture.lib.component
 
+import android.widget.ImageView
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.entity.LocalMedia
+
 /**
  * @author：luck
  * @date：2023/1/4 3:52 下午
@@ -9,6 +11,7 @@ import com.luck.picture.lib.entity.LocalMedia
  */
 interface IBasePreviewComponent {
     fun bindData(config: SelectorConfig, media: LocalMedia)
+    fun getImageCover(): ImageView
     fun onViewAttachedToWindow()
     fun onViewDetachedFromWindow()
     fun release()

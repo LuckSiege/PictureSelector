@@ -5,7 +5,7 @@ package com.luck.picture.lib.component
  * @date：2023/1/4 4:55 下午
  * @describe：Player General Function Behavior
  */
-interface IMediaPlayer : IPreviewCoverComponent {
+interface IMediaPlayer : IBasePreviewComponent {
     fun getCurrentPosition(): Long
     fun getDuration(): Long
     fun onStart(path: String, isLoopAutoPlay: Boolean)

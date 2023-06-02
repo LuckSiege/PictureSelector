@@ -10,7 +10,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -24,8 +23,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.luck.picture.lib.adapter.MediaPreviewAdapter
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.base.BaseSelectorFragment
+import com.luck.picture.lib.component.IBasePreviewComponent
 import com.luck.picture.lib.component.IMediaPlayer
-import com.luck.picture.lib.component.IPreviewCoverComponent
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
@@ -409,10 +408,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun startZoomEffect(holder: BasePreviewMediaHolder, media: LocalMedia) {
         viewPager.alpha = 0F
-        if (holder.component is IPreviewCoverComponent) {
-            holder.component.getImageCover().scaleType =
-                if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
-        }
+        holder.component.getImageCover().scaleType =
+            if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         viewModel.viewModelScope.launch {
             val mediaRealSize = getMediaRealSizeFromMedia(media)
             val width = mediaRealSize[0]
@@ -653,10 +650,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBeginBackMinAnim() {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder.component is IPreviewCoverComponent) {
-            if (currentHolder.component.getImageCover().visibility == View.GONE) {
-                currentHolder.component.getImageCover().visibility = View.VISIBLE
-            }
+        if (currentHolder.component.getImageCover().visibility == View.GONE) {
+            currentHolder.component.getImageCover().visibility = View.VISIBLE
         }
         if (currentHolder.component is IMediaPlayer) {
             val controller = currentHolder.component.getController()
@@ -672,12 +667,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         val isResetSize = media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
-        if (currentHolder.component is IPreviewCoverComponent) {
-            if (MediaUtils.isLongImage(realWidth, realHeight)) {
-                currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.CENTER_CROP
-            } else {
-                currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.FIT_CENTER
-            }
+        if (MediaUtils.isLongImage(realWidth, realHeight)) {
+            currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.CENTER_CROP
+        } else {
+            currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.FIT_CENTER
         }
         if (currentHolder.component is IMediaPlayer) {
             val controller = currentHolder.component.getController()
@@ -705,12 +698,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 else viewPager.currentItem
             ) ?: return
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder.component is IPreviewCoverComponent) {
-            currentHolder.component.getImageCover().apply {
-                this.layoutParams?.width = itemViewParams.width
-                this.layoutParams?.height = itemViewParams.height
-                this.scaleType = ImageView.ScaleType.CENTER_CROP
-            }
+        currentHolder.component.getImageCover().apply {
+            this.layoutParams?.width = itemViewParams.width
+            this.layoutParams?.height = itemViewParams.height
+            this.scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
 
