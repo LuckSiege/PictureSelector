@@ -1,6 +1,7 @@
 package com.luck.picture.lib.component
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -55,7 +56,6 @@ class MediaPlayerPreviewImpl : FrameLayout, SurfaceHolder.Callback, IMediaPlayer
                 this.gravity = Gravity.CENTER
             }
         addView(surfaceView, 0)
-        surfaceView.holder.setFormat(PixelFormat.TRANSPARENT)
         surfaceView.holder.addCallback(this)
     }
 

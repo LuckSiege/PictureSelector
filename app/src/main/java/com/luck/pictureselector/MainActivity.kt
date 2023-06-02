@@ -199,7 +199,6 @@ class MainActivity : AppCompatActivity() {
                             checkPreviewEffect.isChecked,
                             checkPreviewFull.isChecked
                         )
-                        gallery.setQueryOnlyImageFormat(MediaUtils.ofGIF())
                         gallery.isGif(checkGif.isChecked)
                         gallery.isEmptyResultBack(checkEmptyBack.isChecked)
                         gallery.isOriginalControl(checkOriginal.isChecked)
