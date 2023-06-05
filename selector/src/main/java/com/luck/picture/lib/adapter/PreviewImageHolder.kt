@@ -5,8 +5,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
-import com.luck.picture.lib.component.IBasePreviewComponent
-import com.luck.picture.lib.component.PreviewImagePreviewImpl
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.BitmapUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -17,14 +15,23 @@ import com.luck.picture.lib.utils.MediaUtils
  * @describe：PreviewImageHolder
  */
 open class PreviewImageHolder(itemView: View) : BasePreviewMediaHolder(itemView) {
+    override fun onViewAttachedToWindow() {}
+    override fun onViewDetachedFromWindow() {}
+    override fun release() {}
 
-    override fun createPreviewComponent(): IBasePreviewComponent {
-        return PreviewImagePreviewImpl(itemView.context)
+    override fun coverLayoutParams(media: LocalMedia) {
+        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
+            if (media.width > 0 && media.height > 0) {
+                (imageCover.layoutParams as FrameLayout.LayoutParams).apply {
+                    this.width = screenWidth
+                    this.height = screenAppInHeight
+                    this.gravity = Gravity.CENTER
+                }
+            }
+        }
     }
 
-    override fun bindData(media: LocalMedia, position: Int) {
-        component.bindData(config, media)
-        val imageCover = component.getImageCover()
+    override fun loadCover(media: LocalMedia) {
         val size = getRealSizeFromMedia(media)
         val mediaComputeSize = BitmapUtils.getComputeImageSize(size[0], size[1])
         val width = mediaComputeSize[0]
@@ -40,38 +47,13 @@ open class PreviewImageHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         } else {
             config.imageEngine?.loadImage(itemView.context, media.getAvailablePath(), imageCover)
         }
+    }
+
+    override fun coverScaleType(media: LocalMedia) {
         if (MediaUtils.isLongImage(media.width, media.height)) {
             imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
             imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
-        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
-            if (media.width > 0 && media.height > 0) {
-                (imageCover.layoutParams as FrameLayout.LayoutParams).apply {
-                    this.width = screenWidth
-                    this.height = screenAppInHeight
-                    this.gravity = Gravity.CENTER
-                }
-            }
-        }
-        imageCover.setOnClickListener {
-            setClickEvent(media)
-        }
-        imageCover.setOnLongClickListener {
-            setLongClickEvent(this, position, media)
-            return@setOnLongClickListener false
-        }
-    }
-
-    override fun onViewAttachedToWindow() {
-        component.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow() {
-        component.onViewDetachedFromWindow()
-    }
-
-    override fun release() {
-        component.release()
     }
 }

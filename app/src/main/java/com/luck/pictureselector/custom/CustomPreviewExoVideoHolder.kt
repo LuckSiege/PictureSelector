@@ -2,7 +2,7 @@ package com.luck.pictureselector.custom
 
 import android.view.View
 import com.luck.picture.lib.adapter.PreviewVideoHolder
-import com.luck.picture.lib.component.IBasePreviewComponent
+import com.luck.picture.lib.component.IMediaPlayer
 
 /**
  * @author：luck
@@ -10,7 +10,7 @@ import com.luck.picture.lib.component.IBasePreviewComponent
  * @describe：CustomPreviewExoVideoHolder
  */
 class CustomPreviewExoVideoHolder(itemView: View) : PreviewVideoHolder(itemView) {
-    override fun createPreviewComponent(): IBasePreviewComponent {
-        return ExoPlayerPreviewImpl(itemView.context)
+    override fun onCreateVideoComponent(): IMediaPlayer {
+        return ExoMediaPlayer(itemView.context)
     }
 }

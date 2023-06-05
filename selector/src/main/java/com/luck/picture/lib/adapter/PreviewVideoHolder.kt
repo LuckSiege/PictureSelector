@@ -2,13 +2,14 @@ package com.luck.picture.lib.adapter
 
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
+import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
-import com.luck.picture.lib.component.IBasePreviewComponent
 import com.luck.picture.lib.component.IMediaPlayer
-import com.luck.picture.lib.component.IPlayerController
-import com.luck.picture.lib.component.MediaPlayerPreviewImpl
+import com.luck.picture.lib.component.DefaultMediaPlayer
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.BitmapUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -19,18 +20,52 @@ import com.luck.picture.lib.utils.MediaUtils
  * @describe：PreviewVideoHolder
  */
 open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView) {
-    private var isPlayed = false
-    private lateinit var controller: IPlayerController
-    override fun createPreviewComponent(): IBasePreviewComponent {
-        return MediaPlayerPreviewImpl(itemView.context)
+    var pbLoading: ProgressBar = itemView.findViewById(R.id.pb_loading)
+    var ivPlay: ImageView = itemView.findViewById(R.id.iv_play)
+    var mediaPlayer: IMediaPlayer = this.onCreateVideoComponent()
+    var isPlayed = false
+
+    /**
+     * Create custom player components
+     */
+    open fun onCreateVideoComponent(): IMediaPlayer {
+        return DefaultMediaPlayer(itemView.context)
+    }
+
+    init {
+        (itemView as ViewGroup).addView(mediaPlayer as View, 0)
     }
 
     override fun bindData(media: LocalMedia, position: Int) {
-        component.bindData(config, media)
-        controller = (component as IMediaPlayer).getController()
-        val viewPlay = controller.getViewPlay()
-        val imageCover = component.getImageCover()
-        viewPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
+        super.bindData(media, position)
+        ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
+        ivPlay.setOnClickListener {
+            dispatchPlay(media.getAvailablePath()!!)
+        }
+        itemView.setOnClickListener {
+            if (config.isPauseResumePlay) {
+                dispatchPlay(media.getAvailablePath()!!)
+            } else {
+                setClickEvent(media)
+            }
+        }
+    }
+
+    open fun dispatchPlay(path: String) {
+        if (isPlayed && config.isPauseResumePlay) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause()
+            } else {
+                mediaPlayer.resume()
+            }
+        } else {
+            onPlayingLoading()
+            mediaPlayer.setDataSource(itemView.context, path, config.isLoopAutoPlay)
+            isPlayed = true
+        }
+    }
+
+    override fun loadCover(media: LocalMedia) {
         val size = getRealSizeFromMedia(media)
         val mediaComputeSize = BitmapUtils.getComputeImageSize(size[0], size[1])
         val width = mediaComputeSize[0]
@@ -46,11 +81,17 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         } else {
             config.imageEngine?.loadImage(itemView.context, media.getAvailablePath(), imageCover)
         }
+    }
+
+    override fun coverScaleType(media: LocalMedia) {
         if (MediaUtils.isLongImage(media.width, media.height)) {
             imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
             imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
+    }
+
+    override fun coverLayoutParams(media: LocalMedia) {
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
             if (media.width > 0 && media.height > 0) {
                 (imageCover.layoutParams as FrameLayout.LayoutParams).apply {
@@ -60,49 +101,71 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
                 }
             }
         }
-        viewPlay.setOnClickListener {
-            dispatchPlay(media.getAvailablePath()!!)
-        }
-        itemView.setOnClickListener {
-            if (config.isPauseResumePlay) {
-                dispatchPlay(media.getAvailablePath()!!)
-            } else {
-                setClickEvent(media)
-            }
-        }
-        imageCover.setOnClickListener {
-            setClickEvent(media)
-        }
-        imageCover.setOnLongClickListener {
-            setLongClickEvent(this, position, media)
-            return@setOnLongClickListener false
-        }
     }
 
-    private fun dispatchPlay(path: String) {
-        val mediaPlayer = component as IMediaPlayer
-        if (isPlayed && config.isPauseResumePlay) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.onPause()
-            } else {
-                mediaPlayer.onResume()
-            }
-        } else {
-            mediaPlayer.onStart(path, config.isLoopAutoPlay)
-            isPlayed = true
-        }
+    open fun onPlayingLoading() {
+        pbLoading.visibility = View.VISIBLE
+        ivPlay.visibility = View.GONE
+    }
+
+    open fun onPlayingVideoState() {
+        imageCover.visibility = View.GONE
+        ivPlay.visibility = View.GONE
+        pbLoading.visibility = View.GONE
+    }
+
+    open fun onDefaultVideoState() {
+        imageCover.visibility = View.VISIBLE
+        ivPlay.visibility = View.VISIBLE
+        pbLoading.visibility = View.GONE
+        isPlayed = false
     }
 
     override fun onViewAttachedToWindow() {
-        component.onViewAttachedToWindow()
+        mediaPlayer.initMediaPlayer()
+        mediaPlayer.setOnVideoSizeChangedListener(object : IMediaPlayer.OnVideoSizeChangedListener {
+            override fun onVideoSizeChanged(mp: IMediaPlayer?, width: Int, height: Int) {
+
+            }
+        })
+        mediaPlayer.setOnInfoListener(object : IMediaPlayer.OnInfoListener {
+            override fun onInfo(mp: IMediaPlayer?, what: Int, extra: Int): Boolean {
+                return false
+            }
+
+        })
+        mediaPlayer.setOnPreparedListener(object : IMediaPlayer.OnPreparedListener {
+            override fun onPrepared(mp: IMediaPlayer?) {
+                mp?.start()
+                onPlayingVideoState()
+            }
+        })
+        mediaPlayer.setOnCompletionListener(object : IMediaPlayer.OnCompletionListener {
+            override fun onCompletion(mp: IMediaPlayer?) {
+                mp?.stop()
+                mp?.reset()
+                onDefaultVideoState()
+            }
+        })
+        mediaPlayer.setOnErrorListener(object : IMediaPlayer.OnErrorListener {
+            override fun onError(mp: IMediaPlayer?, what: Int, extra: Int): Boolean {
+                onDefaultVideoState()
+                return false
+            }
+        })
     }
 
     override fun onViewDetachedFromWindow() {
-        isPlayed = false
-        component.onViewDetachedFromWindow()
+        release()
     }
 
     override fun release() {
-        component.release()
+        mediaPlayer.release()
+        mediaPlayer.setOnInfoListener(null)
+        mediaPlayer.setOnErrorListener(null)
+        mediaPlayer.setOnPreparedListener(null)
+        mediaPlayer.setOnCompletionListener(null)
+        mediaPlayer.setOnVideoSizeChangedListener(null)
+        onDefaultVideoState()
     }
 }

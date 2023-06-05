@@ -191,7 +191,6 @@ class MainActivity : AppCompatActivity() {
                             maxSelectVideoNum,
                             checkMergeTotal.isChecked
                         )
-                        registry.register(CustomMediaPreviewAdapter::class.java)
                         buildGalleryStyle(registry, gallery)
                         buildCustomPlayer(registry)
                         gallery.setImageEngine(GlideEngine.create())

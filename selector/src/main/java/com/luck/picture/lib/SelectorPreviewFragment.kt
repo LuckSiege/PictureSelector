@@ -21,10 +21,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.luck.picture.lib.adapter.MediaPreviewAdapter
+import com.luck.picture.lib.adapter.PreviewAudioHolder
+import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.base.BaseSelectorFragment
-import com.luck.picture.lib.component.IBasePreviewComponent
-import com.luck.picture.lib.component.IMediaPlayer
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
@@ -408,7 +408,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun startZoomEffect(holder: BasePreviewMediaHolder, media: LocalMedia) {
         viewPager.alpha = 0F
-        holder.component.getImageCover().scaleType =
+        holder.imageCover.scaleType =
             if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         viewModel.viewModelScope.launch {
             val mediaRealSize = getMediaRealSizeFromMedia(media)
@@ -569,10 +569,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             loadMediaMore()
         }
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder.component is IMediaPlayer) {
-            val controller = currentHolder.component.getController()
-            if (controller.getViewPlay().visibility == View.GONE) {
-                controller.getViewPlay().visibility = View.VISIBLE
+        if (currentHolder is PreviewVideoHolder) {
+            if (currentHolder.ivPlay.visibility == View.GONE) {
+                currentHolder.ivPlay.visibility = View.VISIBLE
             }
         }
     }
@@ -650,13 +649,12 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBeginBackMinAnim() {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder.component.getImageCover().visibility == View.GONE) {
-            currentHolder.component.getImageCover().visibility = View.VISIBLE
+        if (currentHolder.imageCover.visibility == View.GONE) {
+            currentHolder.imageCover.visibility = View.VISIBLE
         }
-        if (currentHolder.component is IMediaPlayer) {
-            val controller = currentHolder.component.getController()
-            if (controller.getViewPlay().visibility == View.VISIBLE) {
-                controller.getViewPlay().visibility = View.GONE
+        if (currentHolder is PreviewVideoHolder) {
+            if (currentHolder.ivPlay.visibility == View.VISIBLE) {
+                currentHolder.ivPlay.visibility = View.GONE
             }
         }
     }
@@ -668,14 +666,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
         if (MediaUtils.isLongImage(realWidth, realHeight)) {
-            currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.CENTER_CROP
+            currentHolder.imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
-            currentHolder.component.getImageCover().scaleType = ImageView.ScaleType.FIT_CENTER
+            currentHolder.imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
-        if (currentHolder.component is IMediaPlayer) {
-            val controller = currentHolder.component.getController()
-            if (controller.getViewPlay().visibility == View.GONE && !isPlaying()) {
-                controller.getViewPlay().visibility = View.VISIBLE
+        if (currentHolder is PreviewVideoHolder) {
+            if (currentHolder.ivPlay.visibility == View.GONE && !isPlaying()) {
+                currentHolder.ivPlay.visibility = View.VISIBLE
             }
         }
     }
@@ -698,11 +695,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 else viewPager.currentItem
             ) ?: return
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        currentHolder.component.getImageCover().apply {
-            this.layoutParams?.width = itemViewParams.width
-            this.layoutParams?.height = itemViewParams.height
-            this.scaleType = ImageView.ScaleType.CENTER_CROP
-        }
+        val layoutParams = currentHolder.imageCover.layoutParams
+        layoutParams?.width = itemViewParams.width
+        layoutParams?.height = itemViewParams.height
+        currentHolder.imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
     private fun isFullScreen(): Boolean {
@@ -841,11 +837,18 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun resumePausePlay() {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder.component is IMediaPlayer) {
-            if (currentHolder.component.isPlaying()) {
-                currentHolder.component.onPause()
+        if (currentHolder is PreviewVideoHolder) {
+            if (currentHolder.mediaPlayer.isPlaying()) {
+                currentHolder.mediaPlayer.pause()
             } else {
-                currentHolder.component.onResume()
+                currentHolder.mediaPlayer.resume()
+            }
+        }
+        if (currentHolder is PreviewAudioHolder) {
+            if (currentHolder.mediaPlayer.isPlaying()) {
+                currentHolder.mediaPlayer.pause()
+            } else {
+                currentHolder.mediaPlayer.resume()
             }
         }
     }
@@ -853,8 +856,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun isPlaying(): Boolean {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
-        if (currentHolder?.component is IMediaPlayer) {
-            return (currentHolder.component as IMediaPlayer).isPlaying()
+        if (currentHolder is PreviewVideoHolder) {
+            return currentHolder.mediaPlayer.isPlaying()
+        }
+        if (currentHolder is PreviewAudioHolder) {
+            return currentHolder.mediaPlayer.isPlaying()
         }
         return false
     }

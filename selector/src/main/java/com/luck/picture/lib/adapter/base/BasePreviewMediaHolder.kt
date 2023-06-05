@@ -1,10 +1,10 @@
 package com.luck.picture.lib.adapter.base
 
 import android.view.View
-import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.MediaPreviewAdapter
-import com.luck.picture.lib.component.IBasePreviewComponent
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnLongClickListener
 import com.luck.picture.lib.provider.SelectorProviders
@@ -20,11 +20,7 @@ abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(
     var screenWidth = DensityUtil.getRealScreenWidth(itemView.context)
     var screenHeight = DensityUtil.getScreenHeight(itemView.context)
     var screenAppInHeight = DensityUtil.getRealScreenHeight(itemView.context)
-    val component = this.createPreviewComponent()
-
-    init {
-        (itemView as ViewGroup).addView(component as View)
-    }
+    val imageCover: ImageView = itemView.findViewById(R.id.iv_preview_cover)
 
     open fun getRealSizeFromMedia(media: LocalMedia): IntArray {
         return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
@@ -33,6 +29,12 @@ abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(
             intArrayOf(media.width, media.height)
         }
     }
+
+    abstract fun loadCover(media: LocalMedia)
+
+    abstract fun coverScaleType(media: LocalMedia)
+
+    abstract fun coverLayoutParams(media: LocalMedia)
 
     /**
      * onViewAttachedToWindow
@@ -45,14 +47,20 @@ abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(
     abstract fun onViewDetachedFromWindow()
 
     /**
-     * Create preview component，Can be Used to implement a custom player or long image viewer
-     */
-    abstract fun createPreviewComponent(): IBasePreviewComponent
-
-    /**
      * bind data
      */
-    abstract fun bindData(media: LocalMedia, position: Int)
+    open fun bindData(media: LocalMedia, position: Int) {
+        loadCover(media)
+        coverScaleType(media)
+        coverLayoutParams(media)
+        imageCover.setOnClickListener {
+            setClickEvent(media)
+        }
+        imageCover.setOnLongClickListener {
+            setLongClickEvent(this, position, media)
+            return@setOnLongClickListener false
+        }
+    }
 
     /**
      * release

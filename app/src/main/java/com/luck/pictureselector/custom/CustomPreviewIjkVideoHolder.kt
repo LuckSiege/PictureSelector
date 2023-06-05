@@ -2,7 +2,7 @@ package com.luck.pictureselector.custom
 
 import android.view.View
 import com.luck.picture.lib.adapter.PreviewVideoHolder
-import com.luck.picture.lib.component.IBasePreviewComponent
+import com.luck.picture.lib.component.IMediaPlayer
 
 /**
  * @author：luck
@@ -10,8 +10,7 @@ import com.luck.picture.lib.component.IBasePreviewComponent
  * @describe：CustomPreviewIjkVideoHolder
  */
 class CustomPreviewIjkVideoHolder(itemView: View) : PreviewVideoHolder(itemView) {
-
-    override fun createPreviewComponent(): IBasePreviewComponent {
-        return IjkPlayerPreviewImpl(itemView.context)
+    override fun onCreateVideoComponent(): IMediaPlayer {
+        return IjkMediaPlayer(itemView.context)
     }
 }
