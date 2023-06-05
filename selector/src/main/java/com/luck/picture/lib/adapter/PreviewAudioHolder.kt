@@ -109,22 +109,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             onFastAudioPlay()
         }
         ivPlay.setOnClickListener {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause()
-                ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
-            } else {
-                if (isPlayed) {
-                    mediaPlayer.resume()
-                    ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
-                } else {
-                    mediaPlayer.setDataSource(
-                        it.context,
-                        media.getAvailablePath()!!,
-                        config.isLoopAutoPlay
-                    )
-                    isPlayed = true
-                }
-            }
+            dispatchPlay(media.getAvailablePath()!!)
         }
         itemView.setOnClickListener {
             setClickEvent(media)
@@ -132,6 +117,21 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         itemView.setOnLongClickListener {
             setLongClickEvent(this, position, media)
             return@setOnLongClickListener false
+        }
+    }
+
+    open fun dispatchPlay(path: String) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause()
+            ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
+        } else {
+            if (isPlayed) {
+                mediaPlayer.resume()
+                ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
+            } else {
+                mediaPlayer.setDataSource(itemView.context, path, config.isLoopAutoPlay)
+                isPlayed = true
+            }
         }
     }
 
@@ -227,7 +227,6 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         mediaPlayer.setOnErrorListener(null)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.setOnPreparedListener(null)
-        isPlayed = false
         onDefaultAudioState()
     }
 }

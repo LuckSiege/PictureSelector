@@ -67,6 +67,7 @@ class AudioMediaPlayer : IMediaPlayer {
 
     override fun release() {
         mediaPlayer?.release()
+        mediaPlayer = null
     }
 
     override fun setOnInfoListener(listener: IMediaPlayer.OnInfoListener?) {
