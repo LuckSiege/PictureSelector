@@ -286,6 +286,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onFirstViewAttachedToWindow(holder: BasePreviewMediaHolder) {
         if (isHasMagicalEffect()) {
             startZoomEffect(holder, viewModel.previewWrap.source[viewModel.previewWrap.position])
+        } else if (viewModel.config.isAutoVideoPlay) {
+            autoPlayVideo()
         }
     }
 
@@ -381,8 +383,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         val context = requireContext()
         val marginPageTransformer = MarginPageTransformer(DensityUtil.dip2px(context, 3F))
         viewPager.setPageTransformer(marginPageTransformer)
-        viewPager.setCurrentItem(viewModel.previewWrap.position, false)
         viewPager.registerOnPageChangeCallback(pageChangeCallback)
+        viewPager.setCurrentItem(viewModel.previewWrap.position, false)
         onSelectionResultChange(null)
         mAdapter.setOnFirstAttachedToWindowListener(object :
             MediaPreviewAdapter.OnAttachedToWindowListener {
@@ -569,9 +571,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             loadMediaMore()
         }
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.ivPlay.visibility == View.GONE) {
-                currentHolder.ivPlay.visibility = View.VISIBLE
+        if (viewModel.config.isAutoVideoPlay) {
+
+        } else {
+            if (currentHolder is PreviewVideoHolder) {
+                if (currentHolder.ivPlay.visibility == View.GONE) {
+                    currentHolder.ivPlay.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -670,9 +676,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             currentHolder.imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
-        if (currentHolder is PreviewVideoHolder) {
-            if (currentHolder.ivPlay.visibility == View.GONE && !isPlaying()) {
-                currentHolder.ivPlay.visibility = View.VISIBLE
+        if (viewModel.config.isAutoVideoPlay) {
+            autoPlayVideo()
+        } else {
+            if (currentHolder is PreviewVideoHolder) {
+                if (currentHolder.ivPlay.visibility == View.GONE && !isPlaying()) {
+                    currentHolder.ivPlay.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -699,6 +709,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         layoutParams?.width = itemViewParams.width
         layoutParams?.height = itemViewParams.height
         currentHolder.imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
+    }
+
+    open fun autoPlayVideo() {
+        val currentViewHolder =
+            mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
+        if (currentViewHolder is PreviewVideoHolder) {
+            currentViewHolder.ivPlay.performClick()
+        }
     }
 
     private fun isFullScreen(): Boolean {

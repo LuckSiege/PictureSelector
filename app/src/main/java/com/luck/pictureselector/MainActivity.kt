@@ -65,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
+        val checkLoopVideo = findViewById<CheckBox>(R.id.check_loop_video)
+        val checkAutoVideo = findViewById<CheckBox>(R.id.check_auto_video)
+        val checkPauseVideo = findViewById<CheckBox>(R.id.check_pause_video)
         val checkSystem = findViewById<CheckBox>(R.id.check_system)
         val checkPreviewFull = findViewById<CheckBox>(R.id.check_full)
         val checkOriginal = findViewById<CheckBox>(R.id.check_original)
@@ -208,6 +211,9 @@ class MainActivity : AppCompatActivity() {
                         gallery.isPreviewImage(checkPreviewImage.isChecked)
                         gallery.isPreviewVideo(checkPreviewVideo.isChecked)
                         gallery.isPreviewAudio(checkPreviewAudio.isChecked)
+                        gallery.isAutoVideoPlay(checkAutoVideo.isChecked)
+                        gallery.isLoopAutoVideoPlay(checkLoopVideo.isChecked)
+                        gallery.isVideoPauseResumePlay(checkPauseVideo.isChecked)
                         gallery.forResult(object : OnResultCallbackListener {
                             override fun onResult(result: List<LocalMedia>) {
                                 showDisplayResult(result)
