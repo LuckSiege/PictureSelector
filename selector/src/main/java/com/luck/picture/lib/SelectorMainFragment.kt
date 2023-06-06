@@ -180,7 +180,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             onSelectionResultChange(media)
         }
         viewModel.albumLiveData.observe(viewLifecycleOwner) { albumList ->
-            onAlbumSourceChange(albumList)
+            Looper.myQueue().addIdleHandler {
+                onAlbumSourceChange(albumList)
+                return@addIdleHandler false
+            }
         }
         viewModel.mediaLiveData.observe(viewLifecycleOwner) { mediaList ->
             onMediaSourceChange(mediaList)
@@ -354,13 +357,19 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mTvTitle?.text = data.bucketDisplayName
         if (data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
-            viewModel.page = data.cachePage
-            mAdapter.setDataNotifyChanged(data.source)
-            mRecycler.scrollToPosition(0)
-            mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !viewModel.config.isOnlySandboxDir && data.source.isNotEmpty())
+            Looper.myQueue().addIdleHandler {
+                viewModel.page = data.cachePage
+                mAdapter.setDataNotifyChanged(data.source)
+                mRecycler.scrollToPosition(0)
+                mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !viewModel.config.isOnlySandboxDir && data.source.isNotEmpty())
+                return@addIdleHandler false
+            }
         } else {
             // Never loaded, request data again
-            viewModel.loadMedia()
+            Looper.myQueue().addIdleHandler {
+                viewModel.loadMedia()
+                return@addIdleHandler false
+            }
         }
         if (viewModel.config.isFastSlidingSelect) {
             mDragSelectTouchListener?.setRecyclerViewHeaderCount(if (mAdapter.isDisplayCamera()) 1 else 0)
@@ -691,8 +700,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             mRecycler.setEnabledLoadMore(false)
             viewModel.loadAppInternalDir(sandboxDir)
         } else {
-            viewModel.loadMediaAlbum()
             viewModel.loadMedia()
+            Looper.myQueue().addIdleHandler {
+                viewModel.loadMediaAlbum()
+                return@addIdleHandler false
+            }
         }
     }
 
