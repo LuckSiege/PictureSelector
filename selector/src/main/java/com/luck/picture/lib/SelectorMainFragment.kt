@@ -321,7 +321,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * Users can implement a custom album list PopWindow
      */
     open fun createAlbumWindow(): AlbumListPopWindow {
-        return AlbumListPopWindow(requireContext(), viewModel.config)
+        return AlbumListPopWindow(requireContext())
     }
 
     private fun initAlbumWindow() {

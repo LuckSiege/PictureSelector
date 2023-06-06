@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.MediaAlbumAdapter
 import com.luck.picture.lib.config.LayoutSource
-import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.entity.LocalMediaAlbum
 import com.luck.picture.lib.interfaces.OnItemClickListener
+import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.SdkVersionUtils.isMinM
 import com.luck.picture.lib.utils.SdkVersionUtils.isN
@@ -27,7 +27,8 @@ import com.luck.picture.lib.widget.WrapContentLinearLayoutManager
  * @date：2021/11/17 2:33 下午
  * @describe：AlbumListPopWindow
  */
-class AlbumListPopWindow(context: Context, private var config: SelectorConfig) : PopupWindow() {
+open class AlbumListPopWindow(context: Context) : PopupWindow() {
+    private val config = SelectorProviders.getInstance().getSelectorConfig()
     private var windMask: View
     private var rvList: RecyclerView
     private var rootView: RelativeLayout
@@ -37,25 +38,29 @@ class AlbumListPopWindow(context: Context, private var config: SelectorConfig) :
 
     init {
         val resource = config.layoutSource[LayoutSource.ALBUM_WINDOW] ?: R.layout.ps_album_window
-        contentView = LayoutInflater.from(context).inflate(resource, null)
-        rootView = contentView.findViewById(R.id.rootView)
-        rvList = contentView.findViewById(R.id.album_list)
-        windMask = contentView.findViewById(R.id.view_mask)
-        width = RelativeLayout.LayoutParams.MATCH_PARENT
-        height = RelativeLayout.LayoutParams.WRAP_CONTENT
-        animationStyle = R.style.PictureThemeWindowStyle
-        isFocusable = true
-        isOutsideTouchable = true
-        update()
-        rootView.setOnClickListener {
+        this.contentView = LayoutInflater.from(context).inflate(resource, null)
+        this.rootView = contentView.findViewById(R.id.rootView)
+        this.rvList = contentView.findViewById(R.id.album_list)
+        this.windMask = contentView.findViewById(R.id.view_mask)
+        this.width = RelativeLayout.LayoutParams.MATCH_PARENT
+        this.height = RelativeLayout.LayoutParams.WRAP_CONTENT
+        this.animationStyle = this.getWindowAnimationStyle()
+        this.isFocusable = true
+        this.isOutsideTouchable = true
+        this.update()
+        this.rootView.setOnClickListener {
             if (isMinM()) {
                 dismiss()
             }
         }
-        windMask.setOnClickListener {
+        this.windMask.setOnClickListener {
             dismiss()
         }
         initRecyclerView()
+    }
+
+    open fun getWindowAnimationStyle(): Int {
+        return R.style.PictureThemeWindowStyle
     }
 
     private fun initRecyclerView() {
