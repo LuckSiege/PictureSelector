@@ -26,18 +26,16 @@ class CustomPreviewImageHolder(itemView: View) : PreviewImageHolder(itemView) {
 
     override fun loadCover(media: LocalMedia) {
         if (MediaUtils.isLongImage(media.width, media.height)) {
-            imageCover.visibility = View.GONE
+            imageCover.alpha = 0F
+            longImageView.alpha = 1F
             Glide.with(imageCover.context).asBitmap().load(media.getAvailablePath()!!)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        longImageView.visibility = View.VISIBLE
-                        val scale = kotlin.math.max(
-                            screenWidth / resource.width.toFloat(),
-                            screenHeight / resource.height.toFloat()
-                        )
+                        val scale =
+                            (screenWidth / resource.width.toFloat()).coerceAtLeast(screenHeight / resource.height.toFloat())
                         longImageView.setImage(
                             ImageSource.cachedBitmap(resource),
                             ImageViewState(scale, PointF(0F, 0F), 0)
@@ -48,11 +46,13 @@ class CustomPreviewImageHolder(itemView: View) : PreviewImageHolder(itemView) {
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
+                        imageCover.alpha = 1F
+                        longImageView.alpha = 0F
                     }
                 })
         } else {
-            imageCover.visibility = View.VISIBLE
-            longImageView.visibility = View.GONE
+            imageCover.alpha = 1F
+            longImageView.alpha = 0F
             super.loadCover(media)
         }
     }

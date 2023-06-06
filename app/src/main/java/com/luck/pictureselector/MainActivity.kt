@@ -28,8 +28,10 @@ import com.luck.picture.lib.utils.DensityUtil.dip2px
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import com.luck.pictureselector.adapter.GridImageAdapter
+import com.luck.pictureselector.custom.CustomMediaPreviewAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
+import com.luck.pictureselector.custom.CustomPreviewImageHolder
 
 
 class MainActivity : AppCompatActivity() {
