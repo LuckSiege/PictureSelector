@@ -768,7 +768,9 @@ abstract class BaseSelectorFragment : Fragment() {
                         mergeMultipleCrop(data, selectResult)
                     }
                 }
-            } else if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
                 handlePermissionSettingResult(viewModel.currentRequestPermission)
             }
         }

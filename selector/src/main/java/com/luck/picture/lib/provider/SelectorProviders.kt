@@ -1,6 +1,7 @@
 package com.luck.picture.lib.provider
 
 import com.luck.picture.lib.config.SelectorConfig
+import com.luck.picture.lib.utils.SelectorLogUtils
 import java.util.*
 
 /**
@@ -23,6 +24,7 @@ class SelectorProviders {
         val selectorConfig = getSelectorConfig()
         selectorConfig.destroy()
         selectionConfigsQueue.remove(selectorConfig)
+        SelectorLogUtils.info("${System.currentTimeMillis()}:销毁")
     }
 
     fun reset() {
