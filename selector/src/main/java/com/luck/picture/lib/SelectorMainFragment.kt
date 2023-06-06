@@ -6,11 +6,8 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Bundle
-import android.os.SystemClock
-import android.os.VibrationEffect
+import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
-import android.os.Vibrator
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
@@ -42,6 +39,7 @@ import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.utils.*
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
+import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.widget.*
 import kotlinx.coroutines.launch
 
@@ -170,10 +168,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             val position = mAdapter.getData().indexOf(media)
             if (checkNotifyStrategy(globalViewMode.selectResult.indexOf(media) != -1)) {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
-                mRecycler.postDelayed({
+                Looper.myQueue().addIdleHandler {
                     mAdapter.notifyDataSetChanged()
-                }, 250)
-
+                    return@addIdleHandler false
+                }
             } else {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
             }
