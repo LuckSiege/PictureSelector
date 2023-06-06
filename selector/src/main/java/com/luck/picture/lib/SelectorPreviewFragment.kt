@@ -569,8 +569,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isLoadMore(position)) {
             loadMediaMore()
         }
-        if (viewModel.config.isAutoVideoPlay) {
-            autoPlayVideo()
+        if (viewModel.config.isAutoPlay) {
+            autoPlayAudioAndVideo()
         } else {
             val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
             if (currentHolder is PreviewVideoHolder) {
@@ -675,8 +675,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             currentHolder.imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
-        if (viewModel.config.isAutoVideoPlay) {
-            autoPlayVideo()
+        if (viewModel.config.isAutoPlay) {
+            autoPlayAudioAndVideo()
         } else {
             if (currentHolder is PreviewVideoHolder) {
                 if (currentHolder.ivPlay.visibility == View.GONE && !isPlaying()) {
@@ -710,10 +710,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         currentHolder.imageCover.scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
-    open fun autoPlayVideo() {
+    open fun autoPlayAudioAndVideo() {
         Looper.myQueue().addIdleHandler {
             val currentViewHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
             if (currentViewHolder is PreviewVideoHolder) {
+                if (!currentViewHolder.mediaPlayer.isPlaying()) {
+                    currentViewHolder.ivPlay.performClick()
+                }
+            } else if (currentViewHolder is PreviewAudioHolder) {
                 if (!currentViewHolder.mediaPlayer.isPlaying()) {
                     currentViewHolder.ivPlay.performClick()
                 }
@@ -827,10 +831,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             data?.getParcelableExtra<Uri>(MediaStore.EXTRA_OUTPUT)
         }
-        if (MediaUtils.isContent(outputUri.toString())) {
-            media.editorPath = outputUri.toString()
+        media.editorPath = if (MediaUtils.isContent(outputUri.toString())) {
+            outputUri.toString()
         } else {
-            media.editorPath = outputUri?.path
+            outputUri?.path
         }
         media.editorData = data?.getStringExtra(CropWrap.DEFAULT_EXTRA_DATA)
         if (!globalViewMode.selectResult.contains(media)) {

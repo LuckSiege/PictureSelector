@@ -2,7 +2,7 @@ package com.luck.pictureselector.custom
 
 import android.view.View
 import com.luck.picture.lib.adapter.PreviewVideoHolder
-import com.luck.picture.lib.component.IMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
 
 /**
  * @author：luck

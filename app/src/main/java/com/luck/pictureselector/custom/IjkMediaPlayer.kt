@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.Surface
 import android.view.TextureView
 import android.widget.FrameLayout
-import com.luck.picture.lib.component.IMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
 import com.luck.picture.lib.utils.MediaUtils
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 

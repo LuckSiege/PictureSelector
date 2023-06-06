@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.isPreviewImage(checkPreviewImage.isChecked)
                         gallery.isPreviewVideo(checkPreviewVideo.isChecked)
                         gallery.isPreviewAudio(checkPreviewAudio.isChecked)
-                        gallery.isAutoVideoPlay(checkAutoVideo.isChecked)
+                        gallery.isAutoPlay(checkAutoVideo.isChecked)
                         gallery.isLoopAutoVideoPlay(checkLoopVideo.isChecked)
                         gallery.isVideoPauseResumePlay(checkPauseVideo.isChecked)
                         gallery.forResult(object : OnResultCallbackListener {

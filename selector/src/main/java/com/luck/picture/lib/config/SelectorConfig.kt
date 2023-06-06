@@ -40,7 +40,7 @@ class SelectorConfig {
     var isDisplayCamera = true
     var isQuickCapture = false
     var isPauseResumePlay = false
-    var isAutoVideoPlay = false
+    var isAutoPlay = false
     var isLoopAutoPlay = false
     var systemGallery = false
     var isEnablePreviewImage = true
@@ -107,7 +107,7 @@ class SelectorConfig {
         this.isDisplayCamera = true
         this.isLoopAutoPlay = false
         this.systemGallery = false
-        this.isAutoVideoPlay = false
+        this.isAutoPlay = false
         this.isPauseResumePlay = false
         this.isAsTotalCount = false
         this.isAllWithImageVideo = false

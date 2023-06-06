@@ -13,8 +13,8 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
-import com.luck.picture.lib.component.AudioMediaPlayer
-import com.luck.picture.lib.component.IMediaPlayer
+import com.luck.picture.lib.player.AudioMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.DateUtils
 import com.luck.picture.lib.utils.DensityUtil
@@ -33,9 +33,9 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     private var seekBar: SeekBar = itemView.findViewById(R.id.seek_bar)
     private var ivBack: View = itemView.findViewById(R.id.iv_play_back)
     private var ivFast: View = itemView.findViewById(R.id.iv_play_fast)
-    private var ivPlay: ImageView = itemView.findViewById(R.id.iv_play_audio)
     private var tvDuration: TextView = itemView.findViewById(R.id.tv_total_duration)
     private var tvCurrentDuration: TextView = itemView.findViewById(R.id.tv_current_time)
+    var ivPlay: ImageView = itemView.findViewById(R.id.iv_play_audio)
     private var isPlayed = false
     var mediaPlayer: AudioMediaPlayer = AudioMediaPlayer()
     private val mHandler = Handler(Looper.getMainLooper())

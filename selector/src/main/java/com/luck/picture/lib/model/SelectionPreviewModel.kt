@@ -100,12 +100,12 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
     }
 
     /**
-     * Whether to play video automatically when previewing
+     * Whether to play video and audio automatically when previewing
      *
      * @param isAutoPlay
      */
-    fun isAutoVideoPlay(isAutoPlay: Boolean): SelectionPreviewModel {
-        this.config.isAutoVideoPlay = isAutoPlay
+    fun isAutoPlay(isAutoPlay: Boolean): SelectionPreviewModel {
+        this.config.isAutoPlay = isAutoPlay
         return this
     }
 

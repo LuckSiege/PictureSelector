@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.luck.picture.lib.component.IMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
 import com.luck.picture.lib.utils.MediaUtils
 import java.io.File
 

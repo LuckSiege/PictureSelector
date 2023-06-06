@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
-import com.luck.picture.lib.component.IMediaPlayer
-import com.luck.picture.lib.component.DefaultMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
+import com.luck.picture.lib.player.DefaultMediaPlayer
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.BitmapUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -55,8 +55,10 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         if (isPlayed && config.isPauseResumePlay) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause()
+                ivPlay.visibility = View.VISIBLE
             } else {
                 mediaPlayer.resume()
+                ivPlay.visibility = View.GONE
             }
         } else {
             onPlayingLoading()

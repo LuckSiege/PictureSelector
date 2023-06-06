@@ -309,7 +309,7 @@
                     android:id="@+id/check_auto_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="视频自动播放"
+                    android:text="音视频自动播放"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
@@ -317,7 +317,7 @@
                     android:id="@+id/check_loop_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="视频循环播放"
+                    android:text="音视频循环播放"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 

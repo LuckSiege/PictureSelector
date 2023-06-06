@@ -1,4 +1,4 @@
-package com.luck.picture.lib.component
+package com.luck.picture.lib.player
 
 import android.content.Context
 import android.graphics.PixelFormat
