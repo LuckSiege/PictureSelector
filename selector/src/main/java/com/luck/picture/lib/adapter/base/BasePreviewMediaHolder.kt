@@ -90,4 +90,17 @@ abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(
     open fun setLongClickEvent(holder: RecyclerView.ViewHolder, position: Int, media: LocalMedia) {
         onLongClickListener?.onLongClick(holder, position, media)
     }
+
+    /**
+     * Item Title Content Switching
+     */
+    private var onTitleChangeListener: MediaPreviewAdapter.OnTitleChangeListener? = null
+
+    fun setOnTitleChangeListener(l: MediaPreviewAdapter.OnTitleChangeListener?) {
+        this.onTitleChangeListener = l
+    }
+
+    open fun setPreviewVideoTitle(title: String?) {
+        onTitleChangeListener?.onTitle(title)
+    }
 }

@@ -40,28 +40,31 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         super.bindData(media, position)
         ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         ivPlay.setOnClickListener {
-            dispatchPlay(media.getAvailablePath()!!)
+            dispatchPlay(media.getAvailablePath()!!, media.displayName)
         }
         itemView.setOnClickListener {
             if (config.isPauseResumePlay) {
-                dispatchPlay(media.getAvailablePath()!!)
+                dispatchPlay(media.getAvailablePath()!!, media.displayName)
             } else {
                 setClickEvent(media)
             }
         }
     }
 
-    open fun dispatchPlay(path: String) {
+    open fun dispatchPlay(path: String, displayName: String?) {
         if (isPlayed && config.isPauseResumePlay) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause()
                 ivPlay.visibility = View.VISIBLE
+                setPreviewVideoTitle(null)
             } else {
                 mediaPlayer.resume()
                 ivPlay.visibility = View.GONE
+                setPreviewVideoTitle(displayName)
             }
         } else {
             onPlayingLoading()
+            setPreviewVideoTitle(displayName)
             mediaPlayer.setDataSource(itemView.context, path, config.isLoopAutoPlay)
             isPlayed = true
         }
@@ -117,6 +120,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     }
 
     open fun onDefaultVideoState() {
+        setPreviewVideoTitle(null)
         imageCover.visibility = View.VISIBLE
         ivPlay.visibility = View.VISIBLE
         pbLoading.visibility = View.GONE

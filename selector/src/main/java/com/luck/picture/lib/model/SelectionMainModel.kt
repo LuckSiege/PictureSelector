@@ -61,9 +61,42 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      * Customizing PictureSelector
      * Users can implement custom PictureSelectors, such as photo albums,
      * previewing, taking photos, recording, and other related functions
+     * @param key Use [LayoutSource]
+     * @param resource resource Denotes that an integer parameter, field or method
+     */
+    fun <V> registry(
+        @NonNull targetClass: Class<V>, key: LayoutSource,
+        @LayoutRes resource: Int
+    ): SelectionMainModel {
+        this.config.registry.register(targetClass)
+        this.inflateCustomLayout(key, resource)
+        return this
+    }
+
+    /**
+     * Customizing PictureSelector
+     * Users can implement custom PictureSelectors, such as photo albums,
+     * previewing, taking photos, recording, and other related functions
      */
     fun registry(@NonNull registry: Registry): SelectionMainModel {
         this.config.registry = registry
+        return this
+    }
+
+    /**
+     * Customizing PictureSelector
+     * Users can implement custom PictureSelectors, such as photo albums,
+     * previewing, taking photos, recording, and other related functions
+     * @param key Use [LayoutSource]
+     * @param resource resource Denotes that an integer parameter, field or method
+     */
+    fun registry(
+        @NonNull registry: Registry,
+        key: LayoutSource,
+        @LayoutRes resource: Int
+    ): SelectionMainModel {
+        this.config.registry = registry
+        this.inflateCustomLayout(key, resource)
         return this
     }
 

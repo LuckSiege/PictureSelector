@@ -47,8 +47,8 @@ class SelectionCameraModel constructor(
      * Users can implement custom PictureSelectors, such as photo albums,
      * previewing, taking photos, recording, and other related functions
      */
-    fun <V> registry(@NonNull fragmentClass: Class<V>): SelectionCameraModel {
-        this.config.registry.register(fragmentClass)
+    fun <V> registry(@NonNull targetClass: Class<V>): SelectionCameraModel {
+        this.config.registry.register(targetClass)
         return this
     }
 
@@ -66,8 +66,8 @@ class SelectionCameraModel constructor(
      * Customizing PictureSelector
      *  User unbind fragmentClass
      */
-    fun <Model> unregister(@NonNull fragmentClass: Class<Model>): SelectionCameraModel {
-        this.config.registry.unregister(fragmentClass)
+    fun <Model> unregister(@NonNull targetClass: Class<Model>): SelectionCameraModel {
+        this.config.registry.unregister(targetClass)
         return this
     }
 

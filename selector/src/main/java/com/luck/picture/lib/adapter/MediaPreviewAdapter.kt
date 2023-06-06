@@ -92,6 +92,7 @@ open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() 
     override fun onBindViewHolder(holder: BasePreviewMediaHolder, position: Int) {
         mViewHolderCache[position] = holder
         holder.setOnClickListener(mClickListener)
+        holder.setOnTitleChangeListener(mTitleChangeListener)
         holder.setOnLongClickListener(mLongClickListener)
         holder.bindData(mData[position], position)
     }
@@ -149,6 +150,17 @@ open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() 
     fun setOnLongClickListener(l: OnLongClickListener<LocalMedia>?) {
         this.mLongClickListener = l
     }
+
+    private var mTitleChangeListener: OnTitleChangeListener? = null
+
+    fun setOnTitleChangeListener(l: OnTitleChangeListener?) {
+        this.mTitleChangeListener = l
+    }
+
+    interface OnTitleChangeListener {
+        fun onTitle(title: String?)
+    }
+
 
     open fun destroy() {
         for (key in mViewHolderCache.keys) {

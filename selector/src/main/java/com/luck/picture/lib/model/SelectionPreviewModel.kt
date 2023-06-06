@@ -7,7 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.luck.picture.lib.*
+import com.luck.picture.lib.R
+import com.luck.picture.lib.SelectorExternalPreviewFragment
+import com.luck.picture.lib.SelectorPreviewFragment
+import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.config.SelectorMode
@@ -44,8 +47,41 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
      * Users can implement custom PictureSelectors, such as photo albums,
      * previewing, taking photos, recording, and other related functions
      */
-    fun <V> registry(@NonNull fragmentClass: Class<V>): SelectionPreviewModel {
-        this.config.registry.register(fragmentClass)
+    fun <V> registry(@NonNull targetClass: Class<V>): SelectionPreviewModel {
+        this.config.registry.register(targetClass)
+        return this
+    }
+
+    /**
+     * Customizing PictureSelector
+     * Users can implement custom PictureSelectors, such as photo albums,
+     * previewing, taking photos, recording, and other related functions
+     * @param key Use [LayoutSource]
+     * @param resource resource Denotes that an integer parameter, field or method
+     */
+    fun <V> registry(
+        @NonNull targetClass: Class<V>, key: LayoutSource,
+        @LayoutRes resource: Int
+    ): SelectionPreviewModel {
+        this.config.registry.register(targetClass)
+        this.inflateCustomLayout(key, resource)
+        return this
+    }
+
+    /**
+     * Customizing PictureSelector
+     * Users can implement custom PictureSelectors, such as photo albums,
+     * previewing, taking photos, recording, and other related functions
+     * @param key Use [LayoutSource]
+     * @param resource resource Denotes that an integer parameter, field or method
+     */
+    fun registry(
+        @NonNull registry: Registry,
+        key: LayoutSource,
+        @LayoutRes resource: Int
+    ): SelectionPreviewModel {
+        this.config.registry = registry
+        this.inflateCustomLayout(key, resource)
         return this
     }
 

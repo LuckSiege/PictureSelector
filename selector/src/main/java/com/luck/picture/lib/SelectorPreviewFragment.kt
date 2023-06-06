@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -391,12 +392,24 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 onFirstViewAttachedToWindow(holder)
             }
         })
-
         mAdapter.setOnClickListener(object : MediaPreviewAdapter.OnClickListener {
             override fun onClick(media: LocalMedia) {
                 onPreviewItemClick(media)
             }
         })
+        mAdapter.setOnTitleChangeListener(object : MediaPreviewAdapter.OnTitleChangeListener {
+            override fun onTitle(title: String?) {
+                onTitleChange(title)
+            }
+        })
+    }
+
+    open fun onTitleChange(title: String?) {
+        if (TextUtils.isEmpty(title)) {
+            setTitleText(viewModel.previewWrap.position + 1)
+        } else {
+            mTvTitle?.text = title
+        }
     }
 
     open fun onMediaSourceChange(result: MutableList<LocalMedia>) {

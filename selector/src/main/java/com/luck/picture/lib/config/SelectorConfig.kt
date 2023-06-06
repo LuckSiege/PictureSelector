@@ -87,6 +87,7 @@ class SelectorConfig {
     }
 
     private fun initDefault() {
+        this.registry.clear()
         this.selectorStyle.defaultStyle()
         this.selectorMode = SelectorMode.ALL
         this.allCameraMode = SelectorMode.ALL

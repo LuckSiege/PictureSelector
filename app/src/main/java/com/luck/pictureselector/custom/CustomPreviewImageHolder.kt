@@ -24,10 +24,21 @@ class CustomPreviewImageHolder(itemView: View) : PreviewImageHolder(itemView) {
     private val longImageView: SubsamplingScaleImageView =
         itemView.findViewById(R.id.preview_long_image)
 
+    override fun bindData(media: LocalMedia, position: Int) {
+        super.bindData(media, position)
+        longImageView.setOnClickListener {
+            setClickEvent(media)
+        }
+        longImageView.setOnLongClickListener {
+            setLongClickEvent(this, position, media)
+            return@setOnLongClickListener false
+        }
+    }
+
     override fun loadCover(media: LocalMedia) {
         if (MediaUtils.isLongImage(media.width, media.height)) {
             imageCover.alpha = 0F
-            longImageView.alpha = 1F
+            longImageView.visibility = View.VISIBLE
             Glide.with(imageCover.context).asBitmap().load(media.getAvailablePath()!!)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
@@ -47,12 +58,12 @@ class CustomPreviewImageHolder(itemView: View) : PreviewImageHolder(itemView) {
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                         imageCover.alpha = 1F
-                        longImageView.alpha = 0F
+                        longImageView.visibility = View.GONE
                     }
                 })
         } else {
             imageCover.alpha = 1F
-            longImageView.alpha = 0F
+            longImageView.visibility = View.GONE
             super.loadCover(media)
         }
     }

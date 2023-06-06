@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         val checkPreviewAudio = findViewById<CheckBox>(R.id.check_preview_audio)
         val checkPreviewDelete = findViewById<CheckBox>(R.id.check_preview_delete)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
+        val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
         minus.setOnClickListener {
             if (maxSelectNum > 1) {
                 maxSelectNum--
@@ -186,7 +187,6 @@ class MainActivity : AppCompatActivity() {
                     checkOnlyCamera.isChecked -> {
                     }
                     else -> {
-                        val registry = Registry()
                         val gallery = PictureSelector.create(this@MainActivity)
                             .openGallery(selectorMode)
                         gallery.setMaxSelectNum(
@@ -194,12 +194,16 @@ class MainActivity : AppCompatActivity() {
                             maxSelectVideoNum,
                             checkMergeTotal.isChecked
                         )
-                        buildGalleryStyle(registry, gallery)
-                        buildCustomPlayer(registry)
+                        if (checkLongImage.isChecked) {
+                            gallery.registry(
+                                CustomPreviewImageHolder::class.java,
+                                LayoutSource.PREVIEW_ITEM_IMAGE,
+                                R.layout.ps_custom_preview_image
+                            )
+                        }
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
-                        gallery.registry(registry)
                         gallery.isPreviewZoomEffect(
                             checkPreviewEffect.isChecked,
                             checkPreviewFull.isChecked
