@@ -205,10 +205,7 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun onBackPressed() {
         viewModel.config.mListenerInfo.onFragmentLifecycleListener?.onDestroy(this)
         if (!isStateSaved) {
-            if (this is SelectorMainFragment
-                || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
-                || (this is SelectorSystemFragment && viewModel.config.systemGallery)
-            ) {
+            if (isRootExit()) {
                 // Home Exit
                 if (this is SelectorMainFragment) {
                     viewModel.config.mListenerInfo.onResultCallbackListener?.onCancel()
@@ -227,6 +224,12 @@ abstract class BaseSelectorFragment : Fragment() {
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
+    }
+
+    open fun isRootExit(): Boolean {
+        return this is SelectorMainFragment
+                || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
+                || (this is SelectorSystemFragment && viewModel.config.systemGallery)
     }
 
     /**
