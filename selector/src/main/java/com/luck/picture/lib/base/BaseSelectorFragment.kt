@@ -205,23 +205,21 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun onBackPressed() {
         viewModel.config.mListenerInfo.onFragmentLifecycleListener?.onDestroy(this)
         if (!isStateSaved) {
-            if (this is SelectorMainFragment) {
-                // Home Exit
-                viewModel.config.mListenerInfo.onResultCallbackListener?.onCancel()
-                if (isNormalDefaultEnter()) {
-                    requireActivity().finish()
-                } else {
-                    requireActivity().supportFragmentManager.popBackStack()
-                }
-            } else if ((this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
+            if (this is SelectorMainFragment
+                || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
                 || (this is SelectorSystemFragment && viewModel.config.systemGallery)
             ) {
-                // External preview or system gallery exit
+                // Home Exit
+                if (this is SelectorMainFragment) {
+                    viewModel.config.mListenerInfo.onResultCallbackListener?.onCancel()
+                }
                 if (isNormalDefaultEnter()) {
                     requireActivity().finish()
                 } else {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
+                SelectorProviders.getInstance().destroy()
+                globalViewMode.reset()
             } else {
                 // Pop the top state off the back stack. This function is asynchronous
                 // it enqueues the request to pop, but the action will not be performed
