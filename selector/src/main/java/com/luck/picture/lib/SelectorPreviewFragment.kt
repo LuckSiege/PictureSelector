@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
@@ -286,8 +287,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onFirstViewAttachedToWindow(holder: BasePreviewMediaHolder) {
         if (isHasMagicalEffect()) {
             startZoomEffect(holder, viewModel.previewWrap.source[viewModel.previewWrap.position])
-        } else if (viewModel.config.isAutoVideoPlay) {
-            autoPlayVideo()
         }
     }
 
@@ -570,10 +569,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isLoadMore(position)) {
             loadMediaMore()
         }
-        val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
         if (viewModel.config.isAutoVideoPlay) {
-
+            autoPlayVideo()
         } else {
+            val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
             if (currentHolder is PreviewVideoHolder) {
                 if (currentHolder.ivPlay.visibility == View.GONE) {
                     currentHolder.ivPlay.visibility = View.VISIBLE
@@ -712,10 +711,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun autoPlayVideo() {
-        val currentViewHolder =
-            mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        if (currentViewHolder is PreviewVideoHolder) {
-            currentViewHolder.ivPlay.performClick()
+        Looper.myQueue().addIdleHandler {
+            val currentViewHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
+            if (currentViewHolder is PreviewVideoHolder) {
+                if (!currentViewHolder.mediaPlayer.isPlaying()) {
+                    currentViewHolder.ivPlay.performClick()
+                }
+            }
+            return@addIdleHandler false
         }
     }
 

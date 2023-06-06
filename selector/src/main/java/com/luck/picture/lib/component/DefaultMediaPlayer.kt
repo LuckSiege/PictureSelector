@@ -44,6 +44,7 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
         ).apply {
             this.gravity = Gravity.CENTER
         }
+        surfaceView.holder.setKeepScreenOn(true)
         addView(surfaceView)
     }
 
