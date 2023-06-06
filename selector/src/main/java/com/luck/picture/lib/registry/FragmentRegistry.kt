@@ -1,4 +1,4 @@
-package com.luck.picture.lib
+package com.luck.picture.lib.registry
 
 import androidx.annotation.NonNull
 

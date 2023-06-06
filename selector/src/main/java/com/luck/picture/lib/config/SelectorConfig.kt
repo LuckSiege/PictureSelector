@@ -1,7 +1,7 @@
 package com.luck.picture.lib.config
 
 import android.content.pm.ActivityInfo
-import com.luck.picture.lib.Registry
+import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.engine.CropEngine
 import com.luck.picture.lib.engine.ImageEngine

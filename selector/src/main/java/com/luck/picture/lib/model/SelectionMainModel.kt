@@ -11,7 +11,7 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.R
-import com.luck.picture.lib.Registry
+import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorMainFragment
 import com.luck.picture.lib.SelectorSupporterActivity
 import com.luck.picture.lib.config.LayoutSource

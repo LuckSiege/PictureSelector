@@ -1,4 +1,4 @@
-package com.luck.picture.lib
+package com.luck.picture.lib.registry
 
 import com.luck.picture.lib.adapter.MediaPreviewAdapter
 import com.luck.picture.lib.adapter.base.BaseListViewHolder

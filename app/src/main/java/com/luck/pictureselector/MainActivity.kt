@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.luck.picture.lib.Registry
+import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorNumberMainFragment
 import com.luck.picture.lib.SelectorNumberPreviewFragment
 import com.luck.picture.lib.adapter.PreviewVideoHolder
@@ -25,11 +25,9 @@ import com.luck.picture.lib.model.SelectionMainModel
 import com.luck.picture.lib.model.SelectionPreviewModel
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
-import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import com.luck.pictureselector.adapter.GridImageAdapter
-import com.luck.pictureselector.custom.CustomMediaPreviewAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 

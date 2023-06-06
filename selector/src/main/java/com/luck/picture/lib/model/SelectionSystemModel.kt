@@ -6,7 +6,7 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.R
-import com.luck.picture.lib.Registry
+import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorSystemFragment
 import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.config.SelectionMode
