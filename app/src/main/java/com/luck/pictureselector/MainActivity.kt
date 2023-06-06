@@ -1,5 +1,6 @@
 package com.luck.pictureselector
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,24 +12,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.luck.picture.lib.registry.Registry
-import com.luck.picture.lib.SelectorNumberMainFragment
-import com.luck.picture.lib.SelectorNumberPreviewFragment
 import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnExternalPreviewListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.model.PictureSelector
-import com.luck.picture.lib.model.SelectionMainModel
-import com.luck.picture.lib.model.SelectionPreviewModel
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import com.luck.pictureselector.adapter.GridImageAdapter
-import com.luck.pictureselector.custom.CustomMediaPreviewAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewImageHolder
@@ -168,16 +164,60 @@ class MainActivity : AppCompatActivity() {
         mRecycler.adapter = mAdapter
         mAdapter.setOnItemClickListener(object : GridImageAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int) {
-                val registry = Registry()
+                val uiStyle = SelectorStyle()
                 val preview = PictureSelector.create(this@MainActivity).openPreview()
                 preview.setImageEngine(GlideEngine.create())
-                preview.registry(buildExternalPreviewStyle(registry, preview))
+                when {
+                    rbDefaultStyle.isChecked -> {
+                        uiStyle.getStatusBar().of(
+                            false,
+                            Color.parseColor("#393a3e"),
+                            Color.parseColor("#393a3e")
+                        )
+                    }
+                    rbWhiteStyle.isChecked -> {
+                        uiStyle.getStatusBar().of(
+                            true,
+                            Color.parseColor("#FFFFFF"),
+                            Color.parseColor("#FFFFFF")
+                        )
+                        preview.inflateCustomLayout(
+                            LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
+                            R.layout.ps_fragment_white_external_preview
+                        )
+                    }
+                    rbNumNewStyle.isChecked -> {
+                        uiStyle.getStatusBar().of(
+                            false,
+                            Color.parseColor("#393a3e"),
+                            Color.parseColor("#393a3e")
+                        )
+                    }
+                }
+                if (rbDefaultWindowAnim.isChecked) {
+                    uiStyle.getWindowAnimation()
+                        .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
+                } else if (rbWindowUpAnim.isChecked) {
+                    uiStyle.getWindowAnimation()
+                        .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
+                }
+                preview.setSelectorUIStyle(uiStyle)
                 preview.isPreviewZoomEffect(
                     checkPreviewEffect.isChecked, false, mRecycler
                 )
                 preview.isDisplayDelete(checkPreviewDelete.isChecked)
                 preview.isLongPressDownload(checkPreviewDownload.isChecked)
-                preview.forPreview(position, mAdapter.getData())
+                preview.setOnExternalPreviewListener(object : OnExternalPreviewListener {
+                    override fun onDelete(context: Context, position: Int, media: LocalMedia) {
+                        mAdapter.remove(position)
+                        mAdapter.notifyItemRemoved(position)
+                    }
+
+                    override fun onLongPressDownload(context: Context, media: LocalMedia): Boolean {
+                        return false
+                    }
+                })
+                preview.forPreviewActivity(position, mAdapter.getData())
             }
 
             override fun openPicture() {
@@ -187,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                     checkOnlyCamera.isChecked -> {
                     }
                     else -> {
+                        val uiStyle = SelectorStyle()
                         val gallery = PictureSelector.create(this@MainActivity)
                             .openGallery(selectorMode)
                         gallery.setMaxSelectNum(
@@ -194,12 +235,62 @@ class MainActivity : AppCompatActivity() {
                             maxSelectVideoNum,
                             checkMergeTotal.isChecked
                         )
+                        when {
+                            rbDefaultStyle.isChecked -> {
+                                uiStyle.getStatusBar().of(
+                                    false,
+                                    Color.parseColor("#393a3e"),
+                                    Color.parseColor("#393a3e")
+                                )
+                            }
+                            rbWhiteStyle.isChecked -> {
+                                uiStyle.getStatusBar().of(
+                                    true,
+                                    Color.parseColor("#FFFFFF"),
+                                    Color.parseColor("#FFFFFF")
+                                )
+                                gallery.inflateCustomLayout(
+                                    LayoutSource.SELECTOR_MAIN,
+                                    R.layout.ps_fragment_white_selector
+                                )
+                                gallery.inflateCustomLayout(
+                                    LayoutSource.SELECTOR_PREVIEW,
+                                    R.layout.ps_fragment_white_preview
+                                )
+                            }
+                            rbNumNewStyle.isChecked -> {
+                                uiStyle.getStatusBar().of(
+                                    false,
+                                    Color.parseColor("#393a3e"),
+                                    Color.parseColor("#393a3e")
+                                )
+                            }
+                        }
+                        if (rbDefaultWindowAnim.isChecked) {
+                            uiStyle.getWindowAnimation()
+                                .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
+                        } else if (rbWindowUpAnim.isChecked) {
+                            uiStyle.getWindowAnimation()
+                                .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
+                        }
+                        gallery.setSelectorUIStyle(uiStyle)
                         if (checkLongImage.isChecked) {
                             gallery.registry(
                                 CustomPreviewImageHolder::class.java,
                                 LayoutSource.PREVIEW_ITEM_IMAGE,
                                 R.layout.ps_custom_preview_image
                             )
+                        }
+                        when {
+                            rbExoPlayer.isChecked -> {
+                                gallery.registry(CustomPreviewExoVideoHolder::class.java)
+                            }
+                            rbIjkPlayer.isChecked -> {
+                                gallery.registry(CustomPreviewIjkVideoHolder::class.java)
+                            }
+                            else -> {
+                                gallery.registry(PreviewVideoHolder::class.java)
+                            }
                         }
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
@@ -265,108 +356,6 @@ class MainActivity : AppCompatActivity() {
                 fragment.requireContext(),
                 "The system is missing a recording component"
             )
-        }
-    }
-
-    /**
-     * 选择器预览风格样式
-     */
-    private fun buildExternalPreviewStyle(
-        registry: Registry, previewModel: SelectionPreviewModel
-    ): Registry {
-        val statusBarColor: Int
-        val navigationBarColor: Int
-        var isDarkStatusBar = false
-        when {
-            rbWhiteStyle.isChecked -> {
-                isDarkStatusBar = true
-                statusBarColor = Color.parseColor("#FFFFFF")
-                navigationBarColor = Color.parseColor("#FFFFFF")
-                previewModel.inflateCustomLayout(
-                    LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
-                    R.layout.ps_fragment_white_external_preview
-                )
-            }
-            rbNumNewStyle.isChecked -> {
-                statusBarColor = Color.parseColor("#393a3e")
-                navigationBarColor = Color.parseColor("#393a3e")
-            }
-            else -> {
-                statusBarColor = Color.parseColor("#393a3e")
-                navigationBarColor = Color.parseColor("#393a3e")
-            }
-        }
-        val selectorStyle = SelectorStyle()
-        selectorStyle.getStatusBar().of(isDarkStatusBar, statusBarColor, navigationBarColor)
-        if (rbDefaultWindowAnim.isChecked) {
-            selectorStyle.getWindowAnimation().of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-        } else if (rbWindowUpAnim.isChecked) {
-            selectorStyle.getWindowAnimation().of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
-        }
-        previewModel.setSelectorUIStyle(selectorStyle)
-        return registry
-    }
-
-    /**
-     * 选择器风格样式
-     */
-    private fun buildGalleryStyle(registry: Registry, mainModel: SelectionMainModel) {
-        val statusBarColor: Int
-        val navigationBarColor: Int
-        var isDarkStatusBar = false
-        when {
-            rbWhiteStyle.isChecked -> {
-                isDarkStatusBar = true
-                statusBarColor = Color.parseColor("#FFFFFF")
-                navigationBarColor = Color.parseColor("#FFFFFF")
-                mainModel.inflateCustomLayout(
-                    LayoutSource.SELECTOR_MAIN,
-                    R.layout.ps_fragment_white_selector
-                )
-                mainModel.inflateCustomLayout(
-                    LayoutSource.SELECTOR_PREVIEW,
-                    R.layout.ps_fragment_white_preview
-                )
-                mainModel.inflateCustomLayout(
-                    LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
-                    R.layout.ps_fragment_white_external_preview
-                )
-            }
-            rbNumNewStyle.isChecked -> {
-                statusBarColor = Color.parseColor("#393a3e")
-                navigationBarColor = Color.parseColor("#393a3e")
-                registry.register(SelectorNumberMainFragment::class.java)
-                registry.register(SelectorNumberPreviewFragment::class.java)
-            }
-            else -> {
-                statusBarColor = Color.parseColor("#393a3e")
-                navigationBarColor = Color.parseColor("#393a3e")
-            }
-        }
-        val selectorStyle = SelectorStyle()
-        selectorStyle.getStatusBar().of(isDarkStatusBar, statusBarColor, navigationBarColor)
-        if (rbDefaultWindowAnim.isChecked) {
-            selectorStyle.getWindowAnimation().of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-        } else if (rbWindowUpAnim.isChecked) {
-            selectorStyle.getWindowAnimation().of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
-        }
-        mainModel.setSelectorUIStyle(selectorStyle)
-    }
-
-    /**
-     * 自定义视频播放器引擎的VideoHolder
-     */
-    private fun buildCustomPlayer(registry: Registry) {
-        when {
-            rbExoPlayer.isChecked -> {
-                registry.register(CustomPreviewExoVideoHolder::class.java)
-            }
-            rbIjkPlayer.isChecked -> {
-                registry.register(CustomPreviewIjkVideoHolder::class.java)
-            }
-            else -> {
-                registry.register(PreviewVideoHolder::class.java)
-            }
         }
     }
 }
