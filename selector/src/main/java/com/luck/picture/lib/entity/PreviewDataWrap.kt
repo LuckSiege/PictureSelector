@@ -6,6 +6,7 @@ package com.luck.picture.lib.entity
  * @describe：Preview data wrap
  */
 class PreviewDataWrap {
+    var page: Int = 1
     var position: Int = 0
     var bucketId: Long = 0
     var totalCount: Int = 0
@@ -18,6 +19,7 @@ class PreviewDataWrap {
 
     fun copy(): PreviewDataWrap {
         val wrap = PreviewDataWrap()
+        wrap.page = page
         wrap.position = position
         wrap.bucketId = bucketId
         wrap.totalCount = totalCount

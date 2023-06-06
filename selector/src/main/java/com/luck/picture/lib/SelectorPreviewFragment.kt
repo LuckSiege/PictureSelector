@@ -191,6 +191,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun attachPreview() {
         viewModel.previewWrap = viewModel.config.previewWrap.copy()
+        viewModel.page = viewModel.previewWrap.page
         viewModel.config.previewWrap.source.clear()
     }
 

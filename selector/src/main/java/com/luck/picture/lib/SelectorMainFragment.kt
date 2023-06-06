@@ -754,7 +754,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         isBottomPreview: Boolean,
         source: MutableList<LocalMedia>
     ) {
-        viewModel.config.previewWrap = onWrapPreviewData(position, isBottomPreview, source)
+        viewModel.config.previewWrap =
+            onWrapPreviewData(viewModel.page, position, isBottomPreview, source)
         val factory = ClassFactory.NewInstance()
         val registry = viewModel.config.registry
         val instance = factory.create(registry.get(newPreviewInstance()))
@@ -772,17 +773,19 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     /**
      * Preview data wrap
-     *
+     * @param page current request page
      * @param position Preview start position
      * @param isBottomPreview Preview source from bottom
      * @param source Preview Data Source
      */
     open fun onWrapPreviewData(
+        page: Int,
         position: Int,
         isBottomPreview: Boolean,
         source: MutableList<LocalMedia>
     ): PreviewDataWrap {
         return PreviewDataWrap().apply {
+            this.page = page
             this.position = position
             this.bucketId =
                 viewModel.currentMediaAlbum?.bucketId ?: SelectorConstant.DEFAULT_ALL_BUCKET_ID
