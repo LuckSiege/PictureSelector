@@ -6,6 +6,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +34,7 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
     private var windMask: View
     private var rvList: RecyclerView
     private var rootView: RelativeLayout
+    private var bodyLayout: ViewGroup
     private var isExecuteDismiss: Boolean = false
     private lateinit var mediaAlbumAdapter: MediaAlbumAdapter
     private var defaultMaxCount = 10
@@ -39,12 +42,13 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
     init {
         val resource = config.layoutSource[LayoutSource.ALBUM_WINDOW] ?: R.layout.ps_album_window
         this.contentView = LayoutInflater.from(context).inflate(resource, null)
+        bodyLayout = contentView.findViewById(R.id.round_group)
         this.rootView = contentView.findViewById(R.id.rootView)
         this.rvList = contentView.findViewById(R.id.album_list)
         this.windMask = contentView.findViewById(R.id.view_mask)
         this.width = RelativeLayout.LayoutParams.MATCH_PARENT
         this.height = RelativeLayout.LayoutParams.WRAP_CONTENT
-        this.animationStyle = this.getWindowAnimationStyle()
+        this.animationStyle = 0
         this.isFocusable = true
         this.isOutsideTouchable = true
         this.update()
@@ -57,10 +61,6 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
             dismiss()
         }
         initRecyclerView()
-    }
-
-    open fun getWindowAnimationStyle(): Int {
-        return R.style.PictureThemeWindowStyle
     }
 
     private fun initRecyclerView() {
@@ -118,22 +118,32 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
         } else {
             super.showAsDropDown(anchor)
         }
-        windMask.animate().alpha(1F).setDuration(250).setStartDelay(250).start()
         isExecuteDismiss = false
         windowStatusListener?.onShowing(true)
+        bodyLayout.startAnimation(showAnimation(anchor.context))
+        windMask.animate().alpha(1F).setDuration(bodyLayout.animation.duration).start()
     }
 
     override fun dismiss() {
         if (isExecuteDismiss) {
             return
         }
-        windMask.alpha = 0F;
-        windowStatusListener?.onShowing(false)
         isExecuteDismiss = true
-        windMask.post {
+        windowStatusListener?.onShowing(false)
+        bodyLayout.startAnimation(hideAnimation(bodyLayout.context))
+        windMask.animate().alpha(0F).setDuration(bodyLayout.animation.duration).start()
+        bodyLayout.postDelayed({
             super.dismiss()
             isExecuteDismiss = false;
-        }
+        }, bodyLayout.animation.duration)
+    }
+
+    open fun showAnimation(context: Context): Animation {
+        return AnimationUtils.loadAnimation(context, R.anim.ps_anim_album_show)
+    }
+
+    open fun hideAnimation(context: Context): Animation {
+        return AnimationUtils.loadAnimation(context, R.anim.ps_anim_album_dismiss)
     }
 
     private var windowStatusListener: OnWindowStatusListener? = null
