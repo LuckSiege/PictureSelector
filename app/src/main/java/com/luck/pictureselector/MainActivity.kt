@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.luck.picture.lib.SelectorNumberMainFragment
+import com.luck.picture.lib.SelectorNumberPreviewFragment
 import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
@@ -264,6 +266,8 @@ class MainActivity : AppCompatActivity() {
                                     Color.parseColor("#393a3e"),
                                     Color.parseColor("#393a3e")
                                 )
+                                gallery.registry(SelectorNumberMainFragment::class.java)
+                                gallery.registry(SelectorNumberPreviewFragment::class.java)
                             }
                         }
                         if (rbDefaultWindowAnim.isChecked) {
