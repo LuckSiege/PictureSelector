@@ -15,6 +15,7 @@ import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectedState
+import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
@@ -204,12 +205,8 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         val context = requireContext()
                         result.forEach { uri ->
                             MediaUtils.getPath(context, uri)?.let { absolutePath ->
-                                globalViewMode.selectResult.add(
-                                    MediaUtils.getAssignPathMedia(
-                                        context,
-                                        absolutePath
-                                    )
-                                )
+                                val media = MediaUtils.getAssignPathMedia(context, absolutePath)
+                                confirmSelect(media, false)
                             }
                         }
                         handleSelectResult()
@@ -277,12 +274,8 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         val context = requireContext()
                         result.forEach { uri ->
                             MediaUtils.getPath(context, uri)?.let { absolutePath ->
-                                globalViewMode.selectResult.add(
-                                    MediaUtils.getAssignPathMedia(
-                                        context,
-                                        absolutePath
-                                    )
-                                )
+                                val media = MediaUtils.getAssignPathMedia(context, absolutePath)
+                                confirmSelect(media, false)
                             }
                         }
                         handleSelectResult()
@@ -383,8 +376,16 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_CANCELED) {
-            onBackPressed()
+            if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
+                handlePermissionSettingResult(viewModel.currentRequestPermission)
+            } else {
+                onBackPressed()
+            }
         }
+    }
+
+    override fun handlePermissionSettingResult(permission: Array<String>) {
+
     }
 
     override fun onDestroy() {

@@ -72,7 +72,11 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
                 }
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            onBackPressed()
+            if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
+                handlePermissionSettingResult(viewModel.currentRequestPermission)
+            } else {
+                onBackPressed()
+            }
         }
     }
 

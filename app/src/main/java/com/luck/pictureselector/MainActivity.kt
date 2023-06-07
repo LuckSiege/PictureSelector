@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         val checkPreviewVideo = findViewById<CheckBox>(R.id.check_preview_video)
         val checkPreviewAudio = findViewById<CheckBox>(R.id.check_preview_audio)
         val checkPreviewDelete = findViewById<CheckBox>(R.id.check_preview_delete)
+        val checkDisplayCamera = findViewById<CheckBox>(R.id.check_display_camera)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
         val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
         minus.setOnClickListener {
@@ -276,8 +277,31 @@ class MainActivity : AppCompatActivity() {
             override fun openPicture() {
                 when {
                     checkSystem.isChecked -> {
+                        PictureSelector.create(this@MainActivity)
+                            .openSystemGallery(selectorMode)
+                            .forSystemResult(object : OnResultCallbackListener {
+                                override fun onResult(result: List<LocalMedia>) {
+                                    showDisplayResult(result)
+                                }
+
+                                override fun onCancel() {
+                                    SelectorLogUtils.info("onCancel")
+                                }
+                            })
                     }
                     checkOnlyCamera.isChecked -> {
+                        PictureSelector.create(this@MainActivity)
+                            .openCamera(selectorMode)
+                            .setAllOfCameraMode(SelectorMode.IMAGE)
+                            .forResult(object : OnResultCallbackListener {
+                                override fun onResult(result: List<LocalMedia>) {
+                                    showDisplayResult(result)
+                                }
+
+                                override fun onCancel() {
+                                    SelectorLogUtils.info("onCancel")
+                                }
+                            })
                     }
                     else -> {
                         val uiStyle = SelectorStyle()
@@ -356,6 +380,7 @@ class MainActivity : AppCompatActivity() {
                             checkPreviewFull.isChecked
                         )
                         gallery.isGif(checkGif.isChecked)
+                        gallery.isDisplayCamera(checkDisplayCamera.isChecked)
                         gallery.isFastSlidingSelect(checkFastSelect.isChecked)
                         gallery.isDisplayTimeAxis(checkTimeAxis.isChecked)
                         gallery.isEmptyResultBack(checkEmptyBack.isChecked)

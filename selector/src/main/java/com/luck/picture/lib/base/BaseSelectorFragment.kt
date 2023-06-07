@@ -207,7 +207,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (!isStateSaved) {
             if (isRootExit()) {
                 // Home Exit
-                if (this is SelectorMainFragment) {
+                if (this is SelectorMainFragment || this is SelectorCameraFragment) {
                     viewModel.config.mListenerInfo.onResultCallbackListener?.onCancel()
                 }
                 if (isNormalDefaultEnter()) {
@@ -228,6 +228,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     open fun isRootExit(): Boolean {
         return this is SelectorMainFragment
+                || (this is SelectorCameraFragment && viewModel.config.isOnlyCamera)
                 || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
                 || (this is SelectorSystemFragment && viewModel.config.systemGallery)
     }

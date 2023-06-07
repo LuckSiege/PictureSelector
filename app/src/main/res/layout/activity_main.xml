@@ -370,10 +370,29 @@
                 </com.luck.pictureselector.LineWrapRadioGroup>
 
                 <CheckBox
+                    android:id="@+id/check_display_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="显示拍照"
+                    android:checked="true"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+
+                <CheckBox
+                    android:id="@+id/check_only_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="只拍照"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/check_time_axis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="显示时间轴"
+                    android:checked="true"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
@@ -415,14 +434,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="系统相册"
-                    android:textColor="@color/ps_color_black"
-                    android:textSize="14sp" />
-
-                <CheckBox
-                    android:id="@+id/check_only_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="只拍照"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
