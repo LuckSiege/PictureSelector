@@ -89,6 +89,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="fullSensor" />
 
+        <activity
+            android:name=".CustomCameraActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="fullSensor" />
+
     </application>
 
 </manifest>

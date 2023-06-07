@@ -42,6 +42,9 @@ import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionUtil
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.registry.ImageCaptureComponent
+import com.luck.picture.lib.registry.SoundCaptureComponent
+import com.luck.picture.lib.registry.VideoCaptureComponent
 import com.luck.picture.lib.service.ForegroundService
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaStoreUtils
@@ -391,12 +394,22 @@ abstract class BaseSelectorFragment : Fragment() {
      * sound recording
      */
     open fun soundRecording() {
-        val onRecordAudioListener = viewModel.config.mListenerInfo.onRecordAudioListener
-        if (onRecordAudioListener != null) {
-            ForegroundService.startService(requireContext(), viewModel.config.isForegroundService)
-            onRecordAudioListener.onRecordAudio(this, SelectorConstant.REQUEST_CAMERA)
+        val soundCaptureComponent = viewModel.config.registry.get(SoundCaptureComponent::class.java)
+        if (soundCaptureComponent.isAssignableFrom(SoundCaptureComponent::class.java)) {
+            val onRecordAudioListener = viewModel.config.mListenerInfo.onRecordAudioListener
+            if (onRecordAudioListener != null) {
+                ForegroundService.startService(
+                    requireContext(),
+                    viewModel.config.isForegroundService
+                )
+                onRecordAudioListener.onRecordAudio(this, SelectorConstant.REQUEST_CAMERA)
+            } else {
+                throw NullPointerException("Please implement the ${OnRecordAudioListener::class.java.simpleName} interface to achieve recording functionality")
+            }
         } else {
-            throw NullPointerException("Please implement the ${OnRecordAudioListener::class.java.simpleName} interface to achieve recording functionality")
+            val soundCaptureActivity = viewModel.factory.create(soundCaptureComponent::class.java)
+            val intent = Intent(context, soundCaptureActivity::class.java)
+            startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
         }
     }
 
@@ -404,36 +417,43 @@ abstract class BaseSelectorFragment : Fragment() {
      * System camera takes pictures
      */
     open fun takePictures() {
-        val context = requireContext()
-        val outputDir = viewModel.config.imageOutputDir
-        val defaultFileName = "${FileUtils.createFileName("IMG")}.jpg"
-        val fileName =
-            viewModel.config.mListenerInfo.onApplyFileNameListener?.apply(defaultFileName)
-                ?: defaultFileName
-        val outputUri: Uri?
-        if (TextUtils.isEmpty(outputDir)) {
-            // Use default storage path
-            outputUri = MediaStoreUtils.insertImage(context, fileName)!!
-            viewModel.outputUri = outputUri
-        } else {
-            // Use custom storage path
-            val outputFile = File(outputDir, fileName)
-            outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.outputUri = Uri.fromFile(outputFile)
-        }
-        val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
-        if (onCustomCameraListener != null) {
-            onCustomCameraListener.onCamera(
-                this,
-                CameraType.IMAGE, outputUri, SelectorConstant.REQUEST_CAMERA
-            )
-        } else {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(context.packageManager) != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                ForegroundService.startService(context, viewModel.config.isForegroundService)
+        val imageCaptureComponent = viewModel.config.registry.get(ImageCaptureComponent::class.java)
+        if (imageCaptureComponent.isAssignableFrom(ImageCaptureComponent::class.java)) {
+            val context = requireContext()
+            val outputDir = viewModel.config.imageOutputDir
+            val defaultFileName = "${FileUtils.createFileName("IMG")}.jpg"
+            val fileName =
+                viewModel.config.mListenerInfo.onApplyFileNameListener?.apply(defaultFileName)
+                    ?: defaultFileName
+            val outputUri: Uri?
+            if (TextUtils.isEmpty(outputDir)) {
+                // Use default storage path
+                outputUri = MediaStoreUtils.insertImage(context, fileName)!!
+                viewModel.outputUri = outputUri
+            } else {
+                // Use custom storage path
+                val outputFile = File(outputDir, fileName)
+                outputUri = MediaUtils.parUri(context, outputFile)
+                viewModel.outputUri = Uri.fromFile(outputFile)
             }
+            val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+            if (onCustomCameraListener != null) {
+                onCustomCameraListener.onCamera(
+                    this,
+                    CameraType.IMAGE, outputUri, SelectorConstant.REQUEST_CAMERA
+                )
+            } else {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                }
+            }
+        } else {
+            val imageCaptureActivity = viewModel.factory.create(imageCaptureComponent::class.java)
+            val intent = Intent(context, imageCaptureActivity::class.java)
+            startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
         }
     }
 
@@ -441,39 +461,46 @@ abstract class BaseSelectorFragment : Fragment() {
      * System camera recording video
      */
     open fun recordVideo() {
-        val context = requireContext()
-        val outputDir = viewModel.config.videoOutputDir
-        val defaultFileName = "${FileUtils.createFileName("VID")}.mp4"
-        val fileName =
-            viewModel.config.mListenerInfo.onApplyFileNameListener?.apply(defaultFileName)
-                ?: defaultFileName
-        val outputUri: Uri?
-        if (TextUtils.isEmpty(outputDir)) {
-            // Use default storage path
-            outputUri = MediaStoreUtils.insertVideo(context, fileName)!!
-            viewModel.outputUri = outputUri
-        } else {
-            // Use custom storage path
-            val outputFile = File(outputDir, fileName)
-            outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.outputUri = Uri.fromFile(outputFile)
-        }
-        val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
-        if (onCustomCameraListener != null) {
-            onCustomCameraListener.onCamera(
-                this,
-                CameraType.VIDEO,
-                outputUri,
-                SelectorConstant.REQUEST_CAMERA
-            )
-        } else {
-            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-            if (intent.resolveActivity(context.packageManager) != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
-                startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                ForegroundService.startService(context, viewModel.config.isForegroundService)
+        val videoCaptureComponent = viewModel.config.registry.get(VideoCaptureComponent::class.java)
+        if (videoCaptureComponent.isAssignableFrom(VideoCaptureComponent::class.java)) {
+            val context = requireContext()
+            val outputDir = viewModel.config.videoOutputDir
+            val defaultFileName = "${FileUtils.createFileName("VID")}.mp4"
+            val fileName =
+                viewModel.config.mListenerInfo.onApplyFileNameListener?.apply(defaultFileName)
+                    ?: defaultFileName
+            val outputUri: Uri?
+            if (TextUtils.isEmpty(outputDir)) {
+                // Use default storage path
+                outputUri = MediaStoreUtils.insertVideo(context, fileName)!!
+                viewModel.outputUri = outputUri
+            } else {
+                // Use custom storage path
+                val outputFile = File(outputDir, fileName)
+                outputUri = MediaUtils.parUri(context, outputFile)
+                viewModel.outputUri = Uri.fromFile(outputFile)
             }
+            val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+            if (onCustomCameraListener != null) {
+                onCustomCameraListener.onCamera(
+                    this,
+                    CameraType.VIDEO,
+                    outputUri,
+                    SelectorConstant.REQUEST_CAMERA
+                )
+            } else {
+                val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                    intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
+                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                }
+            }
+        } else {
+            val videoCaptureActivity = viewModel.factory.create(videoCaptureComponent::class.java)
+            val intent = Intent(context, videoCaptureActivity::class.java)
+            startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
         }
     }
 

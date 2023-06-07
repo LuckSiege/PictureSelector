@@ -79,6 +79,7 @@ dependencies {
     implementation project(":ijkplayer-java")
     implementation 'id.zelory:compressor:3.0.1'
     implementation 'io.github.lucksiege:ucrop:v3.11.1'
+    implementation 'io.github.lucksiege:camerax:v3.10.0'
     implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "com.github.bumptech.glide:glide:4.15.1"
     implementation "androidx.recyclerview:recyclerview:1.2.1"

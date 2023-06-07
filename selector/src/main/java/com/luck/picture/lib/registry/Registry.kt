@@ -12,12 +12,16 @@ import com.luck.picture.lib.base.BaseSelectorFragment
  * @describe：Used by users to customize PictureSelector
  */
 class Registry : BaseRegistry() {
+    private var captureRegistry = CaptureRegistry()
     private var adapterRegistry = AdapterRegistry()
     private var fragmentRegistry = FragmentRegistry()
     private var viewHolderRegistry = ViewHolderRegistry()
 
     override fun <Model> register(targetClass: Class<Model>) {
         when {
+            isAssignableFromCapture(targetClass) -> {
+                captureRegistry.register(targetClass)
+            }
             isAssignableFromFragment(targetClass) -> {
                 fragmentRegistry.register(targetClass)
             }
@@ -32,6 +36,9 @@ class Registry : BaseRegistry() {
 
     override fun <Model> unregister(targetClass: Class<Model>) {
         when {
+            isAssignableFromCapture(targetClass) -> {
+                captureRegistry.unregister(targetClass)
+            }
             isAssignableFromFragment(targetClass) -> {
                 fragmentRegistry.unregister(targetClass)
             }
@@ -46,6 +53,9 @@ class Registry : BaseRegistry() {
 
     override fun <Model> get(targetClass: Class<Model>): Class<Model> {
         when {
+            isAssignableFromCapture(targetClass) -> {
+                return captureRegistry.get(targetClass)
+            }
             isAssignableFromFragment(targetClass) -> {
                 return fragmentRegistry.get(targetClass)
             }
@@ -59,6 +69,10 @@ class Registry : BaseRegistry() {
         throw IllegalStateException("$targetClass not found")
     }
 
+    fun getCaptureRegistry(): CaptureRegistry {
+        return captureRegistry
+    }
+
     fun getAdapterRegistry(): AdapterRegistry {
         return adapterRegistry
     }
@@ -69,6 +83,12 @@ class Registry : BaseRegistry() {
 
     fun getViewHolderRegistry(): ViewHolderRegistry {
         return viewHolderRegistry
+    }
+
+    private fun <V> isAssignableFromCapture(targetClass: Class<V>): Boolean {
+        return VideoCaptureComponent::class.java.isAssignableFrom(targetClass)
+                || ImageCaptureComponent::class.java.isAssignableFrom(targetClass)
+                || SoundCaptureComponent::class.java.isAssignableFrom(targetClass)
     }
 
     private fun <V> isAssignableFromHolder(targetClass: Class<V>): Boolean {
@@ -86,6 +106,7 @@ class Registry : BaseRegistry() {
     }
 
     override fun clear() {
+        getCaptureRegistry().clear()
         getAdapterRegistry().clear()
         getFragmentRegistry().clear()
         getViewHolderRegistry().clear()
