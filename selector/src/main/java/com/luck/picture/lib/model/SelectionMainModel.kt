@@ -11,7 +11,6 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.R
-import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorMainFragment
 import com.luck.picture.lib.SelectorSupporterActivity
 import com.luck.picture.lib.config.LayoutSource
@@ -30,6 +29,7 @@ import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.loader.MediaLoader
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
 import org.jetbrains.annotations.NotNull
@@ -170,14 +170,6 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      */
     fun setOnEditorMediaListener(l: OnEditorMediaListener?): SelectionMainModel {
         this.config.mListenerInfo.onEditorMediaListener = l
-        return this
-    }
-
-    /**
-     * Custom camera callback listening
-     */
-    fun setOnCustomCameraListener(l: OnCustomCameraListener?): SelectionMainModel {
-        this.config.mListenerInfo.onCustomCameraListener = l
         return this
     }
 

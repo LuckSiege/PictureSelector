@@ -21,7 +21,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.*
-import com.luck.picture.lib.config.CameraType
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.CropWrap
@@ -436,19 +435,11 @@ abstract class BaseSelectorFragment : Fragment() {
                 outputUri = MediaUtils.parUri(context, outputFile)
                 viewModel.outputUri = Uri.fromFile(outputFile)
             }
-            val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
-            if (onCustomCameraListener != null) {
-                onCustomCameraListener.onCamera(
-                    this,
-                    CameraType.IMAGE, outputUri, SelectorConstant.REQUEST_CAMERA
-                )
-            } else {
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                    ForegroundService.startService(context, viewModel.config.isForegroundService)
-                }
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(context.packageManager) != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                ForegroundService.startService(context, viewModel.config.isForegroundService)
             }
         } else {
             val imageCaptureActivity = viewModel.factory.create(imageCaptureComponent::class.java)
@@ -480,22 +471,12 @@ abstract class BaseSelectorFragment : Fragment() {
                 outputUri = MediaUtils.parUri(context, outputFile)
                 viewModel.outputUri = Uri.fromFile(outputFile)
             }
-            val onCustomCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
-            if (onCustomCameraListener != null) {
-                onCustomCameraListener.onCamera(
-                    this,
-                    CameraType.VIDEO,
-                    outputUri,
-                    SelectorConstant.REQUEST_CAMERA
-                )
-            } else {
-                val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                    intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
-                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                    ForegroundService.startService(context, viewModel.config.isForegroundService)
-                }
+            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            if (intent.resolveActivity(context.packageManager) != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
+                startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                ForegroundService.startService(context, viewModel.config.isForegroundService)
             }
         } else {
             val videoCaptureActivity = viewModel.factory.create(videoCaptureComponent::class.java)

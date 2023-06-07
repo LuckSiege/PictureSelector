@@ -7,7 +7,6 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.R
-import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorCameraFragment
 import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.config.SelectorConfig
@@ -21,6 +20,7 @@ import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.registry.Registry
 
 /**
  * @author：luck
@@ -105,14 +105,6 @@ class SelectionCameraModel constructor(
      */
     fun setMediaConverterEngine(engine: MediaConverterEngine?): SelectionCameraModel {
         this.config.mediaConverterEngine = engine
-        return this
-    }
-
-    /**
-     * Custom camera callback listening
-     */
-    fun setOnCustomCameraListener(l: OnCustomCameraListener?): SelectionCameraModel {
-        this.config.mListenerInfo.onCustomCameraListener = l
         return this
     }
 
