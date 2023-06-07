@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.util.Log
 import com.luck.picture.lib.R
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
@@ -43,34 +42,18 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     override fun getAlbumSelection(): String {
         val duration = getDurationCondition()
         val fileSize = getFileSizeCondition()
-        when (config.selectorMode) {
+        return when (config.selectorMode) {
             SelectorMode.ALL -> { // query the image or video
-                return if (isQ()) {
-                    "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
-                } else {
-                    "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize)$GROUP_BY_BUCKET_ID"
-                }
+                "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
             }
             SelectorMode.IMAGE -> { // query the image
-                return if (isQ()) {
-                    "$MEDIA_TYPE=?${getImageMimeTypeCondition()} AND $fileSize"
-                } else {
-                    "($MEDIA_TYPE=?${getImageMimeTypeCondition()}) AND $fileSize)$GROUP_BY_BUCKET_ID"
-                }
+                "$MEDIA_TYPE=?${getImageMimeTypeCondition()} AND $fileSize"
             }
             SelectorMode.VIDEO -> { // query the video
-                return if (isQ()) {
-                    "$MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration"
-                } else {
-                    "($MEDIA_TYPE=?${getVideoMimeTypeCondition()}) AND $duration)$GROUP_BY_BUCKET_ID"
-                }
+                "$MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration"
             }
             SelectorMode.AUDIO -> { // query the audio
-                return if (isQ()) {
-                    "$MEDIA_TYPE=?${getAudioMimeTypeCondition()} AND $duration"
-                } else {
-                    "($MEDIA_TYPE=?${getAudioMimeTypeCondition()}) AND $duration)$GROUP_BY_BUCKET_ID"
-                }
+                "$MEDIA_TYPE=?${getAudioMimeTypeCondition()} AND $duration"
             }
         }
     }
@@ -80,13 +63,11 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         val fileSize = getFileSizeCondition()
         when (config.selectorMode) {
             SelectorMode.ALL -> { // query the image or video
-                val s = if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
+                return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
                 } else {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize AND $BUCKET_ID=?"
                 }
-                Log.i("KKK", "全部模式:$s")
-                return s
             }
             SelectorMode.IMAGE -> { // query the image
                 return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {

@@ -1,7 +1,6 @@
 package com.luck.picture.lib.dialog
 
 import android.content.Context
-import android.os.Looper
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -133,11 +132,10 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
         windowStatusListener?.onShowing(false)
         bodyLayout.startAnimation(hideAnimation(bodyLayout.context))
         windMask.animate().alpha(0F).setDuration(bodyLayout.animation.duration).start()
-        Looper.myQueue().addIdleHandler {
+        bodyLayout.postDelayed({
             super.dismiss()
-            isExecuteDismiss = false;
-            return@addIdleHandler false
-        }
+            isExecuteDismiss = false
+        }, bodyLayout.animation.duration)
     }
 
     open fun showAnimation(context: Context): Animation {
