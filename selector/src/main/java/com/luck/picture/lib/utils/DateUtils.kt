@@ -74,4 +74,14 @@ object DateUtils {
         val now: String = sfYm.format(Date())
         return param == now
     }
+
+    fun dateDiffer(duration: Long): Boolean {
+        return abs(getCurrentTimeMillis() - duration).toInt() <= 1
+    }
+
+    private fun getCurrentTimeMillis(): Long {
+        val timeToString = System.currentTimeMillis().toString()
+        return if (timeToString.length > 10) timeToString.substring(0, 10)
+            .toLong() else timeToString.toLong()
+    }
 }

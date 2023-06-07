@@ -393,6 +393,43 @@ object MediaUtils {
         return media
     }
 
+    suspend fun getDCIMLastId(context: Context, absoluteDir: String): Long {
+        withContext(Dispatchers.IO) {
+            val selection = MediaStore.Images.Media.DATA + " like ?"
+            val selectionArgs = arrayOf("%$absoluteDir%")
+            val contentResolver = context.contentResolver
+            if (isR()) {
+                val queryArgs = createQueryArgsBundle(
+                    selection,
+                    selectionArgs,
+                    1,
+                    0,
+                    MediaStore.Files.FileColumns._ID + " DESC"
+                )
+                contentResolver.query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, queryArgs, null
+                )
+            } else {
+                val orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0"
+                contentResolver.query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    null,
+                    selection,
+                    selectionArgs,
+                    orderBy
+                )
+            }?.use { data ->
+                if (data.count > 0 && data.moveToFirst()) {
+                    val id = data.getLong(data.getColumnIndex(MediaStore.Images.Media._ID))
+                    val date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED))
+                    return@withContext if (DateUtils.dateDiffer(date)) id else -1L
+                }
+                data.close()
+            }
+        }
+        return -1L
+    }
+
     private fun getProjection(): Array<String> {
         return arrayOf(
             MediaStore.Files.FileColumns._ID,
@@ -574,6 +611,18 @@ object MediaUtils {
         try {
             context.contentResolver.delete(uri, null, null)
         } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    fun remove(context: Context, id: Long) {
+        try {
+            val contentResolver = context.contentResolver
+            val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val selection = MediaStore.Images.Media._ID + "=?"
+            contentResolver.delete(uri, selection, arrayOf(id.toString()))
+        } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
     }

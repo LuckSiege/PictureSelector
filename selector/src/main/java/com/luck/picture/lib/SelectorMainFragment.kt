@@ -42,6 +42,7 @@ import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.widget.*
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * @author：luck
@@ -836,11 +837,34 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                         } else {
                             MediaUtils.getAssignFileMedia(context, realPath!!)
                         }
+                        onCheckDuplicateMedia(media)
                         onMergeCameraAlbum(media)
                         onMergeCameraMedia(media)
                     }
                 }
             })
+    }
+
+    /**
+     * Some models may generate two duplicate photos when taking photos
+     */
+    open fun onCheckDuplicateMedia(media: LocalMedia) {
+        if (SdkVersionUtils.isQ()) {
+        } else {
+            if (MediaUtils.hasMimeTypeOfImage(media.mimeType)) {
+                viewModel.viewModelScope.launch {
+                    media.absolutePath?.let {
+                        File(it).parent?.let { parent ->
+                            val context = requireContext()
+                            val id = MediaUtils.getDCIMLastId(context, parent)
+                            if (id != -1L) {
+                                MediaUtils.remove(context, id)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
