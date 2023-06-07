@@ -248,6 +248,143 @@
                         android:textSize="14sp" />
                 </RadioGroup>
 
+                <com.luck.pictureselector.LineWrapRadioGroup
+                    android:id="@+id/rgb_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="系统语言"
+                        android:checked="true"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_chinese"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中文"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_tw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="繁体"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_us"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="英语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_ka"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="韩语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_spanish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="西班牙语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_de"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="德语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_fr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="法语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_japan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="日语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_portugal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="葡萄牙语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_ar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="阿拉伯语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_ru"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="俄语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_cs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="捷克"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_kk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="哈萨克斯坦"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                </com.luck.pictureselector.LineWrapRadioGroup>
+
+                <CheckBox
+                    android:id="@+id/check_time_axis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="显示时间轴"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/check_fast_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="长按触摸选择"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
                 <CheckBox
                     android:id="@+id/check_empty_back"
                     android:layout_width="wrap_content"

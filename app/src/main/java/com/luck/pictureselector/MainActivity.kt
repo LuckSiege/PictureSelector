@@ -21,6 +21,7 @@ import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnExternalPreviewListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private var selectorMode: SelectorMode = SelectorMode.ALL
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
+    private var language: Language = Language.SYSTEM_LANGUAGE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,10 +65,12 @@ class MainActivity : AppCompatActivity() {
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
+        val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
         val checkLoopVideo = findViewById<CheckBox>(R.id.check_loop_video)
         val checkAutoVideo = findViewById<CheckBox>(R.id.check_auto_video)
         val checkPauseVideo = findViewById<CheckBox>(R.id.check_pause_video)
         val checkSystem = findViewById<CheckBox>(R.id.check_system)
+        val checkFastSelect = findViewById<CheckBox>(R.id.check_fast_select)
         val checkPreviewFull = findViewById<CheckBox>(R.id.check_full)
         val checkOriginal = findViewById<CheckBox>(R.id.check_original)
         val checkEmptyBack = findViewById<CheckBox>(R.id.check_empty_back)
@@ -117,6 +121,53 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.rb_audio -> {
                     selectorMode = SelectorMode.AUDIO
+                }
+            }
+        }
+
+        findViewById<RadioGroup>(R.id.rgb_language).setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.rb_system -> {
+                    language = Language.SYSTEM_LANGUAGE
+                }
+                R.id.rb_chinese -> {
+                    language = Language.CHINESE
+                }
+                R.id.rb_tw -> {
+                    language = Language.TRADITIONAL_CHINESE
+                }
+                R.id.rb_us -> {
+                    language = Language.ENGLISH
+                }
+                R.id.rb_ka -> {
+                    language = Language.KOREA
+                }
+                R.id.rb_spanish -> {
+                    language = Language.SPANISH
+                }
+                R.id.rb_de -> {
+                    language = Language.GERMANY
+                }
+                R.id.rb_fr -> {
+                    language = Language.FRANCE
+                }
+                R.id.rb_japan -> {
+                    language = Language.JAPAN
+                }
+                R.id.rb_portugal -> {
+                    language = Language.PORTUGAL
+                }
+                R.id.rb_ar -> {
+                    language = Language.AR
+                }
+                R.id.rb_ru -> {
+                    language = Language.RU
+                }
+                R.id.rb_cs -> {
+                    language = Language.CS
+                }
+                R.id.rb_kk -> {
+                    language = Language.KK
                 }
             }
         }
@@ -296,6 +347,7 @@ class MainActivity : AppCompatActivity() {
                                 gallery.registry(PreviewVideoHolder::class.java)
                             }
                         }
+                        gallery.setLanguage(language)
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
@@ -304,6 +356,8 @@ class MainActivity : AppCompatActivity() {
                             checkPreviewFull.isChecked
                         )
                         gallery.isGif(checkGif.isChecked)
+                        gallery.isFastSlidingSelect(checkFastSelect.isChecked)
+                        gallery.isDisplayTimeAxis(checkTimeAxis.isChecked)
                         gallery.isEmptyResultBack(checkEmptyBack.isChecked)
                         gallery.isOriginalControl(checkOriginal.isChecked)
                         gallery.isMaxSelectEnabledMask(checkEnabledMask.isChecked)
