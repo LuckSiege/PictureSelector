@@ -21,6 +21,7 @@ import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionChecker.isCheckReadStorage
 import com.luck.picture.lib.utils.MediaUtils
+import com.luck.picture.lib.utils.ToastUtils
 import kotlinx.coroutines.launch
 
 /**
@@ -81,9 +82,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
             if (onPermissionApplyListener != null) {
                 showCustomPermissionApply(permissionArray)
             } else {
-                PermissionChecker.requestPermissions(
-                    this,
-                    permissionArray,
+                PermissionChecker.requestPermissions(this, permissionArray,
                     object : OnPermissionResultListener {
                         override fun onGranted() {
                             openSystemAlbum()
@@ -385,7 +384,20 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     }
 
     override fun handlePermissionSettingResult(permission: Array<String>) {
-
+        if (permission.isEmpty()) {
+            return
+        }
+        showPermissionDescription(false, permission)
+        val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+        val isHasPermissions = onPermissionApplyListener?.hasPermissions(this, permission)
+            ?: PermissionChecker.checkSelfPermission(requireContext(), permission)
+        if (isHasPermissions) {
+            openSystemAlbum()
+        } else {
+            ToastUtils.showMsg(requireContext(), getString(R.string.ps_jurisdiction))
+            onBackPressed()
+        }
+        viewModel.currentRequestPermission = arrayOf()
     }
 
     override fun onDestroy() {
