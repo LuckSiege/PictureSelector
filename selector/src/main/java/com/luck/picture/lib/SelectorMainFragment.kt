@@ -192,7 +192,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
-    private fun initTitleBar() {
+    open fun initTitleBar() {
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
         }
@@ -326,7 +326,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         return AlbumListPopWindow(requireContext())
     }
 
-    private fun initAlbumWindow() {
+    open fun initAlbumWindow() {
         mAlbumWindow = createAlbumWindow()
         mAlbumWindow.setOnItemClickListener(object : OnItemClickListener<LocalMediaAlbum> {
             override fun onItemClick(position: Int, data: LocalMediaAlbum) {
@@ -383,7 +383,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
-    private fun initNavbarBar() {
+    open fun initNavbarBar() {
         if (viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
             navBarViews.forEach { view ->
                 view.visibility = View.GONE
@@ -492,7 +492,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         return viewModel.factory.create(adapterClass)
     }
 
-    private fun initMediaAdapter() {
+    open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
         mAdapter.setDisplayCamera(viewModel.config.isDisplayCamera)
@@ -617,7 +617,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
-    private fun checkPermissions() {
+    open fun checkPermissions() {
         if (PermissionChecker.isCheckReadStorage(requireContext(), viewModel.config.selectorMode)) {
             requestData()
         } else {
@@ -693,7 +693,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     /**
      * Start requesting media album data
      */
-    private fun requestData() {
+    open fun requestData() {
         if (viewModel.config.isOnlySandboxDir) {
             val sandboxDir = viewModel.config.sandboxDir
             mTvTitle?.text = sandboxDir!!.substring(sandboxDir.lastIndexOf("/") + 1)

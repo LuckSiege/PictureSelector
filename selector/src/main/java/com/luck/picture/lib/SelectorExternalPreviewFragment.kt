@@ -76,7 +76,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
         })
     }
 
-    private fun delete() {
+    open fun delete() {
         val currentItem = viewPager.currentItem
         val media = viewModel.previewWrap.source[currentItem]
         viewModel.config.mListenerInfo.onExternalPreviewListener?.onDelete(
@@ -96,7 +96,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
         }
     }
 
-    private fun download(media: LocalMedia) {
+    open fun download(media: LocalMedia) {
         val availablePath = media.getAvailablePath() ?: return
         val mimeType = if (MediaUtils.isHasHttp(availablePath)) {
             media.mimeType ?: MediaUtils.getUrlMimeType(availablePath) ?: return

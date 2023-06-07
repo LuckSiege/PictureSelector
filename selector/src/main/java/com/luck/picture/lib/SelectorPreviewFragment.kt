@@ -189,14 +189,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     }
 
-    private fun attachPreview() {
+    open fun attachPreview() {
         viewModel.previewWrap = viewModel.config.previewWrap.copy()
         viewModel.page = viewModel.previewWrap.page
         viewModel.config.previewWrap.source.clear()
     }
 
 
-    private fun initTitleBar() {
+    open fun initTitleBar() {
         setTitleText(viewModel.previewWrap.position + 1)
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
@@ -221,7 +221,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             )
     }
 
-    private fun initNavbarBar() {
+    open fun initNavbarBar() {
         if (viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
             navBarViews.forEach { view ->
                 view.visibility = View.GONE
@@ -376,7 +376,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         return viewModel.factory.create(adapterClass)
     }
 
-    private fun initViewPagerData() {
+    open fun initViewPagerData() {
         mAdapter = createMediaAdapter()
         mAdapter.setDataNotifyChanged(viewModel.previewWrap.source)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -421,7 +421,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         SelectorLogUtils.info("预览:第${viewModel.page}页数据,现有数据->${mAdapter.getData().size}条")
     }
 
-    private fun startZoomEffect(holder: BasePreviewMediaHolder, media: LocalMedia) {
+    open fun startZoomEffect(holder: BasePreviewMediaHolder, media: LocalMedia) {
         viewPager.alpha = 0F
         holder.imageCover.scaleType =
             if (media.width == 0 && media.height == 0) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
@@ -456,7 +456,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
 
-    private fun setMagicalViewParams(position: Int) {
+    open fun setMagicalViewParams(position: Int) {
         if (isHasMagicalEffect()) {
             viewModel.viewModelScope.launch {
                 val media = viewModel.previewWrap.source[position]
@@ -613,7 +613,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         SelectorLogUtils.info("预览:开始请求第${viewModel.page}页数据")
     }
 
-    private fun initMagicalView() {
+    open fun initMagicalView() {
         viewPager = ViewPager2(requireContext())
         mMagicalView?.setMagicalContent(viewPager)
         if (isHasMagicalEffect()) {
@@ -740,7 +740,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
-    private fun isFullScreen(): Boolean {
+    open fun isFullScreen(): Boolean {
         return mTitleBarBackground?.translationY != 0F
     }
 
@@ -874,7 +874,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
-    private fun resumePausePlay() {
+    open fun resumePausePlay() {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
         if (currentHolder is PreviewVideoHolder) {
             if (currentHolder.mediaPlayer.isPlaying()) {
@@ -893,7 +893,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
 
-    private fun isPlaying(): Boolean {
+    open fun isPlaying(): Boolean {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
         if (currentHolder is PreviewVideoHolder) {
             return currentHolder.mediaPlayer.isPlaying()
