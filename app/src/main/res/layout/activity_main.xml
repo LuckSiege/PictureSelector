@@ -206,6 +206,37 @@
                 </RadioGroup>
 
                 <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_callback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="callback"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_request_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="requestCode"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_launcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="launcher"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
+                <RadioGroup
                     android:id="@+id/rgb_player"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -258,8 +289,8 @@
                         android:id="@+id/rb_system"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系统语言"
                         android:checked="true"
+                        android:text="系统语言"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 
@@ -373,8 +404,8 @@
                     android:id="@+id/check_display_camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="显示拍照"
                     android:checked="true"
+                    android:text="显示拍照"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
@@ -391,8 +422,8 @@
                     android:id="@+id/check_time_axis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="显示时间轴"
                     android:checked="true"
+                    android:text="显示时间轴"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 

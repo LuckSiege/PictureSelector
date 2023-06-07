@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +20,7 @@ import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnExternalPreviewListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
@@ -46,7 +49,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbNumNewStyle: RadioButton
     private lateinit var rbDefaultWindowAnim: RadioButton
     private lateinit var rbWindowUpAnim: RadioButton
-
+    private lateinit var rbCallback: RadioButton
+    private lateinit var rbLauncher: RadioButton
+    private lateinit var rbRequestCode: RadioButton
+    private lateinit var launcherResult: ActivityResultLauncher<Intent>
     private var selectorMode: SelectorMode = SelectorMode.ALL
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
@@ -85,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         val checkDisplayCamera = findViewById<CheckBox>(R.id.check_display_camera)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
         val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
+        launcherResult = createActivityResultLauncher()
         minus.setOnClickListener {
             if (maxSelectNum > 1) {
                 maxSelectNum--
@@ -180,6 +187,10 @@ class MainActivity : AppCompatActivity() {
         rbDefaultPlayer = findViewById(R.id.rb_default_player)
         rbExoPlayer = findViewById(R.id.rb_exo_player)
         rbIjkPlayer = findViewById(R.id.rb_ijk_player)
+
+        rbCallback = findViewById(R.id.rb_callback)
+        rbLauncher = findViewById(R.id.rb_launcher)
+        rbRequestCode = findViewById(R.id.rb_request_code)
 
         rbDefaultWindowAnim = findViewById(R.id.rb_default_window_anim)
         rbWindowUpAnim = findViewById(R.id.rb_window_up_anim)
@@ -392,19 +403,62 @@ class MainActivity : AppCompatActivity() {
                         gallery.isAutoPlay(checkAutoVideo.isChecked)
                         gallery.isLoopAutoVideoPlay(checkLoopVideo.isChecked)
                         gallery.isVideoPauseResumePlay(checkPauseVideo.isChecked)
-                        gallery.forResult(object : OnResultCallbackListener {
-                            override fun onResult(result: List<LocalMedia>) {
-                                showDisplayResult(result)
+                        when {
+                            rbCallback.isChecked -> {
+                                gallery.forResult(getResultCallbackListener)
                             }
-
-                            override fun onCancel() {
-                                SelectorLogUtils.info("onCancel")
+                            rbLauncher.isChecked -> {
+                                gallery.forResult(launcherResult)
                             }
-                        })
+                            rbRequestCode.isChecked -> {
+                                gallery.forResult(SelectorConstant.CHOOSE_REQUEST)
+                            }
+                        }
                     }
                 }
             }
         })
+    }
+
+    private val getResultCallbackListener = object : OnResultCallbackListener {
+        override fun onResult(result: List<LocalMedia>) {
+            showDisplayResult(result)
+        }
+
+        override fun onCancel() {
+            SelectorLogUtils.info("onCancel")
+        }
+    }
+
+    private fun createActivityResultLauncher(): ActivityResultLauncher<Intent> {
+        return registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val resultCode = result.resultCode
+            if (resultCode == RESULT_OK) {
+                showDisplayResult(PictureSelector.obtainSelectResults(result.data))
+            } else if (resultCode == RESULT_CANCELED) {
+                if (rbLauncher.isChecked) {
+                    SelectorLogUtils.info("Launcher onCancel")
+                }
+            }
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SelectorConstant.CHOOSE_REQUEST) {
+                showDisplayResult(PictureSelector.obtainSelectResults(data))
+            } else if (requestCode == SelectorConstant.REQUEST_CAMERA) {
+                showDisplayResult(PictureSelector.obtainSelectResults(data))
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            if (rbRequestCode.isChecked) {
+                SelectorLogUtils.info("Activity Result onCancel")
+            }
+        }
     }
 
     /**

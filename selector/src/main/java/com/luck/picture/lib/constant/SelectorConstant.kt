@@ -14,7 +14,7 @@ object SelectorConstant {
     const val DEFAULT_GRID_ITEM_COUNT = 4
 
     const val DEFAULT_MAX_SELECT_NUM = 9
-
+    const val CHOOSE_REQUEST = 188
     const val REQUEST_CAMERA = 10000
     const val REQUEST_CROP = 10001
     const val REQUEST_EDITOR_CROP = 10002
