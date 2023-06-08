@@ -33,7 +33,6 @@ import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.magical.RecycleItemViewParams
-import com.luck.picture.lib.media.PictureMediaScannerConnection
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
@@ -828,21 +827,20 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         } else {
             uri.path
         }
-        PictureMediaScannerConnection(context, if (isContent) realPath else null,
-            object : ScanListener {
-                override fun onScanFinish() {
-                    viewModel.viewModelScope.launch {
-                        val media = if (isContent) {
-                            MediaUtils.getAssignPathMedia(context, realPath!!)
-                        } else {
-                            MediaUtils.getAssignFileMedia(context, realPath!!)
-                        }
-                        onCheckDuplicateMedia(media)
-                        onMergeCameraAlbum(media)
-                        onMergeCameraMedia(media)
+        viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
+            override fun onScanFinish() {
+                viewModel.viewModelScope.launch {
+                    val media = if (isContent) {
+                        MediaUtils.getAssignPathMedia(context, realPath!!)
+                    } else {
+                        MediaUtils.getAssignFileMedia(context, realPath!!)
                     }
+                    onCheckDuplicateMedia(media)
+                    onMergeCameraAlbum(media)
+                    onMergeCameraMedia(media)
                 }
-            })
+            }
+        })
     }
 
     /**

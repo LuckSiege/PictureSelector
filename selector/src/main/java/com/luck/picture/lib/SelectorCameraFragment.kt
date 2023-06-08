@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
-import com.luck.picture.lib.media.PictureMediaScannerConnection
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
@@ -91,23 +90,22 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
         } else {
             uri.path
         }
-        PictureMediaScannerConnection(context, if (isContent) realPath else null,
-            object : ScanListener {
-                override fun onScanFinish() {
-                    viewModel.viewModelScope.launch {
-                        val media = if (isContent) {
-                            MediaUtils.getAssignPathMedia(context, realPath!!)
-                        } else {
-                            MediaUtils.getAssignFileMedia(context, realPath!!)
-                        }
-                        if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                            handleSelectResult()
-                        } else {
-                            onBackPressed()
-                        }
+        viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
+            override fun onScanFinish() {
+                viewModel.viewModelScope.launch {
+                    val media = if (isContent) {
+                        MediaUtils.getAssignPathMedia(context, realPath!!)
+                    } else {
+                        MediaUtils.getAssignFileMedia(context, realPath!!)
+                    }
+                    if (confirmSelect(media, false) == SelectedState.SUCCESS) {
+                        handleSelectResult()
+                    } else {
+                        onBackPressed()
                     }
                 }
-            })
+            }
+        })
     }
 
 

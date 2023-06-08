@@ -12,6 +12,8 @@ import com.luck.picture.lib.entity.LocalMediaAlbum
 import com.luck.picture.lib.entity.PreviewDataWrap
 import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.loader.impl.MediaPagingLoaderImpl
+import com.luck.picture.lib.media.PictureMediaScannerConnection
+import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.provider.SelectorProviders
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
@@ -80,6 +82,16 @@ class SelectorViewModel(application: Application) : AndroidViewModel(application
     private val _albums = MutableLiveData<MutableList<LocalMediaAlbum>>()
     val albumLiveData: LiveData<MutableList<LocalMediaAlbum>> get() = _albums
 
+    /**
+     * Refresh System Album
+     */
+    fun scanFile(path: String?, l: ScanListener?) {
+        PictureMediaScannerConnection(getApplication(), path, object : ScanListener {
+            override fun onScanFinish() {
+                l?.onScanFinish()
+            }
+        })
+    }
 
     /**
      * Query local album list [LocalMediaAlbum]

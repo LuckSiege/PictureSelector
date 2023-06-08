@@ -14,7 +14,6 @@ import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.dialog.PictureCommonDialog
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnLongClickListener
-import com.luck.picture.lib.media.PictureMediaScannerConnection
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils
@@ -127,7 +126,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
                         if (TextUtils.isEmpty(result)) {
                             ToastUtils.showMsg(context, getString(R.string.ps_save_error))
                         } else {
-                            PictureMediaScannerConnection(context, result, null)
+                            viewModel.scanFile(result, null)
                             ToastUtils.showMsg(
                                 context, "${getString(R.string.ps_save_success)}\n$result"
                             )
