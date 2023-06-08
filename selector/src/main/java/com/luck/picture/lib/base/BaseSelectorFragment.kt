@@ -431,20 +431,31 @@ abstract class BaseSelectorFragment : Fragment() {
             outputUri = MediaUtils.parUri(context, outputFile)
             viewModel.outputUri = Uri.fromFile(outputFile)
         }
-        val imageCaptureComponent = viewModel.config.registry.get(ImageCaptureComponent::class.java)
-        if (imageCaptureComponent.isAssignableFrom(ImageCaptureComponent::class.java)) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(context.packageManager) != null) {
+        val customCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+        if (customCameraListener != null) {
+            customCameraListener.onCamera(
+                this,
+                SelectorMode.IMAGE,
+                outputUri,
+                SelectorConstant.REQUEST_CAMERA
+            )
+        } else {
+            val imageCaptureComponent =
+                viewModel.config.registry.get(ImageCaptureComponent::class.java)
+            if (imageCaptureComponent.isAssignableFrom(ImageCaptureComponent::class.java)) {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                }
+            } else {
+                val imageCaptureActivity = viewModel.factory.create(imageCaptureComponent)
+                val intent = Intent(context, imageCaptureActivity::class.java)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
                 startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
                 ForegroundService.startService(context, viewModel.config.isForegroundService)
             }
-        } else {
-            val imageCaptureActivity = viewModel.factory.create(imageCaptureComponent)
-            val intent = Intent(context, imageCaptureActivity::class.java)
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-            startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-            ForegroundService.startService(context, viewModel.config.isForegroundService)
         }
     }
 
@@ -468,21 +479,32 @@ abstract class BaseSelectorFragment : Fragment() {
             outputUri = MediaUtils.parUri(context, outputFile)
             viewModel.outputUri = Uri.fromFile(outputFile)
         }
-        val videoCaptureComponent = viewModel.config.registry.get(VideoCaptureComponent::class.java)
-        if (videoCaptureComponent.isAssignableFrom(VideoCaptureComponent::class.java)) {
-            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-            if (intent.resolveActivity(context.packageManager) != null) {
+        val customCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+        if (customCameraListener != null) {
+            customCameraListener.onCamera(
+                this,
+                SelectorMode.VIDEO,
+                outputUri,
+                SelectorConstant.REQUEST_CAMERA
+            )
+        } else {
+            val videoCaptureComponent =
+                viewModel.config.registry.get(VideoCaptureComponent::class.java)
+            if (videoCaptureComponent.isAssignableFrom(VideoCaptureComponent::class.java)) {
+                val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
+                    intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
+                    startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
+                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                }
+            } else {
+                val videoCaptureActivity = viewModel.factory.create(videoCaptureComponent)
+                val intent = Intent(context, videoCaptureActivity::class.java)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
                 startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
                 ForegroundService.startService(context, viewModel.config.isForegroundService)
             }
-        } else {
-            val videoCaptureActivity = viewModel.factory.create(videoCaptureComponent)
-            val intent = Intent(context, videoCaptureActivity::class.java)
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-            startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-            ForegroundService.startService(context, viewModel.config.isForegroundService)
         }
     }
 

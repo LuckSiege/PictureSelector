@@ -117,6 +117,14 @@ class SelectionCameraModel constructor(
     }
 
     /**
+     * Custom camera callback listening
+     */
+    fun setOnCustomCameraListener(l: OnCustomCameraListener?): SelectionCameraModel {
+        this.config.mListenerInfo.onCustomCameraListener = l
+        return this
+    }
+
+    /**
      * Use custom file name
      */
     fun setOnApplyFileNameListener(l: OnApplyFileNameListener?): SelectionCameraModel {

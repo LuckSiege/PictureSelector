@@ -3,6 +3,7 @@ package com.luck.pictureselector
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.bumptech.glide.Glide
+import com.luck.lib.camerax.SimpleCameraX
 import com.luck.picture.lib.SelectorNumberMainFragment
 import com.luck.picture.lib.SelectorNumberPreviewFragment
 import com.luck.picture.lib.adapter.PreviewVideoHolder
@@ -22,6 +25,7 @@ import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnCustomCameraListener
 import com.luck.picture.lib.interfaces.OnExternalPreviewListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.language.Language
@@ -302,18 +306,21 @@ class MainActivity : AppCompatActivity() {
                             })
                     }
                     checkOnlyCamera.isChecked -> {
-                        PictureSelector.create(this@MainActivity)
+                        val onlyCamera = PictureSelector.create(this@MainActivity)
                             .openCamera(selectorMode)
-                            .setAllOfCameraMode(SelectorMode.IMAGE)
-                            .forResult(object : OnResultCallbackListener {
-                                override fun onResult(result: List<LocalMedia>) {
-                                    showDisplayResult(result)
-                                }
+                        onlyCamera.setAllOfCameraMode(SelectorMode.IMAGE)
+                        if (checkCustomCamera.isChecked) {
+                            onlyCamera.registry(CustomCameraActivity::class.java)
+                        }
+                        onlyCamera.forResult(object : OnResultCallbackListener {
+                            override fun onResult(result: List<LocalMedia>) {
+                                showDisplayResult(result)
+                            }
 
-                                override fun onCancel() {
-                                    SelectorLogUtils.info("onCancel")
-                                }
-                            })
+                            override fun onCancel() {
+                                SelectorLogUtils.info("onCancel")
+                            }
+                        })
                     }
                     else -> {
                         val uiStyle = SelectorStyle()
@@ -422,6 +429,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private val getCustomCameraListener = object : OnCustomCameraListener {
+        override fun onCamera(
+            fragment: Fragment,
+            type: SelectorMode,
+            outputUri: Uri,
+            requestCode: Int
+        ) {
+            val camera = SimpleCameraX.of()
+            camera.isAutoRotation(true)
+            camera.setCameraMode(0)
+            camera.setVideoFrameRate(25)
+            camera.setVideoBitRate(3 * 1024 * 1024)
+            camera.isDisplayRecordChangeTime(true)
+            camera.setImageEngine { context, url, imageView ->
+                Glide.with(context).load(url).into(imageView)
+            }
+            camera.start(fragment.requireActivity(), fragment, requestCode)
+        }
     }
 
     private val getResultCallbackListener = object : OnResultCallbackListener {
