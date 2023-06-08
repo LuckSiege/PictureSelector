@@ -253,26 +253,27 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                     dismissLoading()
                 }
-            }
-            if (viewModel.config.isActivityResult) {
-                requireActivity().intent?.apply {
-                    putExtra(SelectorConstant.KEY_EXTRA_RESULT, selectResult as Serializable)
-                    requireActivity().setResult(Activity.RESULT_OK, this)
-                }
-            } else {
-                viewModel.config.mListenerInfo.onResultCallbackListener?.onResult(selectResult)
-            }
-            if (!isStateSaved) {
-                if (isNormalDefaultEnter()) {
-                    requireActivity().finish()
+
+                if (viewModel.config.isActivityResult) {
+                    requireActivity().intent?.apply {
+                        putExtra(SelectorConstant.KEY_EXTRA_RESULT, selectResult as Serializable)
+                        requireActivity().setResult(Activity.RESULT_OK, this)
+                    }
                 } else {
-                    requireActivity().supportFragmentManager.fragments.forEach { _ ->
-                        requireActivity().supportFragmentManager.popBackStack()
+                    viewModel.config.mListenerInfo.onResultCallbackListener?.onResult(selectResult)
+                }
+                if (!isStateSaved) {
+                    if (isNormalDefaultEnter()) {
+                        requireActivity().finish()
+                    } else {
+                        requireActivity().supportFragmentManager.fragments.forEach { _ ->
+                            requireActivity().supportFragmentManager.popBackStack()
+                        }
                     }
                 }
+                SelectorProviders.getInstance().destroy()
+                globalViewMode.reset()
             }
-            SelectorProviders.getInstance().destroy()
-            globalViewMode.reset()
         }
     }
 
