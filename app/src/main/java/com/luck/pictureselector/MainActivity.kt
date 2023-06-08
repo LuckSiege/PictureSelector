@@ -428,11 +428,13 @@ class MainActivity : AppCompatActivity() {
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
+                        gallery.setSelectionMode(selectionMode)
                         gallery.isPreviewZoomEffect(
                             checkPreviewEffect.isChecked,
                             checkPreviewFull.isChecked
                         )
                         gallery.isGif(checkGif.isChecked)
+                        gallery.setSelectedData(mAdapter.getData())
                         gallery.setOnRecordAudioListener(getRecordAudioListener)
                         gallery.isDisplayCamera(checkDisplayCamera.isChecked)
                         gallery.isFastSlidingSelect(checkFastSelect.isChecked)

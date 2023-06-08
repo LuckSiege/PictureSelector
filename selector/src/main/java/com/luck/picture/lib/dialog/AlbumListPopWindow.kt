@@ -71,7 +71,7 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
         rvList.adapter = mediaAlbumAdapter
     }
 
-    fun setAlbumList(albumList: MutableList<LocalMediaAlbum>) {
+    open fun setAlbumList(albumList: MutableList<LocalMediaAlbum>) {
         mediaAlbumAdapter.setAlbumList(albumList)
         val windowMaxHeight = (DensityUtil.getScreenHeight(rvList.context) * 0.6).toInt()
         val layoutParams = rvList.layoutParams
@@ -91,7 +91,7 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
         this.mediaAlbumAdapter.setOnItemClickListener(listener)
     }
 
-    fun notifyChangedSelectTag(result: MutableList<LocalMedia>) {
+    open fun notifyChangedSelectTag(result: MutableList<LocalMedia>) {
         val albumList = mediaAlbumAdapter.getAlbumList()
         for (i in albumList.indices) {
             val mediaAlbum = albumList[i]
