@@ -335,6 +335,9 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {
             throw NullPointerException("Please set the API # .setImageEngine(${ImageEngine::class.simpleName});")
         }
+        if (MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {
+            config.isPreviewZoomEffect = false
+        }
         config.previewWrap.source = source.toMutableList()
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
@@ -346,7 +349,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         } else {
             activity.startActivity(intent)
         }
-        if (config.isPreviewZoomEffect && !MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {
+        if (config.isPreviewZoomEffect) {
             activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in)
         } else {
             activity.overridePendingTransition(

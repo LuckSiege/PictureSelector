@@ -311,7 +311,7 @@ class MainActivity : AppCompatActivity() {
                         return false
                     }
                 })
-                preview.forPreview(position, mAdapter.getData())
+                preview.forPreviewActivity(position, mAdapter.getData())
             }
 
             override fun openPicture() {
