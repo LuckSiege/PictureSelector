@@ -24,7 +24,7 @@ object RecycleItemViewParams {
         return if (viewParams.size > position) viewParams[position] else null
     }
 
-    fun generateViewParams(viewGroup: ViewGroup, statusBarHeight: Int) {
+    fun build(viewGroup: ViewGroup, statusBarHeight: Int) {
         val views: MutableList<View?> = ArrayList()
         val childCount: Int = when (viewGroup) {
             is RecyclerView -> {

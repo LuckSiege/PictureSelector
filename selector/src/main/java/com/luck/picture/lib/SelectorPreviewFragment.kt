@@ -101,7 +101,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     private fun isHasMagicalEffect(): Boolean {
-        return !viewModel.previewWrap.isBottomPreview && viewModel.config.isPreviewZoomEffect
+        val source = viewModel.previewWrap.source
+        val media = if (source.size > viewPager.currentItem) source[viewPager.currentItem] else null
+        return !MediaUtils.hasMimeTypeOfAudio(media?.mimeType)
+                && !viewModel.previewWrap.isBottomPreview
+                && viewModel.config.isPreviewZoomEffect
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

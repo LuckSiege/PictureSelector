@@ -35,6 +35,7 @@ import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnCustomCameraListener
 import com.luck.picture.lib.interfaces.OnExternalPreviewListener
+import com.luck.picture.lib.interfaces.OnRecordAudioListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
@@ -310,7 +311,7 @@ class MainActivity : AppCompatActivity() {
                         return false
                     }
                 })
-                preview.forPreviewActivity(position, mAdapter.getData())
+                preview.forPreview(position, mAdapter.getData())
             }
 
             override fun openPicture() {
@@ -335,6 +336,7 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
+                        onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
                         onlyCamera.forResult(object : OnResultCallbackListener {
                             override fun onResult(result: List<LocalMedia>) {
                                 showDisplayResult(result)
@@ -425,6 +427,7 @@ class MainActivity : AppCompatActivity() {
                             checkPreviewFull.isChecked
                         )
                         gallery.isGif(checkGif.isChecked)
+                        gallery.setOnRecordAudioListener(getRecordAudioListener)
                         gallery.isDisplayCamera(checkDisplayCamera.isChecked)
                         gallery.isFastSlidingSelect(checkFastSelect.isChecked)
                         gallery.isDisplayTimeAxis(checkTimeAxis.isChecked)
@@ -601,26 +604,6 @@ class MainActivity : AppCompatActivity() {
         mDragListener.dragState(false)
     }
 
-    private val getCustomCameraListener = object : OnCustomCameraListener {
-        override fun onCamera(
-            fragment: Fragment,
-            type: SelectorMode,
-            outputUri: Uri,
-            requestCode: Int
-        ) {
-            val camera = SimpleCameraX.of()
-            camera.isAutoRotation(true)
-            camera.setCameraMode(0)
-            camera.setVideoFrameRate(25)
-            camera.setVideoBitRate(3 * 1024 * 1024)
-            camera.isDisplayRecordChangeTime(true)
-            camera.setImageEngine { context, url, imageView ->
-                Glide.with(context).load(url).into(imageView)
-            }
-            camera.start(fragment.requireActivity(), fragment, requestCode)
-        }
-    }
-
     private val mDragListener: DragListener = object : DragListener {
         override fun deleteState(isDelete: Boolean) {
             if (isDelete) {
@@ -660,6 +643,51 @@ class MainActivity : AppCompatActivity() {
                     tvDeleteText.animate().alpha(0F).setDuration(120).start()
                 }
             }
+        }
+    }
+
+    private val getCustomCameraListener = object : OnCustomCameraListener {
+        override fun onCamera(
+            fragment: Fragment,
+            type: SelectorMode,
+            outputUri: Uri,
+            requestCode: Int
+        ) {
+            val camera = SimpleCameraX.of()
+            camera.isAutoRotation(true)
+            camera.setCameraMode(0)
+            camera.setVideoFrameRate(25)
+            camera.setVideoBitRate(3 * 1024 * 1024)
+            camera.isDisplayRecordChangeTime(true)
+            camera.setImageEngine { context, url, imageView ->
+                Glide.with(context).load(url).into(imageView)
+            }
+            camera.start(fragment.requireActivity(), fragment, requestCode)
+        }
+    }
+
+    private val getRecordAudioListener = object : OnRecordAudioListener {
+
+        override fun onRecordAudio(fragment: Fragment, requestCode: Int) {
+            startRecordSoundAction(fragment, requestCode)
+        }
+    }
+
+    /**
+     * 启动录音意图
+     *
+     * @param fragment
+     * @param requestCode
+     */
+    private fun startRecordSoundAction(fragment: Fragment, requestCode: Int) {
+        val recordAudioIntent = Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION)
+        if (recordAudioIntent.resolveActivity(fragment.requireActivity().packageManager) != null) {
+            fragment.startActivityForResult(recordAudioIntent, requestCode)
+        } else {
+            ToastUtils.showMsg(
+                fragment.requireContext(),
+                "The system is missing a recording component"
+            )
         }
     }
 
@@ -717,24 +745,6 @@ class MainActivity : AppCompatActivity() {
             mAdapter.getData().clear()
             mAdapter.getData().addAll(result)
             mAdapter.notifyItemRangeInserted(0, result.size)
-        }
-    }
-
-    /**
-     * 启动录音意图
-     *
-     * @param fragment
-     * @param requestCode
-     */
-    private fun startRecordSoundAction(fragment: Fragment, requestCode: Int) {
-        val recordAudioIntent = Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION)
-        if (recordAudioIntent.resolveActivity(fragment.requireActivity().packageManager) != null) {
-            fragment.startActivityForResult(recordAudioIntent, requestCode)
-        } else {
-            ToastUtils.showMsg(
-                fragment.requireContext(),
-                "The system is missing a recording component"
-            )
         }
     }
 }

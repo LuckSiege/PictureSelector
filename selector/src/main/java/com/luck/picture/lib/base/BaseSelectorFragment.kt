@@ -282,7 +282,7 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun checkCompleteValidity(): Boolean {
         val selectResult = globalViewMode.selectResult
         if (viewModel.config.mListenerInfo.onConfirmListener?.onConfirm(
-                viewModel.config,
+                requireContext(),
                 selectResult
             ) == true
         ) {

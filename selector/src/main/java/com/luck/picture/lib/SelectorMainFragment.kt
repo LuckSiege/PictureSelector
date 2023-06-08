@@ -32,7 +32,7 @@ import com.luck.picture.lib.entity.PreviewDataWrap
 import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
-import com.luck.picture.lib.magical.RecycleItemViewParams.generateViewParams
+import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.media.PictureMediaScannerConnection
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
@@ -544,7 +544,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 if (viewModel.config.isPreviewZoomEffect) {
                     val isFullScreen = viewModel.config.isPreviewFullScreenMode
                     val statusBarHeight = getStatusBarHeight(requireContext())
-                    generateViewParams(mRecycler, if (isFullScreen) 0 else statusBarHeight)
+                    RecycleItemViewParams.build(mRecycler, if (isFullScreen) 0 else statusBarHeight)
                 }
                 onStartPreview(position, false, mAdapter.getData())
             }

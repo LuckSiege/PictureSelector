@@ -206,6 +206,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Confirm Filter
+     */
+    fun setOnConfirmListener(l: OnConfirmListener?): SelectionMainModel {
+        this.config.mListenerInfo.onConfirmListener = l
+        return this
+    }
+
+    /**
      * Filter out multimedia data that does not comply with rules
      */
     fun setOnQueryFilterListener(l: OnQueryFilterListener?): SelectionMainModel {
@@ -558,7 +566,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         if (this.config.selectorMode != SelectorMode.AUDIO) {
             this.config.isPreviewZoomEffect = isPreviewEffect
             if (isPreviewEffect) {
-                RecycleItemViewParams.generateViewParams(
+                RecycleItemViewParams.build(
                     listView,
                     if (isFullScreen) 0 else getStatusBarHeight(listView.context)
                 )

@@ -1,6 +1,6 @@
 package com.luck.picture.lib.interfaces
 
-import com.luck.picture.lib.config.SelectorConfig
+import android.content.Context
 import com.luck.picture.lib.entity.LocalMedia
 
 /**
@@ -12,8 +12,9 @@ interface OnConfirmListener {
     /**
      * You need to filter out the content that does not meet the selection criteria
      *
+     * @param context
      * @param result select result
      * @return the boolean result
      */
-    fun onConfirm(config: SelectorConfig, result: MutableList<LocalMedia>): Boolean
+    fun onConfirm(context: Context, result: MutableList<LocalMedia>): Boolean
 }

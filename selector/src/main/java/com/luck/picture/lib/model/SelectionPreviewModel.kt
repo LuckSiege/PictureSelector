@@ -28,6 +28,7 @@ import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil
+import com.luck.picture.lib.utils.MediaUtils
 
 /**
  * @author：luck
@@ -209,15 +210,13 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         isFullScreen: Boolean,
         listView: ViewGroup
     ): SelectionPreviewModel {
-        if (this.config.selectorMode != SelectorMode.AUDIO) {
-            this.config.isPreviewZoomEffect = isPreviewEffect
-            this.config.isPreviewFullScreenMode = isFullScreen
-            if (isPreviewEffect) {
-                RecycleItemViewParams.generateViewParams(
-                    listView,
-                    if (isFullScreen) 0 else DensityUtil.getStatusBarHeight(listView.context)
-                )
-            }
+        this.config.isPreviewFullScreenMode = isFullScreen
+        this.config.isPreviewZoomEffect = isPreviewEffect
+        if (isPreviewEffect) {
+            RecycleItemViewParams.build(
+                listView,
+                if (isFullScreen) 0 else DensityUtil.getStatusBarHeight(listView.context)
+            )
         }
         return this
     }
@@ -330,6 +329,9 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (source.isEmpty()) {
             throw NullPointerException("Preview source not null")
         }
+        if (position >= source.size) {
+            throw NullPointerException("#position# cannot be greater than #source.size#")
+        }
         if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {
             throw NullPointerException("Please set the API # .setImageEngine(${ImageEngine::class.simpleName});")
         }
@@ -344,7 +346,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         } else {
             activity.startActivity(intent)
         }
-        if (config.isPreviewZoomEffect) {
+        if (config.isPreviewZoomEffect && !MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {
             activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in)
         } else {
             activity.overridePendingTransition(
