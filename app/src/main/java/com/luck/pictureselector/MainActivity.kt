@@ -33,10 +33,7 @@ import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnCustomCameraListener
-import com.luck.picture.lib.interfaces.OnExternalPreviewListener
-import com.luck.picture.lib.interfaces.OnRecordAudioListener
-import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
@@ -317,17 +314,22 @@ class MainActivity : AppCompatActivity() {
             override fun openPicture() {
                 when {
                     checkSystem.isChecked -> {
-                        PictureSelector.create(this@MainActivity)
+                        val systemGallery = PictureSelector.create(this@MainActivity)
                             .openSystemGallery(selectorMode)
-                            .forSystemResult(object : OnResultCallbackListener {
-                                override fun onResult(result: List<LocalMedia>) {
-                                    showDisplayResult(result)
-                                }
-
-                                override fun onCancel() {
-                                    SelectorLogUtils.info("onCancel")
-                                }
-                            })
+                        systemGallery.setSelectionMode(selectionMode)
+                        systemGallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
+                        systemGallery.setMediaConverterEngine(MediaConverter.create())
+                        when {
+                            rbCallback.isChecked -> {
+                                systemGallery.forResult(getResultCallbackListener, true)
+                            }
+                            rbLauncher.isChecked -> {
+                                systemGallery.forResult(launcherResult)
+                            }
+                            rbRequestCode.isChecked -> {
+                                systemGallery.forResult(SelectorConstant.CHOOSE_REQUEST)
+                            }
+                        }
                     }
                     checkOnlyCamera.isChecked -> {
                         val onlyCamera = PictureSelector.create(this@MainActivity)
@@ -336,10 +338,12 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
+                        onlyCamera.setMediaConverterEngine(MediaConverter.create())
+                        onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
                         when {
                             rbCallback.isChecked -> {
-                                onlyCamera.forResult(getResultCallbackListener,true)
+                                onlyCamera.forResult(getResultCallbackListener, true)
                             }
                             rbLauncher.isChecked -> {
                                 onlyCamera.forResult(launcherResult)

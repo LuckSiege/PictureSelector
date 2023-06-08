@@ -66,6 +66,13 @@
 
                 <include layout="@layout/layout_video_number" />
 
+                <CheckBox
+                    android:id="@+id/check_system"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="系统相册"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
 
                 <RadioGroup
                     android:id="@+id/rgb_type"
@@ -465,14 +472,6 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="不可选显示蒙层"
-                    android:textColor="@color/ps_color_black"
-                    android:textSize="14sp" />
-
-                <CheckBox
-                    android:id="@+id/check_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="系统相册"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 

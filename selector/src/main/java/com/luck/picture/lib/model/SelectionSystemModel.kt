@@ -6,7 +6,6 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.R
-import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.SelectorSystemFragment
 import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.config.SelectionMode
@@ -19,6 +18,7 @@ import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.registry.Registry
 
 /**
  * @author：luck
@@ -117,14 +117,6 @@ class SelectionSystemModel constructor(
     }
 
     /**
-     * Select Filter
-     */
-    fun setOnSelectFilterListener(l: OnSelectFilterListener?): SelectionSystemModel {
-        this.config.mListenerInfo.onSelectFilterListener = l
-        return this
-    }
-
-    /**
      * Custom loading
      */
     fun setOnCustomLoadingListener(loading: OnCustomLoadingListener?): SelectionSystemModel {
@@ -152,85 +144,87 @@ class SelectionSystemModel constructor(
     /**
      * Starting the system graph library using the [OnResultCallbackListener] method
      */
-    fun forSystemResult(call: OnResultCallbackListener?) {
-        val activity = selector.getActivity()
-            ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
-        var fragmentManager: FragmentManager? = null
-        if (activity is FragmentActivity) {
-            fragmentManager = activity.supportFragmentManager
-        }
-        if (fragmentManager == null) {
-            throw NullPointerException("FragmentManager cannot be null")
-        }
-        if (call != null) {
-            config.mListenerInfo.onResultCallbackListener = call
-        } else {
-            throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
-        }
-        config.systemGallery = true
-        val instance = ClassFactory.NewInstance()
-            .create(this.config.registry.get(SelectorSystemFragment::class.java))
-        val fragment = fragmentManager.findFragmentByTag(instance.getFragmentTag())
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
-        }
-        FragmentInjectManager.injectSystemRoomFragment(
-            activity as FragmentActivity,
-            instance.getFragmentTag(),
-            instance
-        )
+    fun forResult(call: OnResultCallbackListener?) {
+        forResult(call, SelectorConstant.UNKNOWN, null, false)
     }
 
     /**
      * Starting the system graph library using the [OnResultCallbackListener] method
+     * @param attachActivity [SelectorSystemFragment] attach to Activity
      */
-    fun forSystemResultActivity(call: OnResultCallbackListener) {
-        forSystemResultActivity(call, SelectorConstant.UNKNOWN, null)
+    fun forResult(call: OnResultCallbackListener?, attachActivity: Boolean) {
+        forResult(call, SelectorConstant.UNKNOWN, null, attachActivity)
     }
 
     /**
      * Starting the System Library Using ActivityResult Method
      */
-    fun forSystemResultActivity(requestCode: Int) {
-        forSystemResultActivity(null, requestCode, null)
+    fun forResult(requestCode: Int) {
+        forResult(null, requestCode, null, true)
     }
 
     /**
      * Launch the system graph library using ActivityResultLauncher method
      */
-    fun forSystemResultActivity(launcher: ActivityResultLauncher<Intent>) {
-        forSystemResultActivity(null, SelectorConstant.UNKNOWN, launcher)
+    fun forResult(launcher: ActivityResultLauncher<Intent>) {
+        forResult(null, SelectorConstant.UNKNOWN, launcher, true)
     }
 
-    private fun forSystemResultActivity(
+    private fun forResult(
         call: OnResultCallbackListener?,
         requestCode: Int,
-        launcher: ActivityResultLauncher<Intent>?
+        launcher: ActivityResultLauncher<Intent>?,
+        attachActivity: Boolean
     ) {
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
         config.systemGallery = true
-        val intent = Intent(activity, SelectorTransparentActivity::class.java)
-        if (call != null) {
-            config.mListenerInfo.onResultCallbackListener = call
-            activity.startActivity(intent)
-        } else if (launcher != null) {
-            config.isActivityResult = true
-            launcher.launch(intent)
-        } else if (requestCode != SelectorConstant.UNKNOWN) {
-            config.isActivityResult = true
-            val fragment = selector.getFragment()
-            if (fragment != null) {
-                fragment.startActivityForResult(intent, requestCode)
+        if (attachActivity) {
+            val intent = Intent(activity, SelectorTransparentActivity::class.java)
+            if (call != null) {
+                config.mListenerInfo.onResultCallbackListener = call
+                activity.startActivity(intent)
+            } else if (launcher != null) {
+                config.isActivityResult = true
+                launcher.launch(intent)
+            } else if (requestCode != SelectorConstant.UNKNOWN) {
+                config.isActivityResult = true
+                val fragment = selector.getFragment()
+                if (fragment != null) {
+                    fragment.startActivityForResult(intent, requestCode)
+                } else {
+                    activity.startActivityForResult(intent, requestCode)
+                }
             } else {
-                activity.startActivityForResult(intent, requestCode)
+                throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
             }
+            activity.overridePendingTransition(
+                config.selectorStyle.getWindowAnimation().getEnterAnim(), R.anim.ps_anim_fade_in
+            )
         } else {
-            throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
+            var fragmentManager: FragmentManager? = null
+            if (activity is FragmentActivity) {
+                fragmentManager = activity.supportFragmentManager
+            }
+            if (fragmentManager == null) {
+                throw NullPointerException("FragmentManager cannot be null")
+            }
+            if (call != null) {
+                config.mListenerInfo.onResultCallbackListener = call
+            } else {
+                throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
+            }
+            val instance = ClassFactory.NewInstance()
+                .create(this.config.registry.get(SelectorSystemFragment::class.java))
+            val fragment = fragmentManager.findFragmentByTag(instance.getFragmentTag())
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
+            }
+            FragmentInjectManager.injectSystemRoomFragment(
+                activity as FragmentActivity,
+                instance.getFragmentTag(),
+                instance
+            )
         }
-        activity.overridePendingTransition(
-            config.selectorStyle.getWindowAnimation().getEnterAnim(),
-            R.anim.ps_anim_fade_in
-        )
     }
 }
