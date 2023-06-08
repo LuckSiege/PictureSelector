@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         val checkOnlyCamera = findViewById<CheckBox>(R.id.check_only_camera)
         val checkMergeTotal = findViewById<CheckBox>(R.id.check_merge_total)
         val checkEnabledMask = findViewById<CheckBox>(R.id.check_enabled_mask)
+        val checkCustomCamera = findViewById<CheckBox>(R.id.check_custom_camera)
         val checkPreviewImage = findViewById<CheckBox>(R.id.check_preview_image)
         val checkPreviewVideo = findViewById<CheckBox>(R.id.check_preview_video)
         val checkPreviewAudio = findViewById<CheckBox>(R.id.check_preview_audio)
@@ -381,6 +382,9 @@ class MainActivity : AppCompatActivity() {
                             else -> {
                                 gallery.registry(PreviewVideoHolder::class.java)
                             }
+                        }
+                        if (checkCustomCamera.isChecked) {
+                            gallery.registry(CustomCameraActivity::class.java)
                         }
                         gallery.setLanguage(language)
                         gallery.setImageEngine(GlideEngine.create())
