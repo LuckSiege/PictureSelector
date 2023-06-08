@@ -527,19 +527,13 @@ class MainActivity : AppCompatActivity() {
                         }
                     })
                 }
-                val targetDy: Int = tvDeleteText.top - viewHolder.itemView.bottom
-                if (dy >= targetDy) {
+                if (dy >= tvDeleteText.top - viewHolder.itemView.bottom) {
                     mDragListener.deleteState(true)
                     if (isHasLiftDelete) {
                         viewHolder.itemView.visibility = View.INVISIBLE
                         mAdapter.delete(viewHolder.absoluteAdapterPosition)
-                        resetState()
-                        return
                     }
                 } else {
-                    if (View.INVISIBLE == viewHolder.itemView.visibility) {
-                        mDragListener.dragState(false)
-                    }
                     mDragListener.deleteState(false)
                 }
                 super.onChildDraw(
@@ -659,17 +653,11 @@ class MainActivity : AppCompatActivity() {
         override fun dragState(isStart: Boolean) {
             if (isStart) {
                 if (tvDeleteText.alpha == 0f) {
-                    val alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 0f, 1f)
-                    alphaAnimator.interpolator = LinearInterpolator()
-                    alphaAnimator.duration = 120
-                    alphaAnimator.start()
+                    tvDeleteText.animate().alpha(1F).setDuration(120).start()
                 }
             } else {
                 if (tvDeleteText.alpha == 1f) {
-                    val alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 1f, 0f)
-                    alphaAnimator.interpolator = LinearInterpolator()
-                    alphaAnimator.duration = 120
-                    alphaAnimator.start()
+                    tvDeleteText.animate().alpha(0F).setDuration(120).start()
                 }
             }
         }
