@@ -1,18 +1,26 @@
 package com.luck.pictureselector
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
@@ -38,6 +46,8 @@ import com.luck.pictureselector.adapter.GridImageAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewImageHolder
+import com.luck.pictureselector.listener.DragListener
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -56,11 +66,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbCallback: RadioButton
     private lateinit var rbLauncher: RadioButton
     private lateinit var rbRequestCode: RadioButton
+    private lateinit var tvDeleteText: TextView
     private lateinit var launcherResult: ActivityResultLauncher<Intent>
     private var selectorMode: SelectorMode = SelectorMode.ALL
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
     private var language: Language = Language.SYSTEM_LANGUAGE
+    private var needScaleBig = true
+    private var needScaleSmall = false
+    private var isHasLiftDelete = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -200,6 +214,8 @@ class MainActivity : AppCompatActivity() {
         rbDefaultWindowAnim = findViewById(R.id.rb_default_window_anim)
         rbWindowUpAnim = findViewById(R.id.rb_window_up_anim)
 
+        tvDeleteText = findViewById(R.id.tv_delete_text)
+
         findViewById<RadioGroup>(R.id.rgb_selected).setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_single -> {
@@ -232,6 +248,13 @@ class MainActivity : AppCompatActivity() {
         mAdapter = GridImageAdapter(this, mData)
         mAdapter.selectMax = maxSelectNum + maxSelectVideoNum
         mRecycler.adapter = mAdapter
+        mAdapter.setItemLongClickListener { holder, position, v ->
+            val itemViewType = holder.itemViewType
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                mItemTouchHelper.startDrag(holder)
+            }
+        }
+        mItemTouchHelper.attachToRecyclerView(mRecycler)
         mAdapter.setOnItemClickListener(object : GridImageAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int) {
                 val uiStyle = SelectorStyle()
@@ -431,6 +454,159 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+        override fun isLongPressDragEnabled(): Boolean {
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+        override fun getMovementFlags(
+            recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            val itemViewType = viewHolder.itemViewType
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                viewHolder.itemView.alpha = 0.7f
+            }
+            return makeMovementFlags(
+                ItemTouchHelper.DOWN or ItemTouchHelper.UP
+                        or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0
+            )
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            try {
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val toPosition = target.absoluteAdapterPosition
+                val itemViewType = target.itemViewType
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    if (fromPosition < toPosition) {
+                        for (i in fromPosition until toPosition) {
+                            Collections.swap(mAdapter.getData(), i, i + 1)
+                        }
+                    } else {
+                        for (i in fromPosition downTo toPosition + 1) {
+                            Collections.swap(mAdapter.getData(), i, i - 1)
+                        }
+                    }
+                    mAdapter.notifyItemMoved(fromPosition, toPosition)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return true
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dx: Float,
+            dy: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            val itemViewType = viewHolder.itemViewType
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                if (needScaleBig) {
+                    needScaleBig = false
+                    val animatorSet = AnimatorSet()
+                    animatorSet.playTogether(
+                        ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0f, 1.1f),
+                        ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0f, 1.1f)
+                    )
+                    animatorSet.duration = 50
+                    animatorSet.interpolator = LinearInterpolator()
+                    animatorSet.start()
+                    animatorSet.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            needScaleSmall = true
+                        }
+                    })
+                }
+                val targetDy: Int = tvDeleteText.top - viewHolder.itemView.bottom
+                if (dy >= targetDy) {
+                    mDragListener.deleteState(true)
+                    if (isHasLiftDelete) {
+                        viewHolder.itemView.visibility = View.INVISIBLE
+                        mAdapter.delete(viewHolder.absoluteAdapterPosition)
+                        resetState()
+                        return
+                    }
+                } else {
+                    if (View.INVISIBLE == viewHolder.itemView.visibility) {
+                        mDragListener.dragState(false)
+                    }
+                    mDragListener.deleteState(false)
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dx,
+                    dy,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        }
+
+        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+            val itemViewType = viewHolder?.itemViewType ?: GridImageAdapter.TYPE_CAMERA
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                if (ItemTouchHelper.ACTION_STATE_DRAG == actionState) {
+                    mDragListener.dragState(true)
+                }
+                super.onSelectedChanged(viewHolder, actionState)
+            }
+        }
+
+        override fun getAnimationDuration(
+            recyclerView: RecyclerView,
+            animationType: Int,
+            animateDx: Float,
+            animateDy: Float
+        ): Long {
+            isHasLiftDelete = true
+            return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy)
+        }
+
+        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+            val itemViewType = viewHolder.itemViewType
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                viewHolder.itemView.alpha = 1.0f
+                if (needScaleSmall) {
+                    needScaleSmall = false
+                    val animatorSet = AnimatorSet()
+                    animatorSet.playTogether(
+                        ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1f, 1.0f),
+                        ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1f, 1.0f)
+                    )
+                    animatorSet.interpolator = LinearInterpolator()
+                    animatorSet.duration = 50
+                    animatorSet.start()
+                    animatorSet.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            needScaleBig = true
+                        }
+                    })
+                }
+                super.clearView(recyclerView, viewHolder)
+                mAdapter.notifyItemChanged(viewHolder.absoluteAdapterPosition)
+                resetState()
+            }
+        }
+    })
+
+    private fun resetState() {
+        isHasLiftDelete = false
+        mDragListener.deleteState(false)
+        mDragListener.dragState(false)
+    }
+
     private val getCustomCameraListener = object : OnCustomCameraListener {
         override fun onCamera(
             fragment: Fragment,
@@ -448,6 +624,54 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(context).load(url).into(imageView)
             }
             camera.start(fragment.requireActivity(), fragment, requestCode)
+        }
+    }
+
+    private val mDragListener: DragListener = object : DragListener {
+        override fun deleteState(isDelete: Boolean) {
+            if (isDelete) {
+                if (!TextUtils.equals(
+                        getString(R.string.app_let_go_drag_delete),
+                        tvDeleteText.text
+                    )
+                ) {
+                    tvDeleteText.text = getString(R.string.app_let_go_drag_delete)
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        0,
+                        R.drawable.ic_dump_delete,
+                        0,
+                        0
+                    )
+                }
+            } else {
+                if (!TextUtils.equals(getString(R.string.app_drag_delete), tvDeleteText.text)) {
+                    tvDeleteText.text = getString(R.string.app_drag_delete)
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        0,
+                        R.drawable.ic_normal_delete,
+                        0,
+                        0
+                    )
+                }
+            }
+        }
+
+        override fun dragState(isStart: Boolean) {
+            if (isStart) {
+                if (tvDeleteText.alpha == 0f) {
+                    val alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 0f, 1f)
+                    alphaAnimator.interpolator = LinearInterpolator()
+                    alphaAnimator.duration = 120
+                    alphaAnimator.start()
+                }
+            } else {
+                if (tvDeleteText.alpha == 1f) {
+                    val alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 1f, 0f)
+                    alphaAnimator.interpolator = LinearInterpolator()
+                    alphaAnimator.duration = 120
+                    alphaAnimator.start()
+                }
+            }
         }
     }
 
@@ -475,7 +699,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
