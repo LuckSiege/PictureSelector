@@ -206,6 +206,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Filter out multimedia data that does not comply with rules
+     */
+    fun setOnQueryFilterListener(l: OnQueryFilterListener?): SelectionMainModel {
+        this.config.mListenerInfo.onQueryFilterListener = l
+        return this
+    }
+
+    /**
      * loop video
      *
      * @param isLoopAutoPlay
