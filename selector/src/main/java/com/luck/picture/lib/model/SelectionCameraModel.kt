@@ -224,14 +224,6 @@ class SelectionCameraModel constructor(
     }
 
     /**
-     * PictureSelector custom animation
-     */
-    fun setOnCustomAnimationListener(l: OnCustomAnimationListener?): SelectionCameraModel {
-        this.config.mListenerInfo.onCustomAnimationListener = l
-        return this
-    }
-
-    /**
      * Custom loading
      */
     fun setOnCustomLoadingListener(loading: OnCustomLoadingListener?): SelectionCameraModel {
@@ -247,13 +239,36 @@ class SelectionCameraModel constructor(
         return this
     }
 
+    /**
+     * Custom permissions
+     */
+    fun setOnPermissionsInterceptListener(l: OnPermissionsInterceptListener?): SelectionCameraModel {
+        this.config.mListenerInfo.onPermissionApplyListener = l
+        return this
+    }
+
+    /**
+     * Permission usage instructions
+     */
+    fun setOnPermissionDescriptionListener(l: OnPermissionDescriptionListener?): SelectionCameraModel {
+        this.config.mListenerInfo.onPermissionDescriptionListener = l
+        return this
+    }
+
+    /**
+     * Permission denied processing
+     */
+    fun setOnPermissionDeniedListener(l: OnPermissionDeniedListener?): SelectionCameraModel {
+        this.config.mListenerInfo.onPermissionDeniedListener = l
+        return this
+    }
 
     fun forResult(call: OnResultCallbackListener) {
         forResult(SelectorConstant.UNKNOWN, null, call, false)
     }
 
-    fun forResultActivity(call: OnResultCallbackListener) {
-        forResult(SelectorConstant.UNKNOWN, null, call, true)
+    fun forResult(call: OnResultCallbackListener, attachActivity: Boolean) {
+        forResult(SelectorConstant.UNKNOWN, null, call, attachActivity)
     }
 
     fun forResult(requestCode: Int) {
@@ -300,11 +315,10 @@ class SelectionCameraModel constructor(
             if (fragmentManager == null) {
                 throw NullPointerException("FragmentManager cannot be null")
             }
-            if (call != null) {
-                config.mListenerInfo.onResultCallbackListener = call
-            } else {
+            if (call == null) {
                 throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
             }
+            config.mListenerInfo.onResultCallbackListener = call
             val instance = ClassFactory.NewInstance()
                 .create(this.config.registry.get(SelectorCameraFragment::class.java))
             val fragment = fragmentManager.findFragmentByTag(instance.getFragmentTag())

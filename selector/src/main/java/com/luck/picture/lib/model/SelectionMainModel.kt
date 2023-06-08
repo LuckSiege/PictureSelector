@@ -658,6 +658,30 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         return this
     }
 
+    /**
+     * Custom permissions
+     */
+    fun setOnPermissionsInterceptListener(l: OnPermissionsInterceptListener?): SelectionMainModel {
+        this.config.mListenerInfo.onPermissionApplyListener = l
+        return this
+    }
+
+    /**
+     * Permission usage instructions
+     */
+    fun setOnPermissionDescriptionListener(l: OnPermissionDescriptionListener?): SelectionMainModel {
+        this.config.mListenerInfo.onPermissionDescriptionListener = l
+        return this
+    }
+
+    /**
+     * Permission denied processing
+     */
+    fun setOnPermissionDeniedListener(l: OnPermissionDeniedListener?): SelectionMainModel {
+        this.config.mListenerInfo.onPermissionDeniedListener = l
+        return this
+    }
+
     fun forResult(requestCode: Int) {
         forResult(null, requestCode, null)
     }

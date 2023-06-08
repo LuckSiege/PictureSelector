@@ -337,15 +337,17 @@ class MainActivity : AppCompatActivity() {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
-                        onlyCamera.forResult(object : OnResultCallbackListener {
-                            override fun onResult(result: List<LocalMedia>) {
-                                showDisplayResult(result)
+                        when {
+                            rbCallback.isChecked -> {
+                                onlyCamera.forResult(getResultCallbackListener,true)
                             }
-
-                            override fun onCancel() {
-                                SelectorLogUtils.info("onCancel")
+                            rbLauncher.isChecked -> {
+                                onlyCamera.forResult(launcherResult)
                             }
-                        })
+                            rbRequestCode.isChecked -> {
+                                onlyCamera.forResult(SelectorConstant.CHOOSE_REQUEST)
+                            }
+                        }
                     }
                     else -> {
                         val uiStyle = SelectorStyle()
