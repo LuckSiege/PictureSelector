@@ -1,14 +1,15 @@
 package com.luck.picture.lib.entity
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.TextUtils
-import java.io.Serializable
 
 /**
  * @author：luck
  * @date：2017-5-24 16:21
  * @describe：Media Entity
  */
-class LocalMedia : Serializable {
+class LocalMedia() : Parcelable {
     var id: Long = 0
     var bucketId: Long = 0
     var displayName: String? = null
@@ -37,6 +38,38 @@ class LocalMedia : Serializable {
     var customizeExtra: String? = null
     var videoThumbnailPath: String? = null
     var isEnabledMask: Boolean = false
+
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readLong()
+        bucketId = parcel.readLong()
+        displayName = parcel.readString()
+        bucketDisplayName = parcel.readString()
+        path = parcel.readString()
+        absolutePath = parcel.readString()
+        mimeType = parcel.readString()
+        width = parcel.readInt()
+        height = parcel.readInt()
+        cropPath = parcel.readString()
+        editorPath = parcel.readString()
+        cropWidth = parcel.readInt()
+        cropHeight = parcel.readInt()
+        cropOffsetX = parcel.readInt()
+        cropOffsetY = parcel.readInt()
+        cropAspectRatio = parcel.readFloat()
+        duration = parcel.readLong()
+        size = parcel.readLong()
+        dateAdded = parcel.readLong()
+        orientation = parcel.readInt()
+        editorData = parcel.readString()
+        sandboxPath = parcel.readString()
+        originalPath = parcel.readString()
+        compressPath = parcel.readString()
+        watermarkPath = parcel.readString()
+        customizeExtra = parcel.readString()
+        videoThumbnailPath = parcel.readString()
+        isEnabledMask = parcel.readByte() != 0.toByte()
+    }
+
     fun isCrop(): Boolean {
         return !TextUtils.isEmpty(cropPath)
     }
@@ -92,12 +125,6 @@ class LocalMedia : Serializable {
                 || TextUtils.equals(absolutePath, other.absolutePath))
     }
 
-
-
-    override fun toString(): String {
-        return "LocalMedia(id=$id, bucketId=$bucketId, displayName=$displayName, bucketDisplayName=$bucketDisplayName, path=$path, absolutePath=$absolutePath, mimeType=$mimeType, width=$width, height=$height, cropPath=$cropPath, cropWidth=$cropWidth, cropHeight=$cropHeight, cropOffsetX=$cropOffsetX, cropOffsetY=$cropOffsetY, cropAspectRatio=$cropAspectRatio, duration=$duration, size=$size, dateAdded=$dateAdded, orientation=$orientation, editorData=$editorData, sandboxPath=$sandboxPath, originalPath=$originalPath, compressPath=$compressPath, watermarkPath=$watermarkPath, customizeExtra=$customizeExtra, videoThumbnailPath=$videoThumbnailPath)"
-    }
-
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + bucketId.hashCode()
@@ -128,6 +155,51 @@ class LocalMedia : Serializable {
         result = 31 * result + (videoThumbnailPath?.hashCode() ?: 0)
         result = 31 * result + isEnabledMask.hashCode()
         return result
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeLong(bucketId)
+        parcel.writeString(displayName)
+        parcel.writeString(bucketDisplayName)
+        parcel.writeString(path)
+        parcel.writeString(absolutePath)
+        parcel.writeString(mimeType)
+        parcel.writeInt(width)
+        parcel.writeInt(height)
+        parcel.writeString(cropPath)
+        parcel.writeString(editorPath)
+        parcel.writeInt(cropWidth)
+        parcel.writeInt(cropHeight)
+        parcel.writeInt(cropOffsetX)
+        parcel.writeInt(cropOffsetY)
+        parcel.writeFloat(cropAspectRatio)
+        parcel.writeLong(duration)
+        parcel.writeLong(size)
+        parcel.writeLong(dateAdded)
+        parcel.writeInt(orientation)
+        parcel.writeString(editorData)
+        parcel.writeString(sandboxPath)
+        parcel.writeString(originalPath)
+        parcel.writeString(compressPath)
+        parcel.writeString(watermarkPath)
+        parcel.writeString(customizeExtra)
+        parcel.writeString(videoThumbnailPath)
+        parcel.writeByte(if (isEnabledMask) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<LocalMedia> {
+        override fun createFromParcel(parcel: Parcel): LocalMedia {
+            return LocalMedia(parcel)
+        }
+
+        override fun newArray(size: Int): Array<LocalMedia?> {
+            return arrayOfNulls(size)
+        }
     }
 
 

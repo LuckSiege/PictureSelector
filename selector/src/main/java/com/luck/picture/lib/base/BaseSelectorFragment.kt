@@ -256,7 +256,9 @@ abstract class BaseSelectorFragment : Fragment() {
 
                 if (viewModel.config.isActivityResult) {
                     requireActivity().intent?.apply {
-                        putExtra(SelectorConstant.KEY_EXTRA_RESULT, selectResult as Serializable)
+                        val result = arrayListOf<LocalMedia>()
+                        result.addAll(selectResult)
+                        this.putParcelableArrayListExtra(SelectorConstant.KEY_EXTRA_RESULT, result)
                         requireActivity().setResult(Activity.RESULT_OK, this)
                     }
                 } else {

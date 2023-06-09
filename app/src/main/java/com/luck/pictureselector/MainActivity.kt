@@ -10,6 +10,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
@@ -33,7 +34,10 @@ import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.*
+import com.luck.picture.lib.interfaces.OnCustomCameraListener
+import com.luck.picture.lib.interfaces.OnExternalPreviewListener
+import com.luck.picture.lib.interfaces.OnRecordAudioListener
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
@@ -45,6 +49,7 @@ import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewImageHolder
 import com.luck.pictureselector.listener.DragListener
+import java.io.File
 import java.util.*
 
 
@@ -87,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
+        val checkOutput = findViewById<CheckBox>(R.id.check_output)
         val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
         val checkLoopVideo = findViewById<CheckBox>(R.id.check_loop_video)
         val checkAutoVideo = findViewById<CheckBox>(R.id.check_auto_video)
@@ -339,6 +345,10 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
+                        if (checkOutput.isChecked) {
+                            onlyCamera.setOutputImageDir(getSandboxPath())
+                            onlyCamera.setOutputVideoDir(getSandboxPath())
+                        }
                         onlyCamera.isCameraForegroundService(checkCameraServices.isChecked)
                         onlyCamera.setMediaConverterEngine(MediaConverter.create())
                         onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
@@ -430,6 +440,10 @@ class MainActivity : AppCompatActivity() {
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
+                        if (checkOutput.isChecked) {
+                            gallery.setOutputImageDir(getSandboxPath())
+                            gallery.setOutputVideoDir(getSandboxPath())
+                        }
                         gallery.setSelectionMode(selectionMode)
                         gallery.isPreviewZoomEffect(
                             checkPreviewEffect.isChecked,
@@ -757,5 +771,17 @@ class MainActivity : AppCompatActivity() {
             mAdapter.getData().addAll(result)
             mAdapter.notifyItemRangeInserted(0, result.size)
         }
+    }
+
+    /**
+     * 创建自定义输出目录
+     */
+    private fun getSandboxPath(): String {
+        val externalFilesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val customFile = File(externalFilesDir?.absolutePath, "Selector")
+        if (!customFile.exists()) {
+            customFile.mkdirs()
+        }
+        return customFile.absolutePath + File.separator
     }
 }

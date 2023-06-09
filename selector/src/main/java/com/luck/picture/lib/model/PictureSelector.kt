@@ -31,12 +31,11 @@ class PictureSelector {
             return PictureSelector(fragment)
         }
 
-        @Suppress("UNCHECKED_CAST")
-        fun obtainSelectResults(intent: Intent?): MutableList<LocalMedia> {
+        fun obtainSelectResults(intent: Intent?): ArrayList<LocalMedia> {
             intent?.let {
-                return it.getSerializableExtra(SelectorConstant.KEY_EXTRA_RESULT) as MutableList<LocalMedia>
+                return intent.getParcelableArrayListExtra<LocalMedia>(SelectorConstant.KEY_EXTRA_RESULT) as ArrayList<LocalMedia>
             }
-            return mutableListOf()
+            return arrayListOf()
         }
     }
 
