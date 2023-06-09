@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -35,7 +36,7 @@ import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.magical.MagicalView
-import com.luck.picture.lib.magical.OnMagicalViewCallback
+import com.luck.picture.lib.magical.OnMagicalViewListener
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.FileUtils
@@ -644,14 +645,19 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 ContextCompat.getColor(requireContext(), R.color.ps_color_black)
             )
         }
-        mMagicalView?.setOnMojitoViewCallback(object : OnMagicalViewCallback {
+
+        mMagicalView?.setOnMagicalViewListener(object : OnMagicalViewListener {
             override fun onBeginBackMinAnim() {
                 onMojitoBeginBackMinAnim()
             }
 
+            override fun onBeginBackMinMagicalFinish(isResetSize: Boolean) {
+                onMojitoBeginBackMinFinish(isResetSize)
+            }
+
             override fun onBeginMagicalAnimComplete(
                 mojitoView: MagicalView,
-                showImmediately: Boolean,
+                showImmediately: Boolean
             ) {
                 onMojitoBeginAnimComplete(mojitoView, showImmediately)
             }
@@ -664,9 +670,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 onMojitoMagicalViewFinish()
             }
 
-            override fun onBeginBackMinMagicalFinish(isResetSize: Boolean) {
-                onMojitoBeginBackMinFinish(isResetSize)
-            }
         })
     }
 
@@ -830,6 +833,36 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
         navBarViews.forEach { v ->
             v.isEnabled = true
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        viewModel.viewModelScope.launch {
+            if (isHasMagicalEffect() && viewModel.previewWrap.source.size > viewPager.currentItem) {
+                val media = viewModel.previewWrap.source[viewPager.currentItem]
+                val mediaRealSize = getMediaRealSizeFromMedia(media)
+                changeViewParams(mediaRealSize)
+            }
+        }
+    }
+
+    open fun changeViewParams(size: IntArray) {
+        val viewParams =
+            RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
+        if (viewParams == null || size[0] == 0 || size[1] == 0) {
+            mMagicalView?.setViewParams(0, 0, 0, 0, size[0], size[1])
+            mMagicalView?.resetStartNormal(size[0], size[1], false)
+        } else {
+            mMagicalView?.setViewParams(
+                viewParams.left,
+                viewParams.top,
+                viewParams.width,
+                viewParams.height,
+                size[0],
+                size[1]
+            )
+            mMagicalView?.resetStart()
         }
     }
 

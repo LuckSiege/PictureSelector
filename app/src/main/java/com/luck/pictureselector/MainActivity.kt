@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity() {
         val checkPreviewAudio = findViewById<CheckBox>(R.id.check_preview_audio)
         val checkPreviewDelete = findViewById<CheckBox>(R.id.check_preview_delete)
         val checkDisplayCamera = findViewById<CheckBox>(R.id.check_display_camera)
+        val checkCameraServices = findViewById<CheckBox>(R.id.check_camera_services)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
         val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
         launcherResult = createActivityResultLauncher()
@@ -338,6 +339,7 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
+                        onlyCamera.isCameraForegroundService(checkCameraServices.isChecked)
                         onlyCamera.setMediaConverterEngine(MediaConverter.create())
                         onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
@@ -435,6 +437,7 @@ class MainActivity : AppCompatActivity() {
                         )
                         gallery.isGif(checkGif.isChecked)
                         gallery.setSelectedData(mAdapter.getData())
+                        gallery.isCameraForegroundService(checkCameraServices.isChecked)
                         gallery.setOnRecordAudioListener(getRecordAudioListener)
                         gallery.isDisplayCamera(checkDisplayCamera.isChecked)
                         gallery.isFastSlidingSelect(checkFastSelect.isChecked)

@@ -23,11 +23,12 @@ import kotlin.math.abs
  * @describe：MagicalView
  */
 class MagicalView @JvmOverloads constructor(
-    context: Context?,
+    context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : FrameLayout(
-    context!!, attrs, defStyleAttr) {
+    context, attrs, defStyleAttr
+) {
     private var mAlpha = 0.0f
     private val animationDuration: Long = 250
     private var mOriginLeft = 0
@@ -48,6 +49,8 @@ class MagicalView @JvmOverloads constructor(
     private val backgroundView: View
     private val magicalWrapper: MagicalViewWrapper
     private val isPreviewFullScreenMode: Boolean
+    private var startX = 0
+    private var startY = 0
 
     /**
      * setBackgroundColor
@@ -67,10 +70,12 @@ class MagicalView @JvmOverloads constructor(
         mOriginHeight = 0
         visibility = VISIBLE
         setOriginParams()
-        showNormalMin(targetImageTop.toFloat(),
+        showNormalMin(
+            targetImageTop.toFloat(),
             targetEndLeft.toFloat(),
             targetImageWidth.toFloat(),
-            targetImageHeight.toFloat())
+            targetImageHeight.toFloat()
+        )
         if (showImmediately) {
             mAlpha = 1f
             backgroundView.alpha = mAlpha
@@ -146,10 +151,10 @@ class MagicalView @JvmOverloads constructor(
     ) {
         this.realWidth = realWidth
         this.realHeight = realHeight
-        mOriginLeft = left
-        mOriginTop = top
-        mOriginWidth = originWidth
-        mOriginHeight = originHeight
+        this.mOriginLeft = left
+        this.mOriginTop = top
+        this.mOriginWidth = originWidth
+        this.mOriginHeight = originHeight
     }
 
     private fun setOriginParams() {
@@ -176,16 +181,19 @@ class MagicalView @JvmOverloads constructor(
         if (showImmediately) {
             mAlpha = 1f
             backgroundView.alpha = mAlpha
-            showNormalMin(targetImageTop.toFloat(),
+            showNormalMin(
+                targetImageTop.toFloat(),
                 targetEndLeft.toFloat(),
                 targetImageWidth.toFloat(),
-                targetImageHeight.toFloat())
+                targetImageHeight.toFloat()
+            )
             setShowEndParams()
         } else {
             val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
             valueAnimator.addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
-                showNormalMin(value,
+                showNormalMin(
+                    value,
                     mOriginTop.toFloat(),
                     targetImageTop.toFloat(),
                     mOriginLeft.toFloat(),
@@ -193,7 +201,8 @@ class MagicalView @JvmOverloads constructor(
                     mOriginWidth.toFloat(),
                     targetImageWidth.toFloat(),
                     mOriginHeight.toFloat(),
-                    targetImageHeight.toFloat())
+                    targetImageHeight.toFloat()
+                )
             }
             valueAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
@@ -208,16 +217,15 @@ class MagicalView @JvmOverloads constructor(
     private fun setShowEndParams() {
         isAnimating = false
         changeContentViewToFullscreen()
-        if (onMagicalViewCallback != null) {
-            onMagicalViewCallback!!.onBeginMagicalAnimComplete(this@MagicalView, false)
-        }
+        onMagicalViewListener?.onBeginMagicalAnimComplete(this@MagicalView, false)
     }
 
     private fun showNormalMin(
         animRatio: Float, startY: Float, endY: Float, startLeft: Float, endLeft: Float,
         startWidth: Float, endWidth: Float, startHeight: Float, endHeight: Float,
     ) {
-        showNormalMin(false,
+        showNormalMin(
+            false,
             animRatio,
             startY,
             endY,
@@ -226,7 +234,8 @@ class MagicalView @JvmOverloads constructor(
             startWidth,
             endWidth,
             startHeight,
-            endHeight)
+            endHeight
+        )
     }
 
     private fun showNormalMin(endY: Float, endLeft: Float, endWidth: Float, endHeight: Float) {
@@ -270,9 +279,7 @@ class MagicalView @JvmOverloads constructor(
             backToMinWithoutView()
             return
         }
-        if (onMagicalViewCallback != null) {
-            onMagicalViewCallback!!.onBeginBackMinAnim()
-        }
+        onMagicalViewListener?.onBeginBackMinAnim()
         beginBackToMin(false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             backToMinWithTransition()
@@ -282,7 +289,8 @@ class MagicalView @JvmOverloads constructor(
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun backToMinWithTransition() {
         contentLayout.post {
-            TransitionManager.beginDelayedTransition(contentLayout.parent as ViewGroup,
+            TransitionManager.beginDelayedTransition(
+                contentLayout.parent as ViewGroup,
                 TransitionSet()
                     .setDuration(animationDuration)
                     .addTransition(ChangeBounds())
@@ -302,7 +310,7 @@ class MagicalView @JvmOverloads constructor(
 
     private fun beginBackToMin(isResetSize: Boolean) {
         if (isResetSize) {
-            onMagicalViewCallback!!.onBeginBackMinMagicalFinish(true)
+            onMagicalViewListener?.onBeginBackMinMagicalFinish(true)
         }
     }
 
@@ -310,9 +318,7 @@ class MagicalView @JvmOverloads constructor(
         contentLayout.animate().alpha(0f).setDuration(animationDuration)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    if (onMagicalViewCallback != null) {
-                        onMagicalViewCallback!!.onMagicalViewFinish()
-                    }
+                    onMagicalViewListener?.onMagicalViewFinish()
                 }
             }).start()
         backgroundView.animate().alpha(0f).setDuration(animationDuration).start()
@@ -328,17 +334,13 @@ class MagicalView @JvmOverloads constructor(
             isAnimating = true
             mAlpha = animation.animatedValue as Float
             backgroundView.alpha = mAlpha
-            if (onMagicalViewCallback != null) {
-                onMagicalViewCallback?.onBackgroundAlpha(mAlpha)
-            }
+            onMagicalViewListener?.onBackgroundAlpha(mAlpha)
         }
         valueAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 isAnimating = false
                 if (isAlpha) {
-                    if (onMagicalViewCallback != null) {
-                        onMagicalViewCallback!!.onMagicalViewFinish()
-                    }
+                    onMagicalViewListener?.onMagicalViewFinish()
                 }
             }
         })
@@ -365,13 +367,11 @@ class MagicalView @JvmOverloads constructor(
         backgroundView.alpha = mAlpha
     }
 
-    private var startX = 0
-    private var startY = 0
+
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val childView = contentLayout.getChildAt(0)
         var viewPager2: ViewPager2? = null
         if (childView is ViewPager2) {
-            // 如果MagicalView包含的是ViewPage2 需要处理一下滑动事件冲突，主要是针对长图可以上下滑动时会与左右滑动冲突
             viewPager2 = childView
         }
         when (event.action) {
@@ -404,9 +404,10 @@ class MagicalView @JvmOverloads constructor(
         return super.dispatchTouchEvent(event)
     }
 
-    private var onMagicalViewCallback: OnMagicalViewCallback? = null
-    fun setOnMojitoViewCallback(onMagicalViewCallback: OnMagicalViewCallback?) {
-        this.onMagicalViewCallback = onMagicalViewCallback
+    private var onMagicalViewListener: OnMagicalViewListener? = null
+
+    fun setOnMagicalViewListener(l: OnMagicalViewListener?) {
+        this.onMagicalViewListener = l
     }
 
     init {
@@ -416,14 +417,18 @@ class MagicalView @JvmOverloads constructor(
         screenSize
         backgroundView = View(context)
         backgroundView.layoutParams =
-            LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT)
+            LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
+            )
         backgroundView.alpha = mAlpha
         addView(backgroundView)
-        contentLayout = FrameLayout(context!!)
+        contentLayout = FrameLayout(context)
         contentLayout.layoutParams =
-            LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT)
+            LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
+            )
         addView(contentLayout)
         magicalWrapper = MagicalViewWrapper(contentLayout)
     }

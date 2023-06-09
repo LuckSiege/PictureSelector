@@ -416,6 +416,13 @@
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
+                <CheckBox
+                    android:id="@+id/check_camera_services"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="拍照启用后台服务"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
 
                 <CheckBox
                     android:id="@+id/check_only_camera"

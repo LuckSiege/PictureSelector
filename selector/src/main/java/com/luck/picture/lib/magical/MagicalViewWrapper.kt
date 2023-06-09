@@ -1,78 +1,62 @@
-package com.luck.picture.lib.magical;
+package com.luck.picture.lib.magical
 
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import kotlin.math.roundToInt
 
 /**
  * @author：luck
  * @date：2021/12/15 11:10 上午
  * @describe：MagicalViewWrapper
  */
-public class MagicalViewWrapper {
-    private final ViewGroup.MarginLayoutParams params;
-    private final View viewWrapper;
+class MagicalViewWrapper(private val viewWrapper: View) {
+    private val params: ViewGroup.MarginLayoutParams =
+        viewWrapper.layoutParams as ViewGroup.MarginLayoutParams
+    val width: Int
+        get() = params.width
+    val height: Int
+        get() = params.height
 
-    public MagicalViewWrapper(View view) {
-        this.viewWrapper = view;
-        params = (ViewGroup.MarginLayoutParams) viewWrapper.getLayoutParams();
-        if (params instanceof LinearLayout.LayoutParams) {
-            ((LinearLayout.LayoutParams) params).gravity = Gravity.START;
+    fun setWidth(width: Float) {
+        params.width = width.roundToInt()
+        viewWrapper.layoutParams = params
+    }
+
+    fun setHeight(height: Float) {
+        params.height = height.roundToInt()
+        viewWrapper.layoutParams = params
+    }
+
+    var marginTop: Int
+        get() = params.topMargin
+        set(m) {
+            params.topMargin = m
+            viewWrapper.layoutParams = params
         }
-    }
+    var marginRight: Int
+        get() = params.rightMargin
+        set(mr) {
+            params.rightMargin = mr
+            viewWrapper.layoutParams = params
+        }
+    var marginLeft: Int
+        get() = params.leftMargin
+        set(mr) {
+            params.leftMargin = mr
+            viewWrapper.layoutParams = params
+        }
+    var marginBottom: Int
+        get() = params.bottomMargin
+        set(m) {
+            params.bottomMargin = m
+            viewWrapper.layoutParams = params
+        }
 
-    public int getWidth() {
-        return params.width;
-    }
-
-    public int getHeight() {
-        return params.height;
-    }
-
-    public void setWidth(float width) {
-        params.width = Math.round(width);
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public void setHeight(float height) {
-        params.height = Math.round(height);
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public void setMarginTop(int m) {
-        params.topMargin = m;
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public void setMarginBottom(int m) {
-        params.bottomMargin = m;
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public int getMarginTop() {
-        return params.topMargin;
-    }
-
-    public void setMarginRight(int mr) {
-        params.rightMargin = mr;
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public void setMarginLeft(int mr) {
-        params.leftMargin = mr;
-        viewWrapper.setLayoutParams(params);
-    }
-
-    public int getMarginRight() {
-        return params.rightMargin;
-    }
-
-    public int getMarginLeft() {
-        return params.leftMargin;
-    }
-
-    public int getMarginBottom() {
-        return params.bottomMargin;
+    init {
+        if (params is LinearLayout.LayoutParams) {
+            params.gravity = Gravity.START
+        }
     }
 }

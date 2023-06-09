@@ -63,17 +63,17 @@ object RecycleItemViewParams {
             val view = views[i]
             val viewParam = ViewParams()
             if (view == null) {
-                viewParam.setLeft(0)
-                viewParam.setTop(0)
-                viewParam.setWidth(0)
-                viewParam.setHeight(0)
+                viewParam.left = 0
+                viewParam.top = 0
+                viewParam.width = 0
+                viewParam.height = 0
             } else {
                 val location = IntArray(2)
                 view.getLocationOnScreen(location)
-                viewParam.setLeft(location[0])
-                viewParam.setTop(location[1] - statusBarHeight)
-                viewParam.setWidth(view.width)
-                viewParam.setHeight(view.height)
+                viewParam.left = location[0]
+                viewParam.top = location[1] - statusBarHeight
+                viewParam.width = view.width
+                viewParam.height = view.height
             }
             viewParams.add(viewParam)
         }

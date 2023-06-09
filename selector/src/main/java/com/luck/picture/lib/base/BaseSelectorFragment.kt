@@ -792,6 +792,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        ForegroundService.stopService(requireContext())
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CROP) {
                 val selectResult = globalViewMode.selectResult
