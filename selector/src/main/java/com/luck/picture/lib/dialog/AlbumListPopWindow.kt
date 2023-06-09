@@ -30,22 +30,23 @@ import com.luck.picture.lib.widget.WrapContentLinearLayoutManager
  * @describe：AlbumListPopWindow
  */
 open class AlbumListPopWindow(context: Context) : PopupWindow() {
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
-    private var windMask: View
-    private var rvList: RecyclerView
-    private var rootView: RelativeLayout
-    private var bodyLayout: ViewGroup
-    private var isExecuteDismiss: Boolean = false
-    private lateinit var mediaAlbumAdapter: MediaAlbumAdapter
-    private var defaultMaxCount = 10
+    val config = SelectorProviders.getInstance().getSelectorConfig()
+    var windMask: View
+    var rvList: RecyclerView
+    var rootView: RelativeLayout
+    var bodyLayout: ViewGroup
+    lateinit var mediaAlbumAdapter: MediaAlbumAdapter
+    var defaultMaxCount = 10
+    var isExecuteDismiss = false
 
     init {
         val resource = config.layoutSource[LayoutSource.ALBUM_WINDOW] ?: R.layout.ps_album_window
         this.contentView = LayoutInflater.from(context).inflate(resource, null)
-        bodyLayout = contentView.findViewById(R.id.round_group)
+        this.bodyLayout = contentView.findViewById(R.id.round_group)
         this.rootView = contentView.findViewById(R.id.rootView)
         this.rvList = contentView.findViewById(R.id.album_list)
         this.windMask = contentView.findViewById(R.id.view_mask)
+        this.initViews(contentView)
         this.width = RelativeLayout.LayoutParams.MATCH_PARENT
         this.height = RelativeLayout.LayoutParams.WRAP_CONTENT
         this.animationStyle = 0
@@ -60,10 +61,14 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
         this.windMask.setOnClickListener {
             dismiss()
         }
-        initRecyclerView()
+        this.initRecyclerView()
     }
 
-    private fun initRecyclerView() {
+    open fun initViews(contentView: View) {
+
+    }
+
+    open fun initRecyclerView() {
         rvList.layoutManager = WrapContentLinearLayoutManager(rvList.context)
         (rvList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         rvList.itemAnimator = null
