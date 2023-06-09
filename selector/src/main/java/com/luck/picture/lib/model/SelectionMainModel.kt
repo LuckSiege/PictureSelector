@@ -301,6 +301,13 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         return this
     }
 
+    /**
+     * Custom audio storage dir
+     */
+    fun setOutputAudioDir(audioOutputDir: String): SelectionMainModel {
+        this.config.audioOutputDir = audioOutputDir
+        return this
+    }
 
     /**
      * Choose between photographing and shooting in ofAll mode

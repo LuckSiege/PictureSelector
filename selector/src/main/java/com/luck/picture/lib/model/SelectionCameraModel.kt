@@ -157,6 +157,14 @@ class SelectionCameraModel constructor(
     }
 
     /**
+     * Custom audio storage dir
+     */
+    fun setOutputAudioDir(audioOutputDir: String): SelectionCameraModel {
+        this.config.audioOutputDir = audioOutputDir
+        return this
+    }
+
+    /**
      * Skip crop resource formatting
      *
      * @param format example [LocalMedia.mimeType] [image/jpeg]

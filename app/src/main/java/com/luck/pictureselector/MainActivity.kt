@@ -346,8 +346,20 @@ class MainActivity : AppCompatActivity() {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
                         if (checkOutput.isChecked) {
-                            onlyCamera.setOutputImageDir(getSandboxPath())
-                            onlyCamera.setOutputVideoDir(getSandboxPath())
+                            when (selectorMode) {
+                                SelectorMode.IMAGE -> {
+                                    onlyCamera.setOutputImageDir(getCustomImagePath())
+                                }
+                                SelectorMode.VIDEO -> {
+                                    onlyCamera.setOutputVideoDir(getCustomVideoPath())
+                                }
+                                SelectorMode.AUDIO -> {
+                                    onlyCamera.setOutputAudioDir(getCustomAudioPath())
+                                }
+                                else -> {
+                                    onlyCamera.setOutputAudioDir(getCustomAllPath())
+                                }
+                            }
                         }
                         onlyCamera.isCameraForegroundService(checkCameraServices.isChecked)
                         onlyCamera.setMediaConverterEngine(MediaConverter.create())
@@ -441,8 +453,25 @@ class MainActivity : AppCompatActivity() {
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         if (checkOutput.isChecked) {
-                            gallery.setOutputImageDir(getSandboxPath())
-                            gallery.setOutputVideoDir(getSandboxPath())
+                            when (selectorMode) {
+                                SelectorMode.IMAGE -> {
+                                    gallery.setOutputImageDir(getCustomImagePath())
+                                    gallery.setQuerySandboxDir(getCustomImagePath(), false)
+                                }
+                                SelectorMode.VIDEO -> {
+                                    gallery.setOutputVideoDir(getCustomVideoPath())
+                                    gallery.setQuerySandboxDir(getCustomVideoPath(), false)
+                                }
+                                SelectorMode.AUDIO -> {
+                                    gallery.setOutputAudioDir(getCustomAudioPath())
+                                    gallery.setQuerySandboxDir(getCustomAudioPath(), false)
+                                }
+                                else -> {
+                                    gallery.setOutputImageDir(getCustomAllPath())
+                                    gallery.setOutputVideoDir(getCustomAllPath())
+                                    gallery.setQuerySandboxDir(getCustomAllPath(), false)
+                                }
+                            }
                         }
                         gallery.setSelectionMode(selectionMode)
                         gallery.isPreviewZoomEffect(
@@ -774,14 +803,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 创建自定义输出目录
+     * 创建自定义图片和视频输出目录
      */
-    private fun getSandboxPath(): String {
-        val externalFilesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val customFile = File(externalFilesDir?.absolutePath, "Selector")
+    private fun getCustomAllPath(): String {
+        val allDir = this@MainActivity.getExternalFilesDir("")
+        val customFile = File(allDir?.absolutePath, "All")
         if (!customFile.exists()) {
             customFile.mkdirs()
         }
         return customFile.absolutePath + File.separator
+    }
+
+
+    /**
+     * 创建自定义图片输出目录
+     */
+    private fun getCustomImagePath(): String {
+        val picturesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        if (picturesDir?.exists() == false) {
+            picturesDir.mkdirs()
+        }
+        return picturesDir?.absolutePath + File.separator
+    }
+
+    /**
+     * 创建自定义视频输出目录
+     */
+    private fun getCustomVideoPath(): String {
+        val moviesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+        if (moviesDir?.exists() == false) {
+            moviesDir.mkdirs()
+        }
+        return moviesDir?.absolutePath + File.separator
+    }
+
+    /**
+     * 创建自定义音频输出目录
+     */
+    private fun getCustomAudioPath(): String {
+        val musicDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+        if (musicDir?.exists() == false) {
+            musicDir.mkdirs()
+        }
+        return musicDir?.absolutePath + File.separator
     }
 }

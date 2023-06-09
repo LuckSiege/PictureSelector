@@ -71,6 +71,7 @@ class SelectorConfig {
     var sandboxDir: String? = null
     var imageOutputDir: String? = null
     var videoOutputDir: String? = null
+    var audioOutputDir: String? = null
     var registry: Registry = Registry()
     var cropEngine: CropEngine? = null
     var imageEngine: ImageEngine? = null
@@ -140,6 +141,7 @@ class SelectorConfig {
         this.sandboxDir = null
         this.imageOutputDir = null
         this.videoOutputDir = null
+        this.audioOutputDir = null
     }
 
     fun destroy() {
