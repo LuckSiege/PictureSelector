@@ -796,9 +796,7 @@ abstract class BaseSelectorFragment : Fragment() {
         ForegroundService.stopService(requireContext())
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val outputUri =
-                    data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
-                    ?: viewModel.outputUri
+                val outputUri = data?.data ?: viewModel.outputUri
                 if (outputUri != null) {
                     analysisCameraData(outputUri)
                 } else {

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
@@ -72,6 +73,9 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
             MediaUtils.getPath(context, uri)
         } else {
             uri.path
+        }
+        if (TextUtils.isEmpty(realPath)) {
+            return
         }
         viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
             override fun onScanFinish() {

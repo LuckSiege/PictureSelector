@@ -805,6 +805,9 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         } else {
             uri.path
         }
+        if (TextUtils.isEmpty(realPath)) {
+            return
+        }
         viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
             override fun onScanFinish() {
                 viewModel.viewModelScope.launch {
