@@ -807,7 +807,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun getCustomAllPath(): String {
         val allDir = this@MainActivity.getExternalFilesDir("")
-        val customFile = File(allDir?.absolutePath, "All")
+        val customFile = File(allDir?.absolutePath, "AllFiles")
         if (!customFile.exists()) {
             customFile.mkdirs()
         }
@@ -819,32 +819,35 @@ class MainActivity : AppCompatActivity() {
      * 创建自定义图片输出目录
      */
     private fun getCustomImagePath(): String {
-        val picturesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        if (picturesDir?.exists() == false) {
-            picturesDir.mkdirs()
+        val picturesDir = this@MainActivity.getExternalFilesDir("")
+        val customFile = File(picturesDir?.absolutePath, "ImageFiles")
+        if (!customFile.exists()) {
+            customFile.mkdirs()
         }
-        return picturesDir?.absolutePath + File.separator
+        return customFile.absolutePath + File.separator
     }
 
     /**
      * 创建自定义视频输出目录
      */
     private fun getCustomVideoPath(): String {
-        val moviesDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        if (moviesDir?.exists() == false) {
-            moviesDir.mkdirs()
+        val moviesDir = this@MainActivity.getExternalFilesDir("")
+        val customFile = File(moviesDir?.absolutePath, "VideoFiles")
+        if (!customFile.exists()) {
+            customFile.mkdirs()
         }
-        return moviesDir?.absolutePath + File.separator
+        return customFile.absolutePath + File.separator
     }
 
     /**
      * 创建自定义音频输出目录
      */
     private fun getCustomAudioPath(): String {
-        val musicDir = this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-        if (musicDir?.exists() == false) {
-            musicDir.mkdirs()
+        val musicDir = this@MainActivity.getExternalFilesDir("")
+        val customFile = File(musicDir?.absolutePath, "AudioFiles")
+        if (!customFile.exists()) {
+            customFile.mkdirs()
         }
-        return musicDir?.absolutePath + File.separator
+        return customFile.absolutePath + File.separator
     }
 }

@@ -54,6 +54,7 @@ import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.io.File
+import java.io.FileOutputStream
 
 /**
  * @author：luck
@@ -396,6 +397,14 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun soundRecording() {
         val context = requireContext()
+        val outputDir = viewModel.config.audioOutputDir
+        if (!TextUtils.isEmpty(outputDir)) {
+            val defaultFileName = "${FileUtils.createFileName("AUD")}.amr"
+            val applyFileNameListener = viewModel.config.mListenerInfo.onApplyFileNameListener
+            val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
+            // Use custom storage path
+            viewModel.outputUri = Uri.fromFile(File(outputDir, fileName))
+        }
         val soundCaptureComponent = viewModel.config.registry.get(SoundCaptureComponent::class.java)
         if (soundCaptureComponent.isAssignableFrom(SoundCaptureComponent::class.java)) {
             val onRecordAudioListener = viewModel.config.mListenerInfo.onRecordAudioListener
@@ -793,17 +802,23 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        ForegroundService.stopService(requireContext())
+        val context = requireContext()
+        ForegroundService.stopService(context)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val outputUri = if (viewModel.outputUri?.scheme.equals("file")) {
+                val schemeFile = viewModel.outputUri?.scheme.equals("file")
+                val outputUri = if (schemeFile) {
                     viewModel.outputUri
                 } else {
                     data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
                     ?: viewModel.outputUri
                 }
                 if (outputUri != null) {
-                    analysisCameraData(outputUri)
+                    if (viewModel.config.selectorMode == SelectorMode.AUDIO && schemeFile && data?.data != null) {
+                        copyAudioUriToFile(data.data!!)
+                    } else {
+                        analysisCameraData(outputUri)
+                    }
                 } else {
                     throw IllegalStateException("Camera output uri is empty")
                 }
@@ -819,6 +834,21 @@ abstract class BaseSelectorFragment : Fragment() {
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             onResultCanceled(requestCode, resultCode)
+        }
+    }
+
+    /**
+     * copy audio to output file
+     */
+    open fun copyAudioUriToFile(uri: Uri) {
+        requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+            val outputUri = viewModel.outputUri!!
+            val fileOutputStream = FileOutputStream(outputUri.path)
+            if (FileUtils.writeFileFromIS(inputStream, fileOutputStream)) {
+                MediaUtils.deleteUri(requireContext(), uri)
+                analysisCameraData(outputUri)
+            }
+            FileUtils.close(inputStream)
         }
     }
 

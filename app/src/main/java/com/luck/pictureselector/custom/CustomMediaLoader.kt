@@ -88,7 +88,7 @@ class CustomMediaLoader(private val application: Application) : MediaLoader() {
             media.width = mediaInfo.width
             media.height = mediaInfo.height
             media.size = file.length()
-            media.dateAdded = file.lastModified() / 1000
+            media.dateAdded = file.lastModified()
             mediaList += media
         }
         return mediaList
