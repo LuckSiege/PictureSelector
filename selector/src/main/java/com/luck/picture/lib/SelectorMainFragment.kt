@@ -1,14 +1,11 @@
 package com.luck.picture.lib
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Service
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
-import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
@@ -800,26 +797,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val outputUri =
-                    data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
-                    ?: viewModel.outputUri
-                if (outputUri != null) {
-                    analysisCameraData(outputUri)
-                } else {
-                    throw IllegalStateException("Camera output uri is empty")
-                }
-            }
-        }
-    }
-
-    /**
-     * Analyzing Camera Generated Data
-     */
-    open fun analysisCameraData(uri: Uri) {
+    override fun analysisCameraData(uri: Uri) {
         val context = requireContext()
         val isContent = uri.scheme.equals("content")
         val realPath = if (isContent) {

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
@@ -56,21 +55,8 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
         }
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val outputUri =
-                    data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
-                    ?: viewModel.outputUri
-                if (outputUri != null) {
-                    analysisCameraData(outputUri)
-                } else {
-                    throw IllegalStateException("Camera output uri is empty")
-                }
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
+    override fun onResultCanceled(requestCode: Int, resultCode: Int) {
+        if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
                 handlePermissionSettingResult(viewModel.currentRequestPermission)
             } else {
@@ -79,10 +65,7 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
         }
     }
 
-    /**
-     * Analyzing Camera Generated Data
-     */
-    open fun analysisCameraData(uri: Uri) {
+    override fun analysisCameraData(uri: Uri) {
         val context = requireContext()
         val isContent = uri.scheme.equals("content")
         val realPath = if (isContent) {

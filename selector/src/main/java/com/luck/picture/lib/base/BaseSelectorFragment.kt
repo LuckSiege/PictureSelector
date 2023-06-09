@@ -54,7 +54,6 @@ import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.io.File
-import java.io.Serializable
 
 /**
  * @author：luck
@@ -796,7 +795,16 @@ abstract class BaseSelectorFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         ForegroundService.stopService(requireContext())
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SelectorConstant.REQUEST_CROP) {
+            if (requestCode == SelectorConstant.REQUEST_CAMERA) {
+                val outputUri =
+                    data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
+                    ?: viewModel.outputUri
+                if (outputUri != null) {
+                    analysisCameraData(outputUri)
+                } else {
+                    throw IllegalStateException("Camera output uri is empty")
+                }
+            } else if (requestCode == SelectorConstant.REQUEST_CROP) {
                 val selectResult = globalViewMode.selectResult
                 if (selectResult.isNotEmpty()) {
                     if (selectResult.size == 1) {
@@ -807,12 +815,25 @@ abstract class BaseSelectorFragment : Fragment() {
                 }
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
-                handlePermissionSettingResult(viewModel.currentRequestPermission)
-            }
+            onResultCanceled(requestCode, resultCode)
         }
     }
 
+    /**
+     * Analyzing Camera Generated Data
+     */
+    open fun analysisCameraData(uri: Uri) {
+
+    }
+
+    /**
+     * Activity Result Canceled
+     */
+    open fun onResultCanceled(requestCode: Int, resultCode: Int) {
+        if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
+            handlePermissionSettingResult(viewModel.currentRequestPermission)
+        }
+    }
 
     /**
      * Merge Cropping single images data

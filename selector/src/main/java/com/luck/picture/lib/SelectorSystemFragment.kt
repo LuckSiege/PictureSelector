@@ -1,6 +1,5 @@
 package com.luck.picture.lib
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -372,14 +371,11 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
             }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
-            if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
-                handlePermissionSettingResult(viewModel.currentRequestPermission)
-            } else {
-                onBackPressed()
-            }
+    override fun onResultCanceled(requestCode: Int, resultCode: Int) {
+        if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
+            handlePermissionSettingResult(viewModel.currentRequestPermission)
+        } else {
+            onBackPressed()
         }
     }
 
