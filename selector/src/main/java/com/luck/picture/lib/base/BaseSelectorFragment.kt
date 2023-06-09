@@ -796,9 +796,12 @@ abstract class BaseSelectorFragment : Fragment() {
         ForegroundService.stopService(requireContext())
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val outputUri =
+                val outputUri = if (viewModel.outputUri?.scheme.equals("file")) {
+                    viewModel.outputUri
+                } else {
                     data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
                     ?: viewModel.outputUri
+                }
                 if (outputUri != null) {
                     analysisCameraData(outputUri)
                 } else {
