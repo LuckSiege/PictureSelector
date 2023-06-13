@@ -367,7 +367,7 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         when {
                             rbCallback.isChecked -> {
-                                onlyCamera.forResult(getResultCallbackListener, false)
+                                onlyCamera.forResult(getResultCallbackListener, true)
                             }
                             rbLauncher.isChecked -> {
                                 onlyCamera.forResult(launcherResult)
