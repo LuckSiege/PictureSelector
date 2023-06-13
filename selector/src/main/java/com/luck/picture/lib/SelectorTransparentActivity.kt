@@ -54,7 +54,7 @@ class SelectorTransparentActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        if ((config.previewWrap.isExternalPreview && !config.isPreviewZoomEffect) || config.systemGallery) {
+        if ((config.previewWrap.isExternalPreview && !config.isPreviewZoomEffect) || config.systemGallery || config.isOnlyCamera) {
             overridePendingTransition(
                 R.anim.ps_anim_fade_in,
                 config.selectorStyle.getWindowAnimation().getExitAnim()

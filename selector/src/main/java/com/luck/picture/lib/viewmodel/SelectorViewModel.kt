@@ -12,7 +12,7 @@ import com.luck.picture.lib.entity.LocalMediaAlbum
 import com.luck.picture.lib.entity.PreviewDataWrap
 import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.loader.impl.MediaPagingLoaderImpl
-import com.luck.picture.lib.media.PictureMediaScannerConnection
+import com.luck.picture.lib.media.SelectorMediaScannerConnection
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.provider.SelectorProviders
 import kotlinx.coroutines.launch
@@ -86,7 +86,7 @@ class SelectorViewModel(application: Application) : AndroidViewModel(application
      * Refresh System Album
      */
     fun scanFile(path: String?, l: ScanListener?) {
-        PictureMediaScannerConnection(getApplication(), path, object : ScanListener {
+        SelectorMediaScannerConnection(getApplication(), path, object : ScanListener {
             override fun onScanFinish() {
                 l?.onScanFinish()
             }
