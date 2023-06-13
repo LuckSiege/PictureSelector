@@ -557,7 +557,11 @@ abstract class BaseSelectorFragment : Fragment() {
                     return SelectedState.INVALID
                 }
             }
-            if (viewModel.config.mListenerInfo.onSelectFilterListener?.onSelectFilter(media) == true) {
+            if (viewModel.config.mListenerInfo.onSelectFilterListener?.onSelectFilter(
+                    requireContext(),
+                    media
+                ) == true
+            ) {
                 return SelectedState.INVALID
             }
         }

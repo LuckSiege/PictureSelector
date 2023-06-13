@@ -31,6 +31,7 @@ import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.*
@@ -88,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
+        val checkFilter = findViewById<CheckBox>(R.id.check_filter)
         val checkOutput = findViewById<CheckBox>(R.id.check_output)
         val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
         val checkLifecycle = findViewById<CheckBox>(R.id.check_lifecycle)
@@ -362,6 +364,7 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setMediaConverterEngine(MediaConverter.create())
                         onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
+                        onlyCamera.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         when {
                             rbCallback.isChecked -> {
                                 onlyCamera.forResult(getResultCallbackListener, true)
@@ -450,6 +453,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
+                        gallery.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         if (checkOutput.isChecked) {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
@@ -695,6 +699,16 @@ class MainActivity : AppCompatActivity() {
                     tvDeleteText.animate().alpha(0F).setDuration(120).start()
                 }
             }
+        }
+    }
+
+    private val geSelectFilterListener = object : OnSelectFilterListener {
+        override fun onSelectFilter(context: Context, media: LocalMedia): Boolean {
+            if (media.size > 5 * FileSizeUnitConstant.MB) {
+                ToastUtils.showMsg(context, "文件大于5M")
+                return true
+            }
+            return false
         }
     }
 

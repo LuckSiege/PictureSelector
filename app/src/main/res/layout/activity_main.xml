@@ -516,6 +516,14 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/check_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自定义选择限制"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/check_auto_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

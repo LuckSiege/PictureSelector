@@ -1,5 +1,6 @@
 package com.luck.picture.lib.interfaces
 
+import android.content.Context
 import com.luck.picture.lib.entity.LocalMedia
 
 /**
@@ -14,5 +15,5 @@ interface OnSelectFilterListener {
      * @param media current select [LocalMedia]
      * @return the boolean result
      */
-    fun onSelectFilter(media: LocalMedia): Boolean
+    fun onSelectFilter(context: Context, media: LocalMedia): Boolean
 }
