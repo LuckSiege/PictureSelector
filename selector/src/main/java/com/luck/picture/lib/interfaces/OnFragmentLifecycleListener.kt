@@ -17,12 +17,12 @@ interface OnFragmentLifecycleListener {
      * @param view
      * @param savedInstanceState
      */
-    fun onViewCreated(fragment: Fragment?, view: View?, savedInstanceState: Bundle?)
+    fun onViewCreated(fragment: Fragment, view: View?, savedInstanceState: Bundle?)
 
     /**
      * onDestroy
      *
      * @param fragment
      */
-    fun onDestroy(fragment: Fragment?)
+    fun onDestroy(fragment: Fragment)
 }

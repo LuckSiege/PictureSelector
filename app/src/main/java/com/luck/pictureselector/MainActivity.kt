@@ -10,7 +10,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
@@ -34,10 +33,7 @@ import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnCustomCameraListener
-import com.luck.picture.lib.interfaces.OnExternalPreviewListener
-import com.luck.picture.lib.interfaces.OnRecordAudioListener
-import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
@@ -94,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
         val checkOutput = findViewById<CheckBox>(R.id.check_output)
         val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
+        val checkLifecycle = findViewById<CheckBox>(R.id.check_lifecycle)
         val checkLoopVideo = findViewById<CheckBox>(R.id.check_loop_video)
         val checkAutoVideo = findViewById<CheckBox>(R.id.check_auto_video)
         val checkPauseVideo = findViewById<CheckBox>(R.id.check_pause_video)
@@ -452,6 +449,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
+                        gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
                         if (checkOutput.isChecked) {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
@@ -697,6 +695,20 @@ class MainActivity : AppCompatActivity() {
                     tvDeleteText.animate().alpha(0F).setDuration(120).start()
                 }
             }
+        }
+    }
+
+    private val getFragmentLifecycleListener = object : OnFragmentLifecycleListener {
+        override fun onViewCreated(
+            fragment: Fragment,
+            view: View?,
+            savedInstanceState: Bundle?
+        ) {
+            ToastUtils.showMsg(fragment.requireContext(), "创建:$fragment")
+        }
+
+        override fun onDestroy(fragment: Fragment) {
+            ToastUtils.showMsg(fragment.requireContext(), "销毁:$fragment")
         }
     }
 
