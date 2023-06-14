@@ -51,7 +51,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     override fun getResourceId(): Int {
-        return viewModel.config.layoutSource[LayoutSource.SELECTOR_MAIN]
+        return config.layoutSource[LayoutSource.SELECTOR_MAIN]
             ?: R.layout.ps_fragment_selector
     }
 
@@ -138,15 +138,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun setDataEmpty() {
         mTvDataEmpty?.text =
-            if (viewModel.config.selectorMode == SelectorMode.AUDIO) getString(R.string.ps_audio_empty) else getString(
+            if (config.selectorMode == SelectorMode.AUDIO) getString(R.string.ps_audio_empty) else getString(
                 R.string.ps_empty
             )
     }
 
     open fun onMergeSelectedSource() {
-        if (viewModel.config.selectedSource.isNotEmpty()) {
-            globalViewMode.selectResult.addAll(viewModel.config.selectedSource.toMutableList())
-            viewModel.config.selectedSource.clear()
+        if (config.selectedSource.isNotEmpty()) {
+            globalViewMode.selectResult.addAll(config.selectedSource.toMutableList())
+            config.selectedSource.clear()
         }
     }
 
@@ -222,8 +222,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         if (SystemClock.uptimeMillis() - intervalClickTime < 500 && mAdapter.getData()
                 .isNotEmpty()
         ) {
-            if (mAdapter.getData().size > 2 * viewModel.config.pageSize) {
-                mRecycler.scrollToPosition(viewModel.config.pageSize)
+            if (mAdapter.getData().size > 2 * config.pageSize) {
+                mRecycler.scrollToPosition(config.pageSize)
                 mRecycler.post {
                     mRecycler.smoothScrollToPosition(0)
                 }
@@ -249,7 +249,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun setStatusBarRectSize(statusBarRectView: View?, titleBar: View?) {
-        if (viewModel.config.isPreviewFullScreenMode) {
+        if (config.isPreviewFullScreenMode) {
             if (statusBarRectView?.background != null) {
                 statusBarRectView.setBackgroundColor((statusBarRectView.background as ColorDrawable).color)
             } else {
@@ -287,7 +287,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun setCurrentMediaCreateTimeText() {
-        if (viewModel.config.isDisplayTimeAxis) {
+        if (config.isDisplayTimeAxis) {
             val position = mRecycler.getFirstVisiblePosition()
             if (position != RecyclerView.NO_POSITION) {
                 val data = mAdapter.getData()
@@ -302,7 +302,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun showCurrentMediaCreateTimeUI() {
-        if (viewModel.config.isDisplayTimeAxis && mAdapter.getData().size > 0) {
+        if (config.isDisplayTimeAxis && mAdapter.getData().size > 0) {
             if (mTvCurrentDataTime?.alpha == 0f) {
                 mTvCurrentDataTime?.animate()?.setDuration(150)?.alphaBy(1.0f)?.start()
             }
@@ -310,7 +310,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun hideCurrentMediaCreateTimeUI() {
-        if (viewModel.config.isDisplayTimeAxis && mAdapter.getData().size > 0) {
+        if (config.isDisplayTimeAxis && mAdapter.getData().size > 0) {
             mTvCurrentDataTime?.animate()?.setDuration(250)?.alpha(0.0f)?.start()
         }
     }
@@ -350,7 +350,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             it.cachePage = viewModel.page
         }
         // Update current album
-        mAdapter.setDisplayCamera(viewModel.config.isDisplayCamera && data.isAllAlbum())
+        mAdapter.setDisplayCamera(config.isDisplayCamera && data.isAllAlbum())
         mTvTitle?.text = data.bucketDisplayName
         if (data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
@@ -358,7 +358,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 viewModel.page = data.cachePage
                 mAdapter.setDataNotifyChanged(data.source)
                 mRecycler.scrollToPosition(0)
-                mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !viewModel.config.isOnlySandboxDir && data.source.isNotEmpty())
+                mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !config.isOnlySandboxDir && data.source.isNotEmpty())
                 return@addIdleHandler false
             }
         } else {
@@ -368,28 +368,28 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 return@addIdleHandler false
             }
         }
-        if (viewModel.config.isFastSlidingSelect) {
+        if (config.isFastSlidingSelect) {
             mDragSelectTouchListener?.setRecyclerViewHeaderCount(if (mAdapter.isDisplayCamera()) 1 else 0)
         }
     }
 
     open fun onRotateArrowAnim(showing: Boolean) {
-        if (!viewModel.config.isOnlySandboxDir) {
+        if (!config.isOnlySandboxDir) {
             AnimUtils.rotateArrow(mIvTitleArrow, showing)
         }
     }
 
     open fun initNavbarBar() {
-        if (viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
+        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
             navBarViews.forEach { view ->
                 view.visibility = View.GONE
             }
         } else {
-            if (viewModel.config.isOnlyCamera) {
-                globalViewMode.isOriginal = viewModel.config.isOriginalControl
+            if (config.isOnlyCamera) {
+                globalViewMode.isOriginal = config.isOriginalControl
             } else {
                 mTvOriginal?.visibility =
-                    if (viewModel.config.isOriginalControl) View.VISIBLE else View.GONE
+                    if (config.isOriginalControl) View.VISIBLE else View.GONE
                 mTvOriginal?.setOnClickListener { tvOriginal ->
                     onOriginalClick(tvOriginal)
                 }
@@ -411,26 +411,26 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun checkNotifyStrategy(isAddRemove: Boolean): Boolean {
         var isNotifyAll = false
-        if (viewModel.config.isMaxSelectEnabledMask) {
+        if (config.isMaxSelectEnabledMask) {
             val selectResult = globalViewMode.selectResult
             val selectCount = selectResult.size
-            if (viewModel.config.isAllWithImageVideo) {
-                val maxSelectCount = viewModel.config.getSelectCount()
-                if (viewModel.config.selectionMode == SelectionMode.MULTIPLE) {
+            if (config.isAllWithImageVideo) {
+                val maxSelectCount = config.getSelectCount()
+                if (config.selectionMode == SelectionMode.MULTIPLE) {
                     isNotifyAll =
                         selectCount == maxSelectCount || (!isAddRemove && selectCount == maxSelectCount - 1)
                 }
             } else {
                 isNotifyAll = if (selectCount == 0 ||
-                    (if (isAddRemove) viewModel.config.selectorMode == SelectorMode.ALL && selectCount == 1
-                    else selectCount == viewModel.config.totalCount - 1)
+                    (if (isAddRemove) config.selectorMode == SelectorMode.ALL && selectCount == 1
+                    else selectCount == config.totalCount - 1)
                 ) {
                     true
                 } else {
                     if (MediaUtils.hasMimeTypeOfVideo(selectResult.first().mimeType)) {
-                        selectResult.size == viewModel.config.maxVideoSelectNum
+                        selectResult.size == config.maxVideoSelectNum
                     } else {
-                        selectResult.size == viewModel.config.totalCount
+                        selectResult.size == config.totalCount
                     }
                 }
             }
@@ -439,8 +439,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        mTvPreview?.setDataStyle(viewModel.config, globalViewMode.selectResult)
-        mTvComplete?.setDataStyle(viewModel.config, globalViewMode.selectResult)
+        mTvPreview?.setDataStyle(config, globalViewMode.selectResult)
+        mTvComplete?.setDataStyle(config, globalViewMode.selectResult)
         mTvSelectNum?.visibility =
             if (globalViewMode.selectResult.isNotEmpty()) View.VISIBLE else View.GONE
         mTvSelectNum?.text = globalViewMode.selectResult.size.toString()
@@ -467,13 +467,13 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             if (view.itemDecorationCount == 0) {
                 view.addItemDecoration(
                     GridSpacingItemDecoration(
-                        viewModel.config.imageSpanCount,
+                        config.imageSpanCount,
                         DensityUtil.dip2px(requireContext(), 1F), false
                     )
                 )
             }
             view.layoutManager =
-                GridLayoutManager(requireContext(), viewModel.config.imageSpanCount)
+                GridLayoutManager(requireContext(), config.imageSpanCount)
             (view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
     }
@@ -484,14 +484,14 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun createMediaAdapter(): BaseMediaListAdapter {
         val adapterClass =
-            viewModel.config.registry.get(MediaListAdapter::class.java)
-        return viewModel.factory.create(adapterClass)
+            config.registry.get(MediaListAdapter::class.java)
+        return factory.create(adapterClass)
     }
 
     open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
-        mAdapter.setDisplayCamera(viewModel.config.isDisplayCamera)
+        mAdapter.setDisplayCamera(config.isDisplayCamera)
         mRecycler.adapter = mAdapter
         setFastSlidingSelect()
         onSelectionResultChange(null)
@@ -537,8 +537,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 if (DoubleUtils.isFastDoubleClick()) {
                     return
                 }
-                if (viewModel.config.isPreviewZoomEffect) {
-                    val isFullScreen = viewModel.config.isPreviewFullScreenMode
+                if (config.isPreviewZoomEffect) {
+                    val isFullScreen = config.isPreviewFullScreenMode
                     val statusBarHeight = getStatusBarHeight(requireContext())
                     RecycleItemViewParams.build(mRecycler, if (isFullScreen) 0 else statusBarHeight)
                 }
@@ -552,7 +552,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             }
 
             override fun onItemLongClick(itemView: View, position: Int, media: LocalMedia) {
-                if (viewModel.config.isFastSlidingSelect) {
+                if (config.isFastSlidingSelect) {
                     mDragSelectTouchListener?.let {
                         val activity = requireActivity()
                         val vibrator =
@@ -574,7 +574,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun setFastSlidingSelect() {
-        if (viewModel.config.isFastSlidingSelect) {
+        if (config.isFastSlidingSelect) {
             val selectedPosition = HashSet<Int>()
             val slideSelectionHandler =
                 SlideSelectionHandler(object : SlideSelectionHandler.ISelectionHandler {
@@ -614,15 +614,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun checkPermissions() {
-        if (PermissionChecker.isCheckReadStorage(requireContext(), viewModel.config.selectorMode)) {
+        if (PermissionChecker.isCheckReadStorage(requireContext(), config.selectorMode)) {
             requestData()
         } else {
             val permissionArray = PermissionChecker.getReadPermissionArray(
                 requireContext(),
-                viewModel.config.selectorMode
+                config.selectorMode
             )
             showPermissionDescription(true, permissionArray)
-            val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+            val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
             if (onPermissionApplyListener != null) {
                 showCustomPermissionApply(permissionArray)
             } else {
@@ -644,7 +644,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
 
     override fun showCustomPermissionApply(permission: Array<String>) {
-        viewModel.config.mListenerInfo.onPermissionApplyListener?.requestPermission(
+        config.mListenerInfo.onPermissionApplyListener?.requestPermission(
             this,
             permission,
             object :
@@ -665,7 +665,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         showPermissionDescription(false, permission)
         val isHasCamera = TextUtils.equals(permission[0], PermissionChecker.CAMERA)
-        val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+        val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
         val isHasPermissions = onPermissionApplyListener?.hasPermissions(this, permission)
             ?: PermissionChecker.checkSelfPermission(requireContext(), permission)
         if (isHasPermissions) {
@@ -690,8 +690,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * Start requesting media album data
      */
     open fun requestData() {
-        if (viewModel.config.isOnlySandboxDir) {
-            val sandboxDir = viewModel.config.sandboxDir
+        if (config.isOnlySandboxDir) {
+            val sandboxDir = config.sandboxDir
             mTvTitle?.text = sandboxDir!!.substring(sandboxDir.lastIndexOf("/") + 1)
             mIvTitleArrow?.visibility = View.GONE
             mRecycler.setEnabledLoadMore(false)
@@ -723,7 +723,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * @param result media data
      */
     open fun onMediaSourceChange(result: MutableList<LocalMedia>) {
-        mRecycler.setEnabledLoadMore(!viewModel.config.isOnlySandboxDir && result.isNotEmpty())
+        mRecycler.setEnabledLoadMore(!config.isOnlySandboxDir && result.isNotEmpty())
         if (viewModel.page == 1) {
             mAdapter.setDataNotifyChanged(result.toMutableList())
             mRecycler.scrollToPosition(0)
@@ -751,10 +751,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         isBottomPreview: Boolean,
         source: MutableList<LocalMedia>
     ) {
-        viewModel.config.previewWrap =
+        config.previewWrap =
             onWrapPreviewData(viewModel.page, position, isBottomPreview, source)
         val factory = ClassFactory.NewInstance()
-        val registry = viewModel.config.registry
+        val registry = config.registry
         val instance = factory.create(registry.get(newPreviewInstance()))
         val fragmentTag = instance.getFragmentTag()
         FragmentInjectManager.injectSystemRoomFragment(requireActivity(), fragmentTag, instance)
@@ -854,7 +854,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         val allMediaAlbum =
             mAlbumWindow.getAlbum(SelectorConstant.DEFAULT_ALL_BUCKET_ID) ?: LocalMediaAlbum()
         allMediaAlbum.bucketId = SelectorConstant.DEFAULT_ALL_BUCKET_ID
-        val defaultAlbumName = viewModel.config.defaultAlbumName
+        val defaultAlbumName = config.defaultAlbumName
         allMediaAlbum.bucketDisplayName =
             if (TextUtils.isEmpty(defaultAlbumName)) if (MediaUtils.hasMimeTypeOfAudio(media.mimeType))
                 getString(R.string.ps_all_audio) else getString(

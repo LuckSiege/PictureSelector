@@ -60,7 +60,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     override fun getResourceId(): Int {
-        return viewModel.config.layoutSource[LayoutSource.SELECTOR_PREVIEW]
+        return config.layoutSource[LayoutSource.SELECTOR_PREVIEW]
             ?: R.layout.ps_fragment_preview
     }
 
@@ -106,7 +106,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         val media = if (source.size > viewPager.currentItem) source[viewPager.currentItem] else null
         return !MediaUtils.hasMimeTypeOfAudio(media?.mimeType)
                 && !viewModel.previewWrap.isBottomPreview
-                && viewModel.config.isPreviewZoomEffect
+                && config.isPreviewZoomEffect
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -195,9 +195,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun attachPreview() {
-        viewModel.previewWrap = viewModel.config.previewWrap.copy()
+        viewModel.previewWrap = config.previewWrap.copy()
         viewModel.page = viewModel.previewWrap.page
-        viewModel.config.previewWrap.source.clear()
+        config.previewWrap.source.clear()
     }
 
 
@@ -227,16 +227,16 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun initNavbarBar() {
-        if (viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
+        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
             navBarViews.forEach { view ->
                 view.visibility = View.GONE
             }
         } else {
-            if (viewModel.config.isOnlyCamera) {
-                globalViewMode.isOriginal = viewModel.config.isOriginalControl
+            if (config.isOnlyCamera) {
+                globalViewMode.isOriginal = config.isOriginalControl
             } else {
                 mTvOriginal?.visibility =
-                    if (viewModel.config.isOriginalControl) View.VISIBLE else View.GONE
+                    if (config.isOriginalControl) View.VISIBLE else View.GONE
                 mTvOriginal?.setOnClickListener { tvOriginal ->
                     onOriginalClick(tvOriginal)
                 }
@@ -249,7 +249,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             }
             val media = viewModel.previewWrap.source[viewModel.previewWrap.position]
             mTvEditor?.visibility =
-                if (MediaUtils.hasMimeTypeOfImage(media.mimeType) && viewModel.config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
+                if (MediaUtils.hasMimeTypeOfImage(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
             mTvEditor?.setOnClickListener {
                 onEditorClick(it)
             }
@@ -286,7 +286,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             startSelectedAnim(v)
         }
         v.isSelected = isSelected
-        if (viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
+        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
             handleSelectResult()
         }
     }
@@ -302,7 +302,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onEditorClick(v: View) {
-        viewModel.config.mListenerInfo.onEditorMediaListener?.onEditorMedia(
+        config.mListenerInfo.onEditorMediaListener?.onEditorMedia(
             this,
             viewModel.previewWrap.source[viewPager.currentItem],
             SelectorConstant.REQUEST_EDITOR_CROP
@@ -310,7 +310,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onPreviewItemClick(media: LocalMedia) {
-        if (viewModel.config.isPreviewFullScreenMode) {
+        if (config.isPreviewFullScreenMode) {
             previewFullScreenMode()
         } else {
             if (isHasMagicalEffect()) {
@@ -322,7 +322,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        mTvComplete?.setDataStyle(viewModel.config, globalViewMode.selectResult)
+        mTvComplete?.setDataStyle(config, globalViewMode.selectResult)
         mTvSelectNum?.visibility =
             if (globalViewMode.selectResult.isNotEmpty()) View.VISIBLE else View.GONE
         mTvSelectNum?.text = globalViewMode.selectResult.size.toString()
@@ -356,7 +356,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun setStatusBarRectSize(statusBarRectView: View?, titleBar: View?) {
-        if (viewModel.config.isPreviewFullScreenMode) {
+        if (config.isPreviewFullScreenMode) {
             if (statusBarRectView?.background != null) {
                 statusBarRectView.setBackgroundColor((statusBarRectView.background as ColorDrawable).color)
             } else {
@@ -377,8 +377,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
      */
     open fun createMediaAdapter(): MediaPreviewAdapter {
         val adapterClass =
-            viewModel.config.registry.get(MediaPreviewAdapter::class.java)
-        return viewModel.factory.create(adapterClass)
+            config.registry.get(MediaPreviewAdapter::class.java)
+        return factory.create(adapterClass)
     }
 
     open fun initViewPagerData() {
@@ -588,7 +588,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isLoadMore(position)) {
             loadMediaMore()
         }
-        if (viewModel.config.isAutoPlay) {
+        if (config.isAutoPlay) {
             autoPlayAudioAndVideo()
         } else {
             val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
@@ -604,7 +604,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
      * Load more thresholds
      */
     open fun isLoadMore(position: Int): Boolean {
-        if (!viewModel.previewWrap.isBottomPreview && !viewModel.config.isOnlySandboxDir && !viewModel.previewWrap.isExternalPreview) {
+        if (!viewModel.previewWrap.isBottomPreview && !config.isOnlySandboxDir && !viewModel.previewWrap.isExternalPreview) {
             return position == (mAdapter.itemCount - 1) - 10 || position == mAdapter.itemCount - 1
         }
         return false
@@ -630,7 +630,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             mMagicalView?.setBackgroundAlpha(1.0F)
         }
-        if (viewModel.config.selectorMode == SelectorMode.AUDIO || (viewModel.previewWrap.source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
+        if (config.selectorMode == SelectorMode.AUDIO || (viewModel.previewWrap.source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
                 viewModel.previewWrap.source.first().mimeType
             ))
         ) {
@@ -696,7 +696,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             currentHolder.imageCover.scaleType = ImageView.ScaleType.FIT_CENTER
         }
-        if (viewModel.config.isAutoPlay) {
+        if (config.isAutoPlay) {
             autoPlayAudioAndVideo()
         } else {
             if (currentHolder is PreviewVideoHolder) {
@@ -768,7 +768,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         // begin titleBar translationY Animator
         val titleBarHeight = mTitleBarBackground?.height?.toFloat() ?: 0F
         val statusBarRectHeight =
-            if (viewModel.config.isPreviewFullScreenMode) mStatusBar?.measuredHeight ?: 0 else 0
+            if (config.isPreviewFullScreenMode) mStatusBar?.measuredHeight ?: 0 else 0
         val titleBarFrom: Float = if (isInitTitleBar) 0F else -titleBarHeight
         val titleBarTo = if (isInitTitleBar) -(titleBarHeight + statusBarRectHeight) else 0F
         titleViews.forEach { v ->

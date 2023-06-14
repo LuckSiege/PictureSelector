@@ -44,7 +44,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     }
 
     override fun getResourceId(): Int {
-        return viewModel.config.layoutSource[LayoutSource.SELECTOR_NUMBER_PREVIEW]
+        return config.layoutSource[LayoutSource.SELECTOR_NUMBER_PREVIEW]
             ?: R.layout.ps_fragment_number_preview
     }
 
@@ -119,7 +119,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         }
         galleryAdapter =
             GalleryAdapter(
-                viewModel.config,
+                config,
                 viewModel.previewWrap.isBottomPreview,
                 if (viewModel.previewWrap.isBottomPreview) globalViewMode.selectResult.toMutableList() else globalViewMode.selectResult
             )

@@ -17,8 +17,8 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.*
 import com.luck.picture.lib.config.SelectionMode
@@ -30,6 +30,7 @@ import com.luck.picture.lib.dialog.PhotoItemSelectedDialog
 import com.luck.picture.lib.dialog.PictureLoadingDialog
 import com.luck.picture.lib.dialog.ReminderDialog
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.ActivityCompatHelper
 import com.luck.picture.lib.immersive.ImmersiveManager.translucentStatusBar
 import com.luck.picture.lib.interfaces.OnCallbackListener
@@ -95,9 +96,27 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     private var tipsDialog: Dialog? = null
 
-    protected val viewModel by viewModels<SelectorViewModel>()
+    protected val config = SelectorProviders.getInstance().getSelectorConfig()
 
-    protected val globalViewMode by activityViewModels<GlobalViewModel>()
+    protected val factory = ClassFactory.NewInstance()
+
+    protected val viewModel by lazy {
+        val activity = requireActivity()
+        val savedStateViewModelFactory = SavedStateViewModelFactory(activity.application, this)
+        return@lazy ViewModelProvider(
+            this,
+            savedStateViewModelFactory
+        )[SelectorViewModel::class.java]
+    }
+
+    protected val globalViewMode by lazy {
+        val activity = requireActivity()
+        val savedStateViewModelFactory = SavedStateViewModelFactory(activity.application, activity)
+        return@lazy ViewModelProvider(
+            activity,
+            savedStateViewModelFactory
+        )[GlobalViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,19 +130,19 @@ abstract class BaseSelectorFragment : Fragment() {
         return if (enter) {
             AnimationUtils.loadAnimation(
                 requireContext(),
-                viewModel.selectorStyle.getWindowAnimation().getEnterAnim()
+                config.selectorStyle.getWindowAnimation().getEnterAnim()
             )
         } else {
             AnimationUtils.loadAnimation(
                 requireContext(),
-                viewModel.selectorStyle.getWindowAnimation().getExitAnim()
+                config.selectorStyle.getWindowAnimation().getExitAnim()
             )
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.config.mListenerInfo.onFragmentLifecycleListener?.onViewCreated(
+        config.mListenerInfo.onFragmentLifecycleListener?.onViewCreated(
             this,
             view,
             savedInstanceState
@@ -138,7 +157,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun showPermissionDescription(isDisplay: Boolean, permission: Array<String>) {
         val onPermissionDescriptionListener =
-            viewModel.config.mListenerInfo.onPermissionDescriptionListener
+            config.mListenerInfo.onPermissionDescriptionListener
         if (onPermissionDescriptionListener != null) {
             if (isDisplay) {
                 if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
@@ -162,7 +181,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (permission.isNotEmpty()) {
             SpUtils.putBoolean(requireContext(), permission[0], true)
         }
-        val onPermissionDeniedListener = viewModel.config.mListenerInfo.onPermissionDeniedListener
+        val onPermissionDeniedListener = config.mListenerInfo.onPermissionDeniedListener
         if (onPermissionDeniedListener != null) {
             showPermissionDescription(false, permission)
             onPermissionDeniedListener.onDenied(
@@ -182,8 +201,8 @@ abstract class BaseSelectorFragment : Fragment() {
     }
 
     private fun setTranslucentStatusBar() {
-        if (viewModel.config.isPreviewFullScreenMode && !viewModel.config.isOnlyCamera) {
-            val statusBar = viewModel.selectorStyle.getStatusBar()
+        if (config.isPreviewFullScreenMode && !config.isOnlyCamera) {
+            val statusBar = config.selectorStyle.getStatusBar()
             translucentStatusBar(requireActivity(), statusBar.isDarkStatusBar())
         }
     }
@@ -205,12 +224,12 @@ abstract class BaseSelectorFragment : Fragment() {
     }
 
     open fun onBackPressed() {
-        viewModel.config.mListenerInfo.onFragmentLifecycleListener?.onDestroy(this)
+        config.mListenerInfo.onFragmentLifecycleListener?.onDestroy(this)
         if (!isStateSaved) {
             if (isRootExit()) {
                 // Home Exit
                 if (this is SelectorMainFragment || this is SelectorCameraFragment) {
-                    viewModel.config.mListenerInfo.onResultCallbackListener?.onCancel()
+                    config.mListenerInfo.onResultCallbackListener?.onCancel()
                 }
                 if (isNormalDefaultEnter()) {
                     requireActivity().finish()
@@ -230,9 +249,9 @@ abstract class BaseSelectorFragment : Fragment() {
 
     open fun isRootExit(): Boolean {
         return this is SelectorMainFragment
-                || (this is SelectorCameraFragment && viewModel.config.isOnlyCamera)
+                || (this is SelectorCameraFragment && config.isOnlyCamera)
                 || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
-                || (this is SelectorSystemFragment && viewModel.config.systemGallery)
+                || (this is SelectorSystemFragment && config.systemGallery)
     }
 
     /**
@@ -245,7 +264,7 @@ abstract class BaseSelectorFragment : Fragment() {
             }
             val selectResult = globalViewMode.selectResult.toMutableList()
             viewModel.viewModelScope.launch {
-                val mediaConverterEngine = viewModel.config.mediaConverterEngine
+                val mediaConverterEngine = config.mediaConverterEngine
                 if (mediaConverterEngine != null) {
                     showLoading()
                     selectResult.forEach { media ->
@@ -254,7 +273,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     dismissLoading()
                 }
 
-                if (viewModel.config.isActivityResult) {
+                if (config.isActivityResult) {
                     requireActivity().intent?.apply {
                         val result = arrayListOf<LocalMedia>()
                         result.addAll(selectResult)
@@ -262,7 +281,7 @@ abstract class BaseSelectorFragment : Fragment() {
                         requireActivity().setResult(Activity.RESULT_OK, this)
                     }
                 } else {
-                    viewModel.config.mListenerInfo.onResultCallbackListener?.onResult(selectResult)
+                    config.mListenerInfo.onResultCallbackListener?.onResult(selectResult)
                 }
                 if (!isStateSaved) {
                     if (isNormalDefaultEnter()) {
@@ -284,14 +303,14 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun checkCompleteValidity(): Boolean {
         val selectResult = globalViewMode.selectResult
-        if (viewModel.config.mListenerInfo.onConfirmListener?.onConfirm(
+        if (config.mListenerInfo.onConfirmListener?.onConfirm(
                 requireContext(),
                 selectResult
             ) == true
         ) {
             return false
         }
-        if (viewModel.config.selectorMode == SelectorMode.ALL) {
+        if (config.selectorMode == SelectorMode.ALL) {
             var videoSize = 0
             var imageSize = 0
             selectResult.forEach {
@@ -304,43 +323,43 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 }
             }
-            if (viewModel.config.minSelectNum > 0 && imageSize < viewModel.config.minSelectNum) {
+            if (config.minSelectNum > 0 && imageSize < config.minSelectNum) {
                 showTipsDialog(
                     getString(
                         R.string.ps_min_img_num,
-                        viewModel.config.minSelectNum.toString()
+                        config.minSelectNum.toString()
                     )
                 )
                 return false
             }
-            if (viewModel.config.minVideoSelectNum > 0 && videoSize < viewModel.config.minVideoSelectNum) {
+            if (config.minVideoSelectNum > 0 && videoSize < config.minVideoSelectNum) {
                 showTipsDialog(
                     getString(
                         R.string.ps_min_video_num,
-                        viewModel.config.minVideoSelectNum.toString()
+                        config.minVideoSelectNum.toString()
                     )
                 )
                 return false
             }
         } else {
-            if (viewModel.config.minSelectNum > 0 && selectResult.size <= 0) {
-                val msg = when (viewModel.config.selectorMode) {
+            if (config.minSelectNum > 0 && selectResult.size <= 0) {
+                val msg = when (config.selectorMode) {
                     SelectorMode.VIDEO -> {
                         getString(
                             R.string.ps_min_video_num,
-                            viewModel.config.minSelectNum.toString()
+                            config.minSelectNum.toString()
                         )
                     }
                     SelectorMode.AUDIO -> {
                         getString(
                             R.string.ps_min_audio_num,
-                            viewModel.config.minSelectNum.toString()
+                            config.minSelectNum.toString()
                         )
                     }
                     else -> {
                         getString(
                             R.string.ps_min_img_num,
-                            viewModel.config.minSelectNum.toString()
+                            config.minSelectNum.toString()
                         )
                     }
                 }
@@ -355,14 +374,14 @@ abstract class BaseSelectorFragment : Fragment() {
      * Turn on the camera
      */
     open fun openSelectedCamera() {
-        if (viewModel.config.selectorMode == SelectorMode.ALL) {
-            if (viewModel.config.allCameraMode == SelectorMode.ALL) {
+        if (config.selectorMode == SelectorMode.ALL) {
+            if (config.allCameraMode == SelectorMode.ALL) {
                 onSelectedOnlyCameraDialog()
             } else {
-                startCameraAction(viewModel.config.allCameraMode)
+                startCameraAction(config.allCameraMode)
             }
         } else {
-            startCameraAction(viewModel.config.selectorMode)
+            startCameraAction(config.selectorMode)
         }
     }
 
@@ -397,28 +416,28 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun soundRecording() {
         val context = requireContext()
-        val outputDir = viewModel.config.audioOutputDir
+        val outputDir = config.audioOutputDir
         if (!TextUtils.isEmpty(outputDir)) {
             val defaultFileName = "${FileUtils.createFileName("AUD")}.amr"
-            val applyFileNameListener = viewModel.config.mListenerInfo.onApplyFileNameListener
+            val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
             val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
             // Use custom storage path
-            viewModel.outputUri = Uri.fromFile(File(outputDir, fileName))
+            viewModel.setOutputUri(Uri.fromFile(File(outputDir, fileName)))
         }
-        val soundCaptureComponent = viewModel.config.registry.get(SoundCaptureComponent::class.java)
+        val soundCaptureComponent = config.registry.get(SoundCaptureComponent::class.java)
         if (soundCaptureComponent.isAssignableFrom(SoundCaptureComponent::class.java)) {
-            val onRecordAudioListener = viewModel.config.mListenerInfo.onRecordAudioListener
+            val onRecordAudioListener = config.mListenerInfo.onRecordAudioListener
             if (onRecordAudioListener != null) {
-                ForegroundService.startService(context, viewModel.config.isForegroundService)
+                ForegroundService.startService(context, config.isForegroundService)
                 onRecordAudioListener.onRecordAudio(this, SelectorConstant.REQUEST_CAMERA)
             } else {
                 throw NullPointerException("Please implement the ${OnRecordAudioListener::class.java.simpleName} interface to achieve recording functionality")
             }
         } else {
-            val soundCaptureActivity = viewModel.factory.create(soundCaptureComponent)
+            val soundCaptureActivity = factory.create(soundCaptureComponent)
             val intent = Intent(context, soundCaptureActivity::class.java)
             startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-            ForegroundService.startService(context, viewModel.config.isForegroundService)
+            ForegroundService.startService(context, config.isForegroundService)
         }
     }
 
@@ -427,22 +446,22 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun takePictures() {
         val context = requireContext()
-        val outputDir = viewModel.config.imageOutputDir
+        val outputDir = config.imageOutputDir
         val defaultFileName = "${FileUtils.createFileName("IMG")}.jpg"
-        val applyFileNameListener = viewModel.config.mListenerInfo.onApplyFileNameListener
+        val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
         val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
         val outputUri: Uri?
         if (TextUtils.isEmpty(outputDir)) {
             // Use default storage path
             outputUri = MediaStoreUtils.insertImage(context, fileName)!!
-            viewModel.outputUri = outputUri
+            viewModel.setOutputUri(outputUri)
         } else {
             // Use custom storage path
             val outputFile = File(outputDir, fileName)
             outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.outputUri = Uri.fromFile(outputFile)
+            viewModel.setOutputUri(Uri.fromFile(outputFile))
         }
-        val customCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+        val customCameraListener = config.mListenerInfo.onCustomCameraListener
         if (customCameraListener != null) {
             customCameraListener.onCamera(
                 this,
@@ -452,20 +471,20 @@ abstract class BaseSelectorFragment : Fragment() {
             )
         } else {
             val imageCaptureComponent =
-                viewModel.config.registry.get(ImageCaptureComponent::class.java)
+                config.registry.get(ImageCaptureComponent::class.java)
             if (imageCaptureComponent.isAssignableFrom(ImageCaptureComponent::class.java)) {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (intent.resolveActivity(context.packageManager) != null) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
                     startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                    ForegroundService.startService(context, config.isForegroundService)
                 }
             } else {
-                val imageCaptureActivity = viewModel.factory.create(imageCaptureComponent)
+                val imageCaptureActivity = factory.create(imageCaptureComponent)
                 val intent = Intent(context, imageCaptureActivity::class.java)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
                 startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                ForegroundService.startService(context, viewModel.config.isForegroundService)
+                ForegroundService.startService(context, config.isForegroundService)
             }
         }
     }
@@ -475,22 +494,22 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun recordVideo() {
         val context = requireContext()
-        val outputDir = viewModel.config.videoOutputDir
+        val outputDir = config.videoOutputDir
         val defaultFileName = "${FileUtils.createFileName("VID")}.mp4"
-        val applyFileNameListener = viewModel.config.mListenerInfo.onApplyFileNameListener
+        val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
         val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
         val outputUri: Uri?
         if (TextUtils.isEmpty(outputDir)) {
             // Use default storage path
             outputUri = MediaStoreUtils.insertVideo(context, fileName)!!
-            viewModel.outputUri = outputUri
+            viewModel.setOutputUri(outputUri)
         } else {
             // Use custom storage path
             val outputFile = File(outputDir, fileName)
             outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.outputUri = Uri.fromFile(outputFile)
+            viewModel.setOutputUri(Uri.fromFile(outputFile))
         }
-        val customCameraListener = viewModel.config.mListenerInfo.onCustomCameraListener
+        val customCameraListener = config.mListenerInfo.onCustomCameraListener
         if (customCameraListener != null) {
             customCameraListener.onCamera(
                 this,
@@ -500,21 +519,21 @@ abstract class BaseSelectorFragment : Fragment() {
             )
         } else {
             val videoCaptureComponent =
-                viewModel.config.registry.get(VideoCaptureComponent::class.java)
+                config.registry.get(VideoCaptureComponent::class.java)
             if (videoCaptureComponent.isAssignableFrom(VideoCaptureComponent::class.java)) {
                 val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                 if (intent.resolveActivity(context.packageManager) != null) {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
-                    intent.putExtra(SelectorConstant.QUICK_CAPTURE, viewModel.config.isQuickCapture)
+                    intent.putExtra(SelectorConstant.QUICK_CAPTURE, config.isQuickCapture)
                     startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                    ForegroundService.startService(context, viewModel.config.isForegroundService)
+                    ForegroundService.startService(context, config.isForegroundService)
                 }
             } else {
-                val videoCaptureActivity = viewModel.factory.create(videoCaptureComponent)
+                val videoCaptureActivity = factory.create(videoCaptureComponent)
                 val intent = Intent(context, videoCaptureActivity::class.java)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
                 startActivityForResult(intent, SelectorConstant.REQUEST_CAMERA)
-                ForegroundService.startService(context, viewModel.config.isForegroundService)
+                ForegroundService.startService(context, config.isForegroundService)
             }
         }
     }
@@ -538,7 +557,7 @@ abstract class BaseSelectorFragment : Fragment() {
             }
         })
         selectedDialog.setOnDismissListener { isCancel, _ ->
-            if (viewModel.config.isOnlyCamera && isCancel) {
+            if (config.isOnlyCamera && isCancel) {
                 onBackPressed()
             }
         }
@@ -552,12 +571,12 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun confirmSelect(media: LocalMedia, isSelected: Boolean): Int {
         if (!isSelected) {
-            if (viewModel.config.selectionMode == SelectionMode.MULTIPLE) {
+            if (config.selectionMode == SelectionMode.MULTIPLE) {
                 if (onCheckSelectValidity(media, isSelected) != SelectedState.SUCCESS) {
                     return SelectedState.INVALID
                 }
             }
-            if (viewModel.config.mListenerInfo.onSelectFilterListener?.onSelectFilter(
+            if (config.mListenerInfo.onSelectFilterListener?.onSelectFilter(
                     requireContext(),
                     media
                 ) == true
@@ -572,7 +591,7 @@ abstract class BaseSelectorFragment : Fragment() {
             }
             SelectedState.REMOVE
         } else {
-            if (viewModel.config.selectionMode == SelectionMode.SINGLE) {
+            if (config.selectionMode == SelectionMode.SINGLE) {
                 if (globalViewMode.selectResult.isNotEmpty()) {
                     globalViewMode.selectResultLiveData.value =
                         globalViewMode.selectResult.first()
@@ -594,9 +613,9 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun onCheckSelectValidity(media: LocalMedia, isSelected: Boolean): Int {
         val count = globalViewMode.selectResult.size
-        when (viewModel.config.selectorMode) {
+        when (config.selectorMode) {
             SelectorMode.ALL -> {
-                if (viewModel.config.isAllWithImageVideo) {
+                if (config.isAllWithImageVideo) {
                     // Support for selecting images and videos
                     var videoSize = 0
                     var imageSize = 0
@@ -608,24 +627,24 @@ abstract class BaseSelectorFragment : Fragment() {
                         }
                     }
 
-                    if (viewModel.config.isAsTotalCount) {
+                    if (config.isAsTotalCount) {
                         // The number of maxVideoSelectNum in select all mode is included within maxSelectNum
-                        if (count >= viewModel.config.totalCount) {
+                        if (count >= config.totalCount) {
                             showTipsDialog(
                                 getString(
                                     R.string.ps_message_max_num,
-                                    viewModel.config.totalCount.toString()
+                                    config.totalCount.toString()
                                 )
                             )
                             return SelectedState.INVALID
                         }
                         if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
                             // If the selected video exceeds the [config.maxVideoSelectNum] limit
-                            if (videoSize >= viewModel.config.maxVideoSelectNum) {
+                            if (videoSize >= config.maxVideoSelectNum) {
                                 showTipsDialog(
                                     getString(
                                         R.string.ps_message_video_max_num,
-                                        viewModel.config.maxVideoSelectNum.toString()
+                                        config.maxVideoSelectNum.toString()
                                     )
                                 )
                                 return SelectedState.INVALID
@@ -634,22 +653,22 @@ abstract class BaseSelectorFragment : Fragment() {
                     } else {
                         if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
                             // If the selected video exceeds the [config.maxVideoSelectNum] limit
-                            if (videoSize >= viewModel.config.maxVideoSelectNum) {
+                            if (videoSize >= config.maxVideoSelectNum) {
                                 showTipsDialog(
                                     getString(
                                         R.string.ps_message_video_max_num,
-                                        viewModel.config.maxVideoSelectNum.toString()
+                                        config.maxVideoSelectNum.toString()
                                     )
                                 )
                                 return SelectedState.INVALID
                             }
                         } else if (MediaUtils.hasMimeTypeOfImage(media.mimeType)) {
                             // If the selected image exceeds the [config.maxSelectNum] limit
-                            if (imageSize >= viewModel.config.totalCount) {
+                            if (imageSize >= config.totalCount) {
                                 showTipsDialog(
                                     getString(
                                         R.string.ps_message_max_num,
-                                        viewModel.config.totalCount.toString()
+                                        config.totalCount.toString()
                                     )
                                 )
                                 return SelectedState.INVALID
@@ -666,11 +685,11 @@ abstract class BaseSelectorFragment : Fragment() {
                                 showTipsDialog(getString(R.string.ps_rule))
                                 return SelectedState.INVALID
                             }
-                            if (count >= viewModel.config.totalCount) {
+                            if (count >= config.totalCount) {
                                 showTipsDialog(
                                     getString(
                                         R.string.ps_message_max_num,
-                                        viewModel.config.totalCount.toString()
+                                        config.totalCount.toString()
                                     )
                                 )
                                 return SelectedState.INVALID
@@ -681,11 +700,11 @@ abstract class BaseSelectorFragment : Fragment() {
                                 showTipsDialog(getString(R.string.ps_rule))
                                 return SelectedState.INVALID
                             }
-                            if (count >= viewModel.config.totalCount) {
+                            if (count >= config.totalCount) {
                                 showTipsDialog(
                                     getString(
                                         R.string.ps_message_video_max_num,
-                                        viewModel.config.totalCount.toString()
+                                        config.totalCount.toString()
                                     )
                                 )
                                 return SelectedState.INVALID
@@ -695,32 +714,32 @@ abstract class BaseSelectorFragment : Fragment() {
                 }
             }
             SelectorMode.IMAGE -> {
-                if (count >= viewModel.config.totalCount) {
+                if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
-                            R.string.ps_message_max_num, viewModel.config.totalCount.toString()
+                            R.string.ps_message_max_num, config.totalCount.toString()
                         )
                     )
                     return SelectedState.INVALID
                 }
             }
             SelectorMode.VIDEO -> {
-                if (count >= viewModel.config.totalCount) {
+                if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
                             R.string.ps_message_video_max_num,
-                            viewModel.config.totalCount.toString()
+                            config.totalCount.toString()
                         )
                     )
                     return SelectedState.INVALID
                 }
             }
             SelectorMode.AUDIO -> {
-                if (count >= viewModel.config.totalCount) {
+                if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
                             R.string.ps_message_audio_max_num,
-                            viewModel.config.totalCount.toString()
+                            config.totalCount.toString()
                         )
                     )
                     return SelectedState.INVALID
@@ -749,7 +768,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Process the selection results based on user API settings
      */
     open fun handleSelectResult() {
-        val cropEngine = viewModel.config.cropEngine
+        val cropEngine = config.cropEngine
         if (cropEngine != null && isCrop()) {
             cropEngine.onCrop(this, globalViewMode.selectResult, SelectorConstant.REQUEST_CROP)
         } else {
@@ -762,7 +781,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun isCrop(): Boolean {
         globalViewMode.selectResult.forEach continuing@{ media ->
-            if (viewModel.config.skipCropFormat.contains(media.mimeType)) {
+            if (config.skipCropFormat.contains(media.mimeType)) {
                 return@continuing
             }
             if (MediaUtils.hasMimeTypeOfImage(media.mimeType)) {
@@ -783,11 +802,11 @@ abstract class BaseSelectorFragment : Fragment() {
     }
 
     open fun initAppLanguage() {
-        if (viewModel.config.language != Language.UNKNOWN_LANGUAGE) {
+        if (config.language != Language.UNKNOWN_LANGUAGE) {
             PictureLanguageUtils.setAppLanguage(
                 requireContext(),
-                viewModel.config.language,
-                viewModel.config.defaultLanguage
+                config.language,
+                config.defaultLanguage
             )
         }
     }
@@ -810,15 +829,15 @@ abstract class BaseSelectorFragment : Fragment() {
         ForegroundService.stopService(context)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val schemeFile = viewModel.outputUri?.scheme.equals("file")
+                val schemeFile = viewModel.getOutputUri()?.scheme.equals("file")
                 val outputUri = if (schemeFile) {
-                    viewModel.outputUri
+                    viewModel.getOutputUri()
                 } else {
                     data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
-                    ?: viewModel.outputUri
+                    ?: viewModel.getOutputUri()
                 }
                 if (outputUri != null) {
-                    if (viewModel.config.selectorMode == SelectorMode.AUDIO && schemeFile && data?.data != null) {
+                    if (config.selectorMode == SelectorMode.AUDIO && schemeFile && data?.data != null) {
                         copyAudioUriToFile(data.data!!)
                     } else {
                         analysisCameraData(outputUri)
@@ -846,13 +865,14 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun copyAudioUriToFile(uri: Uri) {
         requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
-            val outputUri = viewModel.outputUri!!
-            val fileOutputStream = FileOutputStream(outputUri.path)
-            if (FileUtils.writeFileFromIS(inputStream, fileOutputStream)) {
-                MediaUtils.deleteUri(requireContext(), uri)
-                analysisCameraData(outputUri)
+            viewModel.getOutputUri()?.let { uri ->
+                val fileOutputStream = FileOutputStream(uri.path)
+                if (FileUtils.writeFileFromIS(inputStream, fileOutputStream)) {
+                    MediaUtils.deleteUri(requireContext(), uri)
+                    analysisCameraData(uri)
+                }
+                FileUtils.close(inputStream)
             }
-            FileUtils.close(inputStream)
         }
     }
 
@@ -937,7 +957,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun createLoadingDialog() {
         mLoadingDialog =
-            viewModel.config.mListenerInfo.onCustomLoadingListener?.create(requireContext())
+            config.mListenerInfo.onCustomLoadingListener?.create(requireContext())
                 ?: PictureLoadingDialog(requireContext())
     }
 

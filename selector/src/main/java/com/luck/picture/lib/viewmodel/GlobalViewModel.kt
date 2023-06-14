@@ -3,6 +3,7 @@ package com.luck.picture.lib.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.luck.picture.lib.entity.LocalMedia
 
 /**
@@ -10,7 +11,8 @@ import com.luck.picture.lib.entity.LocalMedia
  * @date：2022/11/22 5:58 下午
  * @describe：ViewModel with Global Changes
  */
-class GlobalViewModel(application: Application) : AndroidViewModel(application) {
+class GlobalViewModel(application: Application, private val state: SavedStateHandle) :
+    AndroidViewModel(application) {
 
     /**
      * Use original resources

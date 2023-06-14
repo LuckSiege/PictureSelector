@@ -17,7 +17,7 @@ class SelectorNumberMainFragment : SelectorMainFragment() {
     }
 
     override fun getResourceId(): Int {
-        return viewModel.config.layoutSource[LayoutSource.SELECTOR_NUMBER_MAIN]
+        return config.layoutSource[LayoutSource.SELECTOR_NUMBER_MAIN]
             ?: R.layout.ps_fragment_number_selector
     }
 

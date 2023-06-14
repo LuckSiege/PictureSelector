@@ -69,15 +69,15 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         createSystemContracts()
-        if (isCheckReadStorage(requireContext(), viewModel.config.selectorMode)) {
+        if (isCheckReadStorage(requireContext(), config.selectorMode)) {
             openSystemAlbum()
         } else {
             val permissionArray = PermissionChecker.getReadPermissionArray(
                 requireContext(),
-                viewModel.config.selectorMode
+                config.selectorMode
             )
             showPermissionDescription(true, permissionArray)
-            val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+            val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
             if (onPermissionApplyListener != null) {
                 showCustomPermissionApply(permissionArray)
             } else {
@@ -96,7 +96,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     }
 
     override fun showCustomPermissionApply(permission: Array<String>) {
-        viewModel.config.mListenerInfo.onPermissionApplyListener?.requestPermission(
+        config.mListenerInfo.onPermissionApplyListener?.requestPermission(
             this,
             permission,
             object :
@@ -115,14 +115,14 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
      * 打开系统相册
      */
     open fun openSystemAlbum() {
-        if (viewModel.config.selectionMode == SelectionMode.SINGLE || viewModel.config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            if (viewModel.config.selectorMode == SelectorMode.ALL) {
+        if (config.selectionMode == SelectionMode.SINGLE || config.selectionMode == SelectionMode.ONLY_SINGLE) {
+            if (config.selectorMode == SelectorMode.ALL) {
                 mDocSingleLauncher?.launch(SYSTEM_ALL)
             } else {
                 mContentLauncher?.launch(getInput())
             }
         } else {
-            if (viewModel.config.selectorMode == SelectorMode.ALL) {
+            if (config.selectorMode == SelectorMode.ALL) {
                 mDocMultipleLauncher?.launch(SYSTEM_ALL)
             } else {
                 mContentsLauncher?.launch(getInput())
@@ -131,7 +131,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     }
 
     open fun getInput(): String? {
-        return when (viewModel.config.selectorMode) {
+        return when (config.selectorMode) {
             SelectorMode.VIDEO -> {
                 SYSTEM_AUDIO
                 SYSTEM_VIDEO
@@ -149,15 +149,15 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
      * create System Contracts
      */
     open fun createSystemContracts() {
-        val selectionMode = viewModel.config.selectionMode
+        val selectionMode = config.selectionMode
         if (selectionMode == SelectionMode.MULTIPLE) {
-            if (viewModel.config.selectorMode == SelectorMode.ALL) {
+            if (config.selectorMode == SelectorMode.ALL) {
                 createMultipleDocuments()
             } else {
                 createMultipleContents()
             }
         } else {
-            if (viewModel.config.selectorMode == SelectorMode.ALL) {
+            if (config.selectorMode == SelectorMode.ALL) {
                 createSingleDocuments()
             } else {
                 createContent()
@@ -384,7 +384,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
             return
         }
         showPermissionDescription(false, permission)
-        val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+        val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
         val isHasPermissions = onPermissionApplyListener?.hasPermissions(this, permission)
             ?: PermissionChecker.checkSelfPermission(requireContext(), permission)
         if (isHasPermissions) {

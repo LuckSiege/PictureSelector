@@ -39,7 +39,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
     }
 
     override fun getResourceId(): Int {
-        return viewModel.config.layoutSource[LayoutSource.SELECTOR_EXTERNAL_PREVIEW]
+        return config.layoutSource[LayoutSource.SELECTOR_EXTERNAL_PREVIEW]
             ?: R.layout.ps_fragment_external_preview
     }
 
@@ -49,7 +49,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
         ivDelete = view.findViewById(R.id.ps_iv_delete)
         addTitleBarViewGroup(ivDelete)
         ivDelete.visibility =
-            if (viewModel.config.previewWrap.isDisplayDelete) View.VISIBLE else View.GONE
+            if (config.previewWrap.isDisplayDelete) View.VISIBLE else View.GONE
     }
 
     override fun initWidgets() {
@@ -63,7 +63,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
                 data: LocalMedia
             ) {
                 if (viewModel.previewWrap.isDownload) {
-                    if (viewModel.config.mListenerInfo.onExternalPreviewListener?.onLongPressDownload(
+                    if (config.mListenerInfo.onExternalPreviewListener?.onLongPressDownload(
                             requireContext(),
                             data
                         ) != true
@@ -78,7 +78,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
     open fun delete() {
         val currentItem = viewPager.currentItem
         val media = viewModel.previewWrap.source[currentItem]
-        viewModel.config.mListenerInfo.onExternalPreviewListener?.onDelete(
+        config.mListenerInfo.onExternalPreviewListener?.onDelete(
             requireContext(),
             currentItem,
             media

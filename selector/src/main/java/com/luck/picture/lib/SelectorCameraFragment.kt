@@ -103,7 +103,7 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
         val context = requireContext()
         showPermissionDescription(false, permission)
         var isHasPermissions: Boolean
-        val onPermissionApplyListener = viewModel.config.mListenerInfo.onPermissionApplyListener
+        val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
         if (onPermissionApplyListener != null) {
             isHasPermissions = onPermissionApplyListener.hasPermissions(this, permission)
         } else {
