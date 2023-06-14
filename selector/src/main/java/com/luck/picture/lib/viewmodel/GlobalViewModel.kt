@@ -11,23 +11,29 @@ import com.luck.picture.lib.entity.LocalMedia
  * @date：2022/11/22 5:58 下午
  * @describe：ViewModel with Global Changes
  */
+private const val KEY_ORIGINAL_LIVE_DATA = "key_original_live_data"
+
 class GlobalViewModel(application: Application, private val state: SavedStateHandle) :
     AndroidViewModel(application) {
 
     /**
-     * Use original resources
+     *  The original drawing options have changed
      */
-    var isOriginal: Boolean = false
+    fun getOriginalLiveData(): MutableLiveData<Boolean> {
+        if (!state.contains(KEY_ORIGINAL_LIVE_DATA)) {
+            state[KEY_ORIGINAL_LIVE_DATA] = false
+        }
+        return state.getLiveData(KEY_ORIGINAL_LIVE_DATA, false)
+    }
+
+    fun setOriginalLiveData(isOriginal: Boolean) {
+        getOriginalLiveData().value = isOriginal
+    }
 
     /**
      * select result
      */
     val selectResult = mutableListOf<LocalMedia>()
-
-    /**
-     *  The original drawing options have changed
-     */
-    val originalLiveData = MutableLiveData<Boolean>()
 
     /**
      *  selected result change
@@ -44,6 +50,5 @@ class GlobalViewModel(application: Application, private val state: SavedStateHan
      */
     fun reset() {
         selectResult.clear()
-        isOriginal = false
     }
 }

@@ -156,7 +156,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             }
             onSelectionResultChange(change)
         }
-        globalViewMode.originalLiveData.observe(viewLifecycleOwner) { isOriginal ->
+        globalViewMode.getOriginalLiveData().observe(viewLifecycleOwner) { isOriginal ->
             onOriginalChange(isOriginal)
         }
         viewModel.mediaLiveData.observe(viewLifecycleOwner) { result ->
@@ -233,7 +233,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             }
         } else {
             if (config.isOnlyCamera) {
-                globalViewMode.isOriginal = config.isOriginalControl
             } else {
                 mTvOriginal?.visibility =
                     if (config.isOriginalControl) View.VISIBLE else View.GONE
@@ -266,12 +265,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onOriginalClick(v: View) {
-        globalViewMode.originalLiveData.value = !v.isSelected
+        globalViewMode.setOriginalLiveData(!v.isSelected)
     }
 
     open fun onOriginalChange(isOriginal: Boolean) {
         mTvOriginal?.isSelected = isOriginal
-        globalViewMode.isOriginal = isOriginal
     }
 
     open fun onSelectedClick(v: View) {

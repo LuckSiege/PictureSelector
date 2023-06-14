@@ -158,7 +158,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
             }
         }
-        globalViewMode.originalLiveData.observe(viewLifecycleOwner) { isOriginal ->
+        globalViewMode.getOriginalLiveData().observe(viewLifecycleOwner) { isOriginal ->
             onOriginalChange(isOriginal)
         }
         globalViewMode.selectResultLiveData.observe(viewLifecycleOwner) { media ->
@@ -236,12 +236,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun onOriginalClick(v: View) {
-        globalViewMode.originalLiveData.value = !v.isSelected
+        globalViewMode.setOriginalLiveData(!v.isSelected)
     }
 
     open fun onOriginalChange(isOriginal: Boolean) {
         mTvOriginal?.isSelected = isOriginal
-        globalViewMode.isOriginal = isOriginal
     }
 
     open fun onCompleteClick(v: View) {
@@ -386,7 +385,6 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             }
         } else {
             if (config.isOnlyCamera) {
-                globalViewMode.isOriginal = config.isOriginalControl
             } else {
                 mTvOriginal?.visibility =
                     if (config.isOriginalControl) View.VISIBLE else View.GONE
