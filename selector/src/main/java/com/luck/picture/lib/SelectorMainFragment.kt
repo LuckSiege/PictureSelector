@@ -184,7 +184,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         viewModel.mediaLiveData.observe(viewLifecycleOwner) { mediaList ->
             onMediaSourceChange(mediaList)
-            SelectorLogUtils.info("主页${mediaList.size}")
+            SelectorLogUtils.info("当前数量->${mAdapter.getData().size}")
         }
     }
 
