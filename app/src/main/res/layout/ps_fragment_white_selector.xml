@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toTopOf="@id/ps_bottom_nar_bar_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/ps_color_white"
         app:layout_constraintTop_toBottomOf="@id/ps_title_bar_bg" />
 
     <com.luck.picture.lib.widget.MediumBoldTextView

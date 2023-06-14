@@ -304,7 +304,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 }
             }
-            if (viewModel.config.minSelectNum > 0 && imageSize <= 0) {
+            if (viewModel.config.minSelectNum > 0 && imageSize < viewModel.config.minSelectNum) {
                 showTipsDialog(
                     getString(
                         R.string.ps_min_img_num,
@@ -313,7 +313,7 @@ abstract class BaseSelectorFragment : Fragment() {
                 )
                 return false
             }
-            if (viewModel.config.minVideoSelectNum > 0 && videoSize <= 0) {
+            if (viewModel.config.minVideoSelectNum > 0 && videoSize < viewModel.config.minVideoSelectNum) {
                 showTipsDialog(
                     getString(
                         R.string.ps_min_video_num,

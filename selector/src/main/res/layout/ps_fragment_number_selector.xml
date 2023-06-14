@@ -10,6 +10,7 @@
         android:id="@+id/ps_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/ps_color_black"
         android:overScrollMode="never"
         app:layout_constraintBottom_toTopOf="@id/ps_bottom_nar_bar_bg"
         app:layout_constraintLeft_toLeftOf="parent"
