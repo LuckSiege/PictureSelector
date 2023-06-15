@@ -23,7 +23,7 @@ abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(
     val imageCover: ImageView = itemView.findViewById(R.id.iv_preview_cover)
 
     open fun getRealSizeFromMedia(media: LocalMedia): IntArray {
-        return if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
+        return if ((media.isCrop() || media.isEditor()) && media.cropWidth > 0 && media.cropHeight > 0) {
             intArrayOf(media.cropWidth, media.cropHeight)
         } else {
             intArrayOf(media.width, media.height)

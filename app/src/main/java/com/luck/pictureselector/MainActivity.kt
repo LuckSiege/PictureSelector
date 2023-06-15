@@ -6,8 +6,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.luck.lib.camerax.SimpleCameraX
 import com.luck.picture.lib.SelectorNumberMainFragment
 import com.luck.picture.lib.SelectorNumberPreviewFragment
@@ -34,6 +38,7 @@ import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.helper.ActivityCompatHelper
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
@@ -46,6 +51,8 @@ import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewImageHolder
 import com.luck.pictureselector.listener.DragListener
+import com.yalantis.ucrop.UCrop
+import com.yalantis.ucrop.UCropImageEngine
 import java.io.File
 import java.util.*
 
@@ -89,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
+        val checkEditor = findViewById<CheckBox>(R.id.check_editor)
         val checkFilter = findViewById<CheckBox>(R.id.check_filter)
         val checkOutput = findViewById<CheckBox>(R.id.check_output)
         val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
@@ -452,6 +460,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
+                        gallery.setOnEditorMediaListener(if (checkEditor.isChecked) getEditorMediaListener else null)
                         gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
                         gallery.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         if (checkOutput.isChecked) {
@@ -699,6 +708,62 @@ class MainActivity : AppCompatActivity() {
                     tvDeleteText.animate().alpha(0F).setDuration(120).start()
                 }
             }
+        }
+    }
+
+    private val getEditorMediaListener = object : OnEditorMediaListener {
+
+        override fun onEditorMedia(fragment: Fragment, media: LocalMedia, requestCode: Int) {
+            val sourceUri = Uri.parse(media.path)
+            val destinationUri = Uri.fromFile(
+                File(fragment.requireContext().cacheDir, "${System.currentTimeMillis()}.jpg")
+            )
+            val uCrop = UCrop.of<UCrop>(sourceUri, destinationUri)
+            uCrop.setImageEngine(object : UCropImageEngine {
+                override fun loadImage(
+                    context: Context,
+                    url: String,
+                    imageView: ImageView
+                ) {
+                    if (!ActivityCompatHelper.assertValidRequest(context)) {
+                        return
+                    }
+                    Glide.with(context).load(url).override(180, 180)
+                        .into(imageView)
+                }
+
+                override fun loadImage(
+                    context: Context,
+                    url: Uri,
+                    maxWidth: Int,
+                    maxHeight: Int,
+                    call: UCropImageEngine.OnCallbackListener<Bitmap>?
+                ) {
+                    if (!ActivityCompatHelper.assertValidRequest(context)) {
+                        return
+                    }
+                    Glide.with(context).asBitmap().load(url)
+                        .override(maxWidth, maxHeight)
+                        .into(object : CustomTarget<Bitmap?>() {
+
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                                call?.onCall(null)
+                            }
+
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap?>?
+                            ) {
+                                call?.onCall(resource)
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                                call?.onCall(null)
+                            }
+                        })
+                }
+            })
+            uCrop.startEdit(fragment.requireContext(), fragment, requestCode)
         }
     }
 

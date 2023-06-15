@@ -519,7 +519,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 }
             }
         }
-        if (media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0) {
+        if ((media.isCrop() || media.isEditor()) && media.cropWidth > 0 && media.cropHeight > 0) {
             realWidth = media.cropWidth
             realHeight = media.cropHeight
         }
@@ -690,7 +690,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onMojitoBeginAnimComplete(mojitoView: MagicalView?, showImmediately: Boolean) {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
         val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
-        val isResetSize = media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0
+        val isResetSize = (media.isCrop() || media.isEditor()) && media.cropWidth > 0 && media.cropHeight > 0
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
         if (MediaUtils.isLongImage(realWidth, realHeight)) {
@@ -884,6 +884,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             data?.getParcelableExtra<Uri>(MediaStore.EXTRA_OUTPUT)
         }
+        media.cropWidth = data?.getIntExtra(CropWrap.CROP_IMAGE_WIDTH, 0) ?: 0
+        media.cropHeight = data?.getIntExtra(CropWrap.CROP_IMAGE_HEIGHT, 0) ?: 0
+        media.cropOffsetX = data?.getIntExtra(CropWrap.CROP_OFFSET_X, 0) ?: 0
+        media.cropOffsetY = data?.getIntExtra(CropWrap.CROP_OFFSET_Y, 0) ?: 0
+        media.cropAspectRatio = data?.getFloatExtra(CropWrap.CROP_ASPECT_RATIO, 0F) ?: 0F
         media.editorPath = if (MediaUtils.isContent(outputUri.toString())) {
             outputUri.toString()
         } else {
