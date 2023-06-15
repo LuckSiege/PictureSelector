@@ -2,6 +2,7 @@ package com.luck.picture.lib.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.os.Bundle
 import androidx.lifecycle.*
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.NotNull
  */
 private const val KEY_PAGE = "key_page"
 private const val KEY_OUTPUT_DATA = "key_output_uri"
+private const val KEY_PREVIEW_WRAP = "key_preview_wrap"
+private const val KEY_CURRENT_ALBUM = "key_current_album"
 
 class SelectorViewModel(application: Application, private val state: SavedStateHandle) :
     AndroidViewModel(application) {
@@ -32,18 +35,12 @@ class SelectorViewModel(application: Application, private val state: SavedStateH
     /**
      *  camera output uri
      */
-    fun setOutputUri(uri: Uri?) {
-        state[KEY_OUTPUT_DATA] = uri
-    }
-
-    fun getOutputUri(): Uri? {
-        return state[KEY_OUTPUT_DATA]
-    }
+    var outputUri: Uri? = null
 
     /**
      * Preview data wrap
      */
-    var previewWrap: PreviewDataWrap = PreviewDataWrap()
+    var previewWrap = PreviewDataWrap()
 
     /**
      * Current Selected album
@@ -76,6 +73,22 @@ class SelectorViewModel(application: Application, private val state: SavedStateH
      */
     private val _albums = MutableLiveData<MutableList<LocalMediaAlbum>>()
     val albumLiveData: LiveData<MutableList<LocalMediaAlbum>> get() = _albums
+
+    fun saveResult() {
+        state[KEY_PAGE] = page
+        state[KEY_OUTPUT_DATA] = outputUri
+        state[KEY_PREVIEW_WRAP] = previewWrap
+        state[KEY_CURRENT_ALBUM] = currentMediaAlbum
+    }
+
+    fun restoreResult(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            page = state[KEY_PAGE] ?: page
+            outputUri = state[KEY_OUTPUT_DATA] ?: outputUri
+            previewWrap = state[KEY_PREVIEW_WRAP] ?: previewWrap
+            currentMediaAlbum = state[KEY_CURRENT_ALBUM] ?: currentMediaAlbum
+        }
+    }
 
     /**
      * Refresh System Album

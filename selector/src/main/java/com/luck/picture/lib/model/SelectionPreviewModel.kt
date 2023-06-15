@@ -293,7 +293,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (fragmentManager == null) {
             throw NullPointerException("FragmentManager cannot be null")
         }
-        config.previewWrap.source = source.toMutableList()
+        config.previewWrap.source = ArrayList(source)
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
         config.previewWrap.totalCount = source.size
@@ -338,7 +338,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {
             config.isPreviewZoomEffect = false
         }
-        config.previewWrap.source = source.toMutableList()
+        config.previewWrap.source = source.toList() as ArrayList<LocalMedia>
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
         config.previewWrap.totalCount = source.size

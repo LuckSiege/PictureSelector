@@ -100,6 +100,8 @@ abstract class BaseSelectorFragment : Fragment() {
 
     protected val factory = ClassFactory.NewInstance()
 
+    protected var isSavedInstanceState = false
+
     protected val viewModel by lazy {
         val activity = requireActivity()
         val savedStateViewModelFactory = SavedStateViewModelFactory(activity.application, this)
@@ -142,6 +144,9 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isSavedInstanceState = savedInstanceState != null
+        viewModel.restoreResult(savedInstanceState)
+        globalViewMode.restoreResult(savedInstanceState)
         config.mListenerInfo.onFragmentLifecycleListener?.onViewCreated(
             this,
             view,
@@ -150,6 +155,12 @@ abstract class BaseSelectorFragment : Fragment() {
         createLoadingDialog()
         setFragmentKeyBackListener()
         setTranslucentStatusBar()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.saveResult()
+        globalViewMode.saveResult()
     }
 
     /**
@@ -422,7 +433,7 @@ abstract class BaseSelectorFragment : Fragment() {
             val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
             val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
             // Use custom storage path
-            viewModel.setOutputUri(Uri.fromFile(File(outputDir, fileName)))
+            viewModel.outputUri = Uri.fromFile(File(outputDir, fileName))
         }
         val soundCaptureComponent = config.registry.get(SoundCaptureComponent::class.java)
         if (soundCaptureComponent.isAssignableFrom(SoundCaptureComponent::class.java)) {
@@ -454,12 +465,12 @@ abstract class BaseSelectorFragment : Fragment() {
         if (TextUtils.isEmpty(outputDir)) {
             // Use default storage path
             outputUri = MediaStoreUtils.insertImage(context, fileName)!!
-            viewModel.setOutputUri(outputUri)
+            viewModel.outputUri = outputUri
         } else {
             // Use custom storage path
             val outputFile = File(outputDir, fileName)
             outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.setOutputUri(Uri.fromFile(outputFile))
+            viewModel.outputUri = Uri.fromFile(outputFile)
         }
         val customCameraListener = config.mListenerInfo.onCustomCameraListener
         if (customCameraListener != null) {
@@ -502,12 +513,12 @@ abstract class BaseSelectorFragment : Fragment() {
         if (TextUtils.isEmpty(outputDir)) {
             // Use default storage path
             outputUri = MediaStoreUtils.insertVideo(context, fileName)!!
-            viewModel.setOutputUri(outputUri)
+            viewModel.outputUri = outputUri
         } else {
             // Use custom storage path
             val outputFile = File(outputDir, fileName)
             outputUri = MediaUtils.parUri(context, outputFile)
-            viewModel.setOutputUri(Uri.fromFile(outputFile))
+            viewModel.outputUri = Uri.fromFile(outputFile)
         }
         val customCameraListener = config.mListenerInfo.onCustomCameraListener
         if (customCameraListener != null) {
@@ -829,12 +840,12 @@ abstract class BaseSelectorFragment : Fragment() {
         ForegroundService.stopService(context)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SelectorConstant.REQUEST_CAMERA) {
-                val schemeFile = viewModel.getOutputUri()?.scheme.equals("file")
+                val schemeFile = viewModel.outputUri?.scheme.equals("file")
                 val outputUri = if (schemeFile) {
-                    viewModel.getOutputUri()
+                    viewModel.outputUri
                 } else {
                     data?.getParcelableExtra(MediaStore.EXTRA_OUTPUT) ?: data?.data
-                    ?: viewModel.getOutputUri()
+                    ?: viewModel.outputUri
                 }
                 if (outputUri != null) {
                     if (config.selectorMode == SelectorMode.AUDIO && schemeFile && data?.data != null) {
@@ -865,7 +876,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun copyAudioUriToFile(uri: Uri) {
         requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
-            viewModel.getOutputUri()?.let { uri ->
+            viewModel.outputUri?.let { uri ->
                 val fileOutputStream = FileOutputStream(uri.path)
                 if (FileUtils.writeFileFromIS(inputStream, fileOutputStream)) {
                     MediaUtils.deleteUri(requireContext(), uri)

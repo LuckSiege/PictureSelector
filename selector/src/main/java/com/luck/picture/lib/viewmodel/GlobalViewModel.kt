@@ -1,6 +1,7 @@
 package com.luck.picture.lib.viewmodel
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -12,6 +13,7 @@ import com.luck.picture.lib.entity.LocalMedia
  * @describe：ViewModel with Global Changes
  */
 private const val KEY_ORIGINAL_LIVE_DATA = "key_original_live_data"
+private const val KEY_SELECT_RESULT_LIVE_DATA = "key_select_result_live_data"
 
 class GlobalViewModel(application: Application, private val state: SavedStateHandle) :
     AndroidViewModel(application) {
@@ -20,9 +22,6 @@ class GlobalViewModel(application: Application, private val state: SavedStateHan
      *  The original drawing options have changed
      */
     fun getOriginalLiveData(): MutableLiveData<Boolean> {
-        if (!state.contains(KEY_ORIGINAL_LIVE_DATA)) {
-            state[KEY_ORIGINAL_LIVE_DATA] = false
-        }
         return state.getLiveData(KEY_ORIGINAL_LIVE_DATA, false)
     }
 
@@ -33,7 +32,7 @@ class GlobalViewModel(application: Application, private val state: SavedStateHan
     /**
      * select result
      */
-    val selectResult = mutableListOf<LocalMedia>()
+    var selectResult = mutableListOf<LocalMedia>()
 
     /**
      *  selected result change
@@ -44,6 +43,16 @@ class GlobalViewModel(application: Application, private val state: SavedStateHan
      *  editor result change
      */
     val editorLiveData = MutableLiveData<LocalMedia>()
+
+    fun saveResult() {
+        state[KEY_SELECT_RESULT_LIVE_DATA] = selectResult
+    }
+
+    fun restoreResult(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            selectResult = state[KEY_SELECT_RESULT_LIVE_DATA] ?: selectResult
+        }
+    }
 
     /**
      * reset data

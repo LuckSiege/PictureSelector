@@ -87,7 +87,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     var isPause = false
     var isAnimationStart = false
     var isEnableStickResult = true
-    var isSaveInstanceState = false
 
     open fun enableStickResult(): Boolean {
         if (isEnableStickResult) {
@@ -111,7 +110,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isSaveInstanceState = savedInstanceState != null
         screenWidth = DensityUtil.getRealScreenWidth(requireContext())
         screenHeight = DensityUtil.getScreenHeight(requireContext())
         // TitleBar
@@ -195,9 +193,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun attachPreview() {
-        viewModel.previewWrap = config.previewWrap.copy()
-        viewModel.page = viewModel.previewWrap.page
-        config.previewWrap.source.clear()
+        if (viewModel.previewWrap.source.isEmpty() && config.previewWrap.source.isNotEmpty()) {
+            viewModel.previewWrap = config.previewWrap.copy()
+            viewModel.page = viewModel.previewWrap.page
+            config.previewWrap.source.clear()
+        }
     }
 
 
@@ -290,6 +290,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onFirstViewAttachedToWindow(holder: BasePreviewMediaHolder) {
+        if (isSavedInstanceState) {
+            return
+        }
         if (isHasMagicalEffect()) {
             startZoomEffect(holder, viewModel.previewWrap.source[viewModel.previewWrap.position])
         }
@@ -620,7 +623,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         viewPager = ViewPager2(requireContext())
         mMagicalView?.setMagicalContent(viewPager)
         if (isHasMagicalEffect()) {
-            val alpha = if (isSaveInstanceState) 1F else 0F
+            val alpha = if (isSavedInstanceState) 1F else 0F
             mMagicalView?.setBackgroundAlpha(alpha)
             navBarViews.forEach { v ->
                 v.alpha = alpha

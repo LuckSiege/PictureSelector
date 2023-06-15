@@ -189,6 +189,9 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun initTitleBar() {
+        viewModel.currentMediaAlbum?.let { album ->
+            mTvTitle?.text = album.bucketDisplayName
+        }
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
         }
@@ -345,7 +348,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         viewModel.currentMediaAlbum = data
         // Cache the current album data before switching to the next album
         mAlbumWindow.getAlbum(currentMediaAlbum.bucketId)?.let {
-            it.source = mAdapter.getData().toMutableList()
+            it.source = mAdapter.getData().toList() as ArrayList<LocalMedia>
             it.cachePage = viewModel.page
         }
         // Update current album
@@ -489,7 +492,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
-        mAdapter.setDisplayCamera(config.isDisplayCamera)
+        val currentMediaAlbum = viewModel.currentMediaAlbum
+        if (currentMediaAlbum != null) {
+            mAdapter.setDisplayCamera(config.isDisplayCamera && currentMediaAlbum.isAllAlbum())
+        } else {
+            mAdapter.setDisplayCamera(config.isDisplayCamera)
+        }
         mRecycler.adapter = mAdapter
         setFastSlidingSelect()
         onSelectionResultChange(null)
@@ -709,8 +717,18 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun onAlbumSourceChange(albumList: MutableList<LocalMediaAlbum>) {
         if (albumList.isNotEmpty()) {
-            albumList.first().isSelected = true
-            viewModel.currentMediaAlbum = albumList.first()
+            val currentMediaAlbum = viewModel.currentMediaAlbum
+            if (currentMediaAlbum == null) {
+                albumList.first().isSelected = true
+                viewModel.currentMediaAlbum = albumList.first()
+            } else {
+                albumList.forEach { album ->
+                    if (album.bucketId == currentMediaAlbum.bucketId) {
+                        album.isSelected = true
+                        return@forEach
+                    }
+                }
+            }
             mAlbumWindow.setAlbumList(albumList)
             mAlbumWindow.notifyChangedSelectTag(globalViewMode.selectResult)
         }
@@ -791,7 +809,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             } else {
                 this.totalCount = viewModel.currentMediaAlbum?.totalCount ?: source.size
             }
-            this.source = source.toMutableList()
+            this.source = source.toList() as ArrayList<LocalMedia>
         }
     }
 
