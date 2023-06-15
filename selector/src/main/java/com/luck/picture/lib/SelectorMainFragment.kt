@@ -355,7 +355,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         TempDataProvider.getInstance().currentMediaAlbum = data
         // Cache the current album data before switching to the next album
         mAlbumWindow.getAlbum(currentMediaAlbum.bucketId)?.let {
-            it.source = mAdapter.getData().toList() as ArrayList<LocalMedia>
+            it.source = mAdapter.getData().toMutableList()
             it.cachePage = viewModel.page
         }
         // Update current album
@@ -729,8 +729,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * Restore data after system recycling
      */
     open fun restoreMemoryData() {
-        onAlbumSourceChange(TempDataProvider.getInstance().albumSource)
-        onMediaSourceChange(TempDataProvider.getInstance().mediaSource)
+        val albumSource = TempDataProvider.getInstance().albumSource.toMutableList()
+        onAlbumSourceChange(albumSource)
+        val mediaSource = TempDataProvider.getInstance().mediaSource.toMutableList()
+        onMediaSourceChange(mediaSource)
+        TempDataProvider.getInstance().albumSource.clear()
+        TempDataProvider.getInstance().mediaSource.clear()
     }
 
     /**

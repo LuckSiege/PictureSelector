@@ -486,6 +486,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="编辑"
+                    android:checked="true"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
