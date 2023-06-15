@@ -149,7 +149,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     private fun registerLiveData() {
-        globalViewMode.selectResultLiveData.observe(viewLifecycleOwner) { change ->
+        globalViewMode.getSelectResultLiveData().observe(viewLifecycleOwner) { change ->
             if (enableStickResult()) {
                 return@observe
             }
@@ -899,7 +899,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             mTvSelected?.performClick()
         }
         mAdapter.notifyItemChanged(viewPager.currentItem)
-        globalViewMode.editorLiveData.value = media
+        globalViewMode.setEditorLiveData(media)
     }
 
     override fun onResume() {

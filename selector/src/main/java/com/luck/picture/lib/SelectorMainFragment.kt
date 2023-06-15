@@ -164,7 +164,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun registerLiveData() {
-        globalViewMode.editorLiveData.observe(viewLifecycleOwner) { media ->
+        globalViewMode.getEditorLiveData().observe(viewLifecycleOwner) { media ->
             val position = mAdapter.getData().indexOf(media)
             if (position >= 0) {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
@@ -173,7 +173,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         globalViewMode.getOriginalLiveData().observe(viewLifecycleOwner) { isOriginal ->
             onOriginalChange(isOriginal)
         }
-        globalViewMode.selectResultLiveData.observe(viewLifecycleOwner) { media ->
+        globalViewMode.getSelectResultLiveData().observe(viewLifecycleOwner) { media ->
             val position = mAdapter.getData().indexOf(media)
             if (checkNotifyStrategy(TempDataProvider.getInstance().selectResult.indexOf(media) != -1)) {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)

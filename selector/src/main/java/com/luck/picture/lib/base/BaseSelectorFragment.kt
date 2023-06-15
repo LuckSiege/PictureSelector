@@ -595,20 +595,19 @@ abstract class BaseSelectorFragment : Fragment() {
         return if (isSelected) {
             if (TempDataProvider.getInstance().selectResult.contains(media)) {
                 TempDataProvider.getInstance().selectResult.remove(media)
-                globalViewMode.selectResultLiveData.value = media
+                globalViewMode.setSelectResultLiveData(media)
             }
             SelectedState.REMOVE
         } else {
             if (config.selectionMode == SelectionMode.SINGLE) {
                 if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
-                    globalViewMode.selectResultLiveData.value =
-                        TempDataProvider.getInstance().selectResult.first()
+                    globalViewMode.setSelectResultLiveData(TempDataProvider.getInstance().selectResult.first())
                     TempDataProvider.getInstance().selectResult.clear()
                 }
             }
             if (!TempDataProvider.getInstance().selectResult.contains(media)) {
                 TempDataProvider.getInstance().selectResult.add(media)
-                globalViewMode.selectResultLiveData.value = media
+                globalViewMode.setSelectResultLiveData(media)
             }
             SelectedState.SUCCESS
         }
