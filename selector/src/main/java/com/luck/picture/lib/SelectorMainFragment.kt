@@ -596,7 +596,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      *  duplicate media data
      */
     open fun duplicateMediaSource(result: MutableList<LocalMedia>) {
-        if (isCameraCallback) {
+        if (isCameraCallback && TempDataProvider.getInstance().currentMediaAlbum?.isAllAlbum() == true) {
             isCameraCallback = false
             synchronized(anyLock) {
                 val data = mAdapter.getData()
