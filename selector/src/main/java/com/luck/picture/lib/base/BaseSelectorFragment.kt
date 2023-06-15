@@ -48,7 +48,10 @@ import com.luck.picture.lib.registry.ImageCaptureComponent
 import com.luck.picture.lib.registry.SoundCaptureComponent
 import com.luck.picture.lib.registry.VideoCaptureComponent
 import com.luck.picture.lib.service.ForegroundService
-import com.luck.picture.lib.utils.*
+import com.luck.picture.lib.utils.FileUtils
+import com.luck.picture.lib.utils.MediaStoreUtils
+import com.luck.picture.lib.utils.MediaUtils
+import com.luck.picture.lib.utils.SpUtils
 import com.luck.picture.lib.viewmodel.GlobalViewModel
 import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
