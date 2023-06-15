@@ -40,6 +40,8 @@ class PreviewDataWrap {
         isDisplayCamera = false
         isBottomPreview = false
         isDisplayDelete = false
-        source.clear()
+        if (source.isNotEmpty()) {
+            source.clear()
+        }
     }
 }

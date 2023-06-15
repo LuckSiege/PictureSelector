@@ -43,11 +43,20 @@ class TempDataProvider {
     var currentRequestPermission = arrayOf<String>()
 
     fun reset() {
-        mediaSource.clear()
-        albumSource.clear()
-        selectResult.clear()
+        if (mediaSource.isNotEmpty()) {
+            mediaSource.clear()
+        }
+        if (albumSource.isNotEmpty()) {
+            albumSource.clear()
+        }
+        if (selectResult.isNotEmpty()) {
+            selectResult.clear()
+        }
         previewWrap.reset()
         currentMediaAlbum = null
+        if (currentRequestPermission.isNotEmpty()) {
+            currentRequestPermission = arrayOf()
+        }
     }
 
     companion object {
