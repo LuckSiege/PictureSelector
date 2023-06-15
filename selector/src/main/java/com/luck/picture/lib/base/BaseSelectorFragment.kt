@@ -21,6 +21,7 @@ import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.*
+import com.luck.picture.lib.app.SelectorAppMaster
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.CropWrap
@@ -47,10 +48,7 @@ import com.luck.picture.lib.registry.ImageCaptureComponent
 import com.luck.picture.lib.registry.SoundCaptureComponent
 import com.luck.picture.lib.registry.VideoCaptureComponent
 import com.luck.picture.lib.service.ForegroundService
-import com.luck.picture.lib.utils.FileUtils
-import com.luck.picture.lib.utils.MediaStoreUtils
-import com.luck.picture.lib.utils.MediaUtils
-import com.luck.picture.lib.utils.SpUtils
+import com.luck.picture.lib.utils.*
 import com.luck.picture.lib.viewmodel.GlobalViewModel
 import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
@@ -152,9 +150,18 @@ abstract class BaseSelectorFragment : Fragment() {
             view,
             savedInstanceState
         )
+        restoreEngine()
         createLoadingDialog()
         setFragmentKeyBackListener()
         setTranslucentStatusBar()
+    }
+
+    open fun restoreEngine() {
+        if (config.imageEngine == null) {
+            SelectorAppMaster.getInstance().getSelectorEngine()?.apply {
+                config.imageEngine = this.createImageLoaderEngine()
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

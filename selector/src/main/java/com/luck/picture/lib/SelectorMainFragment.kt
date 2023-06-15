@@ -969,11 +969,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun onMergeCameraMedia(media: LocalMedia) {
         requireActivity().runOnUiThread {
             mAdapter.getData().add(0, media)
-            if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                val position = if (mAdapter.isDisplayCamera()) 1 else 0
-                mAdapter.notifyItemInserted(position)
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getData().size - position)
-            }
+            confirmSelect(media, false)
+            val position = if (mAdapter.isDisplayCamera()) 1 else 0
+            mAdapter.notifyItemInserted(position)
+            mAdapter.notifyItemRangeChanged(position, mAdapter.getData().size - position)
         }
     }
 

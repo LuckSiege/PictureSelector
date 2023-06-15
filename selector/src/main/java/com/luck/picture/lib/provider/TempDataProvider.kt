@@ -60,10 +60,10 @@ class TempDataProvider {
     }
 
     companion object {
-        fun getInstance() = InstanceHelper.sSingle
+        fun getInstance() = InstanceHelper.instance
     }
 
     object InstanceHelper {
-        val sSingle = TempDataProvider()
+        val instance = TempDataProvider()
     }
 }

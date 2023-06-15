@@ -36,10 +36,10 @@ class SelectorProviders {
     }
 
     companion object {
-        fun getInstance() = InstanceHelper.sSingle
+        fun getInstance() = InstanceHelper.instance
     }
 
     object InstanceHelper {
-        val sSingle = SelectorProviders()
+        val instance = SelectorProviders()
     }
 }
