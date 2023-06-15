@@ -19,6 +19,7 @@ import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionChecker.isCheckReadStorage
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.ToastUtils
 import kotlinx.coroutines.launch
@@ -373,7 +374,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
 
     override fun onResultCanceled(requestCode: Int, resultCode: Int) {
         if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
-            handlePermissionSettingResult(viewModel.currentRequestPermission)
+            handlePermissionSettingResult(TempDataProvider.getInstance().currentRequestPermission)
         } else {
             onBackPressed()
         }
@@ -393,7 +394,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
             ToastUtils.showMsg(requireContext(), getString(R.string.ps_jurisdiction))
             onBackPressed()
         }
-        viewModel.currentRequestPermission = arrayOf()
+        TempDataProvider.getInstance().currentRequestPermission = arrayOf()
     }
 
     override fun onDestroy() {

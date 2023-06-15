@@ -4,6 +4,7 @@ import com.luck.picture.lib.adapter.MediaListNewAdapter
 import com.luck.picture.lib.adapter.base.BaseMediaListAdapter
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.provider.TempDataProvider
 
 /**
  * @author：luck
@@ -28,7 +29,7 @@ class SelectorNumberMainFragment : SelectorMainFragment() {
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
         // Label the selection order
-        val selectResult = globalViewMode.selectResult
+        val selectResult = TempDataProvider.getInstance().selectResult
         if (!selectResult.contains(change)) {
             val currentItem = mAdapter.getData().indexOf(change)
             if (currentItem >= 0) {

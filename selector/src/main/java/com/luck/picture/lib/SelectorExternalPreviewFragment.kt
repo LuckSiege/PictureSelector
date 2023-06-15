@@ -14,6 +14,7 @@ import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.dialog.PictureCommonDialog
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnLongClickListener
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils
@@ -62,7 +63,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
                 position: Int,
                 data: LocalMedia
             ) {
-                if (viewModel.previewWrap.isDownload) {
+                if (TempDataProvider.getInstance().previewWrap.isDownload) {
                     if (config.mListenerInfo.onExternalPreviewListener?.onLongPressDownload(
                             requireContext(),
                             data
@@ -77,19 +78,19 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
 
     open fun delete() {
         val currentItem = viewPager.currentItem
-        val media = viewModel.previewWrap.source[currentItem]
+        val media = TempDataProvider.getInstance().previewWrap.source[currentItem]
         config.mListenerInfo.onExternalPreviewListener?.onDelete(
             requireContext(),
             currentItem,
             media
         )
-        viewModel.previewWrap.source.removeAt(currentItem)
-        viewModel.previewWrap.totalCount -= 1
-        viewModel.previewWrap.position = viewPager.currentItem
-        if (viewModel.previewWrap.totalCount > 0) {
+        TempDataProvider.getInstance().previewWrap.source.removeAt(currentItem)
+        TempDataProvider.getInstance().previewWrap.totalCount -= 1
+        TempDataProvider.getInstance().previewWrap.position = viewPager.currentItem
+        if (TempDataProvider.getInstance().previewWrap.totalCount > 0) {
             viewPager.setCurrentItem(viewPager.currentItem, false)
-            setTitleText(viewModel.previewWrap.position + 1)
-            mAdapter.notifyItemRangeChanged(0, viewModel.previewWrap.source.size)
+            setTitleText(TempDataProvider.getInstance().previewWrap.position + 1)
+            mAdapter.notifyItemRangeChanged(0, TempDataProvider.getInstance().previewWrap.source.size)
         } else {
             onBackPressed()
         }

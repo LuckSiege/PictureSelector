@@ -38,6 +38,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.magical.MagicalView
 import com.luck.picture.lib.magical.OnMagicalViewListener
 import com.luck.picture.lib.magical.RecycleItemViewParams
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -101,10 +102,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     private fun isHasMagicalEffect(): Boolean {
-        val source = viewModel.previewWrap.source
+        val source = TempDataProvider.getInstance().previewWrap.source
         val media = if (source.size > viewPager.currentItem) source[viewPager.currentItem] else null
         return !MediaUtils.hasMimeTypeOfAudio(media?.mimeType)
-                && !viewModel.previewWrap.isBottomPreview
+                && !TempDataProvider.getInstance().previewWrap.isBottomPreview
                 && config.isPreviewZoomEffect
     }
 
@@ -126,7 +127,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
-        isEnableStickResult = globalViewMode.selectResult.isNotEmpty()
+        isEnableStickResult = TempDataProvider.getInstance().selectResult.isNotEmpty()
         addNarBarViewGroup(
             mBottomNarBarBackground,
             mTvEditor,
@@ -193,16 +194,16 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun attachPreview() {
-        if (viewModel.previewWrap.source.isEmpty() && config.previewWrap.source.isNotEmpty()) {
-            viewModel.previewWrap = config.previewWrap.copy()
-            viewModel.page = viewModel.previewWrap.page
+        if (config.previewWrap.source.isNotEmpty()) {
+            TempDataProvider.getInstance().previewWrap = config.previewWrap.copy()
+            viewModel.page = TempDataProvider.getInstance().previewWrap.page
             config.previewWrap.source.clear()
         }
     }
 
 
     open fun initTitleBar() {
-        setTitleText(viewModel.previewWrap.position + 1)
+        setTitleText(TempDataProvider.getInstance().previewWrap.position + 1)
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
         }
@@ -222,7 +223,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             requireContext().getString(
                 R.string.ps_preview_image_num,
                 position,
-                viewModel.previewWrap.totalCount
+                TempDataProvider.getInstance().previewWrap.totalCount
             )
     }
 
@@ -246,7 +247,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             mTvComplete?.setOnClickListener {
                 onCompleteClick(it)
             }
-            val media = viewModel.previewWrap.source[viewModel.previewWrap.position]
+            val media = TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position]
             mTvEditor?.visibility =
                 if (MediaUtils.hasMimeTypeOfImage(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
             mTvEditor?.setOnClickListener {
@@ -273,7 +274,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onSelectedClick(v: View) {
-        val media = viewModel.previewWrap.source[viewPager.currentItem]
+        val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
         val resultCode =
             confirmSelect(media, v.isSelected)
         if (resultCode == SelectedState.INVALID) {
@@ -294,7 +295,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             return
         }
         if (isHasMagicalEffect()) {
-            startZoomEffect(holder, viewModel.previewWrap.source[viewModel.previewWrap.position])
+            startZoomEffect(holder, TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position])
         }
     }
 
@@ -305,7 +306,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onEditorClick(v: View) {
         config.mListenerInfo.onEditorMediaListener?.onEditorMedia(
             this,
-            viewModel.previewWrap.source[viewPager.currentItem],
+            TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem],
             SelectorConstant.REQUEST_EDITOR_CROP
         )
     }
@@ -323,13 +324,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        mTvComplete?.setDataStyle(config, globalViewMode.selectResult)
+        mTvComplete?.setDataStyle(config, TempDataProvider.getInstance().selectResult)
         mTvSelectNum?.visibility =
-            if (globalViewMode.selectResult.isNotEmpty()) View.VISIBLE else View.GONE
-        mTvSelectNum?.text = globalViewMode.selectResult.size.toString()
+            if (TempDataProvider.getInstance().selectResult.isNotEmpty()) View.VISIBLE else View.GONE
+        mTvSelectNum?.text = TempDataProvider.getInstance().selectResult.size.toString()
 
         var totalSize: Long = 0
-        globalViewMode.selectResult.forEach { media ->
+        TempDataProvider.getInstance().selectResult.forEach { media ->
             totalSize += media.size
         }
         if (totalSize > 0) {
@@ -384,14 +385,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun initViewPagerData() {
         mAdapter = createMediaAdapter()
-        mAdapter.setDataNotifyChanged(viewModel.previewWrap.source)
+        mAdapter.setDataNotifyChanged(TempDataProvider.getInstance().previewWrap.source)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPager.adapter = mAdapter
         val context = requireContext()
         val marginPageTransformer = MarginPageTransformer(DensityUtil.dip2px(context, 3F))
         viewPager.setPageTransformer(marginPageTransformer)
         viewPager.registerOnPageChangeCallback(pageChangeCallback)
-        viewPager.setCurrentItem(viewModel.previewWrap.position, false)
+        viewPager.setCurrentItem(TempDataProvider.getInstance().previewWrap.position, false)
         onSelectionResultChange(null)
         mAdapter.setOnFirstAttachedToWindowListener(object :
             MediaPreviewAdapter.OnAttachedToWindowListener {
@@ -413,16 +414,16 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onTitleChange(title: String?) {
         if (TextUtils.isEmpty(title)) {
-            setTitleText(viewModel.previewWrap.position + 1)
+            setTitleText(TempDataProvider.getInstance().previewWrap.position + 1)
         } else {
             mTvTitle?.text = title
         }
     }
 
     open fun onMediaSourceChange(result: MutableList<LocalMedia>) {
-        val oldStartPosition: Int = viewModel.previewWrap.source.size
-        viewModel.previewWrap.source.addAll(result.toMutableList())
-        val itemCount: Int = viewModel.previewWrap.source.size
+        val oldStartPosition: Int = TempDataProvider.getInstance().previewWrap.source.size
+        TempDataProvider.getInstance().previewWrap.source.addAll(result.toMutableList())
+        val itemCount: Int = TempDataProvider.getInstance().previewWrap.source.size
         mAdapter.notifyItemRangeChanged(oldStartPosition, itemCount)
         SelectorLogUtils.info("预览:第${viewModel.page}页数据,现有数据->${mAdapter.getData().size}条")
     }
@@ -437,7 +438,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             val height = mediaRealSize[1]
             mMagicalView?.changeRealScreenHeight(width, height, false)
             val viewParams =
-                RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
+                RecycleItemViewParams.getItemViewParams(if (TempDataProvider.getInstance().previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
             if (viewParams == null || width == 0 && height == 0) {
                 mMagicalView?.startNormal(width, height, false)
                 mMagicalView?.setBackgroundAlpha(1F)
@@ -465,13 +466,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun setMagicalViewParams(position: Int) {
         if (isHasMagicalEffect()) {
             viewModel.viewModelScope.launch {
-                val media = viewModel.previewWrap.source[position]
+                val media = TempDataProvider.getInstance().previewWrap.source[position]
                 val mediaSize = getMediaRealSizeFromMedia(media)
                 val width = mediaSize[0]
                 val height = mediaSize[1]
                 mMagicalView?.changeRealScreenHeight(width, height, true)
                 val viewParams =
-                    RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) position + 1 else position)
+                    RecycleItemViewParams.getItemViewParams(if (TempDataProvider.getInstance().previewWrap.isDisplayCamera) position + 1 else position)
                 if (viewParams == null || width == 0 || height == 0) {
                     mMagicalView?.setViewParams(0, 0, 0, 0, width, height)
                 } else {
@@ -568,12 +569,12 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         positionOffset: Float,
         positionOffsetPixels: Int
     ) {
-        if (viewModel.previewWrap.source.size > position) {
+        if (TempDataProvider.getInstance().previewWrap.source.size > position) {
             val currentMedia: LocalMedia =
-                if (positionOffsetPixels < screenWidth / 2) viewModel.previewWrap.source[position]
-                else viewModel.previewWrap.source[position + 1]
+                if (positionOffsetPixels < screenWidth / 2) TempDataProvider.getInstance().previewWrap.source[position]
+                else TempDataProvider.getInstance().previewWrap.source[position + 1]
             mTvSelected?.isSelected =
-                globalViewMode.selectResult.contains(currentMedia)
+                TempDataProvider.getInstance().selectResult.contains(currentMedia)
         }
     }
 
@@ -583,7 +584,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
      * position – Position index of the new selected page.
      */
     open fun onViewPageSelected(position: Int) {
-        viewModel.previewWrap.position = position
+        TempDataProvider.getInstance().previewWrap.position = position
         setTitleText(position + 1)
         setMagicalViewParams(position)
         if (isLoadMore(position)) {
@@ -605,7 +606,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
      * Load more thresholds
      */
     open fun isLoadMore(position: Int): Boolean {
-        if (!viewModel.previewWrap.isBottomPreview && !config.isOnlySandboxDir && !viewModel.previewWrap.isExternalPreview) {
+        if (!TempDataProvider.getInstance().previewWrap.isBottomPreview && !config.isOnlySandboxDir && !TempDataProvider.getInstance().previewWrap.isExternalPreview) {
             return position == (mAdapter.itemCount - 1) - 10 || position == mAdapter.itemCount - 1
         }
         return false
@@ -615,7 +616,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
      * Load more
      */
     open fun loadMediaMore() {
-        viewModel.loadMediaMore(viewModel.previewWrap.bucketId)
+        viewModel.loadMediaMore(TempDataProvider.getInstance().previewWrap.bucketId)
         SelectorLogUtils.info("预览:开始请求第${viewModel.page}页数据")
     }
 
@@ -631,8 +632,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             mMagicalView?.setBackgroundAlpha(1.0F)
         }
-        if (config.selectorMode == SelectorMode.AUDIO || (viewModel.previewWrap.source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
-                viewModel.previewWrap.source.first().mimeType
+        if (config.selectorMode == SelectorMode.AUDIO || (TempDataProvider.getInstance().previewWrap.source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
+                TempDataProvider.getInstance().previewWrap.source.first().mimeType
             ))
         ) {
             mMagicalView?.setBackgroundColor(
@@ -688,7 +689,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBeginAnimComplete(mojitoView: MagicalView?, showImmediately: Boolean) {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
-        val media = viewModel.previewWrap.source[viewPager.currentItem]
+        val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
         val isResetSize = media.isCrop() && media.cropWidth > 0 && media.cropHeight > 0
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
@@ -722,7 +723,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onMojitoBeginBackMinFinish(isResetSize: Boolean) {
         val itemViewParams =
             RecycleItemViewParams.getItemViewParams(
-                if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1
+                if (TempDataProvider.getInstance().previewWrap.isDisplayCamera) viewPager.currentItem + 1
                 else viewPager.currentItem
             ) ?: return
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
@@ -840,8 +841,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         viewModel.viewModelScope.launch {
-            if (isHasMagicalEffect() && viewModel.previewWrap.source.size > viewPager.currentItem) {
-                val media = viewModel.previewWrap.source[viewPager.currentItem]
+            if (isHasMagicalEffect() && TempDataProvider.getInstance().previewWrap.source.size > viewPager.currentItem) {
+                val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
                 val mediaRealSize = getMediaRealSizeFromMedia(media)
                 changeViewParams(mediaRealSize)
             }
@@ -850,7 +851,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun changeViewParams(size: IntArray) {
         val viewParams =
-            RecycleItemViewParams.getItemViewParams(if (viewModel.previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
+            RecycleItemViewParams.getItemViewParams(if (TempDataProvider.getInstance().previewWrap.isDisplayCamera) viewPager.currentItem + 1 else viewPager.currentItem)
         if (viewParams == null || size[0] == 0 || size[1] == 0) {
             mMagicalView?.setViewParams(0, 0, 0, 0, size[0], size[1])
             mMagicalView?.resetStartNormal(size[0], size[1], false)
@@ -877,7 +878,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun onMergeEditorData(data: Intent?) {
-        val media = viewModel.previewWrap.source[viewPager.currentItem]
+        val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
         val outputUri = if (data?.hasExtra(CropWrap.CROP_OUTPUT_URI) == true) {
             data.getParcelableExtra(CropWrap.CROP_OUTPUT_URI)
         } else {
@@ -889,7 +890,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             outputUri?.path
         }
         media.editorData = data?.getStringExtra(CropWrap.DEFAULT_EXTRA_DATA)
-        if (!globalViewMode.selectResult.contains(media)) {
+        if (!TempDataProvider.getInstance().selectResult.contains(media)) {
             mTvSelected?.performClick()
         }
         mAdapter.notifyItemChanged(viewPager.currentItem)

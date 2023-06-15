@@ -42,6 +42,7 @@ import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionUtil
 import com.luck.picture.lib.provider.SelectorProviders
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.registry.ImageCaptureComponent
 import com.luck.picture.lib.registry.SoundCaptureComponent
 import com.luck.picture.lib.registry.VideoCaptureComponent
@@ -145,8 +146,7 @@ abstract class BaseSelectorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isSavedInstanceState = savedInstanceState != null
-        viewModel.restoreResult(savedInstanceState)
-        globalViewMode.restoreResult(savedInstanceState)
+        viewModel.onRestoreInstanceState(savedInstanceState)
         config.mListenerInfo.onFragmentLifecycleListener?.onViewCreated(
             this,
             view,
@@ -159,8 +159,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.saveResult()
-        globalViewMode.saveResult()
+        viewModel.onSaveInstanceState()
     }
 
     /**
@@ -188,7 +187,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Permission denied
      */
     open fun handlePermissionDenied(permission: Array<String>) {
-        viewModel.currentRequestPermission = permission
+        TempDataProvider.getInstance().currentRequestPermission = permission
         if (permission.isNotEmpty()) {
             SpUtils.putBoolean(requireContext(), permission[0], true)
         }
@@ -202,7 +201,7 @@ abstract class BaseSelectorFragment : Fragment() {
                 object : OnCallbackListener<Boolean> {
                     override fun onCall(data: Boolean) {
                         if (data) {
-                            handlePermissionSettingResult(viewModel.currentRequestPermission)
+                            handlePermissionSettingResult(TempDataProvider.getInstance().currentRequestPermission)
                         }
                     }
                 })
@@ -248,7 +247,6 @@ abstract class BaseSelectorFragment : Fragment() {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 SelectorProviders.getInstance().destroy()
-                globalViewMode.reset()
             } else {
                 // Pop the top state off the back stack. This function is asynchronous
                 // it enqueues the request to pop, but the action will not be performed
@@ -261,7 +259,7 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun isRootExit(): Boolean {
         return this is SelectorMainFragment
                 || (this is SelectorCameraFragment && config.isOnlyCamera)
-                || (this is SelectorPreviewFragment && viewModel.previewWrap.isExternalPreview)
+                || (this is SelectorPreviewFragment && TempDataProvider.getInstance().previewWrap.isExternalPreview)
                 || (this is SelectorSystemFragment && config.systemGallery)
     }
 
@@ -273,7 +271,7 @@ abstract class BaseSelectorFragment : Fragment() {
             if (!checkCompleteValidity()) {
                 return@runOnUiThread
             }
-            val selectResult = globalViewMode.selectResult.toMutableList()
+            val selectResult = TempDataProvider.getInstance().selectResult.toMutableList()
             viewModel.viewModelScope.launch {
                 val mediaConverterEngine = config.mediaConverterEngine
                 if (mediaConverterEngine != null) {
@@ -304,7 +302,6 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 }
                 SelectorProviders.getInstance().destroy()
-                globalViewMode.reset()
             }
         }
     }
@@ -313,7 +310,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Verify legality before completion
      */
     open fun checkCompleteValidity(): Boolean {
-        val selectResult = globalViewMode.selectResult
+        val selectResult = TempDataProvider.getInstance().selectResult
         if (config.mListenerInfo.onConfirmListener?.onConfirm(
                 requireContext(),
                 selectResult
@@ -596,21 +593,21 @@ abstract class BaseSelectorFragment : Fragment() {
             }
         }
         return if (isSelected) {
-            if (globalViewMode.selectResult.contains(media)) {
-                globalViewMode.selectResult.remove(media)
+            if (TempDataProvider.getInstance().selectResult.contains(media)) {
+                TempDataProvider.getInstance().selectResult.remove(media)
                 globalViewMode.selectResultLiveData.value = media
             }
             SelectedState.REMOVE
         } else {
             if (config.selectionMode == SelectionMode.SINGLE) {
-                if (globalViewMode.selectResult.isNotEmpty()) {
+                if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
                     globalViewMode.selectResultLiveData.value =
-                        globalViewMode.selectResult.first()
-                    globalViewMode.selectResult.clear()
+                        TempDataProvider.getInstance().selectResult.first()
+                    TempDataProvider.getInstance().selectResult.clear()
                 }
             }
-            if (!globalViewMode.selectResult.contains(media)) {
-                globalViewMode.selectResult.add(media)
+            if (!TempDataProvider.getInstance().selectResult.contains(media)) {
+                TempDataProvider.getInstance().selectResult.add(media)
                 globalViewMode.selectResultLiveData.value = media
             }
             SelectedState.SUCCESS
@@ -623,14 +620,14 @@ abstract class BaseSelectorFragment : Fragment() {
      * @param isSelected Select Status
      */
     open fun onCheckSelectValidity(media: LocalMedia, isSelected: Boolean): Int {
-        val count = globalViewMode.selectResult.size
+        val count = TempDataProvider.getInstance().selectResult.size
         when (config.selectorMode) {
             SelectorMode.ALL -> {
                 if (config.isAllWithImageVideo) {
                     // Support for selecting images and videos
                     var videoSize = 0
                     var imageSize = 0
-                    globalViewMode.selectResult.forEach {
+                    TempDataProvider.getInstance().selectResult.forEach {
                         if (MediaUtils.hasMimeTypeOfVideo(it.mimeType)) {
                             videoSize++
                         } else if (MediaUtils.hasMimeTypeOfImage(it.mimeType)) {
@@ -688,8 +685,8 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 } else {
                     // Only supports selecting images
-                    if (globalViewMode.selectResult.isNotEmpty()) {
-                        val first = globalViewMode.selectResult.first()
+                    if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
+                        val first = TempDataProvider.getInstance().selectResult.first()
                         if (MediaUtils.hasMimeTypeOfImage(first.mimeType)) {
                             // Image has been selected
                             if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
@@ -781,7 +778,11 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun handleSelectResult() {
         val cropEngine = config.cropEngine
         if (cropEngine != null && isCrop()) {
-            cropEngine.onCrop(this, globalViewMode.selectResult, SelectorConstant.REQUEST_CROP)
+            cropEngine.onCrop(
+                this,
+                TempDataProvider.getInstance().selectResult,
+                SelectorConstant.REQUEST_CROP
+            )
         } else {
             onConfirmComplete()
         }
@@ -791,7 +792,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Media types that support cropping
      */
     open fun isCrop(): Boolean {
-        globalViewMode.selectResult.forEach continuing@{ media ->
+        TempDataProvider.getInstance().selectResult.forEach continuing@{ media ->
             if (config.skipCropFormat.contains(media.mimeType)) {
                 return@continuing
             }
@@ -857,7 +858,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     throw IllegalStateException("Camera output uri is empty")
                 }
             } else if (requestCode == SelectorConstant.REQUEST_CROP) {
-                val selectResult = globalViewMode.selectResult
+                val selectResult = TempDataProvider.getInstance().selectResult
                 if (selectResult.isNotEmpty()) {
                     if (selectResult.size == 1) {
                         mergeSingleCrop(data, selectResult)
@@ -899,7 +900,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun onResultCanceled(requestCode: Int, resultCode: Int) {
         if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
-            handlePermissionSettingResult(viewModel.currentRequestPermission)
+            handlePermissionSettingResult(TempDataProvider.getInstance().currentRequestPermission)
         }
     }
 

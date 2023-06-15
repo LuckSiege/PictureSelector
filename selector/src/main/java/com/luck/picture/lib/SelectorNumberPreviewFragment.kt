@@ -25,6 +25,7 @@ import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnItemClickListener
 import com.luck.picture.lib.interfaces.OnLongClickListener
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils
@@ -73,8 +74,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     }
 
     override fun onCompleteClick(v: View) {
-        if (globalViewMode.selectResult.isEmpty()) {
-            val media = viewModel.previewWrap.source[viewPager.currentItem]
+        if (TempDataProvider.getInstance().selectResult.isEmpty()) {
+            val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
             if (confirmSelect(media, false) == SelectedState.SUCCESS) {
                 mTvSelected?.isSelected = true
                 handleSelectResult()
@@ -113,22 +114,22 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         rvGallery.layoutManager = layoutManager
-        if (globalViewMode.selectResult.isNotEmpty()) {
+        if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
             rvGallery.layoutAnimation = AnimationUtils
                 .loadLayoutAnimation(requireContext(), R.anim.ps_anim_layout_fall_enter)
         }
         galleryAdapter =
             GalleryAdapter(
                 config,
-                viewModel.previewWrap.isBottomPreview,
-                if (viewModel.previewWrap.isBottomPreview) globalViewMode.selectResult.toMutableList() else globalViewMode.selectResult
+                TempDataProvider.getInstance().previewWrap.isBottomPreview,
+                if (TempDataProvider.getInstance().previewWrap.isBottomPreview) TempDataProvider.getInstance().selectResult.toMutableList() else TempDataProvider.getInstance().selectResult
             )
-        galleryAdapter?.currentMedia = viewModel.previewWrap.source[viewPager.currentItem]
-        galleryAdapter?.selectResult = globalViewMode.selectResult
+        galleryAdapter?.currentMedia = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
+        galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
         rvGallery.adapter = galleryAdapter
         galleryAdapter?.setOnItemClickListener(object : OnItemClickListener<LocalMedia> {
             override fun onItemClick(position: Int, data: LocalMedia) {
-                val currentItem = viewModel.previewWrap.source.indexOf(data)
+                val currentItem = TempDataProvider.getInstance().previewWrap.source.indexOf(data)
                 if (currentItem >= 0) {
                     viewPager.setCurrentItem(currentItem, false)
                 }
@@ -159,22 +160,22 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 moveToPosition = toPosition
                 if (fromPosition < toPosition) {
                     for (i in fromPosition until toPosition) {
-                        if (viewModel.previewWrap.isBottomPreview) {
-                            Collections.swap(viewModel.previewWrap.source, i, i + 1)
+                        if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
+                            Collections.swap(TempDataProvider.getInstance().previewWrap.source, i, i + 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i + 1) }
                         }
-                        if (globalViewMode.selectResult.size > i + 1) {
-                            Collections.swap(globalViewMode.selectResult, i, i + 1)
+                        if (TempDataProvider.getInstance().selectResult.size > i + 1) {
+                            Collections.swap(TempDataProvider.getInstance().selectResult, i, i + 1)
                         }
                     }
                 } else {
                     for (i in fromPosition downTo toPosition + 1) {
-                        if (viewModel.previewWrap.isBottomPreview) {
-                            Collections.swap(viewModel.previewWrap.source, i, i - 1)
+                        if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
+                            Collections.swap(TempDataProvider.getInstance().previewWrap.source, i, i - 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i - 1) }
                         }
-                        if (globalViewMode.selectResult.size > i) {
-                            Collections.swap(globalViewMode.selectResult, i, i - 1)
+                        if (TempDataProvider.getInstance().selectResult.size > i) {
+                            Collections.swap(TempDataProvider.getInstance().selectResult, i, i - 1)
                         }
                     }
                 }
@@ -238,9 +239,9 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 }
                 super.clearView(recyclerView, viewHolder)
                 galleryAdapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
-                if (viewModel.previewWrap.isBottomPreview) {
+                if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
                     val currentItem =
-                        viewModel.previewWrap.source.indexOf(galleryAdapter?.currentMedia)
+                        TempDataProvider.getInstance().previewWrap.source.indexOf(galleryAdapter?.currentMedia)
                     if (viewPager.currentItem != currentItem && currentItem != RecyclerView.NO_POSITION) {
                         mAdapter.notifyDataSetChanged()
                         viewPager.setCurrentItem(currentItem, false)
@@ -279,7 +280,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
     override fun onMergeEditorData(data: Intent?) {
         super.onMergeEditorData(data)
-        val media = viewModel.previewWrap.source[viewPager.currentItem]
+        val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
         val position = galleryAdapter?.data?.indexOf(media) ?: 0
         if (position >= 0) {
             galleryAdapter?.notifyItemChanged(position)
@@ -290,9 +291,9 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
         mTvComplete?.isEnabled = true
-        galleryAdapter?.selectResult = globalViewMode.selectResult
+        galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
         galleryAdapter?.notifyDataSetChanged()
-        if (globalViewMode.selectResult.contains(change)) {
+        if (TempDataProvider.getInstance().selectResult.contains(change)) {
             val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
             if (lastPosition >= 0) {
                 rvGallery.smoothScrollToPosition(lastPosition)
@@ -305,14 +306,14 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         if (moveFromPosition != -1 && moveToPosition != -1) {
             if (moveFromPosition < moveToPosition) {
                 for (i in moveFromPosition until moveToPosition) {
-                    if (globalViewMode.selectResult.size > i + 1) {
-                        Collections.swap(globalViewMode.selectResult, i, i + 1)
+                    if (TempDataProvider.getInstance().selectResult.size > i + 1) {
+                        Collections.swap(TempDataProvider.getInstance().selectResult, i, i + 1)
                     }
                 }
             } else {
                 for (i in moveFromPosition downTo moveToPosition + 1) {
-                    if (globalViewMode.selectResult.size > i) {
-                        Collections.swap(globalViewMode.selectResult, i, i - 1)
+                    if (TempDataProvider.getInstance().selectResult.size > i) {
+                        Collections.swap(TempDataProvider.getInstance().selectResult, i, i - 1)
                     }
                 }
             }
@@ -327,7 +328,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         positionOffsetPixels: Int
     ) {
         super.onViewPageScrolled(position, positionOffset, positionOffsetPixels)
-        if (viewModel.previewWrap.source.size > position) {
+        if (TempDataProvider.getInstance().previewWrap.source.size > position) {
             updateGallerySelected(
                 if (positionOffsetPixels < screenWidth / 2) position
                 else position + 1
@@ -347,7 +348,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             galleryAdapter?.notifyItemChanged(oldPosition)
         }
         // update new selected position
-        val media = viewModel.previewWrap.source[position]
+        val media = TempDataProvider.getInstance().previewWrap.source[position]
         galleryAdapter?.currentMedia = media
         val newPosition = galleryAdapter?.data?.indexOf(media) ?: -1
         if (newPosition >= 0) {

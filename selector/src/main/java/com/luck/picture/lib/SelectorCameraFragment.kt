@@ -14,6 +14,7 @@ import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
+import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils.isQ
 import com.luck.picture.lib.utils.ToastUtils
@@ -59,7 +60,7 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
     override fun onResultCanceled(requestCode: Int, resultCode: Int) {
         if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == SelectorConstant.REQUEST_GO_SETTING) {
-                handlePermissionSettingResult(viewModel.currentRequestPermission)
+                handlePermissionSettingResult(TempDataProvider.getInstance().currentRequestPermission)
             } else {
                 onBackPressed()
             }
@@ -137,6 +138,6 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
             }
             onBackPressed()
         }
-        viewModel.currentRequestPermission = arrayOf()
+        TempDataProvider.getInstance().currentRequestPermission = arrayOf()
     }
 }

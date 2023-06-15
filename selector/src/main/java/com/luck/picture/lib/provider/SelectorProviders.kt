@@ -24,6 +24,7 @@ class SelectorProviders {
         val selectorConfig = getSelectorConfig()
         selectorConfig.destroy()
         selectionConfigsQueue.remove(selectorConfig)
+        TempDataProvider.getInstance().reset()
         SelectorLogUtils.info("${System.currentTimeMillis()}:销毁")
     }
 

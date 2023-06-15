@@ -338,7 +338,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {
             config.isPreviewZoomEffect = false
         }
-        config.previewWrap.source = source.toList() as ArrayList<LocalMedia>
+        config.previewWrap.source = source.toMutableList()
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
         config.previewWrap.totalCount = source.size
