@@ -46,6 +46,7 @@ import java.io.File
  * @date：2021/11/17 10:24 上午
  * @describe：PictureSelector default template style
  */
+
 open class SelectorMainFragment : BaseSelectorFragment() {
     override fun getFragmentTag(): String {
         return SelectorMainFragment::class.java.simpleName
@@ -81,6 +82,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     var mTvOriginal: TextView? = null
     var mTvComplete: StyleTextView? = null
     var mTvSelectNum: TextView? = null
+
+    private val anyLock = Any()
+
+    private var isCameraCallback = false
 
     lateinit var mAlbumWindow: AlbumListPopWindow
     lateinit var mAdapter: BaseMediaListAdapter
@@ -361,7 +366,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         // Update current album
         mAdapter.setDisplayCamera(config.isDisplayCamera && data.isAllAlbum())
         mTvTitle?.text = data.bucketDisplayName
-        if (data.source.isNotEmpty()) {
+        if (data.cachePage > 0 && data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
             Looper.myQueue().addIdleHandler {
                 viewModel.page = data.cachePage
@@ -512,7 +517,8 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mRecycler.setOnRecyclerViewPreloadListener(object : OnRecyclerViewPreloadMoreListener {
             override fun onPreloadMore() {
                 if (mRecycler.isEnabledLoadMore()) {
-                    val bucketId = TempDataProvider.getInstance().currentMediaAlbum?.bucketId ?: return
+                    val bucketId =
+                        TempDataProvider.getInstance().currentMediaAlbum?.bucketId ?: return
                     viewModel.loadMediaMore(bucketId)
                     SelectorLogUtils.info("加载第${viewModel.page}页")
                 }
@@ -584,6 +590,26 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 return confirmSelect(media, isSelected)
             }
         })
+    }
+
+    /**
+     *  duplicate media data
+     */
+    open fun duplicateMediaSource(result: MutableList<LocalMedia>) {
+        if (isCameraCallback) {
+            isCameraCallback = false
+            synchronized(anyLock) {
+                val data = mAdapter.getData()
+                val iterator = result.iterator()
+                while (iterator.hasNext()) {
+                    val media = iterator.next()
+                    if (data.contains(media)) {
+                        iterator.remove()
+                        SelectorLogUtils.info("有重复的:${media.getAvailablePath()}")
+                    }
+                }
+            }
+        }
     }
 
     open fun setFastSlidingSelect() {
@@ -772,6 +798,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * @param result media data
      */
     open fun onMediaSourceChange(result: MutableList<LocalMedia>) {
+        duplicateMediaSource(result)
         mRecycler.setEnabledLoadMore(!config.isOnlySandboxDir && result.isNotEmpty())
         if (viewModel.page == 1) {
             mAdapter.setDataNotifyChanged(result.toMutableList())
@@ -834,13 +861,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             this.page = page
             this.position = position
             this.bucketId =
-                TempDataProvider.getInstance().currentMediaAlbum?.bucketId ?: SelectorConstant.DEFAULT_ALL_BUCKET_ID
+                TempDataProvider.getInstance().currentMediaAlbum?.bucketId
+                    ?: SelectorConstant.DEFAULT_ALL_BUCKET_ID
             this.isBottomPreview = isBottomPreview
             this.isDisplayCamera = mAdapter.isDisplayCamera()
             if (isBottomPreview) {
                 this.totalCount = source.size
             } else {
-                this.totalCount = TempDataProvider.getInstance().currentMediaAlbum?.totalCount ?: source.size
+                this.totalCount =
+                    TempDataProvider.getInstance().currentMediaAlbum?.totalCount ?: source.size
             }
             this.source = source.toMutableList()
         }
@@ -865,6 +894,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                     } else {
                         MediaUtils.getAssignFileMedia(context, realPath!!)
                     }
+                    isCameraCallback = true
                     onCheckDuplicateMedia(media)
                     onMergeCameraAlbum(media)
                     onMergeCameraMedia(media)
