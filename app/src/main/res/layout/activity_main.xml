@@ -256,7 +256,7 @@
                         android:button="@drawable/ps_ic_trans_1px"
                         android:checked="true"
                         android:enabled="false"
-                        android:text="播放器引擎"
+                        android:text="视频"
                         android:textColor="@color/ps_color_black"
                         android:textSize="14sp" />
 
@@ -282,6 +282,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="IjkPlayer"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_system_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="系统"
                         android:textColor="@color/ps_color_black"
                         android:textSize="14sp" />
                 </RadioGroup>

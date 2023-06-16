@@ -50,6 +50,7 @@ import com.luck.pictureselector.adapter.GridImageAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewImageHolder
+import com.luck.pictureselector.custom.CustomPreviewSystemVideoHolder
 import com.luck.pictureselector.listener.DragListener
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbDefaultPlayer: RadioButton
     private lateinit var rbExoPlayer: RadioButton
     private lateinit var rbIjkPlayer: RadioButton
+    private lateinit var rbSystemPlayer:RadioButton
     private lateinit var rbDefaultStyle: RadioButton
     private lateinit var rbWhiteStyle: RadioButton
     private lateinit var rbNumNewStyle: RadioButton
@@ -219,6 +221,7 @@ class MainActivity : AppCompatActivity() {
         rbDefaultPlayer = findViewById(R.id.rb_default_player)
         rbExoPlayer = findViewById(R.id.rb_exo_player)
         rbIjkPlayer = findViewById(R.id.rb_ijk_player)
+        rbSystemPlayer = findViewById(R.id.rb_system_player)
 
         rbCallback = findViewById(R.id.rb_callback)
         rbLauncher = findViewById(R.id.rb_launcher)
@@ -449,6 +452,9 @@ class MainActivity : AppCompatActivity() {
                             }
                             rbIjkPlayer.isChecked -> {
                                 gallery.registry(CustomPreviewIjkVideoHolder::class.java)
+                            }
+                            rbSystemPlayer.isChecked -> {
+                                gallery.registry(CustomPreviewSystemVideoHolder::class.java)
                             }
                             else -> {
                                 gallery.registry(PreviewVideoHolder::class.java)
