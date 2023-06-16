@@ -247,7 +247,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             mTvComplete?.setOnClickListener {
                 onCompleteClick(it)
             }
-            val media = TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position]
+            val media =
+                TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position]
             mTvEditor?.visibility =
                 if (MediaUtils.hasMimeTypeOfImage(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
             mTvEditor?.setOnClickListener {
@@ -295,7 +296,10 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             return
         }
         if (isHasMagicalEffect()) {
-            startZoomEffect(holder, TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position])
+            startZoomEffect(
+                holder,
+                TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position]
+            )
         }
     }
 
@@ -690,7 +694,8 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     open fun onMojitoBeginAnimComplete(mojitoView: MagicalView?, showImmediately: Boolean) {
         val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem) ?: return
         val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
-        val isResetSize = (media.isCrop() || media.isEditor()) && media.cropWidth > 0 && media.cropHeight > 0
+        val isResetSize =
+            (media.isCrop() || media.isEditor()) && media.cropWidth > 0 && media.cropHeight > 0
         val realWidth = if (isResetSize) media.cropWidth else media.width
         val realHeight = if (isResetSize) media.cropHeight else media.height
         if (MediaUtils.isLongImage(realWidth, realHeight)) {
@@ -742,7 +747,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 }
             } else if (currentViewHolder is PreviewAudioHolder) {
                 if (!currentViewHolder.mediaPlayer.isPlaying()) {
-                    currentViewHolder.ivPlay.performClick()
+                    currentViewHolder.controller.getViewPlay()?.performClick()
                 }
             }
             return@addIdleHandler false

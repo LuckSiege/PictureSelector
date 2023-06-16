@@ -8,10 +8,13 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
-import com.luck.picture.lib.player.IMediaPlayer
-import com.luck.picture.lib.player.DefaultMediaPlayer
 import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.player.AbsController
+import com.luck.picture.lib.player.DefaultMediaPlayer
+import com.luck.picture.lib.player.IMediaPlayer
+import com.luck.picture.lib.player.VideoController
 import com.luck.picture.lib.utils.BitmapUtils
+import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.MediaUtils
 
 /**
@@ -22,7 +25,8 @@ import com.luck.picture.lib.utils.MediaUtils
 open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView) {
     var pbLoading: ProgressBar = itemView.findViewById(R.id.pb_loading)
     var ivPlay: ImageView = itemView.findViewById(R.id.iv_play)
-    var mediaPlayer: IMediaPlayer = this.onCreateVideoComponent()
+    var mediaPlayer = this.onCreateVideoComponent()
+    var controller = this.onCreateVideoController()
     var isPlayed = false
 
     /**
@@ -32,12 +36,32 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         return DefaultMediaPlayer(itemView.context)
     }
 
+    /**
+     * Create custom player controller
+     */
+    open fun onCreateVideoController(): AbsController {
+        return VideoController(itemView.context).apply {
+            this.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                this.bottomMargin = DensityUtil.dip2px(itemView.context, 48f)
+                this.gravity = Gravity.BOTTOM
+            }
+        }
+    }
+
     init {
         (itemView as ViewGroup).addView(mediaPlayer as View, 0)
+        itemView.addView(controller as View, 1)
     }
 
     override fun bindData(media: LocalMedia, position: Int) {
         super.bindData(media, position)
+        (controller as View).alpha = 0F
+        controller.setMediaInfo(media)
+        controller.setIMediaPlayer(mediaPlayer)
+
         ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         ivPlay.setOnClickListener {
             dispatchPlay(media.getAvailablePath()!!, media.displayName)
@@ -117,6 +141,8 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.GONE
         ivPlay.visibility = View.GONE
         pbLoading.visibility = View.GONE
+        (controller as View).animate().alpha(1F).setDuration(300).start()
+        controller.start()
     }
 
     open fun onDefaultVideoState() {
@@ -124,6 +150,8 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.VISIBLE
         ivPlay.visibility = View.VISIBLE
         pbLoading.visibility = View.GONE
+        (controller as View).alpha = 0F
+        controller.stop()
         isPlayed = false
     }
 

@@ -1,21 +1,20 @@
 package com.luck.picture.lib.adapter
 
-import android.os.Handler
-import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.widget.ImageView
-import android.widget.SeekBar
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.player.AbsController
+import com.luck.picture.lib.player.AudioController
 import com.luck.picture.lib.player.AudioMediaPlayer
 import com.luck.picture.lib.player.IMediaPlayer
-import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.DateUtils
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.FileUtils
@@ -26,35 +25,25 @@ import com.luck.picture.lib.utils.FileUtils
  * @describe：PreviewAudioHolder
  */
 open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView) {
-    private val maxBackFastMs = 3 * 1000L
-    private val maxUpdateIntervalMs = 1000L
-    private val minCurrentPosition = 1000L
     private var tvAudioName: TextView = itemView.findViewById(R.id.tv_audio_name)
-    private var seekBar: SeekBar = itemView.findViewById(R.id.seek_bar)
-    private var ivBack: View = itemView.findViewById(R.id.iv_play_back)
-    private var ivFast: View = itemView.findViewById(R.id.iv_play_fast)
-    private var tvDuration: TextView = itemView.findViewById(R.id.tv_total_duration)
-    private var tvCurrentDuration: TextView = itemView.findViewById(R.id.tv_current_time)
-    var ivPlay: ImageView = itemView.findViewById(R.id.iv_play_audio)
-    private var isPlayed = false
-    var mediaPlayer: AudioMediaPlayer = AudioMediaPlayer()
-    private val mHandler = Handler(Looper.getMainLooper())
-    private val mTickerRunnable = object : Runnable {
-        override fun run() {
-            val duration = mediaPlayer.getDuration()
-            val currentPosition = mediaPlayer.getCurrentPosition()
-            val time = DateUtils.formatDurationTime(currentPosition)
-            if (TextUtils.equals(time, tvCurrentDuration.text)) {
-                // Same progress ignored
-            } else {
-                tvCurrentDuration.text = time
-                if (duration - currentPosition > minCurrentPosition) {
-                    seekBar.progress = currentPosition.toInt()
-                } else {
-                    seekBar.progress = duration.toInt()
-                }
+    var mediaPlayer = AudioMediaPlayer()
+    var controller = this.onCreateAudioController()
+
+    init {
+        (itemView as ViewGroup).addView(controller as View)
+    }
+
+    /**
+     * Create custom player audio controller
+     */
+    open fun onCreateAudioController(): AbsController {
+        return AudioController(itemView.context).apply {
+            this.layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                this.addRule(RelativeLayout.BELOW, R.id.tv_audio_name)
             }
-            mHandler.postDelayed(this, maxUpdateIntervalMs - currentPosition % maxUpdateIntervalMs)
         }
     }
 
@@ -82,35 +71,8 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
         tvAudioName.text = builder
-        tvDuration.text = DateUtils.formatDurationTime(media.duration)
-        seekBar.max = media.duration.toInt()
-        setBackFastUI(false)
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
-                    seekBar?.progress = progress
-                    tvCurrentDuration.text = DateUtils.formatDurationTime(progress.toLong())
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.seekTo(progress)
-                    }
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-        })
-        ivBack.setOnClickListener {
-            onBackAudioPlay()
-        }
-        ivFast.setOnClickListener {
-            onFastAudioPlay()
-        }
-        ivPlay.setOnClickListener {
-            dispatchPlay(media.getAvailablePath()!!)
-        }
+        controller.setMediaInfo(media)
+        controller.setIMediaPlayer(mediaPlayer)
         itemView.setOnClickListener {
             setClickEvent(media)
         }
@@ -120,69 +82,12 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         }
     }
 
-    open fun dispatchPlay(path: String) {
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause()
-            ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
-        } else {
-            if (isPlayed) {
-                mediaPlayer.resume()
-                ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
-            } else {
-                mediaPlayer.setDataSource(itemView.context, path, config.isLoopAutoPlay)
-                isPlayed = true
-            }
-        }
-    }
-
-    open fun onBackAudioPlay() {
-        val progress = seekBar.progress - maxBackFastMs
-        if (progress <= 0) {
-            seekBar.progress = 0
-        } else {
-            seekBar.progress = progress.toInt()
-        }
-        tvCurrentDuration.text = DateUtils.formatDurationTime(seekBar.progress.toLong())
-        mediaPlayer.seekTo(seekBar.progress)
-    }
-
-    open fun onFastAudioPlay() {
-        val progress = seekBar.progress + maxBackFastMs
-        if (progress >= seekBar.max) {
-            seekBar.progress = seekBar.max
-        } else {
-            seekBar.progress = progress.toInt()
-        }
-        tvCurrentDuration.text = DateUtils.formatDurationTime(seekBar.progress.toLong())
-        mediaPlayer.seekTo(seekBar.progress)
-    }
-
-    open fun setBackFastUI(isEnabled: Boolean) {
-        ivBack.isEnabled = isEnabled
-        ivFast.isEnabled = isEnabled
-        if (isEnabled) {
-            ivBack.alpha = 1.0F
-            ivFast.alpha = 1.0F
-        } else {
-            ivBack.alpha = 0.5F
-            ivFast.alpha = 0.5F
-        }
-    }
-
-
     open fun onPlayingAudioState() {
-        ivPlay.setImageResource(R.drawable.ps_ic_audio_stop);
-        mHandler.post(mTickerRunnable)
-        setBackFastUI(true)
+        controller.start()
     }
 
     open fun onDefaultAudioState() {
-        ivPlay.setImageResource(R.drawable.ps_ic_audio_play);
-        mHandler.removeCallbacks(mTickerRunnable)
-        tvCurrentDuration.text = String.format("00:00")
-        seekBar.progress = 0
-        setBackFastUI(false)
-        isPlayed = false
+        controller.stop()
     }
 
     override fun loadCover(media: LocalMedia) {
