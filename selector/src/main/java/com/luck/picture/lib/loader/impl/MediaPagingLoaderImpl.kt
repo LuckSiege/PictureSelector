@@ -215,11 +215,12 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
 
                     // create all media album
                     val allMediaAlbum = LocalMediaAlbum()
-                    allMediaAlbum.bucketDisplayName =
-                        if (TextUtils.isEmpty(config.defaultAlbumName)) if (config.selectorMode == SelectorMode.AUDIO)
+                    val bucketDisplayName =
+                        config.defaultAlbumName ?: if (config.selectorMode == SelectorMode.AUDIO)
                             application.getString(R.string.ps_all_audio) else application.getString(
                             R.string.ps_camera_roll
-                        ) else config.defaultAlbumName
+                        )
+                    allMediaAlbum.bucketDisplayName = bucketDisplayName
                     allMediaAlbum.bucketId = SelectorConstant.DEFAULT_ALL_BUCKET_ID
                     allMediaAlbum.totalCount = totalCount.toInt()
                     albumList.first().let { firstAlbum ->

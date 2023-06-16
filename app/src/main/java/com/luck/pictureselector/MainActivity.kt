@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
         val checkEditor = findViewById<CheckBox>(R.id.check_editor)
         val checkFilter = findViewById<CheckBox>(R.id.check_filter)
         val checkOutput = findViewById<CheckBox>(R.id.check_output)
+        val checkOnlyDir = findViewById<CheckBox>(R.id.check_only_dir)
         val checkTimeAxis = findViewById<CheckBox>(R.id.check_time_axis)
         val checkLifecycle = findViewById<CheckBox>(R.id.check_lifecycle)
         val checkLoopVideo = findViewById<CheckBox>(R.id.check_loop_video)
@@ -467,20 +468,59 @@ class MainActivity : AppCompatActivity() {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
                                     gallery.setOutputImageDir(getCustomImagePath())
-                                    gallery.setQuerySandboxDir(getCustomImagePath(), false)
+                                    gallery.setQuerySandboxDir(
+                                        getCustomImagePath(),
+                                        checkOnlyDir.isChecked
+                                    )
                                 }
                                 SelectorMode.VIDEO -> {
                                     gallery.setOutputVideoDir(getCustomVideoPath())
-                                    gallery.setQuerySandboxDir(getCustomVideoPath(), false)
+                                    gallery.setQuerySandboxDir(
+                                        getCustomVideoPath(),
+                                        checkOnlyDir.isChecked
+                                    )
                                 }
                                 SelectorMode.AUDIO -> {
                                     gallery.setOutputAudioDir(getCustomAudioPath())
-                                    gallery.setQuerySandboxDir(getCustomAudioPath(), false)
+                                    gallery.setQuerySandboxDir(
+                                        getCustomAudioPath(),
+                                        checkOnlyDir.isChecked
+                                    )
                                 }
                                 else -> {
                                     gallery.setOutputImageDir(getCustomAllPath())
                                     gallery.setOutputVideoDir(getCustomAllPath())
-                                    gallery.setQuerySandboxDir(getCustomAllPath(), false)
+                                    gallery.setQuerySandboxDir(
+                                        getCustomAllPath(),
+                                        checkOnlyDir.isChecked
+                                    )
+                                }
+                            }
+                        } else if (checkOnlyDir.isChecked) {
+                            when (selectorMode) {
+                                SelectorMode.IMAGE -> {
+                                    gallery.setQuerySandboxDir(
+                                        getCustomImagePath(),
+                                        checkOnlyDir.isChecked
+                                    )
+                                }
+                                SelectorMode.VIDEO -> {
+                                    gallery.setQuerySandboxDir(
+                                        getCustomVideoPath(),
+                                        checkOnlyDir.isChecked
+                                    )
+                                }
+                                SelectorMode.AUDIO -> {
+                                    gallery.setQuerySandboxDir(
+                                        getCustomAudioPath(),
+                                        checkOnlyDir.isChecked
+                                    )
+                                }
+                                else -> {
+                                    gallery.setQuerySandboxDir(
+                                        getCustomAllPath(),
+                                        checkOnlyDir.isChecked
+                                    )
                                 }
                             }
                         }

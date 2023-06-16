@@ -449,6 +449,14 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/check_only_dir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="只查询指定目录"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/check_time_axis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

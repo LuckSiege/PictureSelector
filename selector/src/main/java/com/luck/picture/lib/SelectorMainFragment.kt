@@ -201,9 +201,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun initTitleBar() {
-        TempDataProvider.getInstance().currentMediaAlbum?.let { album ->
-            mTvTitle?.text = album.bucketDisplayName
-        }
+        setDefaultAlbumTitle(TempDataProvider.getInstance().currentMediaAlbum?.bucketDisplayName)
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
         }
@@ -365,7 +363,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         // Update current album
         mAdapter.setDisplayCamera(config.isDisplayCamera && data.isAllAlbum())
-        mTvTitle?.text = data.bucketDisplayName
+        setDefaultAlbumTitle(data.bucketDisplayName)
         if (data.cachePage > 0 && data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
             Looper.myQueue().addIdleHandler {
@@ -734,11 +732,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun requestData() {
         if (config.isOnlySandboxDir) {
-            val sandboxDir = config.sandboxDir
-            mTvTitle?.text = sandboxDir!!.substring(sandboxDir.lastIndexOf("/") + 1)
-            mIvTitleArrow?.visibility = View.GONE
-            mRecycler.setEnabledLoadMore(false)
-            viewModel.loadAppInternalDir(sandboxDir)
+            config.sandboxDir?.let { sandboxDir ->
+                setDefaultAlbumTitle(File(sandboxDir).name)
+                mIvTitleArrow?.visibility = View.GONE
+                mRecycler.setEnabledLoadMore(false)
+                viewModel.loadAppInternalDir(sandboxDir)
+            }
         } else {
             viewModel.loadMedia(
                 TempDataProvider.getInstance().currentMediaAlbum?.bucketId
@@ -749,6 +748,17 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 return@addIdleHandler false
             }
         }
+    }
+
+    /**
+     * set default album title
+     */
+    open fun setDefaultAlbumTitle(title: String?) {
+        mTvTitle?.text =
+            config.defaultAlbumName ?: title ?: if (config.selectorMode == SelectorMode.AUDIO)
+                getString(R.string.ps_all_audio) else getString(
+                R.string.ps_camera_roll
+            )
     }
 
     /**
@@ -933,12 +943,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         val allMediaAlbum =
             mAlbumWindow.getAlbum(SelectorConstant.DEFAULT_ALL_BUCKET_ID) ?: LocalMediaAlbum()
         allMediaAlbum.bucketId = SelectorConstant.DEFAULT_ALL_BUCKET_ID
-        val defaultAlbumName = config.defaultAlbumName
-        allMediaAlbum.bucketDisplayName =
-            if (TextUtils.isEmpty(defaultAlbumName)) if (MediaUtils.hasMimeTypeOfAudio(media.mimeType))
+        val bucketDisplayName =
+            config.defaultAlbumName ?: if (MediaUtils.hasMimeTypeOfAudio(media.mimeType))
                 getString(R.string.ps_all_audio) else getString(
                 R.string.ps_camera_roll
-            ) else defaultAlbumName
+            )
+        allMediaAlbum.bucketDisplayName = bucketDisplayName
         allMediaAlbum.bucketDisplayCover = media.path
         allMediaAlbum.bucketDisplayMimeType = media.mimeType
         allMediaAlbum.source.add(0, media)
