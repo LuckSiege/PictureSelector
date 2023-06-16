@@ -156,6 +156,7 @@ open class VideoController : ConstraintLayout, AbsController {
         mHandler.removeCallbacks(mTickerRunnable)
         setBackFastUI(false)
         tvCurrentDuration.text = String.format("00:00")
+        seekBar.progress = 0
         ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
     }
 
