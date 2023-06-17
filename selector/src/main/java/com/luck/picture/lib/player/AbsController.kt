@@ -17,7 +17,7 @@ interface AbsController {
     fun getBack(): ImageView?
     fun getTvDuration(): TextView?
     fun getTvCurrentDuration(): TextView?
-    fun setMediaInfo(media: LocalMedia)
+    fun setDataSource(media: LocalMedia)
     fun setIMediaPlayer(mediaPlayer: IMediaPlayer)
     fun start()
     fun stop()

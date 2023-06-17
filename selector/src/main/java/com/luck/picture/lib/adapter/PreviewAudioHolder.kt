@@ -30,7 +30,11 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     var controller = this.onCreateAudioController()
 
     init {
-        (itemView as ViewGroup).addView(controller as View)
+        this.attachComponent(itemView as ViewGroup)
+    }
+
+    open fun attachComponent(group: ViewGroup) {
+        group.addView(controller as View)
     }
 
     /**
@@ -71,7 +75,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
         tvAudioName.text = builder
-        controller.setMediaInfo(media)
+        controller.setDataSource(media)
         controller.setIMediaPlayer(mediaPlayer)
         itemView.setOnClickListener {
             setClickEvent(media)

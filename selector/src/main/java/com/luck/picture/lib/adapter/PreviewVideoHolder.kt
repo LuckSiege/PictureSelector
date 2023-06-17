@@ -39,7 +39,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     /**
      * Create custom player controller
      */
-    open fun onCreateVideoController(): AbsController {
+    open fun onCreateVideoController(): AbsController? {
         return VideoController(itemView.context).apply {
             this.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -52,16 +52,23 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     }
 
     init {
-        (itemView as ViewGroup).addView(mediaPlayer as View, 0)
-        itemView.addView(controller as View, 1)
+        this.attachComponent(itemView as ViewGroup)
+    }
+
+    open fun attachComponent(group: ViewGroup) {
+        group.addView(mediaPlayer as View, 0)
+        controller?.let {
+            group.addView(controller as View)
+        }
     }
 
     override fun bindData(media: LocalMedia, position: Int) {
         super.bindData(media, position)
-        (controller as View).alpha = 0F
-        controller.setMediaInfo(media)
-        controller.setIMediaPlayer(mediaPlayer)
-
+        controller?.let { controller ->
+            (controller as View).alpha = 0F
+            controller.setDataSource(media)
+            controller.setIMediaPlayer(mediaPlayer)
+        }
         ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         ivPlay.setOnClickListener {
             dispatchPlay(media.getAvailablePath()!!, media.displayName)
@@ -141,8 +148,10 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.GONE
         ivPlay.visibility = View.GONE
         pbLoading.visibility = View.GONE
-        (controller as View).animate().alpha(1F).setDuration(300).start()
-        controller.start()
+        controller?.let { controller ->
+            (controller as View).animate().alpha(1F).setDuration(300).start()
+            controller.start()
+        }
     }
 
     open fun onDefaultVideoState() {
@@ -150,8 +159,10 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.VISIBLE
         ivPlay.visibility = View.VISIBLE
         pbLoading.visibility = View.GONE
-        (controller as View).alpha = 0F
-        controller.stop()
+        controller?.let { controller ->
+            (controller as View).animate().alpha(0F).setDuration(80).start()
+            controller.stop()
+        }
         isPlayed = false
     }
 

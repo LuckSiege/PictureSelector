@@ -59,7 +59,7 @@
         android:paddingStart="0dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
-        android:progressDrawable="@drawable/ps_layer_progress"
+        android:progressDrawable="@drawable/ps_layer_audio_progress"
         android:splitTrack="false"
         android:thumb="@drawable/ps_ic_seek_bar_thumb"
         android:thumbOffset="0dp"

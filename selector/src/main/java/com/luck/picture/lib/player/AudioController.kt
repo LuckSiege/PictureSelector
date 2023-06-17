@@ -106,7 +106,7 @@ open class AudioController : ConstraintLayout, AbsController {
     }
 
 
-    override fun setMediaInfo(media: LocalMedia) {
+    override fun setDataSource(media: LocalMedia) {
         tvDuration.text = DateUtils.formatDurationTime(media.duration)
         seekBar.max = media.duration.toInt()
         setBackFastUI(false)
@@ -134,7 +134,6 @@ open class AudioController : ConstraintLayout, AbsController {
         ivFast.setOnClickListener {
             onFastAudioPlay()
         }
-
         ivPlay.setOnClickListener {
             dispatchPlay(media.getAvailablePath()!!)
         }

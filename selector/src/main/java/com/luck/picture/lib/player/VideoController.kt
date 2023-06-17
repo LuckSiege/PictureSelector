@@ -98,7 +98,7 @@ open class VideoController : ConstraintLayout, AbsController {
         return tvCurrentDuration
     }
 
-    override fun setMediaInfo(media: LocalMedia) {
+    override fun setDataSource(media: LocalMedia) {
         tvDuration.text = DateUtils.formatDurationTime(media.duration)
         seekBar.max = media.duration.toInt()
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -120,17 +120,19 @@ open class VideoController : ConstraintLayout, AbsController {
         })
 
         ivPlay.setOnClickListener {
-            dispatchPlay(media.getAvailablePath()!!)
+            dispatchPlay()
         }
     }
 
-    open fun dispatchPlay(path: String) {
+    open fun dispatchPlay() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause()
-            stop()
+            mHandler.removeCallbacks(mTickerRunnable)
+            ivPlay.setImageResource(R.drawable.ps_ic_action_play)
         } else {
             mediaPlayer.resume()
-            start()
+            mHandler.post(mTickerRunnable)
+            ivPlay.setImageResource(R.drawable.ps_ic_action_pause)
         }
     }
 

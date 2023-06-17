@@ -61,6 +61,9 @@ class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPl
             mediaPlayer?.dataSource = path
         }
         mediaPlayer?.isLooping = isLoopAutoPlay
+        textureView.surfaceTexture?.let { surfaceTexture ->
+            mediaPlayer?.setSurface(Surface(surfaceTexture))
+        }
         mediaPlayer?.prepareAsync()
     }
 
