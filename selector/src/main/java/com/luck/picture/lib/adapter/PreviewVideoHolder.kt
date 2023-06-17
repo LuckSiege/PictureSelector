@@ -83,10 +83,14 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         itemView.setOnClickListener {
             if (config.isPauseResumePlay) {
                 dispatchPlay(media.getAvailablePath()!!, media.displayName)
+                showVideoController()
             } else {
-                setClickEvent(media)
+                if (controller != null && (controller as View).alpha == 0F) {
+                    showVideoController()
+                } else {
+                    setClickEvent(media)
+                }
             }
-            showVideoController()
         }
     }
 

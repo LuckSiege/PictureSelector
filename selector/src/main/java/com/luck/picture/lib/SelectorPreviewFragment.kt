@@ -686,6 +686,11 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             if (currentHolder.ivPlay.visibility == View.VISIBLE) {
                 currentHolder.ivPlay.visibility = View.GONE
             }
+            currentHolder.controller?.let { controller ->
+                if ((controller as View).alpha != 0F) {
+                    controller.animate().alpha(0F).setDuration(125).start()
+                }
+            }
         }
     }
 
