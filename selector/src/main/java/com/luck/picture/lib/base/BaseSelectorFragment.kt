@@ -146,6 +146,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTranslucentStatusBar()
         isSavedInstanceState = savedInstanceState != null
         viewModel.onRestoreInstanceState(savedInstanceState)
         config.mListenerInfo.onFragmentLifecycleListener?.onViewCreated(
@@ -156,7 +157,6 @@ abstract class BaseSelectorFragment : Fragment() {
         restoreEngine()
         createLoadingDialog()
         setFragmentKeyBackListener()
-        setTranslucentStatusBar()
     }
 
     open fun restoreEngine() {
@@ -222,8 +222,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     private fun setTranslucentStatusBar() {
         if (config.isPreviewFullScreenMode && !config.isOnlyCamera) {
-            val statusBar = config.selectorStyle.getStatusBar()
-            translucentStatusBar(requireActivity(), statusBar.isDarkStatusBar())
+            translucentStatusBar(requireActivity(), config.selectorStyle.getStatusBar().isDarkStatusBar())
         }
     }
 
