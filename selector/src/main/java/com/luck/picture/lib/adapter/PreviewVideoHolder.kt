@@ -91,7 +91,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     }
 
     open fun dispatchPlay(path: String, displayName: String?) {
-        if (isPlayed && config.isPauseResumePlay) {
+        if (isPlayed) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause()
                 controller?.stop(false)
