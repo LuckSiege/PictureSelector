@@ -30,6 +30,7 @@ open class AudioController : ConstraintLayout, AbsController {
     private lateinit var tvCurrentDuration: TextView
     private lateinit var mediaPlayer: IMediaPlayer
     private var isPlayed = false
+    private var playStateListener: AbsController.OnPlayStateListener? = null
     private val mHandler = Handler(Looper.getMainLooper())
     private val mTickerRunnable = object : Runnable {
         override fun run() {
@@ -141,9 +142,11 @@ open class AudioController : ConstraintLayout, AbsController {
 
     open fun dispatchPlay(path: String) {
         if (mediaPlayer.isPlaying()) {
+            playStateListener?.onPlayState(false)
             mediaPlayer.pause()
             ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
         } else {
+            playStateListener?.onPlayState(true)
             if (isPlayed) {
                 mediaPlayer.resume()
                 ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
@@ -160,13 +163,19 @@ open class AudioController : ConstraintLayout, AbsController {
         ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
     }
 
-    override fun stop() {
+    override fun stop(isReset: Boolean) {
         mHandler.removeCallbacks(mTickerRunnable)
         setBackFastUI(false)
-        tvCurrentDuration.text = String.format("00:00")
-        seekBar.progress = 0
         ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
+        if (isReset) {
+            tvCurrentDuration.text = String.format("00:00")
+            seekBar.progress = 0
+        }
         isPlayed = false
+    }
+
+    override fun setOnPlayStateListener(l: AbsController.OnPlayStateListener?) {
+        this.playStateListener = l;
     }
 
     open fun onBackAudioPlay() {

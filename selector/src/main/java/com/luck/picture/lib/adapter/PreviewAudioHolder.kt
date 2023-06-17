@@ -77,6 +77,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         tvAudioName.text = builder
         controller.setDataSource(media)
         controller.setIMediaPlayer(mediaPlayer)
+        controller.setOnPlayStateListener(playStateListener)
         itemView.setOnClickListener {
             setClickEvent(media)
         }
@@ -86,12 +87,18 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         }
     }
 
+    private val playStateListener = object : AbsController.OnPlayStateListener {
+        override fun onPlayState(isPlaying: Boolean) {
+
+        }
+    }
+
     open fun onPlayingAudioState() {
         controller.start()
     }
 
     open fun onDefaultAudioState() {
-        controller.stop()
+        controller.stop(true)
     }
 
     override fun loadCover(media: LocalMedia) {
@@ -136,6 +143,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         mediaPlayer.setOnErrorListener(null)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.setOnPreparedListener(null)
+        controller.setOnPlayStateListener(null)
         onDefaultAudioState()
     }
 }

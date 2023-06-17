@@ -20,5 +20,10 @@ interface AbsController {
     fun setDataSource(media: LocalMedia)
     fun setIMediaPlayer(mediaPlayer: IMediaPlayer)
     fun start()
-    fun stop()
+    fun stop(isReset: Boolean)
+    fun setOnPlayStateListener(l: OnPlayStateListener?)
+
+    interface OnPlayStateListener {
+        fun onPlayState(isPlaying: Boolean)
+    }
 }

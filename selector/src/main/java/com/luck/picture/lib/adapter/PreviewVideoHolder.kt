@@ -1,5 +1,7 @@
 package com.luck.picture.lib.adapter
 
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +29,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     var ivPlay: ImageView = itemView.findViewById(R.id.iv_play)
     var mediaPlayer = this.onCreateVideoComponent()
     var controller = this.onCreateVideoController()
+    private val handle = Handler(Looper.getMainLooper())
     var isPlayed = false
 
     /**
@@ -68,10 +71,12 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             (controller as View).alpha = 0F
             controller.setDataSource(media)
             controller.setIMediaPlayer(mediaPlayer)
+            controller.setOnPlayStateListener(playStateListener)
         }
         ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         ivPlay.setOnClickListener {
             dispatchPlay(media.getAvailablePath()!!, media.displayName)
+            showVideoController()
         }
         itemView.setOnClickListener {
             if (config.isPauseResumePlay) {
@@ -79,6 +84,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             } else {
                 setClickEvent(media)
             }
+            showVideoController()
         }
     }
 
@@ -86,10 +92,12 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         if (isPlayed && config.isPauseResumePlay) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause()
+                controller?.stop(false)
                 ivPlay.visibility = View.VISIBLE
                 setPreviewVideoTitle(null)
             } else {
                 mediaPlayer.resume()
+                controller?.start()
                 ivPlay.visibility = View.GONE
                 setPreviewVideoTitle(displayName)
             }
@@ -148,10 +156,8 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.GONE
         ivPlay.visibility = View.GONE
         pbLoading.visibility = View.GONE
-        controller?.let { controller ->
-            (controller as View).animate().alpha(1F).setDuration(300).start()
-            controller.start()
-        }
+        showVideoController()
+        controller?.start()
     }
 
     open fun onDefaultVideoState() {
@@ -159,11 +165,46 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         imageCover.visibility = View.VISIBLE
         ivPlay.visibility = View.VISIBLE
         pbLoading.visibility = View.GONE
+        hideVideoController()
+        controller?.stop(true)
+        isPlayed = false
+    }
+
+    open fun showVideoController() {
+        controller?.let { controller ->
+            if (mediaPlayer.isPlaying() && (controller as View).alpha == 0F) {
+                handle.removeCallbacksAndMessages(null)
+                (controller as View).animate().alpha(1F).setDuration(300).start()
+                if (mediaPlayer.getDuration() > disappearControllerDuration()) {
+                    handle.postDelayed(object : Runnable {
+                        override fun run() {
+                            handle.removeCallbacks(this)
+                            (controller as View).animate().alpha(0F).setDuration(220).start()
+                        }
+                    }, disappearControllerDuration())
+                }
+            }
+        }
+    }
+
+    open fun hideVideoController() {
         controller?.let { controller ->
             (controller as View).animate().alpha(0F).setDuration(80).start()
-            controller.stop()
         }
-        isPlayed = false
+    }
+
+    open fun disappearControllerDuration(): Long {
+        return 3000L
+    }
+
+    private val playStateListener = object : AbsController.OnPlayStateListener {
+        override fun onPlayState(isPlaying: Boolean) {
+            if (isPlaying) {
+                ivPlay.visibility = View.GONE
+            } else {
+                ivPlay.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onViewAttachedToWindow() {
@@ -211,6 +252,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         mediaPlayer.setOnPreparedListener(null)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.setOnVideoSizeChangedListener(null)
+        handle.removeCallbacksAndMessages(null)
         onDefaultVideoState()
     }
 }

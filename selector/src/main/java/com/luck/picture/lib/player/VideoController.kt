@@ -25,6 +25,7 @@ open class VideoController : ConstraintLayout, AbsController {
     private lateinit var tvDuration: TextView
     private lateinit var tvCurrentDuration: TextView
     private lateinit var mediaPlayer: IMediaPlayer
+    private var playStateListener: AbsController.OnPlayStateListener? = null
     private val mHandler = Handler(Looper.getMainLooper())
     private val mTickerRunnable = object : Runnable {
         override fun run() {
@@ -72,6 +73,11 @@ open class VideoController : ConstraintLayout, AbsController {
         tvCurrentDuration = findViewById(R.id.tv_current_time)
         tvDuration.text = String.format("00:00")
         tvCurrentDuration.text = String.format("00:00")
+        initWidget()
+    }
+
+    open fun initWidget() {
+
     }
 
     override fun getViewPlay(): ImageView? {
@@ -126,13 +132,13 @@ open class VideoController : ConstraintLayout, AbsController {
 
     open fun dispatchPlay() {
         if (mediaPlayer.isPlaying()) {
+            playStateListener?.onPlayState(false)
             mediaPlayer.pause()
-            mHandler.removeCallbacks(mTickerRunnable)
-            ivPlay.setImageResource(R.drawable.ps_ic_action_play)
+            stop(false)
         } else {
+            playStateListener?.onPlayState(true)
             mediaPlayer.resume()
-            mHandler.post(mTickerRunnable)
-            ivPlay.setImageResource(R.drawable.ps_ic_action_pause)
+            start()
         }
     }
 
@@ -141,13 +147,19 @@ open class VideoController : ConstraintLayout, AbsController {
         ivPlay.setImageResource(R.drawable.ps_ic_action_pause)
     }
 
-    override fun stop() {
+    override fun stop(isReset: Boolean) {
         mHandler.removeCallbacks(mTickerRunnable)
-        tvCurrentDuration.text = String.format("00:00")
-        seekBar.progress = 0
         ivPlay.setImageResource(R.drawable.ps_ic_action_play)
+        if (isReset) {
+            tvCurrentDuration.text = String.format("00:00")
+            seekBar.progress = 0
+        }
     }
 
+
+    override fun setOnPlayStateListener(l: AbsController.OnPlayStateListener?) {
+        this.playStateListener = l
+    }
 
     override fun setIMediaPlayer(mediaPlayer: IMediaPlayer) {
         this.mediaPlayer = mediaPlayer
