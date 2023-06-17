@@ -69,6 +69,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         mTvComplete?.let {
             navBarViews.remove(it)
         }
+        rvGallery.visibility =
+            if (TempDataProvider.getInstance().selectResult.isEmpty()) View.GONE else View.VISIBLE
         addTitleBarViewGroup(mTvComplete)
         addNarBarViewGroup(rvGallery, mTvSelected)
     }
@@ -124,7 +126,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 TempDataProvider.getInstance().previewWrap.isBottomPreview,
                 if (TempDataProvider.getInstance().previewWrap.isBottomPreview) TempDataProvider.getInstance().selectResult.toMutableList() else TempDataProvider.getInstance().selectResult
             )
-        galleryAdapter?.currentMedia = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
+        galleryAdapter?.currentMedia =
+            TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
         galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
         rvGallery.adapter = galleryAdapter
         galleryAdapter?.setOnItemClickListener(object : OnItemClickListener<LocalMedia> {
@@ -161,7 +164,11 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 if (fromPosition < toPosition) {
                     for (i in fromPosition until toPosition) {
                         if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
-                            Collections.swap(TempDataProvider.getInstance().previewWrap.source, i, i + 1)
+                            Collections.swap(
+                                TempDataProvider.getInstance().previewWrap.source,
+                                i,
+                                i + 1
+                            )
                             galleryAdapter?.data?.let { Collections.swap(it, i, i + 1) }
                         }
                         if (TempDataProvider.getInstance().selectResult.size > i + 1) {
@@ -171,7 +178,11 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 } else {
                     for (i in fromPosition downTo toPosition + 1) {
                         if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
-                            Collections.swap(TempDataProvider.getInstance().previewWrap.source, i, i - 1)
+                            Collections.swap(
+                                TempDataProvider.getInstance().previewWrap.source,
+                                i,
+                                i - 1
+                            )
                             galleryAdapter?.data?.let { Collections.swap(it, i, i - 1) }
                         }
                         if (TempDataProvider.getInstance().selectResult.size > i) {
@@ -290,14 +301,19 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
+        val provider = TempDataProvider.getInstance()
         mTvComplete?.isEnabled = true
-        galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
+        galleryAdapter?.selectResult = provider.selectResult
         galleryAdapter?.notifyDataSetChanged()
         if (TempDataProvider.getInstance().selectResult.contains(change)) {
             val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
             if (lastPosition >= 0) {
                 rvGallery.smoothScrollToPosition(lastPosition)
             }
+        }
+        if (!provider.previewWrap.isBottomPreview) {
+            rvGallery.visibility =
+                if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
         }
         selectResultSort()
     }

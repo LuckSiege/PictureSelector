@@ -104,6 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/ps_preview_gallery_bg"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ps_bottom_nar_bar_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
