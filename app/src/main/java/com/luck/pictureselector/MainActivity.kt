@@ -10,6 +10,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
+import android.media.SoundPool
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -66,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbDefaultPlayer: RadioButton
     private lateinit var rbExoPlayer: RadioButton
     private lateinit var rbIjkPlayer: RadioButton
-    private lateinit var rbSystemPlayer:RadioButton
+    private lateinit var rbSystemPlayer: RadioButton
     private lateinit var rbDefaultStyle: RadioButton
     private lateinit var rbWhiteStyle: RadioButton
     private lateinit var rbNumNewStyle: RadioButton
@@ -81,9 +83,12 @@ class MainActivity : AppCompatActivity() {
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
     private var language: Language = Language.SYSTEM_LANGUAGE
+    private val soundPool = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
     private var needScaleBig = true
     private var needScaleSmall = false
     private var isHasLiftDelete = false
+    private var soundID = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -125,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         val checkCameraServices = findViewById<CheckBox>(R.id.check_camera_services)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
         val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
+        soundID = soundPool.load(this, R.raw.ps_click_audio, 1)
         launcherResult = createActivityResultLauncher()
         minus.setOnClickListener {
             if (maxSelectNum > 1) {
@@ -813,12 +819,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private val geSelectFilterListener = object : OnSelectFilterListener {
         override fun onSelectFilter(context: Context, media: LocalMedia): Boolean {
             if (media.size > 5 * FileSizeUnitConstant.MB) {
                 ToastUtils.showMsg(context, "文件大于5M")
                 return true
             }
+            // 选择的时候可以添加一些音效...
+            soundPool.play(soundID, 0.1f, 0.5f, 0, 1, 1f)
             return false
         }
     }
