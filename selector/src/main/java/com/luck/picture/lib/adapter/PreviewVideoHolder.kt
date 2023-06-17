@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.SeekBar
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.entity.LocalMedia
@@ -29,7 +30,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     var ivPlay: ImageView = itemView.findViewById(R.id.iv_play)
     var mediaPlayer = this.onCreateVideoComponent()
     var controller = this.onCreateVideoController()
-    private val handle = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     var isPlayed = false
 
     /**
@@ -72,6 +73,7 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
             controller.setDataSource(media)
             controller.setIMediaPlayer(mediaPlayer)
             controller.setOnPlayStateListener(playStateListener)
+            controller.setOnSeekBarChangeListener(seekBarChangeListener)
         }
         ivPlay.visibility = if (config.isPreviewZoomEffect) View.GONE else View.VISIBLE
         ivPlay.setOnClickListener {
@@ -173,18 +175,26 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     open fun showVideoController() {
         controller?.let { controller ->
             if (mediaPlayer.isPlaying() && (controller as View).alpha == 0F) {
-                handle.removeCallbacksAndMessages(null)
                 (controller as View).animate().alpha(1F).setDuration(300).start()
-                if (mediaPlayer.getDuration() > disappearControllerDuration()) {
-                    handle.postDelayed(object : Runnable {
-                        override fun run() {
-                            handle.removeCallbacks(this)
-                            (controller as View).animate().alpha(0F).setDuration(220).start()
-                        }
-                    }, disappearControllerDuration())
-                }
+                startControllerHandler()
             }
         }
+    }
+
+    open fun startControllerHandler() {
+        stopControllerHandler()
+        if (mediaPlayer.getDuration() > disappearControllerDuration()) {
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    handler.removeCallbacks(this)
+                    (controller as View).animate().alpha(0F).setDuration(220).start()
+                }
+            }, disappearControllerDuration())
+        }
+    }
+
+    open fun stopControllerHandler() {
+        handler.removeCallbacksAndMessages(null)
     }
 
     open fun hideVideoController() {
@@ -203,6 +213,23 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
                 ivPlay.visibility = View.GONE
             } else {
                 ivPlay.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private val seekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            stopControllerHandler()
+        }
+
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            controller?.let { controller ->
+                if ((controller as View).alpha == 1F) {
+                    startControllerHandler()
+                }
             }
         }
     }
@@ -252,7 +279,9 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         mediaPlayer.setOnPreparedListener(null)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.setOnVideoSizeChangedListener(null)
-        handle.removeCallbacksAndMessages(null)
+        controller?.setOnPlayStateListener(null)
+        controller?.setOnSeekBarChangeListener(null)
+        stopControllerHandler()
         onDefaultVideoState()
     }
 }

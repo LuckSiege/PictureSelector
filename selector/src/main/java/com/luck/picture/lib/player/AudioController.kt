@@ -31,6 +31,7 @@ open class AudioController : ConstraintLayout, AbsController {
     private lateinit var mediaPlayer: IMediaPlayer
     private var isPlayed = false
     private var playStateListener: AbsController.OnPlayStateListener? = null
+    private var seekBarChangeListener: SeekBar.OnSeekBarChangeListener? = null
     private val mHandler = Handler(Looper.getMainLooper())
     private val mTickerRunnable = object : Runnable {
         override fun run() {
@@ -120,12 +121,15 @@ open class AudioController : ConstraintLayout, AbsController {
                         mediaPlayer.seekTo(progress)
                     }
                 }
+                seekBarChangeListener?.onProgressChanged(seekBar, progress, fromUser)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                seekBarChangeListener?.onStartTrackingTouch(seekBar)
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBarChangeListener?.onStopTrackingTouch(seekBar)
             }
         })
 
@@ -176,6 +180,10 @@ open class AudioController : ConstraintLayout, AbsController {
 
     override fun setOnPlayStateListener(l: AbsController.OnPlayStateListener?) {
         this.playStateListener = l;
+    }
+
+    override fun setOnSeekBarChangeListener(l: SeekBar.OnSeekBarChangeListener?) {
+        this.seekBarChangeListener = l
     }
 
     open fun onBackAudioPlay() {

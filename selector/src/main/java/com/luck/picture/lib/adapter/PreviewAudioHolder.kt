@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.SeekBar
 import android.widget.TextView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
@@ -78,6 +79,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         controller.setDataSource(media)
         controller.setIMediaPlayer(mediaPlayer)
         controller.setOnPlayStateListener(playStateListener)
+        controller.setOnSeekBarChangeListener(seekBarChangeListener)
         itemView.setOnClickListener {
             setClickEvent(media)
         }
@@ -90,6 +92,17 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
     private val playStateListener = object : AbsController.OnPlayStateListener {
         override fun onPlayState(isPlaying: Boolean) {
 
+        }
+    }
+
+    private val seekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        }
+
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
         }
     }
 
@@ -144,6 +157,7 @@ open class PreviewAudioHolder(itemView: View) : BasePreviewMediaHolder(itemView)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.setOnPreparedListener(null)
         controller.setOnPlayStateListener(null)
+        controller.setOnSeekBarChangeListener(null)
         onDefaultAudioState()
     }
 }

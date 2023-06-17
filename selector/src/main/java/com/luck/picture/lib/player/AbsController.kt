@@ -22,7 +22,7 @@ interface AbsController {
     fun start()
     fun stop(isReset: Boolean)
     fun setOnPlayStateListener(l: OnPlayStateListener?)
-
+    fun setOnSeekBarChangeListener(l: SeekBar.OnSeekBarChangeListener?)
     interface OnPlayStateListener {
         fun onPlayState(isPlaying: Boolean)
     }
