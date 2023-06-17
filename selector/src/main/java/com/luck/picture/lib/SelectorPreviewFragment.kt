@@ -14,7 +14,6 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -42,7 +41,6 @@ import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.FileUtils
 import com.luck.picture.lib.utils.MediaUtils
-import com.luck.picture.lib.utils.SdkVersionUtils.isP
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.widget.StyleTextView
 import kotlinx.coroutines.Dispatchers
@@ -800,21 +798,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             override fun onAnimationEnd(animation: Animator) {
                 viewAnimSet.removeListener(this)
                 isAnimationStart = false
-                if (isP() && isAdded) {
-                    val window = requireActivity().window
-                    val lp = window.attributes
-                    if (isInitTitleBar) {
-                        lp.flags = lp.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
-                        lp.layoutInDisplayCutoutMode =
-                            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                        window.attributes = lp
-                        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-                    } else {
-                        lp.flags = lp.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN.inv()
-                        window.attributes = lp
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-                    }
-                }
             }
         })
 
