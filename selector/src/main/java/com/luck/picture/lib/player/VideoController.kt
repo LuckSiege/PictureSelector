@@ -21,8 +21,6 @@ import com.luck.picture.lib.utils.DateUtils
  */
 open class VideoController : ConstraintLayout, AbsController {
     private lateinit var seekBar: SeekBar
-    private lateinit var ivBack: ImageView
-    private lateinit var ivFast: ImageView
     private lateinit var ivPlay: ImageView
     private lateinit var tvDuration: TextView
     private lateinit var tvCurrentDuration: TextView
@@ -69,8 +67,6 @@ open class VideoController : ConstraintLayout, AbsController {
     private fun initView() {
         View.inflate(context, R.layout.ps_video_controller, this)
         seekBar = findViewById(R.id.seek_bar)
-        ivBack = findViewById(R.id.iv_play_back)
-        ivFast = findViewById(R.id.iv_play_fast)
         ivPlay = findViewById(R.id.iv_play_video)
         tvDuration = findViewById(R.id.tv_total_duration)
         tvCurrentDuration = findViewById(R.id.tv_current_time)
@@ -87,11 +83,11 @@ open class VideoController : ConstraintLayout, AbsController {
     }
 
     override fun getFast(): ImageView? {
-        return ivFast
+        return null
     }
 
     override fun getBack(): ImageView? {
-        return ivBack
+        return null
     }
 
     override fun getTvDuration(): TextView? {
@@ -105,7 +101,6 @@ open class VideoController : ConstraintLayout, AbsController {
     override fun setMediaInfo(media: LocalMedia) {
         tvDuration.text = DateUtils.formatDurationTime(media.duration)
         seekBar.max = media.duration.toInt()
-        setBackFastUI(false)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -124,13 +119,6 @@ open class VideoController : ConstraintLayout, AbsController {
             }
         })
 
-        ivBack.setOnClickListener {
-            onBackAudioPlay()
-        }
-        ivFast.setOnClickListener {
-            onFastAudioPlay()
-        }
-
         ivPlay.setOnClickListener {
             dispatchPlay(media.getAvailablePath()!!)
         }
@@ -148,51 +136,16 @@ open class VideoController : ConstraintLayout, AbsController {
 
     override fun start() {
         mHandler.post(mTickerRunnable)
-        setBackFastUI(true)
-        ivPlay.setImageResource(R.drawable.ps_ic_audio_stop)
+        ivPlay.setImageResource(R.drawable.ps_ic_action_pause)
     }
 
     override fun stop() {
         mHandler.removeCallbacks(mTickerRunnable)
-        setBackFastUI(false)
         tvCurrentDuration.text = String.format("00:00")
         seekBar.progress = 0
-        ivPlay.setImageResource(R.drawable.ps_ic_audio_play)
+        ivPlay.setImageResource(R.drawable.ps_ic_action_play)
     }
 
-    open fun onBackAudioPlay() {
-        val progress = seekBar.progress - getBackFastDuration()
-        if (progress <= 0) {
-            seekBar.progress = 0
-        } else {
-            seekBar.progress = progress.toInt()
-        }
-        tvCurrentDuration.text = DateUtils.formatDurationTime(seekBar.progress.toLong())
-        mediaPlayer.seekTo(seekBar.progress)
-    }
-
-    open fun onFastAudioPlay() {
-        val progress = seekBar.progress + getBackFastDuration()
-        if (progress >= seekBar.max) {
-            seekBar.progress = seekBar.max
-        } else {
-            seekBar.progress = progress.toInt()
-        }
-        tvCurrentDuration.text = DateUtils.formatDurationTime(seekBar.progress.toLong())
-        mediaPlayer.seekTo(seekBar.progress)
-    }
-
-    open fun setBackFastUI(isEnabled: Boolean) {
-        ivBack.isEnabled = isEnabled
-        ivFast.isEnabled = isEnabled
-        if (isEnabled) {
-            ivBack.alpha = 1.0F
-            ivFast.alpha = 1.0F
-        } else {
-            ivBack.alpha = 0.5F
-            ivFast.alpha = 0.5F
-        }
-    }
 
     override fun setIMediaPlayer(mediaPlayer: IMediaPlayer) {
         this.mediaPlayer = mediaPlayer
@@ -201,10 +154,6 @@ open class VideoController : ConstraintLayout, AbsController {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         mHandler.removeCallbacks(mTickerRunnable)
-    }
-
-    open fun getBackFastDuration(): Long {
-        return 3 * 1000L
     }
 
     open fun getMaxUpdateIntervalDuration(): Long {

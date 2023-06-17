@@ -5,6 +5,7 @@
     <color name="ps_color_black">#000000</color>
     <color name="ps_color_99_black">#99000000</color>
     <color name="ps_color_white">#FFFFFF</color>
+    <color name="ps_color_80_white">#80FFFFFF</color>
     <color name="ps_color_blue">#7D7DFF</color>
     <color name="ps_color_light_grey">#999999</color>
     <color name="ps_color_a83">#a8333333</color>
