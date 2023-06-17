@@ -798,6 +798,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             override fun onAnimationEnd(animation: Animator) {
                 viewAnimSet.removeListener(this)
                 isAnimationStart = false
+                if (isAdded) {
+                    showHideStatusBar(isInitTitleBar)
+                }
             }
         })
 
@@ -805,6 +808,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             showFullScreenStatusBar()
         } else {
             hideFullScreenStatusBar()
+        }
+    }
+
+    open fun showHideStatusBar(isInitTitleBar: Boolean) {
+        if (isInitTitleBar) {
+            // hide
+        } else {
+            // show
         }
     }
 
