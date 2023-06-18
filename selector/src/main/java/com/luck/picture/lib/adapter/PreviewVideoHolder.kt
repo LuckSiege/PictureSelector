@@ -45,11 +45,14 @@ open class PreviewVideoHolder(itemView: View) : BasePreviewMediaHolder(itemView)
      */
     open fun onCreateVideoController(): AbsController? {
         return VideoController(itemView.context).apply {
+            this.setBackgroundResource(R.drawable.ps_video_controller_bg)
             this.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 this.bottomMargin = DensityUtil.dip2px(itemView.context, 48f)
+                this.leftMargin = DensityUtil.dip2px(itemView.context, 15f)
+                this.rightMargin = DensityUtil.dip2px(itemView.context, 15f)
                 this.gravity = Gravity.BOTTOM
             }
         }
