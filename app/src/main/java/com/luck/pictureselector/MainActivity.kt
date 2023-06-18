@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
     private var language: Language = Language.SYSTEM_LANGUAGE
-    private val soundPool = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
+    private var soundPool = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
     private var needScaleBig = true
     private var needScaleSmall = false
     private var isHasLiftDelete = false
@@ -995,5 +995,10 @@ class MainActivity : AppCompatActivity() {
             customFile.mkdirs()
         }
         return customFile.absolutePath + File.separator
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPool.release()
     }
 }
