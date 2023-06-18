@@ -780,9 +780,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         val titleBarFrom: Float = if (isInitTitleBar) 0F else -titleBarHeight
         val titleBarTo = if (isInitTitleBar) -(titleBarHeight + statusBarRectHeight) else 0F
         titleViews.forEach { v ->
-            val translationY = ObjectAnimator.ofFloat(v, "translationY", titleBarFrom, titleBarTo)
-            translationY.duration = 300
-            val play = viewAnimSet.play(translationY)
+            val play = viewAnimSet.play(
+                ObjectAnimator.ofFloat(
+                    v,
+                    "translationY",
+                    titleBarFrom,
+                    titleBarTo
+                )
+            )
             if (isInitTitleBar) {
                 play.before(statusBarAlpha)
             } else {
@@ -791,10 +796,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
         // begin NavBar alpha Animator
         navBarViews.forEach { v ->
-            val navBarAlpha = ObjectAnimator.ofFloat(v, "alpha", alphaFrom, alphaTo)
-            navBarAlpha.duration = 350
-            viewAnimSet.play(navBarAlpha)
+            viewAnimSet.play(ObjectAnimator.ofFloat(v, "alpha", alphaFrom, alphaTo))
         }
+        viewAnimSet.duration = 350
         viewAnimSet.start()
         isAnimationStart = true
         viewAnimSet.addListener(object : AnimatorListenerAdapter() {
