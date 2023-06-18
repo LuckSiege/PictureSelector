@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -38,10 +39,7 @@ import com.luck.picture.lib.magical.MagicalView
 import com.luck.picture.lib.magical.OnMagicalViewListener
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.TempDataProvider
-import com.luck.picture.lib.utils.DensityUtil
-import com.luck.picture.lib.utils.FileUtils
-import com.luck.picture.lib.utils.MediaUtils
-import com.luck.picture.lib.utils.SelectorLogUtils
+import com.luck.picture.lib.utils.*
 import com.luck.picture.lib.widget.StyleTextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -817,10 +815,14 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun showHideStatusBar(isInitTitleBar: Boolean) {
+        val window = requireActivity().window
         if (isInitTitleBar) {
             // hide
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
             // show
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 

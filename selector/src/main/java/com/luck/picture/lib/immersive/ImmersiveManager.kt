@@ -147,6 +147,7 @@ object ImmersiveManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = Color.TRANSPARENT
         }
+        fitsNotchScreen(activity)
         val decor = window.decorView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //设置window的状态栏不可见,且状态栏字体是白色
@@ -172,6 +173,18 @@ object ImmersiveManager {
         if (mChildView != null) {
             mChildView.fitsSystemWindows = false
             ViewCompat.requestApplyInsets(mChildView)
+        }
+    }
+
+    private fun fitsNotchScreen(activity: Activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            try {
+                val lp: WindowManager.LayoutParams = activity.window.attributes
+                lp.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                activity.window.attributes = lp
+            } catch (e: java.lang.Exception) {
+            }
         }
     }
 
