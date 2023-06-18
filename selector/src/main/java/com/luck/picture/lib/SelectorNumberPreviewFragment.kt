@@ -301,21 +301,22 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
-        val provider = TempDataProvider.getInstance()
-        mTvComplete?.isEnabled = true
-        galleryAdapter?.selectResult = provider.selectResult
-        galleryAdapter?.notifyDataSetChanged()
-        if (TempDataProvider.getInstance().selectResult.contains(change)) {
-            val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
-            if (lastPosition >= 0) {
-                rvGallery.smoothScrollToPosition(lastPosition)
+        if (galleryAdapter != null) {
+            mTvComplete?.isEnabled = true
+            galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
+            galleryAdapter?.notifyDataSetChanged()
+            if (TempDataProvider.getInstance().selectResult.contains(change)) {
+                val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
+                if (lastPosition >= 0) {
+                    rvGallery.smoothScrollToPosition(lastPosition)
+                }
             }
+            if (!TempDataProvider.getInstance().previewWrap.isBottomPreview) {
+                rvGallery.visibility =
+                    if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
+            }
+            selectResultSort()
         }
-        if (!provider.previewWrap.isBottomPreview) {
-            rvGallery.visibility =
-                if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
-        }
-        selectResultSort()
     }
 
     private fun selectResultSort() {
