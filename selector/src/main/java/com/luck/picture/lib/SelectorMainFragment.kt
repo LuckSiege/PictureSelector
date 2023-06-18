@@ -189,10 +189,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             onSelectionResultChange(media)
         }
         viewModel.albumLiveData.observe(viewLifecycleOwner) { albumList ->
-            Looper.myQueue().addIdleHandler {
-                onAlbumSourceChange(albumList)
-                return@addIdleHandler false
-            }
+            onAlbumSourceChange(albumList)
         }
         viewModel.mediaLiveData.observe(viewLifecycleOwner) { mediaList ->
             onMediaSourceChange(mediaList)
@@ -366,19 +363,13 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         setDefaultAlbumTitle(data.bucketDisplayName)
         if (data.cachePage > 0 && data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
-            Looper.myQueue().addIdleHandler {
-                viewModel.page = data.cachePage
-                mAdapter.setDataNotifyChanged(data.source)
-                mRecycler.scrollToPosition(0)
-                mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !config.isOnlySandboxDir && data.source.isNotEmpty())
-                return@addIdleHandler false
-            }
+            viewModel.page = data.cachePage
+            mAdapter.setDataNotifyChanged(data.source)
+            mRecycler.scrollToPosition(0)
+            mRecycler.setEnabledLoadMore(!data.isSandboxAlbum() && !config.isOnlySandboxDir && data.source.isNotEmpty())
         } else {
             // Never loaded, request data again
-            Looper.myQueue().addIdleHandler {
-                viewModel.loadMedia(data.bucketId)
-                return@addIdleHandler false
-            }
+            viewModel.loadMedia(data.bucketId)
         }
         if (config.isFastSlidingSelect) {
             mDragSelectTouchListener?.setRecyclerViewHeaderCount(if (mAdapter.isDisplayCamera()) 1 else 0)
