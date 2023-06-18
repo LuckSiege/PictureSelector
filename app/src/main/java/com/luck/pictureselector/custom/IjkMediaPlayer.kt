@@ -9,6 +9,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.widget.FrameLayout
 import com.luck.picture.lib.player.IMediaPlayer
+import com.luck.picture.lib.player.VideoTextureView
 import com.luck.picture.lib.utils.MediaUtils
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
@@ -18,7 +19,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
  * @describe：Ijk Video MediaPlayer
  */
 class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPlayer {
-    private lateinit var textureView: IjkVideoTextureView
+    private lateinit var textureView: VideoTextureView
     private var mediaPlayer: IjkMediaPlayer? = null
     private var mVideoRotation = 0
 
@@ -39,7 +40,7 @@ class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPl
     }
 
     private fun init() {
-        textureView = IjkVideoTextureView(context)
+        textureView = VideoTextureView(context)
         textureView.layoutParams =
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
                 this.gravity = Gravity.CENTER

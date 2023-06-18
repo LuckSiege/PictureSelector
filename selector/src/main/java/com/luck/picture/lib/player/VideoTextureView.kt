@@ -1,4 +1,4 @@
-package com.luck.pictureselector.custom
+package com.luck.picture.lib.player
 
 import android.content.Context
 import android.view.TextureView
@@ -6,9 +6,9 @@ import android.view.TextureView
 /**
  * @author：luck
  * @date：2022/7/1 5:10 下午
- * @describe：IjkPlayer TextureView
+ * @describe：Player TextureView
  */
-class IjkVideoTextureView(context: Context) : TextureView(context) {
+class VideoTextureView(context: Context) : TextureView(context) {
     private var mVideoWidth = 0
     private var mVideoHeight = 0
     private var mVideoRotation = 0

@@ -1,25 +1,25 @@
 package com.luck.picture.lib.player
 
 import android.content.Context
-import android.graphics.PixelFormat
-import android.media.AudioAttributes
+import android.graphics.SurfaceTexture
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.SurfaceHolder
+import android.view.Surface
+import android.view.TextureView
 import android.widget.FrameLayout
 import com.luck.picture.lib.utils.MediaUtils
-import com.luck.picture.lib.widget.VideoSurfaceView
 
 /**
  * @author：luck
  * @date：2023/1/4 4:55 下午
  * @describe：default Video MediaPlayer
  */
-class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
+class DefaultMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPlayer {
     private var mediaPlayer: MediaPlayer? = null
-    private lateinit var surfaceView: VideoSurfaceView
+    private lateinit var textureView: VideoTextureView
+    private var mVideoRotation = 0
 
     constructor(context: Context) : super(context) {
         init()
@@ -38,14 +38,12 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
     }
 
     private fun init() {
-        surfaceView = VideoSurfaceView(context)
-        surfaceView.layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
-        ).apply {
-            this.gravity = Gravity.CENTER
-        }
-        surfaceView.holder.setKeepScreenOn(true)
-        addView(surfaceView)
+        textureView = VideoTextureView(context)
+        textureView.layoutParams =
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                this.gravity = Gravity.CENTER
+            }
+        addView(textureView)
     }
 
     override fun setDataSource(context: Context, path: String, isLoopAutoPlay: Boolean) {
@@ -54,7 +52,6 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
         } else {
             mediaPlayer?.setDataSource(path)
         }
-        surfaceView.setZOrderOnTop(MediaUtils.isHasHttp(path))
         mediaPlayer?.isLooping = isLoopAutoPlay
         mediaPlayer?.prepareAsync()
     }
@@ -98,13 +95,17 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
     override fun release() {
         mediaPlayer?.release()
         mediaPlayer = null
-        surfaceView.holder.removeCallback(this)
+        textureView.surfaceTextureListener = null
     }
 
     override fun setOnInfoListener(listener: IMediaPlayer.OnInfoListener?) {
         if (listener != null) {
             mediaPlayer?.setOnInfoListener { mp, what, extra ->
                 listener.onInfo(this, what, extra)
+                if (what == 10001) {
+                    mVideoRotation = extra
+                }
+                return@setOnInfoListener false
             }
         } else {
             mediaPlayer?.setOnInfoListener(null)
@@ -135,7 +136,6 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
         if (listener != null) {
             mediaPlayer?.setOnCompletionListener {
                 listener.onCompletion(this)
-                clearCanvas()
             }
         } else {
             mediaPlayer?.setOnCompletionListener(null)
@@ -145,7 +145,7 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
     override fun setOnVideoSizeChangedListener(listener: IMediaPlayer.OnVideoSizeChangedListener?) {
         if (listener != null) {
             mediaPlayer?.setOnVideoSizeChangedListener { mp, width, height ->
-                surfaceView.adjustVideoSize(width, height)
+                textureView.adjustVideoSize(width, height, mVideoRotation)
                 listener.onVideoSizeChanged(this, width, height)
             }
         } else {
@@ -153,28 +153,25 @@ class DefaultMediaPlayer : FrameLayout, SurfaceHolder.Callback, IMediaPlayer {
         }
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        mediaPlayer?.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-        )
-        mediaPlayer?.setDisplay(holder)
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {}
-
     override fun initMediaPlayer() {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
-        surfaceView.holder.addCallback(this)
+        textureView.surfaceTextureListener = this
     }
 
-    private fun clearCanvas() {
-        surfaceView.holder.setFormat(PixelFormat.OPAQUE)
-        surfaceView.holder.setFormat(PixelFormat.TRANSPARENT)
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        mediaPlayer?.setSurface(Surface(surface))
     }
+
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+    }
+
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+        return false
+    }
+
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+    }
+
 }
