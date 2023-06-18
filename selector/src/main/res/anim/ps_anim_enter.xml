@@ -2,7 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:anim/decelerate_interpolator">
     <scale
-        android:duration="2500"
+        android:duration="250"
         android:fromXScale="0.5"
         android:fromYScale="0.5"
         android:pivotX="50.0%"
@@ -10,7 +10,7 @@
         android:toXScale="1.0"
         android:toYScale="1.0" />
     <alpha
-        android:duration="2500"
+        android:duration="250"
         android:fromAlpha="0.0"
         android:toAlpha="1.0" />
 </set>
