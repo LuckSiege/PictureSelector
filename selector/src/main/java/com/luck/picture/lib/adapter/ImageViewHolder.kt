@@ -41,8 +41,13 @@ open class ImageViewHolder(itemView: View) : ListMediaViewHolder(itemView) {
                 if (position >= 0) {
                     val existsMedia = selectResult[position]
                     if (existsMedia.isEditor()) {
+                        media.cropWidth = existsMedia.cropWidth
+                        media.cropHeight = existsMedia.cropHeight
                         media.editorPath = existsMedia.editorPath
                         media.editorData = existsMedia.editorData
+                        media.cropOffsetX = existsMedia.cropOffsetX
+                        media.cropOffsetY = existsMedia.cropOffsetY
+                        media.cropAspectRatio = existsMedia.cropAspectRatio
                     }
                 }
             }
