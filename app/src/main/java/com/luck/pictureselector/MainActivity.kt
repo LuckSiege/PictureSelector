@@ -822,8 +822,8 @@ class MainActivity : AppCompatActivity() {
 
     private val geSelectFilterListener = object : OnSelectFilterListener {
         override fun onSelectFilter(context: Context, media: LocalMedia): Boolean {
-            if (media.size > 5 * FileSizeUnitConstant.MB) {
-                ToastUtils.showMsg(context, "文件大于5M")
+            if (media.size > 10 * FileSizeUnitConstant.MB) {
+                ToastUtils.showMsg(context, "文件大于10M")
                 return true
             }
             // 选择的时候可以添加一些音效...
