@@ -146,6 +146,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setRequestedOrientation()
         setTranslucentStatusBar()
         isSavedInstanceState = savedInstanceState != null
         viewModel.onRestoreInstanceState(savedInstanceState)
@@ -157,6 +158,10 @@ abstract class BaseSelectorFragment : Fragment() {
         restoreEngine()
         createLoadingDialog()
         setFragmentKeyBackListener()
+    }
+
+    open fun setRequestedOrientation() {
+        requireActivity().requestedOrientation = config.activityOrientation
     }
 
     open fun restoreEngine() {
