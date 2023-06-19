@@ -915,6 +915,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             TempDataProvider.getInstance().currentMediaAlbum = albumList.first()
             mAlbumWindow.setAlbumList(albumList)
             mTvDataEmpty?.visibility = View.GONE
+        } else {
+            val cameraAlbum = mAlbumWindow.getAlbum(cameraMediaAlbum.bucketId)
+            if (cameraAlbum == null) {
+                mAlbumWindow.getAlbumList().add(cameraMediaAlbum)
+            }
         }
         mAlbumWindow.notifyItemRangeChanged()
     }
