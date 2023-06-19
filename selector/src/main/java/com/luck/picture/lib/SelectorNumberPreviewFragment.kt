@@ -294,8 +294,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
+        mTvComplete?.isEnabled = true
         if (galleryAdapter != null) {
-            mTvComplete?.isEnabled = true
             galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
             galleryAdapter?.notifyDataSetChanged()
             if (TempDataProvider.getInstance().selectResult.contains(change)) {
