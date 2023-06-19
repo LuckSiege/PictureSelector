@@ -898,7 +898,6 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         allMediaAlbum.bucketDisplayMimeType = media.mimeType
         allMediaAlbum.source.add(0, media)
         allMediaAlbum.totalCount += 1
-
         val cameraMediaAlbum = mAlbumWindow.getAlbum(media.bucketId) ?: LocalMediaAlbum()
         cameraMediaAlbum.bucketId = media.bucketId
         cameraMediaAlbum.bucketDisplayName = media.bucketDisplayName
@@ -916,6 +915,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             mAlbumWindow.setAlbumList(albumList)
             mTvDataEmpty?.visibility = View.GONE
         }
+        mAlbumWindow.notifyAlbumList(mAlbumWindow.getAlbumList())
     }
 
     /**
