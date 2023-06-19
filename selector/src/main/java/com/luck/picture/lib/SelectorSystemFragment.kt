@@ -85,6 +85,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                 PermissionChecker.requestPermissions(this, permissionArray,
                     object : OnPermissionResultListener {
                         override fun onGranted() {
+                            showPermissionDescription(false, permissionArray)
                             openSystemAlbum()
                         }
 
