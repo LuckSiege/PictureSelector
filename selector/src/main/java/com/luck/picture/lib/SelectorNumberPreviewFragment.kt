@@ -397,12 +397,19 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 if (isSelected(currentMedia, media)) View.VISIBLE else View.INVISIBLE
             holder.ivEditor.visibility = if (media.isEditor()) View.VISIBLE else View.GONE
             holder.ivPlay.visibility =
-                if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) View.VISIBLE else View.GONE
-            config.imageEngine?.loadListImage(
-                holder.ivCover.context,
-                media.getAvailablePath(),
-                holder.ivCover
-            )
+                if (MediaUtils.hasMimeTypeOfVideo(media.mimeType) || MediaUtils.hasMimeTypeOfAudio(
+                        media.mimeType
+                    )
+                ) View.VISIBLE else View.GONE
+            if (MediaUtils.hasMimeTypeOfAudio(media.mimeType)) {
+                holder.ivCover.setImageResource(R.drawable.ps_audio_placeholder)
+            } else {
+                config.imageEngine?.loadListImage(
+                    holder.ivCover.context,
+                    media.getAvailablePath(),
+                    holder.ivCover
+                )
+            }
             holder.itemView.setOnClickListener {
                 mItemClickListener?.onItemClick(position, media)
             }
