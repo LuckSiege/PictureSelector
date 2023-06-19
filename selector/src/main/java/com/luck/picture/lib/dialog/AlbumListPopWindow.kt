@@ -84,8 +84,8 @@ open class AlbumListPopWindow(context: Context) : PopupWindow() {
             if (albumList.size > defaultMaxCount) windowMaxHeight else ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
-    open fun notifyAlbumList(albumList: MutableList<LocalMediaAlbum>) {
-        mediaAlbumAdapter.setAlbumList(albumList)
+    fun notifyItemRangeChanged() {
+        mediaAlbumAdapter.notifyItemRangeChanged(0, this.mediaAlbumAdapter.itemCount)
     }
 
     fun getAlbumList(): MutableList<LocalMediaAlbum> {

@@ -915,7 +915,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             mAlbumWindow.setAlbumList(albumList)
             mTvDataEmpty?.visibility = View.GONE
         }
-        mAlbumWindow.notifyAlbumList(mAlbumWindow.getAlbumList())
+        mAlbumWindow.notifyItemRangeChanged()
     }
 
     /**
