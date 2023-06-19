@@ -229,7 +229,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             val media =
                 TempDataProvider.getInstance().previewWrap.source[TempDataProvider.getInstance().previewWrap.position]
             mTvEditor?.visibility =
-                if (MediaUtils.hasMimeTypeOfImage(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
+                if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
             mTvEditor?.setOnClickListener {
                 onEditorClick(it)
             }

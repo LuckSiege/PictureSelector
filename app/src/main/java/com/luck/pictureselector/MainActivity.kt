@@ -46,6 +46,7 @@ import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
+import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import com.luck.pictureselector.adapter.GridImageAdapter
@@ -766,6 +767,10 @@ class MainActivity : AppCompatActivity() {
     private val getEditorMediaListener = object : OnEditorMediaListener {
 
         override fun onEditorMedia(fragment: Fragment, media: LocalMedia, requestCode: Int) {
+            if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
+                ToastUtils.showMsg(fragment.requireContext(), "视频编辑功能请自行实现")
+                return
+            }
             val sourceUri = Uri.parse(media.path)
             val destinationUri = Uri.fromFile(
                 File(fragment.requireContext().cacheDir, "${System.currentTimeMillis()}.jpg")
