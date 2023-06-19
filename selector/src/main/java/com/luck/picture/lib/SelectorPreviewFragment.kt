@@ -755,7 +755,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             override fun onAnimationEnd(animation: Animator) {
                 viewAnimSet.removeListener(this)
                 isAnimationStart = false
-                if (isAdded) {
+                if (SdkVersionUtils.isP() && isAdded) {
                     showHideStatusBar(isInitTitleBar)
                 }
             }
