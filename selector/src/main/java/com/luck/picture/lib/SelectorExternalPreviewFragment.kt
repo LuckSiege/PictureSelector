@@ -48,7 +48,6 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
 
     override fun initViews(view: View) {
         ivDelete = view.findViewById(R.id.ps_iv_delete)
-        addTitleBarViewGroup(ivDelete)
         ivDelete.visibility =
             if (config.previewWrap.isDisplayDelete) View.VISIBLE else View.GONE
     }

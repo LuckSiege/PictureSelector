@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -45,7 +46,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 /**
  * @author：luck
  * @date：2021/11/17 10:24 上午
@@ -65,7 +65,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     var screenHeight = 0
 
     var mStatusBar: View? = null
-    var mTitleBarBackground: View? = null
+    var mTitleBar: ViewGroup? = null
     var mIvLeftBack: ImageView? = null
     var mTvTitle: TextView? = null
     var mMagicalView: MagicalView? = null
@@ -77,8 +77,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     var mTvSelected: TextView? = null
     var mTvComplete: StyleTextView? = null
     var mTvSelectNum: TextView? = null
-    var mBottomNarBarBackground: View? = null
-
+    var mBottomNarBar: ViewGroup? = null
     var titleViews: MutableList<View> = mutableListOf()
     var navBarViews: MutableList<View> = mutableListOf()
     var isPause = false
@@ -111,26 +110,24 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         screenHeight = DensityUtil.getScreenHeight(requireContext())
         // TitleBar
         mStatusBar = view.findViewById(R.id.ps_status_bar)
-        mTitleBarBackground = view.findViewById(R.id.ps_title_bar_bg)
+        mTitleBar = view.findViewById(R.id.ps_title_bar)
         mIvLeftBack = view.findViewById(R.id.ps_iv_left_back)
         mTvTitle = view.findViewById(R.id.ps_tv_title)
         mTvSelected = view.findViewById(R.id.ps_tv_selected)
-        addTitleBarViewGroup(mStatusBar, mTitleBarBackground, mIvLeftBack, mTvTitle, mTvSelected)
-        setStatusBarRectSize(mStatusBar, mTitleBarBackground)
+        setStatusBarRectSize(mStatusBar)
+        mTitleBar?.let {
+            titleViews.add(it)
+        }
         // BottomNarBar
-        mBottomNarBarBackground = view.findViewById(R.id.ps_bottom_nar_bar_bg)
+        mBottomNarBar = view.findViewById(R.id.ps_bottom_nar_bar)
         mTvEditor = view.findViewById(R.id.ps_tv_editor)
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
         isEnableStickResult = TempDataProvider.getInstance().selectResult.isNotEmpty()
-        addNarBarViewGroup(
-            mBottomNarBarBackground,
-            mTvEditor,
-            mTvOriginal,
-            mTvSelectNum,
-            mTvComplete
-        )
+        mBottomNarBar?.let {
+            navBarViews.add(it)
+        }
 
         // MagicalView
         mMagicalView = view.findViewById(R.id.magical)
@@ -159,28 +156,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
-    /**
-     * TitleBar Child View
-     */
-    open fun addTitleBarViewGroup(vararg viewArray: View?) {
-        viewArray.forEach { item ->
-            item?.let { view ->
-                titleViews.add(view)
-            }
-        }
-    }
-
-    /**
-     * Bottom NarBar Child View
-     */
-    open fun addNarBarViewGroup(vararg viewArray: View?) {
-        viewArray.forEach { item ->
-            item?.let { view ->
-                navBarViews.add(view)
-            }
-        }
-    }
-
     open fun initViews(view: View) {
 
     }
@@ -197,6 +172,16 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
+    open fun setStatusBarRectSize(statusBarRectView: View?) {
+        if (config.isPreviewFullScreenMode) {
+            statusBarRectView?.layoutParams?.height =
+                DensityUtil.getStatusBarHeight(requireContext())
+            statusBarRectView?.visibility = View.VISIBLE
+        } else {
+            statusBarRectView?.layoutParams?.height = 0
+            statusBarRectView?.visibility = View.GONE
+        }
+    }
 
     open fun initTitleBar() {
         setTitleText(TempDataProvider.getInstance().previewWrap.position + 1)
@@ -225,9 +210,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun initNavbarBar() {
         if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            navBarViews.forEach { view ->
-                view.visibility = View.GONE
-            }
+            mBottomNarBar?.visibility = View.GONE
         } else {
             if (config.isOnlyCamera) {
             } else {
@@ -357,22 +340,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
     }
 
-    open fun setStatusBarRectSize(statusBarRectView: View?, titleBar: View?) {
-        if (config.isPreviewFullScreenMode) {
-            if (statusBarRectView?.background != null) {
-                statusBarRectView.setBackgroundColor((statusBarRectView.background as ColorDrawable).color)
-            } else {
-                statusBarRectView?.setBackgroundColor((titleBar?.background as ColorDrawable).color)
-            }
-            statusBarRectView?.layoutParams?.height =
-                DensityUtil.getStatusBarHeight(requireContext())
-            statusBarRectView?.visibility = View.VISIBLE
-        } else {
-            statusBarRectView?.layoutParams?.height = 0
-            statusBarRectView?.visibility = View.GONE
-        }
-    }
-
 
     /**
      * Users can implement custom preview adapter
@@ -442,9 +409,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             if (viewParams == null || width == 0 && height == 0) {
                 mMagicalView?.startNormal(width, height, false)
                 mMagicalView?.setBackgroundAlpha(1F)
-                navBarViews.forEach { v ->
-                    v.alpha = 1F
-                }
+                mBottomNarBar?.alpha = 1F
             } else {
                 mMagicalView?.setViewParams(
                     viewParams.left,
@@ -626,9 +591,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isHasMagicalEffect()) {
             val alpha = if (isSavedInstanceState) 1F else 0F
             mMagicalView?.setBackgroundAlpha(alpha)
-            navBarViews.forEach { v ->
-                v.alpha = alpha
-            }
+            mBottomNarBar?.alpha = alpha
         } else {
             mMagicalView?.setBackgroundAlpha(1.0F)
         }
@@ -717,9 +680,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBackgroundAlpha(alpha: Float) {
         mMagicalView?.setBackgroundAlpha(alpha)
-        navBarViews.forEach { v ->
-            v.alpha = alpha
-        }
+        mBottomNarBar?.alpha = alpha
     }
 
     open fun onMojitoMagicalViewFinish() {
@@ -756,7 +717,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun isFullScreen(): Boolean {
-        return mTitleBarBackground?.translationY != 0F
+        return mTitleBar?.translationY != 0F
     }
 
     open fun previewFullScreenMode() {
@@ -765,38 +726,27 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         }
         val viewAnimSet = AnimatorSet()
         val isInitTitleBar = !isFullScreen()
-
-        val alphaFrom: Float = if (isInitTitleBar) 1F else 0F
-        val alphaTo = if (isInitTitleBar) 0F else 1F
-
-        // begin statusBar Rect alpha Animator
-        val statusBarAlpha = ObjectAnimator.ofFloat(mStatusBar, "alpha", alphaFrom, alphaTo)
-        statusBarAlpha.duration = if (isInitTitleBar) 50 else 220
-
         // begin titleBar translationY Animator
-        val titleBarHeight = mTitleBarBackground?.height?.toFloat() ?: 0F
-        val statusBarRectHeight =
-            if (config.isPreviewFullScreenMode) mStatusBar?.measuredHeight ?: 0 else 0
-        val titleBarFrom: Float = if (isInitTitleBar) 0F else -titleBarHeight
-        val titleBarTo = if (isInitTitleBar) -(titleBarHeight + statusBarRectHeight) else 0F
+        val titleBarHeight = mTitleBar?.height?.toFloat() ?: 0F
         titleViews.forEach { v ->
-            val play = viewAnimSet.play(
+            viewAnimSet.play(
                 ObjectAnimator.ofFloat(
-                    v,
-                    "translationY",
-                    titleBarFrom,
-                    titleBarTo
+                    v, "translationY",
+                    if (isInitTitleBar) 0F else -titleBarHeight,
+                    if (isInitTitleBar) -titleBarHeight else 0F
                 )
             )
-            if (isInitTitleBar) {
-                play.before(statusBarAlpha)
-            } else {
-                play.after(statusBarAlpha)
-            }
         }
         // begin NavBar alpha Animator
         navBarViews.forEach { v ->
-            viewAnimSet.play(ObjectAnimator.ofFloat(v, "alpha", alphaFrom, alphaTo))
+            viewAnimSet.play(
+                ObjectAnimator.ofFloat(
+                    v,
+                    "alpha",
+                    if (isInitTitleBar) 1F else 0F,
+                    if (isInitTitleBar) 0F else 1F
+                )
+            )
         }
         viewAnimSet.duration = 350
         viewAnimSet.start()
@@ -810,41 +760,19 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 }
             }
         })
-
-        if (isInitTitleBar) {
-            showFullScreenStatusBar()
-        } else {
-            hideFullScreenStatusBar()
-        }
     }
 
     open fun showHideStatusBar(isInitTitleBar: Boolean) {
         val window = requireActivity().window
         if (isInitTitleBar) {
             // hide
-            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
         } else {
             // show
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-    }
-
-    open fun showFullScreenStatusBar() {
-        titleViews.forEach { v ->
-            v.isEnabled = false
-        }
-        navBarViews.forEach { v ->
-            v.isEnabled = false
-        }
-    }
-
-    open fun hideFullScreenStatusBar() {
-        titleViews.forEach { v ->
-            v.isEnabled = true
-        }
-        navBarViews.forEach { v ->
-            v.isEnabled = true
         }
     }
 

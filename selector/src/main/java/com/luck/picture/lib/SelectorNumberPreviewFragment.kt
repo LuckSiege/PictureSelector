@@ -63,16 +63,9 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     override fun initViews(view: View) {
         super.initViews(view)
         rvGallery = view.findViewById(R.id.ps_rv_gallery)
-        mTvSelected?.let {
-            titleViews.remove(it)
-        }
-        mTvComplete?.let {
-            navBarViews.remove(it)
-        }
+        navBarViews.add(rvGallery)
         rvGallery.visibility =
             if (TempDataProvider.getInstance().selectResult.isEmpty()) View.GONE else View.VISIBLE
-        addTitleBarViewGroup(mTvComplete)
-        addNarBarViewGroup(rvGallery, mTvSelected)
     }
 
     override fun onCompleteClick(v: View) {

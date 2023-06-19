@@ -2,12 +2,12 @@ package com.luck.picture.lib
 
 import android.annotation.SuppressLint
 import android.app.Service
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.viewModelScope
@@ -67,7 +67,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * TitleBar
      */
     var mStatusBar: View? = null
-    var mTitleBarBackground: View? = null
+    var mTitleBar: ViewGroup? = null
     var mIvLeftBack: ImageView? = null
     var mTvTitle: TextView? = null
     var mIvTitleArrow: ImageView? = null
@@ -77,7 +77,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     /**
      * BottomNarBar
      */
-    var mBottomNarBarBackground: View? = null
+    var mBottomNarBar: ViewGroup? = null
     var mTvPreview: StyleTextView? = null
     var mTvOriginal: TextView? = null
     var mTvComplete: StyleTextView? = null
@@ -94,9 +94,6 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     private var mDragSelectTouchListener: SlideSelectTouchListener? = null
 
-    var titleViews: MutableList<View> = mutableListOf()
-    var navBarViews: MutableList<View> = mutableListOf()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // RecyclerView
@@ -106,34 +103,20 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         setDataEmpty()
         // TitleBar
         mStatusBar = view.findViewById(R.id.ps_status_bar)
-        mTitleBarBackground = view.findViewById(R.id.ps_title_bar_bg)
+        mTitleBar = view.findViewById(R.id.ps_title_bar)
         mIvLeftBack = view.findViewById(R.id.ps_iv_left_back)
         mTvTitle = view.findViewById(R.id.ps_tv_title)
         mIvTitleArrow = view.findViewById(R.id.ps_iv_arrow)
         mTvCancel = view.findViewById(R.id.ps_tv_cancel)
-        setStatusBarRectSize(mStatusBar, mTitleBarBackground)
-        addTitleBarViewGroup(
-            mStatusBar,
-            mTitleBarBackground,
-            mIvLeftBack,
-            mTvTitle,
-            mIvTitleArrow,
-            mTvCancel
-        )
+        setStatusBarRectSize(mStatusBar)
+
         // BottomNarBar
-        mBottomNarBarBackground = view.findViewById(R.id.ps_bottom_nar_bar_bg)
+        mBottomNarBar = view.findViewById(R.id.ps_bottom_nar_bar)
         mTvPreview = view.findViewById(R.id.ps_tv_preview)
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
         onMergeSelectedSource()
-        addNarBarViewGroup(
-            mBottomNarBarBackground,
-            mTvPreview,
-            mTvOriginal,
-            mTvComplete,
-            mTvSelectNum
-        )
         initAlbumWindow()
         initTitleBar()
         initNavbarBar()
@@ -211,7 +194,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mIvTitleArrow?.setOnClickListener {
             mTvTitle?.performClick()
         }
-        mTitleBarBackground?.setOnClickListener {
+        mTitleBar?.setOnClickListener {
             onTitleBarClick(it)
         }
     }
@@ -222,7 +205,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun onShowAlbumWindowAsDropDown() {
         if (mAlbumWindow.getAlbumList().isNotEmpty()) {
-            mTitleBarBackground?.let {
+            mTitleBar?.let {
                 mAlbumWindow.showAsDropDown(it)
             }
         }
@@ -257,41 +240,14 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         handleSelectResult()
     }
 
-    open fun setStatusBarRectSize(statusBarRectView: View?, titleBar: View?) {
+    open fun setStatusBarRectSize(statusBarRectView: View?) {
         if (config.isPreviewFullScreenMode) {
-            if (statusBarRectView?.background != null) {
-                statusBarRectView.setBackgroundColor((statusBarRectView.background as ColorDrawable).color)
-            } else {
-                statusBarRectView?.setBackgroundColor((titleBar?.background as ColorDrawable).color)
-            }
             statusBarRectView?.layoutParams?.height =
                 getStatusBarHeight(requireContext())
             statusBarRectView?.visibility = View.VISIBLE
         } else {
             statusBarRectView?.layoutParams?.height = 0
             statusBarRectView?.visibility = View.GONE
-        }
-    }
-
-    /**
-     * TitleBar Child View
-     */
-    open fun addTitleBarViewGroup(vararg viewArray: View?) {
-        viewArray.forEach { item ->
-            item?.let { view ->
-                titleViews.add(view)
-            }
-        }
-    }
-
-    /**
-     * Bottom NarBar Child View
-     */
-    open fun addNarBarViewGroup(vararg viewArray: View?) {
-        viewArray.forEach { item ->
-            item?.let { view ->
-                navBarViews.add(view)
-            }
         }
     }
 
@@ -384,9 +340,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun initNavbarBar() {
         if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            navBarViews.forEach { view ->
-                view.visibility = View.GONE
-            }
+            mBottomNarBar?.visibility = View.GONE
         } else {
             if (config.isOnlyCamera) {
             } else {
