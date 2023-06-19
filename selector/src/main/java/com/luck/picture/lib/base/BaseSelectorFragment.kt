@@ -227,7 +227,10 @@ abstract class BaseSelectorFragment : Fragment() {
 
     private fun setTranslucentStatusBar() {
         if (config.isPreviewFullScreenMode && !config.isOnlyCamera) {
-            translucentStatusBar(requireActivity(), config.selectorStyle.getStatusBar().isDarkStatusBar())
+            translucentStatusBar(
+                requireActivity(),
+                config.selectorStyle.getStatusBar().isDarkStatusBar()
+            )
         }
     }
 
@@ -419,6 +422,7 @@ abstract class BaseSelectorFragment : Fragment() {
             PermissionChecker.requestPermissions(this, permission,
                 object : OnPermissionResultListener {
                     override fun onGranted() {
+                        showPermissionDescription(false, permission)
                         if (mode == SelectorMode.VIDEO) {
                             recordVideo()
                         } else {

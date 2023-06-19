@@ -617,6 +617,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                     permissionArray,
                     object : OnPermissionResultListener {
                         override fun onGranted() {
+                            showPermissionDescription(false, permissionArray)
                             requestData()
                         }
 

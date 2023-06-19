@@ -1,5 +1,6 @@
 package com.luck.pictureselector
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
@@ -15,13 +16,21 @@ import android.media.SoundPool
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -46,9 +55,11 @@ import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
+import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
+import com.luck.picture.lib.widget.MediumBoldTextView
 import com.luck.pictureselector.adapter.GridImageAdapter
 import com.luck.pictureselector.custom.CustomPreviewExoVideoHolder
 import com.luck.pictureselector.custom.CustomPreviewIjkVideoHolder
@@ -60,6 +71,7 @@ import com.yalantis.ucrop.UCropImageEngine
 import java.io.File
 import java.util.*
 
+private const val TAG_DESCRIPTION_VIEW = "TAG_DESCRIPTION_VIEW"
 
 class MainActivity : AppCompatActivity() {
     private var maxSelectNum: Int = 9
@@ -344,6 +356,7 @@ class MainActivity : AppCompatActivity() {
                         systemGallery.setSelectionMode(selectionMode)
                         systemGallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         systemGallery.setMediaConverterEngine(MediaConverter.create())
+                        systemGallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
                         when {
                             rbCallback.isChecked -> {
                                 systemGallery.forResult(getResultCallbackListener, true)
@@ -384,6 +397,7 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
                         onlyCamera.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
+                        onlyCamera.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
                         when {
                             rbCallback.isChecked -> {
                                 onlyCamera.forResult(getResultCallbackListener, true)
@@ -477,6 +491,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setOnEditorMediaListener(if (checkEditor.isChecked) getEditorMediaListener else null)
                         gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
                         gallery.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
+                        gallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
                         if (checkOutput.isChecked) {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
@@ -824,6 +839,79 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val getPermissionDescriptionListener = object : OnPermissionDescriptionListener {
+        override fun onDescription(
+            fragment: Fragment,
+            permissionArray: Array<String>
+        ) {
+            val viewGroup = fragment.requireView() as ViewGroup
+            val dp10 = dip2px(viewGroup.context, 10f)
+            val dp15 = dip2px(viewGroup.context, 15f)
+            val view = MediumBoldTextView(viewGroup.context)
+            view.tag = TAG_DESCRIPTION_VIEW
+            view.textSize = 14f
+            view.setTextColor(Color.parseColor("#333333"))
+            view.setPadding(dp10, dp15, dp10, dp15)
+            val title: String
+            val explain: String
+            when {
+                TextUtils.equals(
+                    permissionArray[0],
+                    Manifest.permission.CAMERA
+                ) -> {
+                    title = "相机权限使用说明"
+                    explain = "相机权限使用说明\n用户app用于拍照/录视频"
+                }
+                TextUtils.equals(
+                    permissionArray[0],
+                    Manifest.permission.RECORD_AUDIO
+                ) -> {
+                    title = "录音权限使用说明"
+                    explain = "录音权限使用说明\n用户app用于采集声音"
+                }
+                else -> {
+                    title = "存储权限使用说明"
+                    explain = "存储权限使用说明\n用户app写入/下载/保存/读取/修改/删除图片、视频、文件等信息"
+                }
+            }
+            val startIndex = 0
+            val endOf = startIndex + title.length
+            val builder = SpannableStringBuilder(explain)
+            builder.setSpan(
+                AbsoluteSizeSpan(
+                    dip2px(
+                        viewGroup.context,
+                        16f
+                    )
+                ), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+            builder.setSpan(
+                ForegroundColorSpan(-0xcccccd),
+                startIndex,
+                endOf,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+            view.text = builder
+            view.background = ContextCompat.getDrawable(
+                viewGroup.context,
+                R.drawable.ps_demo_permission_desc_bg
+            )
+            val layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.topToBottom = R.id.ps_title_bar
+            layoutParams.leftToLeft = ConstraintSet.PARENT_ID
+            layoutParams.leftMargin = dp10
+            layoutParams.rightMargin = dp10
+            viewGroup.addView(view, layoutParams)
+        }
+
+        override fun onDismiss(fragment: Fragment) {
+            val viewGroup = fragment.requireView() as ViewGroup
+            viewGroup.removeView(viewGroup.findViewWithTag(TAG_DESCRIPTION_VIEW))
+        }
+    }
 
     private val geSelectFilterListener = object : OnSelectFilterListener {
         override fun onSelectFilter(context: Context, media: LocalMedia): Boolean {
