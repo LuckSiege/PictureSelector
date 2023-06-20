@@ -21,6 +21,7 @@ import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
+import com.luck.picture.lib.utils.DoubleUtils
 
 /**
  * @author：luck
@@ -293,6 +294,9 @@ class SelectionCameraModel constructor(
         call: OnResultCallbackListener?,
         attachActivity: Boolean
     ) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return
+        }
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
         if (attachActivity) {

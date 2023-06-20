@@ -28,6 +28,7 @@ import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil
+import com.luck.picture.lib.utils.DoubleUtils
 import com.luck.picture.lib.utils.MediaUtils
 
 /**
@@ -254,50 +255,8 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         return this
     }
 
-    /**
-     * Preview
-     * Using the user interface Activity to host preview fragments
-     * @param position preview start position
-     * @param source preview data source
-     */
     fun forPreview(position: Int, source: MutableList<LocalMedia>) {
-        val activity = selector.getActivity()
-            ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
-        if (source.isEmpty()) {
-            throw NullPointerException("Preview source not null")
-        }
-        if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {
-            throw NullPointerException("Please set the API # .setImageEngine(${ImageEngine::class.simpleName});")
-        }
-        var fragmentManager: FragmentManager? = null
-        if (activity is FragmentActivity) {
-            fragmentManager = activity.supportFragmentManager
-        }
-        if (fragmentManager == null) {
-            throw NullPointerException("FragmentManager cannot be null")
-        }
-        config.previewWrap.source = ArrayList(source)
-        config.previewWrap.position = position
-        config.previewWrap.isExternalPreview = true
-        config.previewWrap.totalCount = source.size
-        val registry = this.config.registry
-        val factory = ClassFactory.NewInstance()
-        var instance =
-            factory.create(registry.get(SelectorPreviewFragment::class.java))
-        if (instance::class.java.isAssignableFrom(SelectorPreviewFragment::class.java)) {
-            // No custom registry, use default external preview component
-            instance =
-                factory.create(registry.get(SelectorExternalPreviewFragment::class.java))
-        }
-        val fragment = fragmentManager.findFragmentByTag(instance.getFragmentTag())
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
-        }
-        FragmentInjectManager.injectSystemRoomFragment(
-            activity as FragmentActivity,
-            instance.getFragmentTag(),
-            instance
-        )
+        return forPreview(position, source, false)
     }
 
     /**
@@ -305,8 +264,12 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
      * Use default Activity hosting to preview Fragments
      * @param position preview start position
      * @param source preview data source
+     * @param isAttachActivity Preview Fragment Attach to Activity
      */
-    fun forPreviewActivity(position: Int, source: MutableList<LocalMedia>) {
+    fun forPreview(position: Int, source: MutableList<LocalMedia>, isAttachActivity: Boolean) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return
+        }
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
         if (source.isEmpty()) {
@@ -325,19 +288,47 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
         config.previewWrap.totalCount = source.size
-        val intent = Intent(activity, SelectorTransparentActivity::class.java)
-        val fragment = selector.getFragment()
-        if (fragment != null) {
-            fragment.startActivity(intent)
+        if (isAttachActivity) {
+            val intent = Intent(activity, SelectorTransparentActivity::class.java)
+            val fragment = selector.getFragment()
+            if (fragment != null) {
+                fragment.startActivity(intent)
+            } else {
+                activity.startActivity(intent)
+            }
+            if (config.isPreviewZoomEffect) {
+                activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in)
+            } else {
+                activity.overridePendingTransition(
+                    config.selectorStyle.getWindowAnimation().getEnterAnim(),
+                    R.anim.ps_anim_fade_in
+                )
+            }
         } else {
-            activity.startActivity(intent)
-        }
-        if (config.isPreviewZoomEffect) {
-            activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in)
-        } else {
-            activity.overridePendingTransition(
-                config.selectorStyle.getWindowAnimation().getEnterAnim(),
-                R.anim.ps_anim_fade_in
+            var fragmentManager: FragmentManager? = null
+            if (activity is FragmentActivity) {
+                fragmentManager = activity.supportFragmentManager
+            }
+            if (fragmentManager == null) {
+                throw NullPointerException("FragmentManager cannot be null")
+            }
+            val registry = this.config.registry
+            val factory = ClassFactory.NewInstance()
+            var instance =
+                factory.create(registry.get(SelectorPreviewFragment::class.java))
+            if (instance::class.java.isAssignableFrom(SelectorPreviewFragment::class.java)) {
+                // No custom registry, use default external preview component
+                instance =
+                    factory.create(registry.get(SelectorExternalPreviewFragment::class.java))
+            }
+            val fragment = fragmentManager.findFragmentByTag(instance.getFragmentTag())
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
+            }
+            FragmentInjectManager.injectSystemRoomFragment(
+                activity as FragmentActivity,
+                instance.getFragmentTag(),
+                instance
             )
         }
     }

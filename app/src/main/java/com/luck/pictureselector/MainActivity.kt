@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity() {
                         return false
                     }
                 })
-                preview.forPreviewActivity(position, mAdapter.getData())
+                preview.forPreview(position, mAdapter.getData(), true)
             }
 
             override fun openPicture() {
@@ -370,7 +370,9 @@ class MainActivity : AppCompatActivity() {
                         systemGallery.setSelectionMode(selectionMode)
                         systemGallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         systemGallery.setMediaConverterEngine(MediaConverter.create())
-                        systemGallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
+                        systemGallery.setOnPermissionDescriptionListener(
+                            getPermissionDescriptionListener
+                        )
                         when {
                             rbCallback.isChecked -> {
                                 systemGallery.forResult(getResultCallbackListener, true)
@@ -411,7 +413,9 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         onlyCamera.setOnRecordAudioListener(getRecordAudioListener)
                         onlyCamera.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
-                        onlyCamera.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
+                        onlyCamera.setOnPermissionDescriptionListener(
+                            getPermissionDescriptionListener
+                        )
                         when {
                             rbCallback.isChecked -> {
                                 onlyCamera.forResult(getResultCallbackListener, true)
@@ -802,7 +806,8 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             val path = media.getAvailablePath() ?: return
-            val sourceUri = if (MediaUtils.isContent(path)) Uri.parse(path) else Uri.fromFile(File(path))
+            val sourceUri =
+                if (MediaUtils.isContent(path)) Uri.parse(path) else Uri.fromFile(File(path))
             val destinationUri = Uri.fromFile(
                 File(fragment.requireContext().cacheDir, "${System.currentTimeMillis()}.jpg")
             )

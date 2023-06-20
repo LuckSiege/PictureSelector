@@ -34,6 +34,7 @@ import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
+import com.luck.picture.lib.utils.DoubleUtils
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -764,6 +765,9 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         requestCode: Int,
         launcher: ActivityResultLauncher<Intent>?
     ) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return
+        }
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
         if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {

@@ -19,6 +19,7 @@ import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
+import com.luck.picture.lib.utils.DoubleUtils
 
 /**
  * @author：luck
@@ -176,6 +177,9 @@ class SelectionSystemModel constructor(
         launcher: ActivityResultLauncher<Intent>?,
         attachActivity: Boolean
     ) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return
+        }
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
         config.systemGallery = true
