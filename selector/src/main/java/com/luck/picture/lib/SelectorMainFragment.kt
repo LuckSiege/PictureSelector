@@ -315,7 +315,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         // Update current album
         setCurrentAlbum(data)
-        mAdapter.setDisplayCamera(config.isDisplayCamera && data.isAllAlbum())
+        mAdapter.setDisplayCamera(isDisplayCamera())
         setDefaultAlbumTitle(data.bucketDisplayName)
         if (data.cachePage > 0 && data.source.isNotEmpty()) {
             // Album already has cached data，Start loading from cached page numbers
@@ -447,7 +447,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
-        mAdapter.setDisplayCamera(config.isDisplayCamera && getCurrentAlbum().isAllAlbum())
+        mAdapter.setDisplayCamera(isDisplayCamera())
         mRecycler.adapter = mAdapter
         setFastSlidingSelect()
         onSelectionResultChange(null)
@@ -526,6 +526,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 return confirmSelect(media, isSelected)
             }
         })
+    }
+
+    open fun isDisplayCamera(): Boolean {
+        return config.isDisplayCamera && getCurrentAlbum().isAllAlbum()
+                || (config.isOnlySandboxDir && getCurrentAlbum().isSandboxAlbum())
     }
 
     /**
@@ -671,17 +676,17 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun requestData() {
         if (config.isOnlySandboxDir) {
-            config.sandboxDir?.let { sandboxDir ->
-                val dir = File(sandboxDir)
-                setDefaultAlbumTitle(dir.name)
-                setCurrentAlbum(LocalMediaAlbum().apply {
-                    this.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
-                    this.bucketDisplayName = dir.name
-                })
-                mIvTitleArrow?.visibility = View.GONE
-                mRecycler.setEnabledLoadMore(false)
-                viewModel.loadAppInternalDir(sandboxDir)
-            }
+            val sandboxDir =
+                config.sandboxDir ?: throw NullPointerException("config.sandboxDir cannot be empty")
+            val dir = File(sandboxDir)
+            setDefaultAlbumTitle(dir.name)
+            setCurrentAlbum(LocalMediaAlbum().apply {
+                this.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
+                this.bucketDisplayName = dir.name
+            })
+            mIvTitleArrow?.visibility = View.GONE
+            mRecycler.setEnabledLoadMore(false)
+            viewModel.loadAppInternalDir(sandboxDir)
         } else {
             viewModel.loadMedia(getCurrentAlbum().bucketId)
             Looper.myQueue().addIdleHandler {
@@ -720,6 +725,18 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         onMediaSourceChange(mediaSource)
         TempDataProvider.getInstance().albumSource.clear()
         TempDataProvider.getInstance().mediaSource.clear()
+        if (config.isOnlySandboxDir) {
+            val sandboxDir =
+                config.sandboxDir ?: throw NullPointerException("config.sandboxDir cannot be empty")
+            val dir = File(sandboxDir)
+            setDefaultAlbumTitle(dir.name)
+            setCurrentAlbum(LocalMediaAlbum().apply {
+                this.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
+                this.bucketDisplayName = dir.name
+            })
+            mIvTitleArrow?.visibility = View.GONE
+            mRecycler.setEnabledLoadMore(false)
+        }
     }
 
     /**
