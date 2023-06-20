@@ -27,7 +27,7 @@ import kotlin.math.max
  * @date：2023-4-18 22:30
  * @describe：Paging mode loader
  */
-class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
+open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
 
     private val config = SelectorProviders.getInstance().getSelectorConfig()
 
@@ -376,7 +376,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     /**
      * Get video (maximum or minimum time)
      */
-    private fun getDurationCondition(): String {
+    open fun getDurationCondition(): String {
         val maxS =
             if (config.filterVideoMaxSecond == 0L) Long.MAX_VALUE else config.filterVideoMaxSecond
         return String.format(
@@ -391,7 +391,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     /**
      * Get media size (maxFileSize or miniFileSize)
      */
-    private fun getFileSizeCondition(): String {
+    open fun getFileSizeCondition(): String {
         val maxS =
             if (config.filterMaxFileSize == 0L) Long.MAX_VALUE else config.filterMaxFileSize
         return String.format(
@@ -404,7 +404,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     /**
      * Only query image format media resources
      */
-    private fun getImageMimeTypeCondition(): String {
+    open fun getImageMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
         config.onlyQueryImageFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
@@ -429,7 +429,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     /**
      * Only query video format media resources
      */
-    private fun getVideoMimeTypeCondition(): String {
+    open fun getVideoMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
         config.onlyQueryVideoFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
@@ -442,7 +442,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     /**
      * Only query audio format media resources
      */
-    private fun getAudioMimeTypeCondition(): String {
+    open fun getAudioMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
         config.onlyQueryAudioFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
