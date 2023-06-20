@@ -417,8 +417,11 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         if (!config.isWebp && !config.onlyQueryImageFormat.contains(MediaUtils.ofWebp())) {
             stringBuilder.append(NOT_WEBP)
         }
-        if (!config.isBmp && !config.onlyQueryImageFormat.contains(MediaUtils.ofBMP())) {
-            stringBuilder.append(NOT_BMP)
+        if (!config.isBmp && !config.onlyQueryImageFormat.contains(MediaUtils.ofBMP())
+            && !config.onlyQueryImageFormat.contains(MediaUtils.ofXMSBMP())
+            && !config.onlyQueryImageFormat.contains(MediaUtils.ofVNDBMP())
+        ) {
+            stringBuilder.append(NOT_BMP).append(NOT_XMS_BMP).append(NOT_VND_WAP_BMP)
         }
         if (!config.isHeic && !config.onlyQueryImageFormat.contains(MediaUtils.ofHeic())) {
             stringBuilder.append(NOT_HEIC)

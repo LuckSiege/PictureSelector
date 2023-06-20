@@ -109,6 +109,14 @@ object MediaUtils {
         return "image/bmp"
     }
 
+    fun ofXMSBMP(): String {
+        return "image/x-ms-bmp"
+    }
+
+    fun ofVNDBMP(): String {
+        return "image/vnd.wap.wbmp"
+    }
+
     fun ofHeic(): String {
         return "image/heic"
     }
@@ -129,8 +137,24 @@ object MediaUtils {
         return "image/png"
     }
 
+    fun of3GP(): String {
+        return "video/3gp"
+    }
+
+    fun ofMP4(): String {
+        return "video/mp4"
+    }
+
     fun ofWebm(): String {
         return "video/webm"
+    }
+
+    fun ofAVI(): String {
+        return "video/avi"
+    }
+
+    fun ofMPEG(): String {
+        return "video/mpeg"
     }
 
     fun getUrlMimeType(url: String?): String? {
