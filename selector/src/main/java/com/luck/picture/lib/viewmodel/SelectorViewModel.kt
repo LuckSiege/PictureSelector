@@ -97,7 +97,7 @@ class SelectorViewModel(application: Application, private val state: SavedStateH
         viewModelScope.launch {
             page = 1
             _medias.postValue(
-                mediaLoader.loadMedia(bucketId, SelectorConstant.DEFAULT_MAX_PAGE_SIZE)
+                mediaLoader.loadMedia(bucketId, config.pageSize)
             )
         }
     }
