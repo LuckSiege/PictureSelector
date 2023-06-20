@@ -43,6 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ps_color_grey"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -133,9 +135,9 @@
         app:layout_constraintTop_toBottomOf="@+id/ps_title_bar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ps_bottom_nar_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ps_bottom_nar_bar"
         android:background="@color/ps_color_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

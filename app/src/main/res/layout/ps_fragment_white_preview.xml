@@ -20,14 +20,14 @@
         android:background="@color/ps_color_white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toTopOf="parent">
 
         <View
             android:id="@+id/ps_status_bar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clickable="true"
-            android:focusable="true"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
