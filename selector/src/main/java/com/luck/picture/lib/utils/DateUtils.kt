@@ -21,7 +21,12 @@ object DateUtils {
      *
      * @param timeMs
      */
-    fun formatDurationTime(timeMs: Long): String? {
+    fun formatDurationTime(timeMs: Long): String {
+        if (timeMs < 1000) {
+            return String.format(
+                Locale.getDefault(), "%s%02d:%02d", "", 0, 1
+            )
+        }
         val prefix = if (timeMs < 0) "-" else ""
         val absTimeMs = abs(timeMs)
         val totalSeconds = absTimeMs / 1000
