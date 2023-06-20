@@ -395,14 +395,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        mTvPreview?.setDataStyle(config, TempDataProvider.getInstance().selectResult)
-        mTvComplete?.setDataStyle(config, TempDataProvider.getInstance().selectResult)
+        val selectResult = TempDataProvider.getInstance().selectResult
+        mTvPreview?.setDataStyle(config, selectResult)
+        mTvComplete?.setDataStyle(config, selectResult)
         mTvSelectNum?.visibility =
-            if (TempDataProvider.getInstance().selectResult.isNotEmpty()) View.VISIBLE else View.GONE
-        mTvSelectNum?.text = TempDataProvider.getInstance().selectResult.size.toString()
+            if (selectResult.isNotEmpty()) View.VISIBLE else View.GONE
+        mTvSelectNum?.text = selectResult.size.toString()
 
         var totalSize: Long = 0
-        TempDataProvider.getInstance().selectResult.forEach { media ->
+        selectResult.forEach { media ->
             totalSize += media.size
         }
         if (totalSize > 0) {
