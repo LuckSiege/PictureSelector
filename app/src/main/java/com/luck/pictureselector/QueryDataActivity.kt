@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 
 class QueryDataActivity : AppCompatActivity() {
     private lateinit var mRecycler: RecyclerPreloadView
-    private lateinit var mediaListAdapter: MediaListAdapter
     private var mData: MutableList<LocalMedia> = mutableListOf()
     private var selectorMode: SelectorMode = SelectorMode.ALL
     private lateinit var loader: MediaLoader
@@ -64,6 +63,7 @@ class QueryDataActivity : AppCompatActivity() {
         mRecycler.adapter = mediaListAdapter
 
         findViewById<Button>(R.id.btn_all).setOnClickListener {
+            Glide.with(this).resumeRequests()
             page = 1
             selectorMode = SelectorMode.ALL
             lifecycleScope.launch {
@@ -74,6 +74,7 @@ class QueryDataActivity : AppCompatActivity() {
             }
         }
         findViewById<Button>(R.id.btn_image).setOnClickListener {
+            Glide.with(this).resumeRequests()
             page = 1
             selectorMode = SelectorMode.IMAGE
             lifecycleScope.launch {
@@ -84,6 +85,7 @@ class QueryDataActivity : AppCompatActivity() {
             }
         }
         findViewById<Button>(R.id.btn_video).setOnClickListener {
+            Glide.with(this).resumeRequests()
             page = 1
             selectorMode = SelectorMode.VIDEO
             lifecycleScope.launch {
@@ -94,6 +96,7 @@ class QueryDataActivity : AppCompatActivity() {
             }
         }
         findViewById<Button>(R.id.btn_audio).setOnClickListener {
+            Glide.with(this).pauseAllRequests()
             page = 1
             selectorMode = SelectorMode.AUDIO
             lifecycleScope.launch {
