@@ -14,10 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="20dp">
+        android:padding="10dp">
 
         <com.luck.picture.lib.widget.StyleTextView
             android:id="@+id/ps_tv_check"
