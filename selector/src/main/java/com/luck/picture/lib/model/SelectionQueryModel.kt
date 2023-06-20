@@ -80,6 +80,16 @@ class SelectionQueryModel constructor(
     }
 
     /**
+     * Display gif type resources
+     *
+     * filter heic format data
+     */
+    fun isHeic(isHeic: Boolean): SelectionQueryModel {
+        this.config.isHeic = isHeic
+        return this
+    }
+
+    /**
      * Query the specified application file directory
      * @param dir Root directory
      * @param isOnlySandboxDir Only query the [SelectorConfig.sandboxDir] directory

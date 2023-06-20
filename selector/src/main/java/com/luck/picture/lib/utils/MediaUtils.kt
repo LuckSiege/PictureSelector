@@ -81,6 +81,10 @@ object MediaUtils {
         return mimeType != null && mimeType == "image/bmp"
     }
 
+    fun isHasHeic(mimeType: String?): Boolean {
+        return mimeType != null && mimeType == "image/heic"
+    }
+
     fun isUrlHasWebp(url: String?): Boolean {
         return url != null && url.lowercase(Locale.getDefault()).endsWith(".webp")
     }
@@ -103,6 +107,10 @@ object MediaUtils {
 
     fun ofBMP(): String {
         return "image/bmp"
+    }
+
+    fun ofHeic(): String {
+        return "image/heic"
     }
 
     fun ofWebp(): String {

@@ -585,6 +585,16 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Display gif type resources
+     *
+     * filter heic format data
+     */
+    fun isHeic(isHeic: Boolean): SelectionMainModel {
+        this.config.isHeic = isHeic
+        return this
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing

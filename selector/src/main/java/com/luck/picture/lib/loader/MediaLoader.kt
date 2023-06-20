@@ -12,9 +12,10 @@ const val DURATION: String = "duration"
 const val BUCKET_DISPLAY_NAME = "bucket_display_name"
 const val BUCKET_ID = "bucket_id"
 const val ORIENTATION = "orientation"
-const val NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif')"
-const val NOT_WEBP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/webp')"
-const val NOT_BMP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/bmp')"
+const val NOT_GIF = " AND (${MediaStore.MediaColumns.MIME_TYPE}!='image/gif')"
+const val NOT_WEBP = " AND (${MediaStore.MediaColumns.MIME_TYPE}!='image/webp')"
+const val NOT_BMP = " AND (${MediaStore.MediaColumns.MIME_TYPE}!='image/x-ms-bmp')"
+const val NOT_HEIC = " AND (${MediaStore.MediaColumns.MIME_TYPE}!='image/heic')"
 const val MEDIA_TYPE = MediaStore.Files.FileColumns.MEDIA_TYPE
 
 val PROJECTION = arrayOf(

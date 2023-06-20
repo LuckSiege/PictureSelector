@@ -341,6 +341,11 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
                     return@continuing
                 }
             }
+            if (!config.isHeic) {
+                if (MediaUtils.isHasHeic(mimeType)) {
+                    return@continuing
+                }
+            }
             media.id = file.name.hashCode().toLong()
             media.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
             media.displayName = file.name
@@ -414,6 +419,9 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         }
         if (!config.isBmp && !config.onlyQueryImageFormat.contains(MediaUtils.ofBMP())) {
             stringBuilder.append(NOT_BMP)
+        }
+        if (!config.isHeic && !config.onlyQueryImageFormat.contains(MediaUtils.ofHeic())) {
+            stringBuilder.append(NOT_HEIC)
         }
         return stringBuilder.toString()
     }

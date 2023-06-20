@@ -34,6 +34,7 @@ class SelectorConfig {
     var isGif = false
     var isWebp = false
     var isBmp = false
+    var isHeic = false
     var isMaxSelectEnabledMask = false
     var isEmptyResultBack = false
     var isOnlyCamera = false
@@ -104,6 +105,7 @@ class SelectorConfig {
         this.isGif = false
         this.isWebp = false
         this.isBmp = false
+        this.isHeic = false
         this.isOnlyCamera = false
         this.isEmptyResultBack = false
         this.isMaxSelectEnabledMask = false
