@@ -32,6 +32,8 @@ class SelectorConfig {
     var isAsTotalCount = false
     var isAllWithImageVideo = false
     var isGif = false
+    var isWebp = false
+    var isBmp = false
     var isMaxSelectEnabledMask = false
     var isEmptyResultBack = false
     var isOnlyCamera = false
@@ -100,6 +102,8 @@ class SelectorConfig {
         this.minSelectNum = 0
         this.activityOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         this.isGif = false
+        this.isWebp = false
+        this.isBmp = false
         this.isOnlyCamera = false
         this.isEmptyResultBack = false
         this.isMaxSelectEnabledMask = false

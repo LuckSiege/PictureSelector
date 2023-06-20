@@ -543,6 +543,22 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/check_webp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="显示webp"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/check_bmp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="显示bmp"
+                    android:textColor="@color/ps_color_black"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/check_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

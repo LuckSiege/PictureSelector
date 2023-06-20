@@ -119,6 +119,8 @@ class MainActivity : AppCompatActivity() {
         val tvSelectNum = findViewById<TextView>(R.id.tv_select_num)
         val tvVideoNum = findViewById<TextView>(R.id.tv_select_video_num)
         val checkGif = findViewById<CheckBox>(R.id.check_gif)
+        val checkWebp = findViewById<CheckBox>(R.id.check_webp)
+        val checkBmp = findViewById<CheckBox>(R.id.check_bmp)
         val checkCrop = findViewById<CheckBox>(R.id.check_crop)
         val checkEditor = findViewById<CheckBox>(R.id.check_editor)
         val checkFilter = findViewById<CheckBox>(R.id.check_filter)
@@ -577,6 +579,8 @@ class MainActivity : AppCompatActivity() {
                             checkPreviewFull.isChecked
                         )
                         gallery.isGif(checkGif.isChecked)
+                        gallery.isWebp(checkWebp.isChecked)
+                        gallery.isBmp(checkBmp.isChecked)
                         gallery.setSelectedData(mAdapter.getData())
                         gallery.isCameraForegroundService(checkCameraServices.isChecked)
                         gallery.setOnRecordAudioListener(getRecordAudioListener)

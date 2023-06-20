@@ -565,6 +565,26 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Display gif type resources
+     *
+     * filter webp format data
+     */
+    fun isWebp(isWebp: Boolean): SelectionMainModel {
+        this.config.isWebp = isWebp
+        return this
+    }
+
+    /**
+     * Display gif type resources
+     *
+     * filter bmp format data
+     */
+    fun isBmp(isBmp: Boolean): SelectionMainModel {
+        this.config.isBmp = isBmp
+        return this
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing

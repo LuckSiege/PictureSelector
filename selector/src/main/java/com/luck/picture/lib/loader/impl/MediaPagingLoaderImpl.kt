@@ -331,6 +331,16 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
                     return@continuing
                 }
             }
+            if (!config.isWebp) {
+                if (MediaUtils.isHasWebp(mimeType)) {
+                    return@continuing
+                }
+            }
+            if (!config.isBmp) {
+                if (MediaUtils.isHasBMP(mimeType)) {
+                    return@continuing
+                }
+            }
             media.id = file.name.hashCode().toLong()
             media.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
             media.displayName = file.name
@@ -398,6 +408,12 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         }
         if (!config.isGif && !config.onlyQueryImageFormat.contains(MediaUtils.ofGIF())) {
             stringBuilder.append(NOT_GIF)
+        }
+        if (!config.isWebp && !config.onlyQueryImageFormat.contains(MediaUtils.ofWebp())) {
+            stringBuilder.append(NOT_WEBP)
+        }
+        if (!config.isBmp && !config.onlyQueryImageFormat.contains(MediaUtils.ofBMP())) {
+            stringBuilder.append(NOT_BMP)
         }
         return stringBuilder.toString()
     }

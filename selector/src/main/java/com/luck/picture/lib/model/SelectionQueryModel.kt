@@ -58,6 +58,27 @@ class SelectionQueryModel constructor(
         return this
     }
 
+
+    /**
+     * Display gif type resources
+     *
+     * filter webp format data
+     */
+    fun isWebp(isWebp: Boolean): SelectionQueryModel {
+        this.config.isWebp = isWebp
+        return this
+    }
+
+    /**
+     * Display gif type resources
+     *
+     * filter bmp format data
+     */
+    fun isBmp(isBmp: Boolean): SelectionQueryModel {
+        this.config.isBmp = isBmp
+        return this
+    }
+
     /**
      * Query the specified application file directory
      * @param dir Root directory

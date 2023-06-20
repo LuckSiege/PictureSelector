@@ -19,18 +19,48 @@ open class ImageViewHolder(itemView: View) : ListMediaViewHolder(itemView) {
     override fun bindData(media: LocalMedia, position: Int) {
         super.bindData(media, position)
         onMergeEditor(media)
-        if (MediaUtils.isHasGif(media.mimeType) || MediaUtils.isUrlHasGif(media.getAvailablePath())) {
-            tvMediaTag.text = itemView.context.getString(R.string.ps_gif_tag)
-            tvMediaTag.visibility = View.VISIBLE
-        } else if (MediaUtils.isLongImage(media.width, media.height)) {
-            tvMediaTag.text = itemView.context.getString(R.string.ps_long_chart)
-            tvMediaTag.visibility = View.VISIBLE
-        } else if (MediaUtils.isHasWebp(media.mimeType) || MediaUtils.isUrlHasWebp(media.getAvailablePath())) {
-            tvMediaTag.text = itemView.context.getString(R.string.ps_webp_tag)
-            tvMediaTag.visibility = View.VISIBLE
-        } else {
-            tvMediaTag.visibility = View.GONE
+        when {
+            isLongImage(media.width, media.height) -> {
+                tvMediaTag.visibility = View.VISIBLE
+                val longChartTag = itemView.context.getString(R.string.ps_long_chart)
+                when {
+                    isGif(media.mimeType, media.getAvailablePath()) -> {
+                        tvMediaTag.text =
+                            String.format("$longChartTag,${itemView.context.getString(R.string.ps_gif_tag)}")
+                    }
+                    isWebp(media.mimeType, media.getAvailablePath()) -> {
+                        tvMediaTag.text =
+                            String.format("$longChartTag,${itemView.context.getString(R.string.ps_webp_tag)}")
+                    }
+                    else -> {
+                        tvMediaTag.text = longChartTag
+                    }
+                }
+            }
+            isGif(media.mimeType, media.getAvailablePath()) -> {
+                tvMediaTag.text = itemView.context.getString(R.string.ps_gif_tag)
+                tvMediaTag.visibility = View.VISIBLE
+            }
+            isWebp(media.mimeType, media.getAvailablePath()) -> {
+                tvMediaTag.text = itemView.context.getString(R.string.ps_webp_tag)
+                tvMediaTag.visibility = View.VISIBLE
+            }
+            else -> {
+                tvMediaTag.visibility = View.GONE
+            }
         }
+    }
+
+    open fun isWebp(mimeType: String?, path: String?): Boolean {
+        return MediaUtils.isHasWebp(mimeType) || MediaUtils.isUrlHasWebp(path)
+    }
+
+    open fun isGif(mimeType: String?, path: String?): Boolean {
+        return MediaUtils.isHasGif(mimeType) || MediaUtils.isUrlHasGif(path)
+    }
+
+    open fun isLongImage(width: Int, height: Int): Boolean {
+        return MediaUtils.isLongImage(width, height)
     }
 
     open fun onMergeEditor(media: LocalMedia) {
