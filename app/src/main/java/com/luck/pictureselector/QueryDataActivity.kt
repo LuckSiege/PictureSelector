@@ -2,6 +2,7 @@ package com.luck.pictureselector
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.utils.DateUtils.formatDurationTime
 import com.luck.picture.lib.utils.DensityUtil.dip2px
 import com.luck.picture.lib.utils.MediaUtils
+import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.widget.RecyclerPreloadView
 import kotlinx.coroutines.launch
 
@@ -181,6 +183,9 @@ class QueryDataActivity : AppCompatActivity() {
                     .into(viewHolder.mImg)
             }
             viewHolder.mTvDuration.text = formatDurationTime(duration)
+            viewHolder.itemView.setOnClickListener {
+                SelectorLogUtils.info("${media.mimeType}")
+            }
         }
 
         override fun getItemCount(): Int {
