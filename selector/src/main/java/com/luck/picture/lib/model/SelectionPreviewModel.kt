@@ -1,6 +1,7 @@
 package com.luck.picture.lib.model
 
 import android.content.Intent
+import android.net.Uri
 import android.view.ViewGroup
 import android.widget.ListView
 import androidx.annotation.LayoutRes
@@ -253,6 +254,32 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
     fun setOnCustomLoadingListener(loading: OnCustomLoadingListener?): SelectionPreviewModel {
         this.config.mListenerInfo.onCustomLoadingListener = loading
         return this
+    }
+
+    fun forPreviewUrl(position: Int, strings: MutableList<String>, isAttachActivity: Boolean) {
+        val source: MutableList<LocalMedia> = mutableListOf()
+        strings.forEach { path ->
+            val media = LocalMedia()
+            media.path = path
+            when {
+                MediaUtils.isHasHttp(path) -> {
+                    media.mimeType = MediaUtils.getUrlMimeType(path)
+                }
+                MediaUtils.isContent(path) -> {
+                    selector.getActivity()?.let { activity ->
+                        val absolutePath = MediaUtils.getPath(activity, Uri.parse(path))
+                        media.mimeType = MediaUtils.getMimeType(absolutePath)
+                        media.absolutePath = absolutePath
+                    }
+                }
+                else -> {
+                    media.mimeType = MediaUtils.getMimeType(path)
+                    media.absolutePath = path
+                }
+            }
+            source.add(media)
+        }
+        return forPreview(position, source, isAttachActivity)
     }
 
     fun forPreview(position: Int, source: MutableList<LocalMedia>) {
