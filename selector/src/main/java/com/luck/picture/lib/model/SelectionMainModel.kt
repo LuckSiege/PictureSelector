@@ -333,6 +333,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Maximum number of displays per line
+     */
+    fun setImageSpanCount(imageSpanCount: Int): SelectionMainModel {
+        this.config.imageSpanCount = imageSpanCount
+        return this
+    }
+
+    /**
      * Select the maximum number of files
      *
      * @param totalCount  max select count

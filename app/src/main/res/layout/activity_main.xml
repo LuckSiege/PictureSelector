@@ -66,6 +66,8 @@
 
                 <include layout="@layout/layout_video_number" />
 
+                <include layout="@layout/layout_row_number" />
+
                 <CheckBox
                     android:id="@+id/check_system"
                     android:layout_width="wrap_content"

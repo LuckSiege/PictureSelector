@@ -76,6 +76,7 @@ private const val TAG_DESCRIPTION_VIEW = "TAG_DESCRIPTION_VIEW"
 class MainActivity : AppCompatActivity() {
     private var maxSelectNum: Int = 9
     private var maxSelectVideoNum: Int = 1
+    private var imageSpanCount: Int = 4
     private lateinit var mRecycler: RecyclerView
     private lateinit var mAdapter: GridImageAdapter
     private lateinit var rbDefaultPlayer: RadioButton
@@ -110,6 +111,9 @@ class MainActivity : AppCompatActivity() {
         }
         val minus = findViewById<ImageView>(R.id.minus)
         val plus = findViewById<ImageView>(R.id.plus)
+        val rowMinus = findViewById<ImageView>(R.id.row_minus)
+        val rowPlus = findViewById<ImageView>(R.id.row_plus)
+        val tvRowNum = findViewById<TextView>(R.id.tv_row_num)
         val videoMinus = findViewById<ImageView>(R.id.video_minus)
         val videoPlus = findViewById<ImageView>(R.id.video_plus)
         val tvSelectNum = findViewById<TextView>(R.id.tv_select_num)
@@ -156,6 +160,16 @@ class MainActivity : AppCompatActivity() {
             maxSelectNum++
             tvSelectNum.text = maxSelectNum.toString()
             mAdapter.selectMax = maxSelectNum + maxSelectVideoNum
+        }
+        rowMinus.setOnClickListener {
+            if (imageSpanCount > 1) {
+                imageSpanCount--
+            }
+            tvRowNum.text = imageSpanCount.toString()
+        }
+        rowPlus.setOnClickListener {
+            imageSpanCount++
+            tvRowNum.text = imageSpanCount.toString()
         }
         videoMinus.setOnClickListener {
             if (maxSelectVideoNum > 0) {
@@ -414,6 +428,7 @@ class MainActivity : AppCompatActivity() {
                         val uiStyle = SelectorStyle()
                         val gallery = PictureSelector.create(this@MainActivity)
                             .openGallery(selectorMode)
+                        gallery.setImageSpanCount(imageSpanCount)
                         gallery.setMaxSelectNum(
                             maxSelectNum,
                             maxSelectVideoNum,
