@@ -30,4 +30,14 @@ class LocalMediaAlbum {
         return this.bucketId == bucketId
     }
 
+    companion object {
+        fun ofDefault(): LocalMediaAlbum {
+            return LocalMediaAlbum().apply {
+                this.bucketId = SelectorConstant.DEFAULT_ALL_BUCKET_ID
+                this.cachePage = 0
+                this.totalCount = 0
+                this.isSelected = true
+            }
+        }
+    }
 }

@@ -19,7 +19,7 @@ class TempDataProvider {
     /**
      * Current Selected album
      */
-    var currentMediaAlbum: LocalMediaAlbum? = null
+    var currentMediaAlbum = LocalMediaAlbum.ofDefault()
 
     /**
      * album data source
@@ -53,7 +53,7 @@ class TempDataProvider {
             selectResult.clear()
         }
         previewWrap.reset()
-        currentMediaAlbum = null
+        currentMediaAlbum = LocalMediaAlbum.ofDefault()
         if (currentRequestPermission.isNotEmpty()) {
             currentRequestPermission = arrayOf()
         }

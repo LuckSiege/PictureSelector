@@ -181,7 +181,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun initTitleBar() {
-        setDefaultAlbumTitle(TempDataProvider.getInstance().currentMediaAlbum?.bucketDisplayName)
+        setDefaultAlbumTitle(getCurrentAlbum().bucketDisplayName)
         mIvLeftBack?.setOnClickListener {
             onBackClick(it)
         }
@@ -303,18 +303,18 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun onAlbumItemClick(position: Int, data: LocalMediaAlbum) {
         mAlbumWindow.dismiss()
-        val currentMediaAlbum = TempDataProvider.getInstance().currentMediaAlbum ?: return
         // Repeated clicks ignore
-        if (data.isEqualAlbum(currentMediaAlbum.bucketId)) {
+        val oldCurrentAlbum = getCurrentAlbum()
+        if (data.isEqualAlbum(oldCurrentAlbum.bucketId)) {
             return
         }
-        TempDataProvider.getInstance().currentMediaAlbum = data
         // Cache the current album data before switching to the next album
-        mAlbumWindow.getAlbum(currentMediaAlbum.bucketId)?.let {
+        mAlbumWindow.getAlbum(oldCurrentAlbum.bucketId)?.let {
             it.source = mAdapter.getData().toMutableList()
             it.cachePage = viewModel.page
         }
         // Update current album
+        setCurrentAlbum(data)
         mAdapter.setDisplayCamera(config.isDisplayCamera && data.isAllAlbum())
         setDefaultAlbumTitle(data.bucketDisplayName)
         if (data.cachePage > 0 && data.source.isNotEmpty()) {
@@ -447,12 +447,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
-        val currentMediaAlbum = TempDataProvider.getInstance().currentMediaAlbum
-        if (currentMediaAlbum != null) {
-            mAdapter.setDisplayCamera(config.isDisplayCamera && currentMediaAlbum.isAllAlbum())
-        } else {
-            mAdapter.setDisplayCamera(config.isDisplayCamera)
-        }
+        mAdapter.setDisplayCamera(config.isDisplayCamera && getCurrentAlbum().isAllAlbum())
         mRecycler.adapter = mAdapter
         setFastSlidingSelect()
         onSelectionResultChange(null)
@@ -460,9 +455,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mRecycler.setOnRecyclerViewPreloadListener(object : OnRecyclerViewPreloadMoreListener {
             override fun onPreloadMore() {
                 if (mRecycler.isEnabledLoadMore()) {
-                    val bucketId =
-                        TempDataProvider.getInstance().currentMediaAlbum?.bucketId ?: return
-                    viewModel.loadMediaMore(bucketId)
+                    viewModel.loadMediaMore(getCurrentAlbum().bucketId)
                     SelectorLogUtils.info("加载第${viewModel.page}页")
                 }
             }
@@ -539,7 +532,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      *  duplicate media data
      */
     open fun duplicateMediaSource(result: MutableList<LocalMedia>) {
-        if (isCameraCallback && TempDataProvider.getInstance().currentMediaAlbum?.isAllAlbum() == true) {
+        if (isCameraCallback && getCurrentAlbum().isAllAlbum()) {
             isCameraCallback = false
             synchronized(anyLock) {
                 val data = mAdapter.getData()
@@ -685,15 +678,20 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 viewModel.loadAppInternalDir(sandboxDir)
             }
         } else {
-            viewModel.loadMedia(
-                TempDataProvider.getInstance().currentMediaAlbum?.bucketId
-                    ?: SelectorConstant.DEFAULT_ALL_BUCKET_ID
-            )
+            viewModel.loadMedia(getCurrentAlbum().bucketId)
             Looper.myQueue().addIdleHandler {
                 viewModel.loadMediaAlbum()
                 return@addIdleHandler false
             }
         }
+    }
+
+    open fun getCurrentAlbum(): LocalMediaAlbum {
+        return TempDataProvider.getInstance().currentMediaAlbum
+    }
+
+    private fun setCurrentAlbum(album: LocalMediaAlbum) {
+        TempDataProvider.getInstance().currentMediaAlbum = album
     }
 
     /**
@@ -723,7 +721,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      * Restore Memory Data
      */
     open fun isNeedRestore(): Boolean {
-        return isSavedInstanceState && TempDataProvider.getInstance().currentMediaAlbum != null
+        return isSavedInstanceState
     }
 
     /**
@@ -732,16 +730,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun onAlbumSourceChange(albumList: MutableList<LocalMediaAlbum>) {
         if (albumList.isNotEmpty()) {
-            val currentMediaAlbum = TempDataProvider.getInstance().currentMediaAlbum
-            if (currentMediaAlbum == null) {
-                albumList.first().isSelected = true
-                TempDataProvider.getInstance().currentMediaAlbum = albumList.first()
-            } else {
-                albumList.forEach { album ->
-                    if (album.bucketId == currentMediaAlbum.bucketId) {
-                        album.isSelected = true
-                        return@forEach
-                    }
+            setCurrentAlbum(albumList.first())
+            albumList.forEach { album ->
+                if (album.bucketId == getCurrentAlbum().bucketId) {
+                    album.isSelected = true
+                    return@forEach
                 }
             }
             mAlbumWindow.setAlbumList(albumList)
@@ -759,9 +752,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         if (viewModel.page == 1) {
             mAdapter.setDataNotifyChanged(result.toMutableList())
             mRecycler.scrollToPosition(0)
-            if (mAdapter.getData()
-                    .isEmpty() && (TempDataProvider.getInstance().currentMediaAlbum == null || TempDataProvider.getInstance().currentMediaAlbum?.isAllAlbum() == true)
-            ) {
+            if (mAdapter.getData().isEmpty() && getCurrentAlbum().isAllAlbum()) {
                 mTvDataEmpty?.visibility = View.VISIBLE
             } else {
                 mTvDataEmpty?.visibility = View.GONE
@@ -816,17 +807,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         return PreviewDataWrap().apply {
             this.page = page
             this.position = position
-            this.bucketId =
-                TempDataProvider.getInstance().currentMediaAlbum?.bucketId
-                    ?: SelectorConstant.DEFAULT_ALL_BUCKET_ID
+            this.bucketId = getCurrentAlbum().bucketId
             this.isBottomPreview = isBottomPreview
             this.isDisplayCamera = mAdapter.isDisplayCamera()
-            if (isBottomPreview) {
-                this.totalCount = source.size
-            } else {
-                this.totalCount =
-                    TempDataProvider.getInstance().currentMediaAlbum?.totalCount ?: source.size
-            }
+            this.totalCount = if (isBottomPreview) source.size else getCurrentAlbum().totalCount
             this.source = source.toMutableList()
         }
     }
@@ -912,7 +896,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             albumList.add(0, allMediaAlbum)
             albumList.add(cameraMediaAlbum)
             albumList.first().isSelected = true
-            TempDataProvider.getInstance().currentMediaAlbum = albumList.first()
+            setCurrentAlbum(albumList.first())
             mAlbumWindow.setAlbumList(albumList)
             mTvDataEmpty?.visibility = View.GONE
         } else {
