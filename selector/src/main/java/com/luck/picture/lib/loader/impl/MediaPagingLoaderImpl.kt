@@ -391,12 +391,12 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
      */
     private fun getImageMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
-        config.queryOnlyImageFormat.forEachIndexed { i, mimeType ->
+        config.onlyQueryImageFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
                 .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
                 .append("'")
         }
-        if (!config.isGif && !config.queryOnlyImageFormat.contains(MediaUtils.ofGIF())) {
+        if (!config.isGif && !config.onlyQueryImageFormat.contains(MediaUtils.ofGIF())) {
             stringBuilder.append(NOT_GIF)
         }
         return stringBuilder.toString()
@@ -407,7 +407,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
      */
     private fun getVideoMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
-        config.queryOnlyVideoFormat.forEachIndexed { i, mimeType ->
+        config.onlyQueryVideoFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
                 .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
                 .append("'")
@@ -420,7 +420,7 @@ class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
      */
     private fun getAudioMimeTypeCondition(): String {
         val stringBuilder = StringBuilder()
-        config.queryOnlyAudioFormat.forEachIndexed { i, mimeType ->
+        config.onlyQueryAudioFormat.forEachIndexed { i, mimeType ->
             stringBuilder.append(if (i == 0) " AND " else " OR ")
                 .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
                 .append("'")

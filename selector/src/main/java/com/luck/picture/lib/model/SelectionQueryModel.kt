@@ -140,12 +140,12 @@ class SelectionQueryModel constructor(
      * @param format Use [LocalMedia.mimeType]
      * for example [image/jpeg... more]
      */
-    fun setQueryOnlyImageFormat(vararg format: String): SelectionQueryModel {
+    fun setOnlyQueryImageFormat(vararg format: String): SelectionQueryModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyImageFormat.add(mimeType)
+            this.config.onlyQueryImageFormat.add(mimeType)
         }
         return this
     }
@@ -155,12 +155,12 @@ class SelectionQueryModel constructor(
      * @param format Use [LocalMedia.mimeType]
      * for example [video/mp4... more]
      */
-    fun setQueryOnlyVideoFormat(vararg format: String): SelectionQueryModel {
+    fun setOnlyQueryVideoFormat(vararg format: String): SelectionQueryModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyVideoFormat.add(mimeType)
+            this.config.onlyQueryVideoFormat.add(mimeType)
         }
         return this
     }
@@ -170,12 +170,12 @@ class SelectionQueryModel constructor(
      * @param format Use [LocalMedia.mimeType]
      * for example [audio/amr... more]
      */
-    fun setQueryOnlyAudioFormat(vararg format: String): SelectionQueryModel {
+    fun setOnlyQueryAudioFormat(vararg format: String): SelectionQueryModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyAudioFormat.add(mimeType)
+            this.config.onlyQueryAudioFormat.add(mimeType)
         }
         return this
     }

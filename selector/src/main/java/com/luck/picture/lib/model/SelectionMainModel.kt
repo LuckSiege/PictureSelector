@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ListView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.IdRes
+import androidx.annotation.IntRange
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
@@ -17,6 +18,7 @@ import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.engine.CropEngine
 import com.luck.picture.lib.engine.ImageEngine
@@ -341,6 +343,17 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
+     * Number of pages
+     * @param pageSize return result count
+     */
+    fun setPageSize(
+        @IntRange(from = 1, to = Long.MAX_VALUE) pageSize: Int
+    ): SelectionMainModel {
+        this.config.pageSize = pageSize
+        return this
+    }
+
+    /**
      * Select the maximum number of files
      *
      * @param totalCount  max select count
@@ -394,6 +407,60 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
 
 
     /**
+     * Filter maximum files
+     * @param sizeKb file size in kb
+     */
+    fun setFilterMaxFileSize(sizeKb: Long): SelectionMainModel {
+        if (sizeKb >= FileSizeUnitConstant.MB) {
+            this.config.filterMaxFileSize = sizeKb;
+        } else {
+            this.config.filterMaxFileSize = sizeKb * FileSizeUnitConstant.KB;
+        }
+        return this
+    }
+
+    /**
+     * Filter minimum files
+     * @param sizeKb file size in kb
+     */
+    fun setFilterMinFileSize(sizeKb: Long): SelectionMainModel {
+        if (sizeKb >= FileSizeUnitConstant.MB) {
+            this.config.filterMinFileSize = sizeKb;
+        } else {
+            this.config.filterMinFileSize = sizeKb * FileSizeUnitConstant.KB;
+        }
+        return this
+    }
+
+    /**
+     * Filter the longest video
+     * @param second unit seconds
+     */
+    fun setFilterVideoMaxSecond(second: Long): SelectionMainModel {
+        this.config.filterVideoMaxSecond = second * 1000
+        return this
+    }
+
+    /**
+     * Filter the shortest video
+     * @param second unit seconds
+     */
+    fun setFilterVideoMinSecond(second: Long): SelectionMainModel {
+        this.config.filterVideoMinSecond = second * 1000
+        return this
+    }
+
+    /**
+     * sort order
+     * @param sortOrder example use [MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
+     *  MediaStore.MediaColumns.DATE_MODIFIED + " ASC";]
+     */
+    fun setQuerySortOrder(sortOrder: String?): SelectionMainModel {
+        this.config.sortOrder = sortOrder
+        return this
+    }
+
+    /**
      * Skip crop resource formatting
      *
      * @param format example [LocalMedia.mimeType] [image/jpeg]
@@ -408,12 +475,12 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      * @param format Use [LocalMedia.mimeType]
      * for example [image/jpeg... more]
      */
-    fun setQueryOnlyImageFormat(vararg format: String): SelectionMainModel {
+    fun setOnlyQueryImageFormat(vararg format: String): SelectionMainModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyImageFormat.add(mimeType)
+            this.config.onlyQueryImageFormat.add(mimeType)
         }
         return this
     }
@@ -423,12 +490,12 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      * @param format Use [LocalMedia.mimeType]
      * for example [video/mp4... more]
      */
-    fun setQueryOnlyVideoFormat(vararg format: String): SelectionMainModel {
+    fun setOnlyQueryVideoFormat(vararg format: String): SelectionMainModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyVideoFormat.add(mimeType)
+            this.config.onlyQueryVideoFormat.add(mimeType)
         }
         return this
     }
@@ -438,12 +505,12 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      * @param format Use [LocalMedia.mimeType]
      * for example [audio/amr... more]
      */
-    fun setQueryOnlyAudioFormat(vararg format: String): SelectionMainModel {
+    fun setOnlyQueryAudioFormat(vararg format: String): SelectionMainModel {
         format.forEach continuing@{ mimeType ->
             if (TextUtils.isEmpty(mimeType)) {
                 return@continuing
             }
-            this.config.queryOnlyAudioFormat.add(mimeType)
+            this.config.onlyQueryAudioFormat.add(mimeType)
         }
         return this
     }

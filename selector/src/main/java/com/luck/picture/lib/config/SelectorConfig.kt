@@ -60,9 +60,9 @@ class SelectorConfig {
     var pageSize = SelectorConstant.DEFAULT_MAX_PAGE_SIZE
     var sortOrder: String? = null
     var skipCropFormat = hashSetOf<String>()
-    var queryOnlyImageFormat = hashSetOf<String>()
-    var queryOnlyVideoFormat = hashSetOf<String>()
-    var queryOnlyAudioFormat = hashSetOf<String>()
+    var onlyQueryImageFormat = hashSetOf<String>()
+    var onlyQueryVideoFormat = hashSetOf<String>()
+    var onlyQueryAudioFormat = hashSetOf<String>()
     var layoutSource = hashMapOf<LayoutSource, Int>()
     var selectedSource = mutableListOf<LocalMedia>()
     var language: Language = Language.SYSTEM_LANGUAGE
@@ -129,9 +129,9 @@ class SelectorConfig {
         this.filterVideoMinSecond = 0L
         this.sortOrder = null
         this.layoutSource.clear()
-        this.queryOnlyImageFormat.clear()
-        this.queryOnlyVideoFormat.clear()
-        this.queryOnlyAudioFormat.clear()
+        this.onlyQueryImageFormat.clear()
+        this.onlyQueryVideoFormat.clear()
+        this.onlyQueryAudioFormat.clear()
         this.selectedSource.clear()
         this.skipCropFormat.clear()
         this.language = Language.SYSTEM_LANGUAGE
