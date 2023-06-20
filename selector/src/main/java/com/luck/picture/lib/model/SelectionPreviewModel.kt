@@ -256,7 +256,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         return this
     }
 
-    fun forPreviewUrl(position: Int, strings: MutableList<String>, isAttachActivity: Boolean) {
+    fun forPreviewUrl(position: Int, strings: MutableList<String>, attachActivity: Boolean) {
         val source: MutableList<LocalMedia> = mutableListOf()
         strings.forEach { path ->
             val media = LocalMedia()
@@ -277,7 +277,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
             }
             source.add(media)
         }
-        return forPreview(position, source, isAttachActivity)
+        return forPreview(position, source, attachActivity)
     }
 
     fun forPreview(position: Int, source: MutableList<LocalMedia>) {
@@ -289,9 +289,9 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
      * Use default Activity hosting to preview Fragments
      * @param position preview start position
      * @param source preview data source
-     * @param isAttachActivity Preview Fragment Attach to Activity
+     * @param attachActivity Preview Fragment Attach to Activity
      */
-    fun forPreview(position: Int, source: MutableList<LocalMedia>, isAttachActivity: Boolean) {
+    fun forPreview(position: Int, source: MutableList<LocalMedia>, attachActivity: Boolean) {
         if (DoubleUtils.isFastDoubleClick()) {
             return
         }
@@ -313,7 +313,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         config.previewWrap.position = position
         config.previewWrap.isExternalPreview = true
         config.previewWrap.totalCount = source.size
-        if (isAttachActivity) {
+        if (attachActivity) {
             val intent = Intent(activity, SelectorTransparentActivity::class.java)
             val fragment = selector.getFragment()
             if (fragment != null) {
