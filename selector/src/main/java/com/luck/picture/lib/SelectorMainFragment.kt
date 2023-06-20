@@ -946,7 +946,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             confirmSelect(media, false)
             val position = if (mAdapter.isDisplayCamera()) 1 else 0
             mAdapter.notifyItemInserted(position)
-            mAdapter.notifyItemRangeChanged(position, mAdapter.getData().size - position)
+            mAdapter.notifyItemRangeChanged(position, mAdapter.getData().size)
         }
     }
 
