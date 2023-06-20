@@ -266,11 +266,9 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
                     media.mimeType = MediaUtils.getUrlMimeType(path)
                 }
                 MediaUtils.isContent(path) -> {
-                    selector.getActivity()?.let { activity ->
-                        val absolutePath = MediaUtils.getPath(activity, Uri.parse(path))
-                        media.mimeType = MediaUtils.getMimeType(absolutePath)
-                        media.absolutePath = absolutePath
-                    }
+                    val absolutePath = MediaUtils.getPath(selector.getActivity()!!, Uri.parse(path))
+                    media.mimeType = MediaUtils.getMimeType(absolutePath)
+                    media.absolutePath = absolutePath
                 }
                 else -> {
                     media.mimeType = MediaUtils.getMimeType(path)
