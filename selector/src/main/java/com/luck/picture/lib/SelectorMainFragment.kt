@@ -672,7 +672,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun requestData() {
         if (config.isOnlySandboxDir) {
             config.sandboxDir?.let { sandboxDir ->
-                setDefaultAlbumTitle(File(sandboxDir).name)
+                val dir = File(sandboxDir)
+                setDefaultAlbumTitle(dir.name)
+                setCurrentAlbum(LocalMediaAlbum().apply {
+                    this.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
+                    this.bucketDisplayName = dir.name
+                })
                 mIvTitleArrow?.visibility = View.GONE
                 mRecycler.setEnabledLoadMore(false)
                 viewModel.loadAppInternalDir(sandboxDir)
@@ -752,7 +757,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         if (viewModel.page == 1) {
             mAdapter.setDataNotifyChanged(result.toMutableList())
             mRecycler.scrollToPosition(0)
-            if (mAdapter.getData().isEmpty() && getCurrentAlbum().isAllAlbum()) {
+            if (mAdapter.getData()
+                    .isEmpty() && (getCurrentAlbum().isAllAlbum()
+                        || (config.isOnlySandboxDir && getCurrentAlbum().isSandboxAlbum()))
+            ) {
                 mTvDataEmpty?.visibility = View.VISIBLE
             } else {
                 mTvDataEmpty?.visibility = View.GONE
@@ -810,7 +818,11 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             this.bucketId = getCurrentAlbum().bucketId
             this.isBottomPreview = isBottomPreview
             this.isDisplayCamera = mAdapter.isDisplayCamera()
-            this.totalCount = if (isBottomPreview) source.size else getCurrentAlbum().totalCount
+            if (config.isOnlySandboxDir) {
+                this.totalCount = source.size
+            } else {
+                this.totalCount = if (isBottomPreview) source.size else getCurrentAlbum().totalCount
+            }
             this.source = source.toMutableList()
         }
     }
