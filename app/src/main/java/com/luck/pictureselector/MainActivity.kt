@@ -801,7 +801,8 @@ class MainActivity : AppCompatActivity() {
                 ToastUtils.showMsg(fragment.requireContext(), "视频编辑功能请自行实现")
                 return
             }
-            val sourceUri = Uri.parse(media.path)
+            val path = media.getAvailablePath() ?: return
+            val sourceUri = if (MediaUtils.isContent(path)) Uri.parse(path) else Uri.fromFile(File(path))
             val destinationUri = Uri.fromFile(
                 File(fragment.requireContext().cacheDir, "${System.currentTimeMillis()}.jpg")
             )

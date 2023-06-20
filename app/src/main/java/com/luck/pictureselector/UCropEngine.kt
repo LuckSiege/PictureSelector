@@ -12,6 +12,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.luck.picture.lib.engine.CropEngine
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.helper.ActivityCompatHelper
+import com.luck.picture.lib.utils.MediaUtils
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
 import java.io.File
@@ -25,7 +26,8 @@ class UCropEngine : CropEngine {
 
     override fun onCrop(fragment: Fragment, dataSource: MutableList<LocalMedia>, requestCode: Int) {
         val first = dataSource.first()
-        val sourceUri = Uri.parse(first.path)
+        val path = first.getAvailablePath() ?: return
+        val sourceUri = if (MediaUtils.isContent(path)) Uri.parse(path) else Uri.fromFile(File(path))
         val destinationUri = Uri.fromFile(
             File(fragment.requireContext().cacheDir, "${System.currentTimeMillis()}.jpg")
         )

@@ -204,7 +204,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun onShowAlbumWindowAsDropDown() {
-        if (mAlbumWindow.getAlbumList().isNotEmpty()) {
+        if (mAlbumWindow.getAlbumList().isNotEmpty() && !config.isOnlySandboxDir) {
             mTitleBar?.let {
                 mAlbumWindow.showAsDropDown(it)
             }
