@@ -105,6 +105,7 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                 OnRequestPermissionListener {
                 override fun onCall(permission: Array<String>, isResult: Boolean) {
                     if (isResult) {
+                        showPermissionDescription(false, permission)
                         openSystemAlbum()
                     } else {
                         handlePermissionDenied(permission)

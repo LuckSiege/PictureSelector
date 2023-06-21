@@ -1,5 +1,6 @@
 package com.luck.picture.lib
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Service
 import android.net.Uri
@@ -657,7 +658,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 OnRequestPermissionListener {
                 override fun onCall(permission: Array<String>, isResult: Boolean) {
                     if (isResult) {
-                        requestData()
+                        showPermissionDescription(false, permission)
+                        if (permission.first() == Manifest.permission.CAMERA) {
+                            openSelectedCamera()
+                        } else {
+                            requestData()
+                        }
                     } else {
                         handlePermissionDenied(permission)
                     }

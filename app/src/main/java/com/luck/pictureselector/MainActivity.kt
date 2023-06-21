@@ -53,6 +53,8 @@ import com.luck.picture.lib.helper.ActivityCompatHelper
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
+import com.luck.picture.lib.permissions.OnPermissionResultListener
+import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
@@ -149,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         val checkDisplayCamera = findViewById<CheckBox>(R.id.check_display_camera)
         val checkCameraServices = findViewById<CheckBox>(R.id.check_camera_services)
         val checkPreviewDownload = findViewById<CheckBox>(R.id.check_preview_download)
+        val checkApplyPermission = findViewById<CheckBox>(R.id.check_apply_permission)
         val checkLongImage = findViewById<CheckBox>(R.id.check_long_image)
         soundID = soundPool.load(this, R.raw.ps_click_audio, 1)
         launcherResult = createActivityResultLauncher()
@@ -376,6 +379,7 @@ class MainActivity : AppCompatActivity() {
                         systemGallery.setOnPermissionDescriptionListener(
                             getPermissionDescriptionListener
                         )
+                        systemGallery.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         when {
                             rbCallback.isChecked -> {
                                 systemGallery.forResult(getResultCallbackListener, true)
@@ -419,6 +423,7 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setOnPermissionDescriptionListener(
                             getPermissionDescriptionListener
                         )
+                        onlyCamera.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         when {
                             rbCallback.isChecked -> {
                                 onlyCamera.forResult(getResultCallbackListener, true)
@@ -514,6 +519,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
                         gallery.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         gallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
+                        gallery.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         if (checkOutput.isChecked) {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
@@ -863,6 +869,36 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             uCrop.startEdit(fragment.requireContext(), fragment, requestCode)
+        }
+    }
+
+    private val getPermissionsInterceptListener = object : OnPermissionsInterceptListener {
+        override fun requestPermission(
+            fragment: Fragment,
+            permissionArray: Array<String>,
+            call: OnRequestPermissionListener
+        ) {
+            PermissionChecker.requestPermissions(fragment,
+                permissionArray,
+                object : OnPermissionResultListener {
+                    override fun onGranted() {
+                        call.onCall(permissionArray, true)
+                    }
+
+                    override fun onDenied() {
+                        call.onCall(permissionArray, false)
+                    }
+                })
+        }
+
+        override fun hasPermissions(
+            fragment: Fragment,
+            permissionArray: Array<String>
+        ): Boolean {
+            return PermissionChecker.checkSelfPermission(
+                fragment.requireContext(),
+                permissionArray
+            )
         }
     }
 

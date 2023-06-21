@@ -418,22 +418,35 @@ abstract class BaseSelectorFragment : Fragment() {
             soundRecording()
         } else {
             val permission = arrayOf(Manifest.permission.CAMERA)
-            showPermissionDescription(true, permission)
-            PermissionChecker.requestPermissions(this, permission,
-                object : OnPermissionResultListener {
-                    override fun onGranted() {
-                        showPermissionDescription(false, permission)
-                        if (mode == SelectorMode.VIDEO) {
-                            recordVideo()
-                        } else {
-                            takePictures()
-                        }
-                    }
+            if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
+                if (mode == SelectorMode.VIDEO) {
+                    recordVideo()
+                } else {
+                    takePictures()
+                }
+            } else {
+                showPermissionDescription(true, permission)
+                val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
+                if (onPermissionApplyListener != null) {
+                    showCustomPermissionApply(permission)
+                } else {
+                    PermissionChecker.requestPermissions(this, permission,
+                        object : OnPermissionResultListener {
+                            override fun onGranted() {
+                                showPermissionDescription(false, permission)
+                                if (mode == SelectorMode.VIDEO) {
+                                    recordVideo()
+                                } else {
+                                    takePictures()
+                                }
+                            }
 
-                    override fun onDenied() {
-                        handlePermissionDenied(permission)
-                    }
-                })
+                            override fun onDenied() {
+                                handlePermissionDenied(permission)
+                            }
+                        })
+                }
+            }
         }
     }
 

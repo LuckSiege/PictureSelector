@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
+import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
@@ -41,11 +42,12 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
             if (isQ()) {
                 openSelectedCamera()
             } else {
+                val permission = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 PermissionChecker.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    this, permission,
                     object : OnPermissionResultListener {
                         override fun onGranted() {
+                            showPermissionDescription(false, permission)
                             openSelectedCamera()
                         }
 
@@ -55,6 +57,23 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
                     })
             }
         }
+    }
+
+    override fun showCustomPermissionApply(permission: Array<String>) {
+        config.mListenerInfo.onPermissionApplyListener?.requestPermission(
+            this,
+            permission,
+            object :
+                OnRequestPermissionListener {
+                override fun onCall(permission: Array<String>, isResult: Boolean) {
+                    if (isResult) {
+                        showPermissionDescription(false, permission)
+                        openSelectedCamera()
+                    } else {
+                        handlePermissionDenied(permission)
+                    }
+                }
+            })
     }
 
     override fun onResultCanceled(requestCode: Int, resultCode: Int) {
