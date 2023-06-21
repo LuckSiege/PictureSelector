@@ -94,6 +94,14 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     private var mDragSelectTouchListener: SlideSelectTouchListener? = null
 
+    open fun getCurrentAlbum(): LocalMediaAlbum {
+        return TempDataProvider.getInstance().currentMediaAlbum
+    }
+
+    private fun setCurrentAlbum(album: LocalMediaAlbum) {
+        TempDataProvider.getInstance().currentMediaAlbum = album
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // RecyclerView
@@ -456,8 +464,10 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mRecycler.setOnRecyclerViewPreloadListener(object : OnRecyclerViewPreloadMoreListener {
             override fun onPreloadMore() {
                 if (mRecycler.isEnabledLoadMore()) {
-                    viewModel.loadMediaMore(getCurrentAlbum().bucketId)
-                    SelectorLogUtils.info("加载第${viewModel.page}页")
+                    if (isLoadMoreThreshold()) {
+                        viewModel.loadMediaMore(getCurrentAlbum().bucketId)
+                        SelectorLogUtils.info("加载第${viewModel.page}页")
+                    }
                 }
             }
         })
@@ -532,6 +542,16 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun isDisplayCamera(): Boolean {
         return config.isDisplayCamera && getCurrentAlbum().isAllAlbum()
                 || (config.isOnlySandboxDir && getCurrentAlbum().isSandboxAlbum())
+    }
+
+    /**
+     * Load more thresholds
+     */
+    open fun isLoadMoreThreshold(): Boolean {
+        if (getCurrentAlbum().totalCount == mAdapter.getData().size) {
+            return false
+        }
+        return true
     }
 
     /**
@@ -695,14 +715,6 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 return@addIdleHandler false
             }
         }
-    }
-
-    open fun getCurrentAlbum(): LocalMediaAlbum {
-        return TempDataProvider.getInstance().currentMediaAlbum
-    }
-
-    private fun setCurrentAlbum(album: LocalMediaAlbum) {
-        TempDataProvider.getInstance().currentMediaAlbum = album
     }
 
     /**
