@@ -1,6 +1,7 @@
 package com.luck.picture.lib
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
@@ -17,6 +18,9 @@ class SelectorTransparentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         immersive()
+        if (config.isOnlyCamera) {
+            setActivitySize()
+        }
         setContentView(R.layout.ps_empty)
         val registry = config.registry
         val factory = ClassFactory.NewInstance()
@@ -50,6 +54,16 @@ class SelectorTransparentActivity : AppCompatActivity() {
             statusBar.getNavigationBarColor(),
             statusBar.isDarkStatusBar()
         )
+    }
+
+    private fun setActivitySize() {
+        window.setGravity(Gravity.LEFT or Gravity.TOP)
+        val params = window.attributes
+        params.x = 0
+        params.y = 0
+        params.height = 1
+        params.width = 1
+        window.attributes = params
     }
 
     override fun finish() {
