@@ -14,12 +14,13 @@ import com.luck.picture.lib.R
 class PictureLoadingDialog(context: Context) : Dialog(context, R.style.Picture_Theme_AlertDialog) {
 
     private fun setDialogSize() {
-        val params = window!!.attributes
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        params.gravity = Gravity.CENTER
-        window!!.setWindowAnimations(R.style.PictureThemeDialogWindowStyle)
-        window!!.attributes = params
+        window?.attributes?.apply {
+            this.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            this.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            this.gravity = Gravity.CENTER
+            window?.setWindowAnimations(R.style.PictureThemeDialogWindowStyle)
+            window?.attributes = this
+        }
     }
 
     init {
