@@ -18,9 +18,7 @@ class SelectorTransparentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         immersive()
-        if (config.isOnlyCamera || config.systemGallery) {
-            setActivitySize()
-        }
+        setActivitySize()
         setContentView(R.layout.ps_empty)
         val registry = config.registry
         val factory = ClassFactory.NewInstance()
@@ -57,13 +55,15 @@ class SelectorTransparentActivity : AppCompatActivity() {
     }
 
     private fun setActivitySize() {
-        window.setGravity(Gravity.LEFT or Gravity.TOP)
-        val params = window.attributes
-        params.x = 0
-        params.y = 0
-        params.height = 1
-        params.width = 1
-        window.attributes = params
+        if (config.isOnlyCamera || config.systemGallery) {
+            window.setGravity(Gravity.LEFT or Gravity.TOP)
+            val params = window.attributes
+            params.x = 0
+            params.y = 0
+            params.height = 1
+            params.width = 1
+            window.attributes = params
+        }
     }
 
     override fun finish() {
