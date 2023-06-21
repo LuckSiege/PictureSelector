@@ -18,7 +18,7 @@ class SelectorTransparentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         immersive()
-        if (config.isOnlyCamera) {
+        if (config.isOnlyCamera || config.systemGallery) {
             setActivitySize()
         }
         setContentView(R.layout.ps_empty)
