@@ -228,15 +228,14 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
                         allMediaAlbum.bucketDisplayMimeType = firstAlbum.bucketDisplayMimeType
                     }
                     albumList.add(0, allMediaAlbum)
-
-                    // total sort source
-                    albumList.sortByDescending { it.totalCount }
                 }
                 // close cursor
                 data.close()
             }
         }
-        return albumList
+        return albumList.apply {
+            this.sortByDescending { it.totalCount }
+        }
     }
 
     override suspend fun loadMedia(pageSize: Int): MutableList<LocalMedia> {
