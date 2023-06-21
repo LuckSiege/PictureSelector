@@ -247,7 +247,6 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         val mediaList = loadMediaMore(bucketId, 1, pageSize)
         config.sandboxDir?.let { sandboxDir ->
             mediaList.addAll(loadAppInternalDir(sandboxDir))
-            mediaList.sortByDescending { it.dateAdded }
         }
         return mediaList
     }
@@ -370,7 +369,9 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
             }
             mediaList += media
         }
-        return mediaList
+        return mediaList.apply {
+            this.sortByDescending { it.dateAdded }
+        }
     }
 
     /**
