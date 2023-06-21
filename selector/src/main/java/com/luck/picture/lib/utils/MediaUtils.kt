@@ -332,8 +332,8 @@ object MediaUtils {
     }
 
     suspend fun getAssignFileMedia(context: Context, absolutePath: String): LocalMedia {
-        val media = LocalMedia()
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
+            val media = LocalMedia()
             val file = File(absolutePath)
             media.id = file.hashCode().toLong()
             media.path = absolutePath
@@ -355,13 +355,12 @@ object MediaUtils {
                 media.width = mediaInfo.width
                 media.height = mediaInfo.height
             }
+            return@withContext media
         }
-        return media
     }
 
-    suspend fun getAssignPathMedia(context: Context, absolutePath: String): LocalMedia {
-        val media = LocalMedia()
-        withContext(Dispatchers.IO) {
+    suspend fun getAssignPathMedia(context: Context, absolutePath: String): LocalMedia? {
+        return withContext(Dispatchers.IO) {
             val selection = MediaStore.Files.FileColumns.DATA + " like ?"
             val selectionArgs = arrayOf("%$absolutePath%")
             val cursor: Cursor?
@@ -388,6 +387,7 @@ object MediaUtils {
             }
             cursor?.use { data ->
                 if (data.count > 0 && data.moveToFirst()) {
+                    val media = LocalMedia()
                     media.id =
                         data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID))
                     media.bucketId = data.getLong(data.getColumnIndexOrThrow(BUCKET_ID))
@@ -426,11 +426,12 @@ object MediaUtils {
                         media.height =
                             data.getInt(data.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT))
                     }
+                    return@withContext media
                 }
                 data.close()
             }
+            return@withContext null
         }
-        return media
     }
 
     suspend fun getDCIMLastId(context: Context, absoluteDir: String): Long {

@@ -882,10 +882,14 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                     } else {
                         MediaUtils.getAssignFileMedia(context, realPath!!)
                     }
-                    isCameraCallback = true
-                    onCheckDuplicateMedia(media)
-                    onMergeCameraAlbum(media)
-                    onMergeCameraMedia(media)
+                    if (media != null) {
+                        isCameraCallback = true
+                        onCheckDuplicateMedia(media)
+                        onMergeCameraAlbum(media)
+                        onMergeCameraMedia(media)
+                    } else {
+                        SelectorLogUtils.info("analysisCameraData: Parsing LocalMedia object as empty")
+                    }
                 }
             }
         })

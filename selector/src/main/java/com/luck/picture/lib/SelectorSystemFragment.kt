@@ -21,6 +21,7 @@ import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionChecker.isCheckReadStorage
 import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.MediaUtils
+import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import kotlinx.coroutines.launch
 
@@ -207,7 +208,11 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         result.forEach { uri ->
                             MediaUtils.getPath(context, uri)?.let { absolutePath ->
                                 val media = MediaUtils.getAssignPathMedia(context, absolutePath)
-                                confirmSelect(media, false)
+                                if (media != null) {
+                                    confirmSelect(media, false)
+                                } else{
+                                    SelectorLogUtils.info("createMultipleDocuments: Parsing LocalMedia object as empty")
+                                }
                             }
                         }
                         handleSelectResult()
@@ -276,7 +281,11 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         result.forEach { uri ->
                             MediaUtils.getPath(context, uri)?.let { absolutePath ->
                                 val media = MediaUtils.getAssignPathMedia(context, absolutePath)
-                                confirmSelect(media, false)
+                                if (media != null) {
+                                    confirmSelect(media, false)
+                                } else{
+                                    SelectorLogUtils.info("createMultipleContents: Parsing LocalMedia object as empty")
+                                }
                             }
                         }
                         handleSelectResult()
@@ -309,10 +318,15 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         MediaUtils.getPath(requireContext(), result)?.let { absolutePath ->
                             val media =
                                 MediaUtils.getAssignPathMedia(requireContext(), absolutePath)
-                            if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                                handleSelectResult()
-                            } else {
+                            if (media == null) {
                                 onBackPressed()
+                                SelectorLogUtils.info("createSingleDocuments: Parsing LocalMedia object as empty")
+                            } else {
+                                if (confirmSelect(media, false) == SelectedState.SUCCESS) {
+                                    handleSelectResult()
+                                } else {
+                                    onBackPressed()
+                                }
                             }
                         }
                     }
@@ -363,10 +377,15 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
                         MediaUtils.getPath(requireContext(), result)?.let { absolutePath ->
                             val media =
                                 MediaUtils.getAssignPathMedia(requireContext(), absolutePath)
-                            if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                                handleSelectResult()
-                            } else {
+                            if (media == null) {
                                 onBackPressed()
+                                SelectorLogUtils.info("createContent: Parsing LocalMedia object as empty")
+                            } else {
+                                if (confirmSelect(media, false) == SelectedState.SUCCESS) {
+                                    handleSelectResult()
+                                } else {
+                                    onBackPressed()
+                                }
                             }
                         }
                     }

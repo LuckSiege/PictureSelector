@@ -18,6 +18,7 @@ import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils.isQ
+import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
 import kotlinx.coroutines.launch
 
@@ -105,10 +106,15 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
                     } else {
                         MediaUtils.getAssignFileMedia(context, realPath!!)
                     }
-                    if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                        handleSelectResult()
-                    } else {
+                    if (media == null) {
                         onBackPressed()
+                    } else {
+                        if (confirmSelect(media, false) == SelectedState.SUCCESS) {
+                            handleSelectResult()
+                        } else {
+                            onBackPressed()
+                            SelectorLogUtils.info("only camera analysisCameraData: Parsing LocalMedia object as empty")
+                        }
                     }
                 }
             }

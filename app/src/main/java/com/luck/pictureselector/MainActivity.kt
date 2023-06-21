@@ -412,6 +412,8 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 else -> {
                                     onlyCamera.setOutputAudioDir(getCustomAllPath())
+                                    onlyCamera.setOutputImageDir(getCustomAllPath())
+                                    onlyCamera.setOutputVideoDir(getCustomAllPath())
                                 }
                             }
                         }
