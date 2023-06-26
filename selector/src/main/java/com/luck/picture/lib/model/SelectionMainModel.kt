@@ -29,6 +29,7 @@ import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.loader.MediaLoader
+import com.luck.picture.lib.magical.MagicalView
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
@@ -775,6 +776,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      */
     fun setOnPermissionDeniedListener(l: OnPermissionDeniedListener?): SelectionMainModel {
         this.config.mListenerInfo.onPermissionDeniedListener = l
+        return this
+    }
+
+    /**
+     * [MagicalView] Animation Interpolator
+     */
+    fun setMagicalInterpolator(interpolator: MagicalInterpolator?): SelectionMainModel {
+        this.config.magicalInterpolator = interpolator
         return this
     }
 

@@ -10,11 +10,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.viewpager2.widget.ViewPager2
 import com.luck.picture.lib.provider.SelectorProviders
-import com.luck.picture.lib.utils.DensityUtil
+import com.luck.picture.lib.utils.DensityUtil.getRealScreenHeight
+import com.luck.picture.lib.utils.DensityUtil.getRealScreenWidth
+import com.luck.picture.lib.utils.DensityUtil.getScreenHeight
 import kotlin.math.abs
 
 /**
@@ -49,6 +52,7 @@ class MagicalView @JvmOverloads constructor(
     private val backgroundView: View
     private val magicalWrapper: MagicalViewWrapper
     private val isPreviewFullScreenMode: Boolean
+    private val config = SelectorProviders.getInstance().getSelectorConfig()
     private var startX = 0
     private var startY = 0
 
@@ -98,22 +102,21 @@ class MagicalView @JvmOverloads constructor(
     }
 
     fun resetStart() {
-        screenSize
+        getScreenSize()
         start(true)
     }
 
     /**
      * getScreenSize
      */
-    private val screenSize: Unit
-        get() {
-            screenWidth = DensityUtil.getRealScreenWidth(context)
-            screenHeight = if (isPreviewFullScreenMode) {
-                DensityUtil.getRealScreenHeight(context)
-            } else {
-                DensityUtil.getScreenHeight(context)
-            }
+    private fun getScreenSize() {
+        screenWidth = getRealScreenWidth(context)
+        screenHeight = if (isPreviewFullScreenMode) {
+            getRealScreenHeight(context)
+        } else {
+            getScreenHeight(context)
         }
+    }
 
     /**
      * changeRealScreenHeight
@@ -137,7 +140,7 @@ class MagicalView @JvmOverloads constructor(
     }
 
     fun resetStartNormal(realWidth: Int, realHeight: Int, showImmediately: Boolean) {
-        screenSize
+        getScreenSize()
         startNormal(realWidth, realHeight, showImmediately)
     }
 
@@ -209,6 +212,8 @@ class MagicalView @JvmOverloads constructor(
                     setShowEndParams()
                 }
             })
+            valueAnimator.interpolator =
+                config.magicalInterpolator?.newInterpolator() ?: AccelerateDecelerateInterpolator()
             valueAnimator.setDuration(animationDuration).start()
             changeBackgroundViewAlpha(false)
         }
@@ -411,10 +416,9 @@ class MagicalView @JvmOverloads constructor(
     }
 
     init {
-        val config = SelectorProviders.getInstance().getSelectorConfig()
         isPreviewFullScreenMode = config.isPreviewFullScreenMode
-        appInScreenHeight = DensityUtil.getRealScreenHeight(getContext())
-        screenSize
+        appInScreenHeight = getRealScreenHeight(getContext())
+        getScreenSize()
         backgroundView = View(context)
         backgroundView.layoutParams =
             LayoutParams(

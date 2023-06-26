@@ -9,6 +9,7 @@ import com.luck.picture.lib.engine.MediaConverterEngine
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.entity.PreviewDataWrap
 import com.luck.picture.lib.interfaces.ListenerInfo
+import com.luck.picture.lib.interfaces.MagicalInterpolator
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.loader.MediaLoader
 import com.luck.picture.lib.style.SelectorStyle
@@ -80,6 +81,7 @@ class SelectorConfig {
     var imageEngine: ImageEngine? = null
     var dataLoader: MediaLoader? = null
     var mediaConverterEngine: MediaConverterEngine? = null
+    var magicalInterpolator: MagicalInterpolator? = null
     var mListenerInfo = ListenerInfo()
 
     fun getSelectCount(): Int {
@@ -154,6 +156,7 @@ class SelectorConfig {
         this.dataLoader = null
         this.cropEngine = null
         this.imageEngine = null
+        this.magicalInterpolator = null
         this.mediaConverterEngine = null
         this.registry.clear()
         this.previewWrap.reset()
