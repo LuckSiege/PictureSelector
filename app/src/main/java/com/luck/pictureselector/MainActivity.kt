@@ -415,7 +415,6 @@ class MainActivity : AppCompatActivity() {
                     checkOnlyCamera.isChecked -> {
                         val onlyCamera = PictureSelector.create(this@MainActivity)
                             .openCamera(selectorMode)
-                        onlyCamera.setAllOfCameraMode(SelectorMode.IMAGE)
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
