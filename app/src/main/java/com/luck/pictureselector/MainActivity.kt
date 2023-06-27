@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity() {
     private var maxSelectNum: Int = 9
     private var maxSelectVideoNum: Int = 1
     private var imageSpanCount: Int = 4
+    private var pageSize: Int = SelectorConstant.DEFAULT_MAX_PAGE_SIZE
     private lateinit var mRecycler: RecyclerView
     private lateinit var mAdapter: GridImageAdapter
     private lateinit var rbDefaultPlayer: RadioButton
@@ -115,6 +116,11 @@ class MainActivity : AppCompatActivity() {
         val plus = findViewById<ImageView>(R.id.plus)
         val rowMinus = findViewById<ImageView>(R.id.row_minus)
         val rowPlus = findViewById<ImageView>(R.id.row_plus)
+
+        val pageMinus = findViewById<ImageView>(R.id.page_minus)
+        val tvPageNum = findViewById<TextView>(R.id.tv_page_num)
+        val pagePlus = findViewById<ImageView>(R.id.page_plus)
+
         val tvRowNum = findViewById<TextView>(R.id.tv_row_num)
         val videoMinus = findViewById<ImageView>(R.id.video_minus)
         val videoPlus = findViewById<ImageView>(R.id.video_plus)
@@ -184,11 +190,25 @@ class MainActivity : AppCompatActivity() {
             tvVideoNum.text = maxSelectVideoNum.toString()
             mAdapter.selectMax = maxSelectVideoNum + maxSelectNum
         }
+
         videoPlus.setOnClickListener {
             maxSelectVideoNum++
             tvVideoNum.text = maxSelectVideoNum.toString()
             mAdapter.selectMax = maxSelectVideoNum + maxSelectNum
         }
+
+        pagePlus.setOnClickListener {
+            pageSize += SelectorConstant.DEFAULT_MAX_PAGE_SIZE
+            tvPageNum.text = pageSize.toString()
+        }
+
+        pageMinus.setOnClickListener {
+            if (pageSize > SelectorConstant.DEFAULT_MAX_PAGE_SIZE) {
+                pageSize -= SelectorConstant.DEFAULT_MAX_PAGE_SIZE
+            }
+            tvPageNum.text = pageSize.toString()
+        }
+
         findViewById<RadioGroup>(R.id.rgb_type).setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_all -> {
@@ -514,6 +534,7 @@ class MainActivity : AppCompatActivity() {
                             gallery.registry(CustomCameraActivity::class.java)
                         }
                         gallery.setLanguage(language)
+                        gallery.setPageSize(pageSize)
                         gallery.setImageEngine(GlideEngine.create())
                         gallery.setMediaConverterEngine(MediaConverter.create())
                         gallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)

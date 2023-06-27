@@ -68,6 +68,8 @@
 
                 <include layout="@layout/layout_row_number" />
 
+                <include layout="@layout/layout_page_number" />
+
                 <CheckBox
                     android:id="@+id/check_system"
                     android:layout_width="wrap_content"
