@@ -318,9 +318,6 @@ class SelectionCameraModel constructor(
             } else {
                 throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
             }
-            activity.overridePendingTransition(
-                config.selectorStyle.getWindowAnimation().getEnterAnim(), 0
-            )
         } else {
             var fragmentManager: FragmentManager? = null
             if (activity is FragmentActivity) {

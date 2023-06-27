@@ -57,7 +57,6 @@ import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.style.SelectorStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
-import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
@@ -332,47 +331,16 @@ class MainActivity : AppCompatActivity() {
         mItemTouchHelper.attachToRecyclerView(mRecycler)
         mAdapter.setOnItemClickListener(object : GridImageAdapter.OnItemClickListener {
             override fun onItemClick(v: View?, position: Int) {
-                val uiStyle = SelectorStyle()
                 val preview = PictureSelector.create(this@MainActivity).openPreview()
                 preview.setImageEngine(GlideEngine.create())
-                when {
-                    rbDefaultStyle.isChecked -> {
-                        uiStyle.getStatusBar().of(
-                            false,
-                            Color.parseColor("#393a3e"),
-                            Color.parseColor("#393a3e")
-                        )
-                    }
-                    rbWhiteStyle.isChecked -> {
-                        uiStyle.getStatusBar().of(
-                            true,
-                            Color.parseColor("#FFFFFF"),
-                            Color.parseColor("#FFFFFF")
-                        )
-                        preview.inflateCustomLayout(
-                            LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
-                            R.layout.ps_fragment_white_external_preview
-                        )
-                    }
-                    rbNumNewStyle.isChecked -> {
-                        uiStyle.getStatusBar().of(
-                            false,
-                            Color.parseColor("#393a3e"),
-                            Color.parseColor("#393a3e")
-                        )
-                    }
+                preview.setSelectorUIStyle(buildSelectorStyle())
+                if (rbWhiteStyle.isChecked) {
+                    preview.inflateCustomLayout(
+                        LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
+                        R.layout.ps_fragment_white_external_preview
+                    )
                 }
-                if (rbDefaultWindowAnim.isChecked) {
-                    uiStyle.getWindowAnimation()
-                        .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-                } else if (rbWindowUpAnim.isChecked) {
-                    uiStyle.getWindowAnimation()
-                        .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
-                }
-                preview.setSelectorUIStyle(uiStyle)
-                preview.isPreviewZoomEffect(
-                    checkPreviewEffect.isChecked, false, mRecycler
-                )
+                preview.isPreviewZoomEffect(checkPreviewEffect.isChecked, false, mRecycler)
                 preview.isDisplayDelete(checkPreviewDelete.isChecked)
                 preview.isLongPressDownload(checkPreviewDownload.isChecked)
                 preview.setOnExternalPreviewListener(object : OnExternalPreviewListener {
@@ -418,6 +386,7 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
+                        onlyCamera.setAllOfCameraMode(SelectorMode.IMAGE)
                         if (checkOutput.isChecked) {
                             when (selectorMode) {
                                 SelectorMode.IMAGE -> {
@@ -458,7 +427,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     else -> {
-                        val uiStyle = SelectorStyle()
                         val gallery = PictureSelector.create(this@MainActivity)
                             .openGallery(selectorMode)
                         gallery.setImageSpanCount(imageSpanCount)
@@ -468,19 +436,7 @@ class MainActivity : AppCompatActivity() {
                             checkMergeTotal.isChecked
                         )
                         when {
-                            rbDefaultStyle.isChecked -> {
-                                uiStyle.getStatusBar().of(
-                                    false,
-                                    Color.parseColor("#393a3e"),
-                                    Color.parseColor("#393a3e")
-                                )
-                            }
                             rbWhiteStyle.isChecked -> {
-                                uiStyle.getStatusBar().of(
-                                    true,
-                                    Color.parseColor("#FFFFFF"),
-                                    Color.parseColor("#FFFFFF")
-                                )
                                 gallery.inflateCustomLayout(
                                     LayoutSource.SELECTOR_MAIN,
                                     R.layout.ps_fragment_white_selector
@@ -491,23 +447,11 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                             rbNumNewStyle.isChecked -> {
-                                uiStyle.getStatusBar().of(
-                                    false,
-                                    Color.parseColor("#393a3e"),
-                                    Color.parseColor("#393a3e")
-                                )
                                 gallery.registry(SelectorNumberMainFragment::class.java)
                                 gallery.registry(SelectorNumberPreviewFragment::class.java)
                             }
                         }
-                        if (rbDefaultWindowAnim.isChecked) {
-                            uiStyle.getWindowAnimation()
-                                .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-                        } else if (rbWindowUpAnim.isChecked) {
-                            uiStyle.getWindowAnimation()
-                                .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
-                        }
-                        gallery.setSelectorUIStyle(uiStyle)
+                        gallery.setSelectorUIStyle(buildSelectorStyle())
                         if (checkLongImage.isChecked) {
                             gallery.registry(
                                 CustomPreviewImageHolder::class.java,
@@ -641,6 +585,41 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun buildSelectorStyle(): SelectorStyle {
+        val uiStyle = SelectorStyle()
+        when {
+            rbDefaultStyle.isChecked -> {
+                uiStyle.getStatusBar().of(
+                    false,
+                    Color.parseColor("#393a3e"),
+                    Color.parseColor("#393a3e")
+                )
+            }
+            rbWhiteStyle.isChecked -> {
+                uiStyle.getStatusBar().of(
+                    true,
+                    Color.parseColor("#FFFFFF"),
+                    Color.parseColor("#FFFFFF")
+                )
+            }
+            rbNumNewStyle.isChecked -> {
+                uiStyle.getStatusBar().of(
+                    false,
+                    Color.parseColor("#393a3e"),
+                    Color.parseColor("#393a3e")
+                )
+            }
+        }
+        if (rbDefaultWindowAnim.isChecked) {
+            uiStyle.getWindowAnimation()
+                .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
+        } else if (rbWindowUpAnim.isChecked) {
+            uiStyle.getWindowAnimation()
+                .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
+        }
+        return uiStyle
     }
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {

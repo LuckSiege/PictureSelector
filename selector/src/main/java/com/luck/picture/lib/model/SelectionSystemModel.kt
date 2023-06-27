@@ -202,9 +202,6 @@ class SelectionSystemModel constructor(
             } else {
                 throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
             }
-            activity.overridePendingTransition(
-                config.selectorStyle.getWindowAnimation().getEnterAnim(), R.anim.ps_anim_fade_in
-            )
         } else {
             var fragmentManager: FragmentManager? = null
             if (activity is FragmentActivity) {

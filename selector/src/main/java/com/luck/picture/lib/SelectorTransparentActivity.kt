@@ -74,7 +74,9 @@ class SelectorTransparentActivity : AppCompatActivity() {
                 config.selectorStyle.getWindowAnimation().getExitAnim()
             )
         } else {
-            overridePendingTransition(0, R.anim.ps_anim_fade_out)
+            if (!config.isOnlyCamera && !config.systemGallery) {
+                overridePendingTransition(0, R.anim.ps_anim_fade_out)
+            }
         }
     }
 }
