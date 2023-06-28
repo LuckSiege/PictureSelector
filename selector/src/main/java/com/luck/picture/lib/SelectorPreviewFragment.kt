@@ -235,18 +235,18 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                     onOriginalClick(tvOriginal)
                 }
             }
-            mTvSelectNum?.setOnClickListener {
-                mTvComplete?.performClick()
-            }
-            mTvComplete?.setOnClickListener {
-                onCompleteClick(it)
-            }
             val media = getPreviewWrap().source[getPreviewWrap().position]
             mTvEditor?.visibility =
                 if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
             mTvEditor?.setOnClickListener {
                 onEditorClick(it)
             }
+        }
+        mTvSelectNum?.setOnClickListener {
+            mTvComplete?.performClick()
+        }
+        mTvComplete?.setOnClickListener {
+            onCompleteClick(it)
         }
     }
 

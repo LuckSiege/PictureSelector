@@ -74,8 +74,7 @@ open class StyleTextView @JvmOverloads constructor(
         } else {
             if (!TextUtils.isEmpty(textSelectedString)) {
                 textSelectedString?.let {
-                    val formatCount = StyleUtils.getFormatCount(it)
-                    text = when (formatCount) {
+                    text = when (StyleUtils.getFormatCount(it)) {
                         1 -> {
                             String.format(it, result.size)
                         }
