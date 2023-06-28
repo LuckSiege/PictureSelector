@@ -83,6 +83,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     var navBarViews: MutableList<View> = mutableListOf()
     var isPause = false
     var isAnimationStart = false
+    var isPlayPageSelected = false
     var isEnableStickResult = true
 
     open fun enableStickResult(): Boolean {
@@ -121,6 +122,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         super.onViewCreated(view, savedInstanceState)
         screenWidth = DensityUtil.getRealScreenWidth(requireContext())
         screenHeight = DensityUtil.getScreenHeight(requireContext())
+        isPlayPageSelected = !config.isPreviewZoomEffect
         // TitleBar
         mStatusBar = view.findViewById(R.id.ps_status_bar)
         mTitleBar = view.findViewById(R.id.ps_title_bar)
@@ -567,7 +569,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isLoadMoreThreshold(position)) {
             loadMediaMore()
         }
-        if (config.isAutoPlay) {
+        if (config.isAutoPlay && isPlayPageSelected) {
             autoPlayAudioAndVideo()
         } else {
             val currentHolder = mAdapter.getCurrentViewHolder(viewPager.currentItem)
@@ -721,10 +723,12 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             if (currentViewHolder is PreviewVideoHolder) {
                 if (!currentViewHolder.mediaPlayer.isPlaying()) {
                     currentViewHolder.ivPlay.performClick()
+                    isPlayPageSelected = true
                 }
             } else if (currentViewHolder is PreviewAudioHolder) {
                 if (!currentViewHolder.mediaPlayer.isPlaying()) {
                     currentViewHolder.controller.getViewPlay()?.performClick()
+                    isPlayPageSelected = true
                 }
             }
             return@addIdleHandler false
