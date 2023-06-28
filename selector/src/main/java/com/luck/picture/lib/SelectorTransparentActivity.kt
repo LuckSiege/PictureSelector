@@ -45,12 +45,11 @@ class SelectorTransparentActivity : AppCompatActivity() {
     }
 
     private fun immersive() {
-        val statusBar = config.selectorStyle.getStatusBar()
         ImmersiveManager.immersiveAboveAPI23(
             this,
-            statusBar.getStatusBarColor(),
-            statusBar.getNavigationBarColor(),
-            statusBar.isDarkStatusBar()
+            config.statusBarStyle.getStatusBarColor(),
+            config.statusBarStyle.getNavigationBarColor(),
+            config.statusBarStyle.isDarkStatusBar()
         )
     }
 
@@ -71,7 +70,7 @@ class SelectorTransparentActivity : AppCompatActivity() {
         if ((config.previewWrap.isExternalPreview && !config.isPreviewZoomEffect)) {
             overridePendingTransition(
                 R.anim.ps_anim_fade_in,
-                config.selectorStyle.getWindowAnimation().getExitAnim()
+                config.windowAnimStyle.getExitAnimRes()
             )
         } else {
             if (!config.isOnlyCamera && !config.systemGallery) {

@@ -134,12 +134,12 @@ abstract class BaseSelectorFragment : Fragment() {
         return if (enter) {
             AnimationUtils.loadAnimation(
                 requireContext(),
-                config.selectorStyle.getWindowAnimation().getEnterAnim()
+                config.windowAnimStyle.getEnterAnimRes()
             )
         } else {
             AnimationUtils.loadAnimation(
                 requireContext(),
-                config.selectorStyle.getWindowAnimation().getExitAnim()
+                config.windowAnimStyle.getExitAnimRes()
             )
         }
     }
@@ -229,7 +229,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (config.isPreviewFullScreenMode && !config.isOnlyCamera) {
             translucentStatusBar(
                 requireActivity(),
-                config.selectorStyle.getStatusBar().isDarkStatusBar()
+                config.statusBarStyle.isDarkStatusBar()
             )
         }
     }

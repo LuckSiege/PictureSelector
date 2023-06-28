@@ -1,6 +1,8 @@
 package com.luck.picture.lib.config
 
 import android.content.pm.ActivityInfo
+import android.graphics.Color
+import com.luck.picture.lib.R
 import com.luck.picture.lib.registry.Registry
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.engine.CropEngine
@@ -12,7 +14,8 @@ import com.luck.picture.lib.interfaces.ListenerInfo
 import com.luck.picture.lib.interfaces.MagicalInterpolator
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.loader.MediaLoader
-import com.luck.picture.lib.style.SelectorStyle
+import com.luck.picture.lib.style.StatusBarStyle
+import com.luck.picture.lib.style.WindowAnimStyle
 
 /**
  * @author：luck
@@ -20,7 +23,8 @@ import com.luck.picture.lib.style.SelectorStyle
  * @describe：SelectorConfig
  */
 class SelectorConfig {
-    var selectorStyle = SelectorStyle()
+    var statusBarStyle = StatusBarStyle()
+    var windowAnimStyle = WindowAnimStyle()
     var selectorMode = SelectorMode.ALL
     var allCameraMode = SelectorMode.ALL
     var selectionMode = SelectionMode.MULTIPLE
@@ -94,7 +98,8 @@ class SelectorConfig {
 
     private fun initDefault() {
         this.registry.clear()
-        this.selectorStyle.defaultStyle()
+        this.statusBarStyle.of(false, Color.parseColor("#393a3e"), Color.parseColor("#393a3e"))
+        this.windowAnimStyle.of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
         this.selectorMode = SelectorMode.ALL
         this.allCameraMode = SelectorMode.ALL
         this.selectionMode = SelectionMode.MULTIPLE

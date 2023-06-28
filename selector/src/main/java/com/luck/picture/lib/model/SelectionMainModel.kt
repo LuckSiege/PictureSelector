@@ -33,7 +33,8 @@ import com.luck.picture.lib.magical.MagicalView
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
-import com.luck.picture.lib.style.SelectorStyle
+import com.luck.picture.lib.style.StatusBarStyle
+import com.luck.picture.lib.style.WindowAnimStyle
 import com.luck.picture.lib.utils.DensityUtil.getStatusBarHeight
 import com.luck.picture.lib.utils.DoubleUtils
 import org.jetbrains.annotations.NotNull
@@ -110,11 +111,20 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     }
 
     /**
-     * PictureSelector theme style settings
-     * @param uiStyle [SelectorStyle]
+     * PictureSelector statusBar theme style settings
+     * @param statusBar [StatusBarStyle]
      */
-    fun setSelectorUIStyle(uiStyle: SelectorStyle): SelectionMainModel {
-        this.config.selectorStyle = uiStyle
+    fun setStatusBarStyle(statusBar: StatusBarStyle): SelectionMainModel {
+        this.config.statusBarStyle = statusBar
+        return this
+    }
+
+    /**
+     * PictureSelector window anim style settings
+     * @param windowAnimStyle [WindowAnimStyle]
+     */
+    fun setWindowAnimStyle(windowAnimStyle: WindowAnimStyle): SelectionMainModel {
+        this.config.windowAnimStyle = windowAnimStyle
         return this
     }
 
@@ -831,7 +841,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
             throw IllegalStateException(".forResult(); did not specify a corresponding result listening type callback")
         }
         activity.overridePendingTransition(
-            config.selectorStyle.getWindowAnimation().getEnterAnim(),
+            config.windowAnimStyle.getEnterAnimRes(),
             R.anim.ps_anim_fade_in
         )
     }

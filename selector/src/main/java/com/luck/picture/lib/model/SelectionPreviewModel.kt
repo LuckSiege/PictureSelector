@@ -27,7 +27,8 @@ import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.magical.RecycleItemViewParams
 import com.luck.picture.lib.provider.SelectorProviders
 import com.luck.picture.lib.registry.Registry
-import com.luck.picture.lib.style.SelectorStyle
+import com.luck.picture.lib.style.StatusBarStyle
+import com.luck.picture.lib.style.WindowAnimStyle
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.DoubleUtils
 import com.luck.picture.lib.utils.MediaUtils
@@ -104,11 +105,20 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
     }
 
     /**
-     * PictureSelector theme style settings
-     * @param uiStyle [SelectorStyle]
+     * PictureSelector statusBar theme style settings
+     * @param statusBar [StatusBarStyle]
      */
-    fun setSelectorUIStyle(uiStyle: SelectorStyle): SelectionPreviewModel {
-        this.config.selectorStyle = uiStyle
+    fun setStatusBarStyle(statusBar: StatusBarStyle): SelectionPreviewModel {
+        this.config.statusBarStyle = statusBar
+        return this
+    }
+
+    /**
+     * PictureSelector window anim style settings
+     * @param windowAnimStyle [WindowAnimStyle]
+     */
+    fun setWindowAnimStyle(windowAnimStyle: WindowAnimStyle): SelectionPreviewModel {
+        this.config.windowAnimStyle = windowAnimStyle
         return this
     }
 
@@ -325,7 +335,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
                 activity.overridePendingTransition(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_in)
             } else {
                 activity.overridePendingTransition(
-                    config.selectorStyle.getWindowAnimation().getEnterAnim(),
+                    config.windowAnimStyle.getEnterAnimRes(),
                     R.anim.ps_anim_fade_in
                 )
             }

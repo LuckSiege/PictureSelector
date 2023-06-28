@@ -55,7 +55,8 @@ import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.model.PictureSelector
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
-import com.luck.picture.lib.style.SelectorStyle
+import com.luck.picture.lib.style.StatusBarStyle
+import com.luck.picture.lib.style.WindowAnimStyle
 import com.luck.picture.lib.utils.DensityUtil.dip2px
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SelectorLogUtils
@@ -333,7 +334,8 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClick(v: View?, position: Int) {
                 val preview = PictureSelector.create(this@MainActivity).openPreview()
                 preview.setImageEngine(GlideEngine.create())
-                preview.setSelectorUIStyle(buildSelectorStyle())
+                preview.setStatusBarStyle(buildStatusBar())
+                preview.setWindowAnimStyle(buildWindowAnim())
                 if (rbWhiteStyle.isChecked) {
                     preview.inflateCustomLayout(
                         LayoutSource.SELECTOR_EXTERNAL_PREVIEW,
@@ -451,7 +453,8 @@ class MainActivity : AppCompatActivity() {
                                 gallery.registry(SelectorNumberPreviewFragment::class.java)
                             }
                         }
-                        gallery.setSelectorUIStyle(buildSelectorStyle())
+                        gallery.setStatusBarStyle(buildStatusBar())
+                        gallery.setWindowAnimStyle(buildWindowAnim())
                         if (checkLongImage.isChecked) {
                             gallery.registry(
                                 CustomPreviewImageHolder::class.java,
@@ -587,39 +590,42 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun buildSelectorStyle(): SelectorStyle {
-        val uiStyle = SelectorStyle()
-        when {
-            rbDefaultStyle.isChecked -> {
-                uiStyle.getStatusBar().of(
-                    false,
-                    Color.parseColor("#393a3e"),
-                    Color.parseColor("#393a3e")
-                )
-            }
-            rbWhiteStyle.isChecked -> {
-                uiStyle.getStatusBar().of(
-                    true,
-                    Color.parseColor("#FFFFFF"),
-                    Color.parseColor("#FFFFFF")
-                )
-            }
-            rbNumNewStyle.isChecked -> {
-                uiStyle.getStatusBar().of(
-                    false,
-                    Color.parseColor("#393a3e"),
-                    Color.parseColor("#393a3e")
-                )
+    private fun buildStatusBar(): StatusBarStyle {
+        return StatusBarStyle().apply {
+            when {
+                rbDefaultStyle.isChecked -> {
+                    of(
+                        false,
+                        Color.parseColor("#393a3e"),
+                        Color.parseColor("#393a3e")
+                    )
+                }
+                rbWhiteStyle.isChecked -> {
+                    of(
+                        true,
+                        Color.parseColor("#FFFFFF"),
+                        Color.parseColor("#FFFFFF")
+                    )
+                }
+                rbNumNewStyle.isChecked -> {
+                    of(
+                        false,
+                        Color.parseColor("#393a3e"),
+                        Color.parseColor("#393a3e")
+                    )
+                }
             }
         }
-        if (rbDefaultWindowAnim.isChecked) {
-            uiStyle.getWindowAnimation()
-                .of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-        } else if (rbWindowUpAnim.isChecked) {
-            uiStyle.getWindowAnimation()
-                .of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
+    }
+
+    private fun buildWindowAnim(): WindowAnimStyle {
+        return WindowAnimStyle().apply {
+            if (rbDefaultWindowAnim.isChecked) {
+                of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
+            } else if (rbWindowUpAnim.isChecked) {
+                of(R.anim.ps_anim_up_in, R.anim.ps_anim_down_out)
+            }
         }
-        return uiStyle
     }
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
