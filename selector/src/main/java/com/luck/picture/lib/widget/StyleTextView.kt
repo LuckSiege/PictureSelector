@@ -52,7 +52,7 @@ open class StyleTextView @JvmOverloads constructor(
         a.recycle()
     }
 
-    fun setDataStyle(config: SelectorConfig, result: MutableList<LocalMedia>) {
+    open fun setDataStyle(config: SelectorConfig, result: MutableList<LocalMedia>) {
         isEnabled = if (config.isEmptyResultBack) {
             true
         } else {
