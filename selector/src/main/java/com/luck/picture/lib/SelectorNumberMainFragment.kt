@@ -29,7 +29,7 @@ class SelectorNumberMainFragment : SelectorMainFragment() {
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
         // Label the selection order
-        val selectResult = TempDataProvider.getInstance().selectResult
+        val selectResult = getSelectResult()
         if (!selectResult.contains(change)) {
             val currentItem = mAdapter.getData().indexOf(change)
             if (currentItem >= 0) {

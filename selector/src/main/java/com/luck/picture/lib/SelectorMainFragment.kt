@@ -159,7 +159,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun onMergeSelectedSource() {
         if (config.selectedSource.isNotEmpty()) {
-            TempDataProvider.getInstance().selectResult.addAll(config.selectedSource.toMutableList())
+            getSelectResult().addAll(config.selectedSource.toMutableList())
             config.selectedSource.clear()
         }
     }
@@ -177,7 +177,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         globalViewMode.getSelectResultLiveData().observe(viewLifecycleOwner) { media ->
             val position = mAdapter.getData().indexOf(media)
-            if (checkNotifyStrategy(TempDataProvider.getInstance().selectResult.indexOf(media) != -1)) {
+            if (checkNotifyStrategy(getSelectResult().indexOf(media) != -1)) {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
                 Looper.myQueue().addIdleHandler {
                     mAdapter.notifyDataSetChanged()
@@ -187,7 +187,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 mAdapter.notifyItemChanged(if (mAdapter.isDisplayCamera()) position + 1 else position)
             }
             // update selected tag
-            mAlbumWindow.notifyChangedSelectTag(TempDataProvider.getInstance().selectResult)
+            mAlbumWindow.notifyChangedSelectTag(getSelectResult())
             onSelectionResultChange(media)
         }
         viewModel.albumLiveData.observe(viewLifecycleOwner) { albumList ->
@@ -373,7 +373,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 if (DoubleUtils.isFastDoubleClick()) {
                     return@setOnClickListener
                 }
-                onStartPreview(0, true, TempDataProvider.getInstance().selectResult)
+                onStartPreview(0, true, getSelectResult())
             }
             mTvSelectNum?.setOnClickListener {
                 mTvComplete?.performClick()
@@ -387,7 +387,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun checkNotifyStrategy(isAddRemove: Boolean): Boolean {
         var isNotifyAll = false
         if (config.isMaxSelectEnabledMask) {
-            val selectResult = TempDataProvider.getInstance().selectResult
+            val selectResult = getSelectResult()
             val selectCount = selectResult.size
             if (config.isAllWithImageVideo) {
                 val maxSelectCount = config.getSelectCount()
@@ -414,7 +414,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        val selectResult = TempDataProvider.getInstance().selectResult
+        val selectResult = getSelectResult()
         mTvPreview?.setDataStyle(config, selectResult)
         mTvComplete?.setDataStyle(config, selectResult)
         mTvSelectNum?.visibility =
@@ -499,7 +499,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mAdapter.setOnGetSelectResultListener(object :
             BaseMediaListAdapter.OnGetSelectResultListener {
             override fun onSelectResult(): MutableList<LocalMedia> {
-                return TempDataProvider.getInstance().selectResult
+                return getSelectResult()
             }
         })
         mAdapter.setOnItemClickListener(object : OnMediaItemClickListener {
@@ -591,7 +591,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             val slideSelectionHandler =
                 SlideSelectionHandler(object : SlideSelectionHandler.ISelectionHandler {
                     override fun getSelection(): MutableSet<Int> {
-                        TempDataProvider.getInstance().selectResult.forEach { media ->
+                        getSelectResult().forEach { media ->
                             selectedPosition.add(mAdapter.getData().indexOf(media))
                         }
                         return selectedPosition
@@ -611,7 +611,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                         mDragSelectTouchListener?.setActive(
                             confirmSelect(
                                 media,
-                                TempDataProvider.getInstance().selectResult.contains(media)
+                                getSelectResult().contains(media)
                             ) != SelectedState.INVALID
                         )
                     }
@@ -789,7 +789,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 }
             }
             mAlbumWindow.setAlbumList(albumList)
-            mAlbumWindow.notifyChangedSelectTag(TempDataProvider.getInstance().selectResult)
+            mAlbumWindow.notifyChangedSelectTag(getSelectResult())
         }
     }
 

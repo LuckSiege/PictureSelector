@@ -62,7 +62,7 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
                 position: Int,
                 data: LocalMedia
             ) {
-                if (TempDataProvider.getInstance().previewWrap.isDownload) {
+                if (getPreviewWrap().isDownload) {
                     if (config.mListenerInfo.onExternalPreviewListener?.onLongPressDownload(
                             requireContext(),
                             data
@@ -77,19 +77,19 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
 
     open fun delete() {
         val currentItem = viewPager.currentItem
-        val media = TempDataProvider.getInstance().previewWrap.source[currentItem]
+        val media = getPreviewWrap().source[currentItem]
         config.mListenerInfo.onExternalPreviewListener?.onDelete(
             requireContext(),
             currentItem,
             media
         )
-        TempDataProvider.getInstance().previewWrap.source.removeAt(currentItem)
-        TempDataProvider.getInstance().previewWrap.totalCount -= 1
-        TempDataProvider.getInstance().previewWrap.position = viewPager.currentItem
-        if (TempDataProvider.getInstance().previewWrap.totalCount > 0) {
+        getPreviewWrap().source.removeAt(currentItem)
+        getPreviewWrap().totalCount -= 1
+        getPreviewWrap().position = viewPager.currentItem
+        if (getPreviewWrap().totalCount > 0) {
             viewPager.setCurrentItem(viewPager.currentItem, false)
-            setTitleText(TempDataProvider.getInstance().previewWrap.position + 1)
-            mAdapter.notifyItemRangeChanged(0, TempDataProvider.getInstance().previewWrap.source.size)
+            setTitleText(getPreviewWrap().position + 1)
+            mAdapter.notifyItemRangeChanged(0, getPreviewWrap().source.size)
         } else {
             onBackPressed()
         }

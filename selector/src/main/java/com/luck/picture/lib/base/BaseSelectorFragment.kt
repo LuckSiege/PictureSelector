@@ -160,6 +160,10 @@ abstract class BaseSelectorFragment : Fragment() {
         setFragmentKeyBackListener()
     }
 
+    fun getSelectResult(): MutableList<LocalMedia> {
+        return TempDataProvider.getInstance().selectResult
+    }
+
     open fun setRequestedOrientation() {
         requireActivity().requestedOrientation = config.activityOrientation
     }
@@ -276,7 +280,7 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun isRootExit(): Boolean {
         return this is SelectorMainFragment
                 || (this is SelectorCameraFragment && config.isOnlyCamera)
-                || (this is SelectorPreviewFragment && TempDataProvider.getInstance().previewWrap.isExternalPreview)
+                || (this is SelectorPreviewFragment && this is SelectorExternalPreviewFragment)
                 || (this is SelectorSystemFragment && config.systemGallery)
     }
 
@@ -288,7 +292,7 @@ abstract class BaseSelectorFragment : Fragment() {
             if (!checkCompleteValidity()) {
                 return@runOnUiThread
             }
-            val selectResult = TempDataProvider.getInstance().selectResult.toMutableList()
+            val selectResult = getSelectResult().toMutableList()
             viewModel.viewModelScope.launch {
                 val mediaConverterEngine = config.mediaConverterEngine
                 if (mediaConverterEngine != null) {
@@ -327,7 +331,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Verify legality before completion
      */
     open fun checkCompleteValidity(): Boolean {
-        val selectResult = TempDataProvider.getInstance().selectResult
+        val selectResult = getSelectResult()
         if (config.mListenerInfo.onConfirmListener?.onConfirm(
                 requireContext(),
                 selectResult
@@ -624,20 +628,20 @@ abstract class BaseSelectorFragment : Fragment() {
             }
         }
         return if (isSelected) {
-            if (TempDataProvider.getInstance().selectResult.contains(media)) {
-                TempDataProvider.getInstance().selectResult.remove(media)
+            if (getSelectResult().contains(media)) {
+                getSelectResult().remove(media)
                 globalViewMode.setSelectResultLiveData(media)
             }
             SelectedState.REMOVE
         } else {
             if (config.selectionMode == SelectionMode.SINGLE) {
-                if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
-                    globalViewMode.setSelectResultLiveData(TempDataProvider.getInstance().selectResult.first())
-                    TempDataProvider.getInstance().selectResult.clear()
+                if (getSelectResult().isNotEmpty()) {
+                    globalViewMode.setSelectResultLiveData(getSelectResult().first())
+                    getSelectResult().clear()
                 }
             }
-            if (!TempDataProvider.getInstance().selectResult.contains(media)) {
-                TempDataProvider.getInstance().selectResult.add(media)
+            if (!getSelectResult().contains(media)) {
+                getSelectResult().add(media)
                 globalViewMode.setSelectResultLiveData(media)
             }
             SelectedState.SUCCESS
@@ -650,14 +654,14 @@ abstract class BaseSelectorFragment : Fragment() {
      * @param isSelected Select Status
      */
     open fun onCheckSelectValidity(media: LocalMedia, isSelected: Boolean): Int {
-        val count = TempDataProvider.getInstance().selectResult.size
+        val count = getSelectResult().size
         when (config.selectorMode) {
             SelectorMode.ALL -> {
                 if (config.isAllWithImageVideo) {
                     // Support for selecting images and videos
                     var videoSize = 0
                     var imageSize = 0
-                    TempDataProvider.getInstance().selectResult.forEach {
+                    getSelectResult().forEach {
                         if (MediaUtils.hasMimeTypeOfVideo(it.mimeType)) {
                             videoSize++
                         } else if (MediaUtils.hasMimeTypeOfImage(it.mimeType)) {
@@ -715,8 +719,8 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 } else {
                     // Only supports selecting images
-                    if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
-                        val first = TempDataProvider.getInstance().selectResult.first()
+                    if (getSelectResult().isNotEmpty()) {
+                        val first = getSelectResult().first()
                         if (MediaUtils.hasMimeTypeOfImage(first.mimeType)) {
                             // Image has been selected
                             if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
@@ -810,7 +814,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (cropEngine != null && isCrop()) {
             cropEngine.onCrop(
                 this,
-                TempDataProvider.getInstance().selectResult,
+                getSelectResult(),
                 SelectorConstant.REQUEST_CROP
             )
         } else {
@@ -822,7 +826,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Media types that support cropping
      */
     open fun isCrop(): Boolean {
-        TempDataProvider.getInstance().selectResult.forEach continuing@{ media ->
+        getSelectResult().forEach continuing@{ media ->
             if (config.skipCropFormat.contains(media.mimeType)) {
                 return@continuing
             }
@@ -888,7 +892,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     throw IllegalStateException("Camera output uri is empty")
                 }
             } else if (requestCode == SelectorConstant.REQUEST_CROP) {
-                val selectResult = TempDataProvider.getInstance().selectResult
+                val selectResult = getSelectResult()
                 if (selectResult.isNotEmpty()) {
                     if (selectResult.size == 1) {
                         mergeSingleCrop(data, selectResult)

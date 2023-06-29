@@ -25,7 +25,6 @@ import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnItemClickListener
 import com.luck.picture.lib.interfaces.OnLongClickListener
-import com.luck.picture.lib.provider.TempDataProvider
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils
@@ -65,11 +64,11 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         rvGallery = view.findViewById(R.id.ps_rv_gallery)
         navBarViews.add(rvGallery)
         rvGallery.visibility =
-            if (TempDataProvider.getInstance().selectResult.isEmpty()) View.GONE else View.VISIBLE
+            if (getSelectResult().isEmpty()) View.GONE else View.VISIBLE
     }
 
     override fun onCompleteClick(v: View) {
-        if (TempDataProvider.getInstance().selectResult.isEmpty()) {
+        if (getSelectResult().isEmpty()) {
             val media = getPreviewWrap().source[viewPager.currentItem]
             if (confirmSelect(media, false) == SelectedState.SUCCESS) {
                 mTvSelected?.isSelected = true
@@ -109,7 +108,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         rvGallery.layoutManager = layoutManager
-        if (TempDataProvider.getInstance().selectResult.isNotEmpty()) {
+        if (getSelectResult().isNotEmpty()) {
             rvGallery.layoutAnimation = AnimationUtils
                 .loadLayoutAnimation(requireContext(), R.anim.ps_anim_layout_fall_enter)
         }
@@ -117,11 +116,11 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             GalleryAdapter(
                 config,
                 getPreviewWrap().isBottomPreview,
-                if (getPreviewWrap().isBottomPreview) TempDataProvider.getInstance().selectResult.toMutableList() else TempDataProvider.getInstance().selectResult
+                if (getPreviewWrap().isBottomPreview) getSelectResult().toMutableList() else getSelectResult()
             )
         galleryAdapter?.currentMedia =
             getPreviewWrap().source[viewPager.currentItem]
-        galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
+        galleryAdapter?.selectResult = getSelectResult()
         rvGallery.adapter = galleryAdapter
         galleryAdapter?.setOnItemClickListener(object : OnItemClickListener<LocalMedia> {
             override fun onItemClick(position: Int, data: LocalMedia) {
@@ -160,8 +159,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                             Collections.swap(getPreviewWrap().source, i, i + 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i + 1) }
                         }
-                        if (TempDataProvider.getInstance().selectResult.size > i + 1) {
-                            Collections.swap(TempDataProvider.getInstance().selectResult, i, i + 1)
+                        if (getSelectResult().size > i + 1) {
+                            Collections.swap(getSelectResult(), i, i + 1)
                         }
                     }
                 } else {
@@ -170,8 +169,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                             Collections.swap(getPreviewWrap().source, i, i - 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i - 1) }
                         }
-                        if (TempDataProvider.getInstance().selectResult.size > i) {
-                            Collections.swap(TempDataProvider.getInstance().selectResult, i, i - 1)
+                        if (getSelectResult().size > i) {
+                            Collections.swap(getSelectResult(), i, i - 1)
                         }
                     }
                 }
@@ -287,9 +286,9 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         super.onSelectionResultChange(change)
         mTvComplete?.isEnabled = true
         if (galleryAdapter != null) {
-            galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
+            galleryAdapter?.selectResult = getSelectResult()
             galleryAdapter?.notifyDataSetChanged()
-            if (TempDataProvider.getInstance().selectResult.contains(change)) {
+            if (getSelectResult().contains(change)) {
                 val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
                 if (lastPosition >= 0) {
                     rvGallery.smoothScrollToPosition(lastPosition)
@@ -307,14 +306,14 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         if (moveFromPosition != -1 && moveToPosition != -1) {
             if (moveFromPosition < moveToPosition) {
                 for (i in moveFromPosition until moveToPosition) {
-                    if (TempDataProvider.getInstance().selectResult.size > i + 1) {
-                        Collections.swap(TempDataProvider.getInstance().selectResult, i, i + 1)
+                    if (getSelectResult().size > i + 1) {
+                        Collections.swap(getSelectResult(), i, i + 1)
                     }
                 }
             } else {
                 for (i in moveFromPosition downTo moveToPosition + 1) {
-                    if (TempDataProvider.getInstance().selectResult.size > i) {
-                        Collections.swap(TempDataProvider.getInstance().selectResult, i, i - 1)
+                    if (getSelectResult().size > i) {
+                        Collections.swap(getSelectResult(), i, i - 1)
                     }
                 }
             }

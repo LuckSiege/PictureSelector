@@ -139,7 +139,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
-        isEnableStickResult = TempDataProvider.getInstance().selectResult.isNotEmpty()
+        isEnableStickResult = getSelectResult().isNotEmpty()
         mBottomNarBar?.let {
             navBarViews.add(it)
         }
@@ -321,13 +321,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     override fun onSelectionResultChange(change: LocalMedia?) {
-        mTvComplete?.setDataStyle(config, TempDataProvider.getInstance().selectResult)
+        mTvComplete?.setDataStyle(config, getSelectResult())
         mTvSelectNum?.visibility =
-            if (TempDataProvider.getInstance().selectResult.isNotEmpty()) View.VISIBLE else View.GONE
-        mTvSelectNum?.text = TempDataProvider.getInstance().selectResult.size.toString()
+            if (getSelectResult().isNotEmpty()) View.VISIBLE else View.GONE
+        mTvSelectNum?.text = getSelectResult().size.toString()
 
         var totalSize: Long = 0
-        TempDataProvider.getInstance().selectResult.forEach { media ->
+        getSelectResult().forEach { media ->
             totalSize += media.size
         }
         if (totalSize > 0) {
@@ -553,7 +553,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 if (positionOffsetPixels < screenWidth / 2) getPreviewWrap().source[position]
                 else getPreviewWrap().source[position + 1]
             mTvSelected?.isSelected =
-                TempDataProvider.getInstance().selectResult.contains(currentMedia)
+                getSelectResult().contains(currentMedia)
         }
     }
 
@@ -852,7 +852,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             outputUri?.path
         }
         media.editorData = data?.getStringExtra(CropWrap.DEFAULT_EXTRA_DATA)
-        if (!TempDataProvider.getInstance().selectResult.contains(media)) {
+        if (!getSelectResult().contains(media)) {
             mTvSelected?.performClick()
         }
         mAdapter.notifyItemChanged(viewPager.currentItem)
