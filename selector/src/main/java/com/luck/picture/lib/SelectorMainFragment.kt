@@ -125,6 +125,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
+        initViews(view)
         onMergeSelectedSource()
         initAlbumWindow()
         initTitleBar()
@@ -132,6 +133,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         initMediaAdapter()
         checkPermissions()
         registerLiveData()
+        initWidgets()
+    }
+
+    open fun initViews(view: View) {
+
+    }
+
+    open fun initWidgets() {
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
