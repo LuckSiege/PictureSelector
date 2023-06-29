@@ -70,7 +70,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
     override fun onCompleteClick(v: View) {
         if (TempDataProvider.getInstance().selectResult.isEmpty()) {
-            val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
+            val media = getPreviewWrap().source[viewPager.currentItem]
             if (confirmSelect(media, false) == SelectedState.SUCCESS) {
                 mTvSelected?.isSelected = true
                 handleSelectResult()
@@ -116,16 +116,16 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         galleryAdapter =
             GalleryAdapter(
                 config,
-                TempDataProvider.getInstance().previewWrap.isBottomPreview,
-                if (TempDataProvider.getInstance().previewWrap.isBottomPreview) TempDataProvider.getInstance().selectResult.toMutableList() else TempDataProvider.getInstance().selectResult
+                getPreviewWrap().isBottomPreview,
+                if (getPreviewWrap().isBottomPreview) TempDataProvider.getInstance().selectResult.toMutableList() else TempDataProvider.getInstance().selectResult
             )
         galleryAdapter?.currentMedia =
-            TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
+            getPreviewWrap().source[viewPager.currentItem]
         galleryAdapter?.selectResult = TempDataProvider.getInstance().selectResult
         rvGallery.adapter = galleryAdapter
         galleryAdapter?.setOnItemClickListener(object : OnItemClickListener<LocalMedia> {
             override fun onItemClick(position: Int, data: LocalMedia) {
-                val currentItem = TempDataProvider.getInstance().previewWrap.source.indexOf(data)
+                val currentItem = getPreviewWrap().source.indexOf(data)
                 if (currentItem >= 0) {
                     viewPager.setCurrentItem(currentItem, false)
                 }
@@ -156,12 +156,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 moveToPosition = toPosition
                 if (fromPosition < toPosition) {
                     for (i in fromPosition until toPosition) {
-                        if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
-                            Collections.swap(
-                                TempDataProvider.getInstance().previewWrap.source,
-                                i,
-                                i + 1
-                            )
+                        if (getPreviewWrap().isBottomPreview) {
+                            Collections.swap(getPreviewWrap().source, i, i + 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i + 1) }
                         }
                         if (TempDataProvider.getInstance().selectResult.size > i + 1) {
@@ -170,12 +166,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                     }
                 } else {
                     for (i in fromPosition downTo toPosition + 1) {
-                        if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
-                            Collections.swap(
-                                TempDataProvider.getInstance().previewWrap.source,
-                                i,
-                                i - 1
-                            )
+                        if (getPreviewWrap().isBottomPreview) {
+                            Collections.swap(getPreviewWrap().source, i, i - 1)
                             galleryAdapter?.data?.let { Collections.swap(it, i, i - 1) }
                         }
                         if (TempDataProvider.getInstance().selectResult.size > i) {
@@ -243,9 +235,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 }
                 super.clearView(recyclerView, viewHolder)
                 galleryAdapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
-                if (TempDataProvider.getInstance().previewWrap.isBottomPreview) {
-                    val currentItem =
-                        TempDataProvider.getInstance().previewWrap.source.indexOf(galleryAdapter?.currentMedia)
+                if (getPreviewWrap().isBottomPreview) {
+                    val currentItem = getPreviewWrap().source.indexOf(galleryAdapter?.currentMedia)
                     if (viewPager.currentItem != currentItem && currentItem != RecyclerView.NO_POSITION) {
                         mAdapter.notifyDataSetChanged()
                         viewPager.setCurrentItem(currentItem, false)
@@ -284,7 +275,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
     override fun onMergeEditorData(data: Intent?) {
         super.onMergeEditorData(data)
-        val media = TempDataProvider.getInstance().previewWrap.source[viewPager.currentItem]
+        val media = getPreviewWrap().source[viewPager.currentItem]
         val position = galleryAdapter?.data?.indexOf(media) ?: 0
         if (position >= 0) {
             galleryAdapter?.notifyItemChanged(position)
@@ -304,7 +295,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                     rvGallery.smoothScrollToPosition(lastPosition)
                 }
             }
-            if (!TempDataProvider.getInstance().previewWrap.isBottomPreview) {
+            if (!getPreviewWrap().isBottomPreview) {
                 rvGallery.visibility =
                     if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
             }
@@ -338,7 +329,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         positionOffsetPixels: Int
     ) {
         super.onViewPageScrolled(position, positionOffset, positionOffsetPixels)
-        if (TempDataProvider.getInstance().previewWrap.source.size > position) {
+        if (getPreviewWrap().source.size > position) {
             updateGallerySelected(
                 if (positionOffsetPixels < screenWidth / 2) position
                 else position + 1
@@ -358,7 +349,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             galleryAdapter?.notifyItemChanged(oldPosition)
         }
         // update new selected position
-        val media = TempDataProvider.getInstance().previewWrap.source[position]
+        val media = getPreviewWrap().source[position]
         galleryAdapter?.currentMedia = media
         val newPosition = galleryAdapter?.data?.indexOf(media) ?: -1
         if (newPosition >= 0) {
