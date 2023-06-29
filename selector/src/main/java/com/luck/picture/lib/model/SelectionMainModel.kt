@@ -11,9 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.luck.picture.lib.R
-import com.luck.picture.lib.SelectorMainFragment
-import com.luck.picture.lib.SelectorSupporterActivity
+import com.luck.picture.lib.*
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorConfig
@@ -215,6 +213,20 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
      */
     fun setOnQueryFilterListener(l: OnQueryFilterListener?): SelectionMainModel {
         this.config.mListenerInfo.onQueryFilterListener = l
+        return this
+    }
+
+    /**
+     * Number sorting template
+     */
+    fun isNewNumTemplate(isNewNumTemplate: Boolean): SelectionMainModel {
+        if (isNewNumTemplate) {
+            this.registry(SelectorNumberMainFragment::class.java)
+            this.registry(SelectorNumberPreviewFragment::class.java)
+        } else {
+            this.unregister(SelectorNumberMainFragment::class.java)
+            this.unregister(SelectorNumberPreviewFragment::class.java)
+        }
         return this
     }
 

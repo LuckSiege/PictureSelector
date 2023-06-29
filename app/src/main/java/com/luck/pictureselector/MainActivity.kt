@@ -437,22 +437,17 @@ class MainActivity : AppCompatActivity() {
                             maxSelectVideoNum,
                             checkMergeTotal.isChecked
                         )
-                        when {
-                            rbWhiteStyle.isChecked -> {
-                                gallery.inflateCustomLayout(
-                                    LayoutSource.SELECTOR_MAIN,
-                                    R.layout.ps_fragment_white_selector
-                                )
-                                gallery.inflateCustomLayout(
-                                    LayoutSource.SELECTOR_PREVIEW,
-                                    R.layout.ps_fragment_white_preview
-                                )
-                            }
-                            rbNumNewStyle.isChecked -> {
-                                gallery.registry(SelectorNumberMainFragment::class.java)
-                                gallery.registry(SelectorNumberPreviewFragment::class.java)
-                            }
+                        if (rbWhiteStyle.isChecked) {
+                            gallery.inflateCustomLayout(
+                                LayoutSource.SELECTOR_MAIN,
+                                R.layout.ps_fragment_white_selector
+                            )
+                            gallery.inflateCustomLayout(
+                                LayoutSource.SELECTOR_PREVIEW,
+                                R.layout.ps_fragment_white_preview
+                            )
                         }
+                        gallery.isNewNumTemplate(rbNumNewStyle.isChecked)
                         gallery.setStatusBarStyle(buildStatusBar())
                         gallery.setWindowAnimStyle(buildWindowAnim())
                         if (checkLongImage.isChecked) {
