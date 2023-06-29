@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ps_checkbox_selector"
             android:gravity="center"
+            android:layout_marginRight="5dp"
             android:textColor="@color/ps_color_white"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
