@@ -21,14 +21,14 @@ open class StyleTextView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : MediumBoldTextView(context, attrs, defStyleAttr) {
-    private var textNormalSize: Int
-    private var textSelectedSize: Int
-    private var textNormalColor: Int
-    private var textSelectedColor: Int
-    private var textNormalString: String? = null
-    private var textSelectedString: String? = null
-    private var normalBackground: Drawable? = null
-    private var selectedBackground: Drawable? = null
+    var textNormalSize: Int
+    var textSelectedSize: Int
+    var textNormalColor: Int
+    var textSelectedColor: Int
+    var textNormalString: String? = null
+    var textSelectedString: String? = null
+    var normalBackground: Drawable? = null
+    var selectedBackground: Drawable? = null
 
     init {
         val a = context.theme.obtainStyledAttributes(

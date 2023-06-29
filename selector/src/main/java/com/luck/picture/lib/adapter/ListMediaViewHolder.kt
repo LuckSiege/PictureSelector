@@ -20,8 +20,6 @@ import com.luck.picture.lib.widget.StyleTextView
  * @describe：ListMediaViewHolder
  */
 open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
-
-    var flSelectCheck: ViewGroup = itemView.findViewById(R.id.ps_fl_select_check)
     var tvSelectView: StyleTextView = itemView.findViewById(R.id.ps_tv_check)
     var ivCover: ImageView = itemView.findViewById(R.id.iv_cover)
     var defaultColorFilter: ColorFilter =
@@ -33,7 +31,7 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
 
 
     open fun bindData(media: LocalMedia, position: Int) {
-        flSelectCheck.visibility =
+        tvSelectView.visibility =
             if (config.selectionMode == SelectionMode.ONLY_SINGLE) View.GONE else View.VISIBLE
 
         mGetSelectResultListener?.onSelectResult()?.let { result ->
@@ -44,7 +42,7 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
         } else {
             media.getAvailablePath()?.let { config.imageEngine?.loadListImage(ivCover.context, it, ivCover) }
         }
-        flSelectCheck.setOnClickListener {
+        tvSelectView.setOnClickListener {
             if (media.isEnabledMask) {
                 return@setOnClickListener
             }
@@ -124,7 +122,7 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
                     )
                 }
                 else -> {
-                    flSelectCheck.performClick()
+                    tvSelectView.performClick()
                 }
             }
         }
