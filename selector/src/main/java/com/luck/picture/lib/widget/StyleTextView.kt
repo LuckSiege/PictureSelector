@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import com.luck.picture.lib.R
+import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.StyleUtils
@@ -74,17 +75,20 @@ open class StyleTextView @JvmOverloads constructor(
         } else {
             if (!TextUtils.isEmpty(textSelectedString)) {
                 textSelectedString?.let {
-                    text = when (StyleUtils.getFormatCount(it)) {
-                        1 -> {
-                            String.format(it, result.size)
-                        }
-                        2 -> {
-                            String.format(it, result.size, config.getSelectCount())
-                        }
-                        else -> {
+                    text =
+                        if (config.selectionMode == SelectionMode.MULTIPLE) when (StyleUtils.getFormatCount(
                             it
-                        }
-                    }
+                        )) {
+                            1 -> {
+                                String.format(it, result.size)
+                            }
+                            2 -> {
+                                String.format(it, result.size, config.getSelectCount())
+                            }
+                            else -> {
+                                it
+                            }
+                        } else textNormalString
                 }
             }
             if (textSelectedSize != 0) {
