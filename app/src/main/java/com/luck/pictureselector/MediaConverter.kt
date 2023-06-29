@@ -88,6 +88,9 @@ class MediaConverter : MediaConverterEngine {
      * Compress files
      */
     private suspend fun compress(context: Context, path: String): String? {
+        if (MediaUtils.isUrlHasGif(path)) {
+            return path
+        }
         val compressFile = Compressor.compress(context, File(path)) {
             default()
             destination(getCompressFileDir(context))
