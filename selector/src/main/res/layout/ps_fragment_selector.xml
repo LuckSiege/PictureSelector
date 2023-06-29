@@ -137,7 +137,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ps_bottom_nar_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:background="@color/ps_color_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -147,13 +147,11 @@
         <com.luck.picture.lib.widget.StyleTextView
             android:id="@+id/ps_tv_preview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:enabled="false"
             android:gravity="center"
             android:paddingLeft="15dp"
-            android:paddingTop="10dp"
             android:paddingRight="15dp"
-            android:paddingBottom="10dp"
             android:text="@string/ps_preview"
             android:textColor="@color/ps_color_9b"
             android:textSize="14sp"
@@ -171,15 +169,15 @@
         <com.luck.picture.lib.widget.MediumBoldTextView
             android:id="@+id/ps_tv_original"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:drawableStart="@drawable/ps_original_checkbox"
             android:drawablePadding="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="@string/ps_default_original_image"
             android:textColor="@color/ps_color_white"
             android:textSize="14sp"
             android:visibility="gone"
+            android:gravity="center"
+            android:includeFontPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -205,12 +203,10 @@
         <com.luck.picture.lib.widget.StyleTextView
             android:id="@+id/ps_tv_complete"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="3dp"
             android:gravity="center"
-            android:paddingTop="10dp"
             android:paddingRight="15dp"
-            android:paddingBottom="10dp"
             android:text="@string/ps_please_select"
             android:textColor="@color/ps_color_9b"
             android:textSize="14sp"
@@ -223,6 +219,7 @@
             app:psSelectedText="@string/ps_completed"
             app:psSelectedTextColor="@color/ps_color_fa632d"
             app:psSelectedTextSize="14sp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -78,14 +78,6 @@ class SelectionSystemModel constructor(
     }
 
     /**
-     * Enable original image
-     */
-    fun isOriginalControl(isOriginalControl: Boolean): SelectionSystemModel {
-        this.config.isOriginalControl = isOriginalControl
-        return this
-    }
-
-    /**
      * Skip crop resource formatting
      */
     fun setSkipCropFormat(vararg format: String): SelectionSystemModel {

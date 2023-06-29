@@ -227,7 +227,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
             mBottomNarBar?.visibility = View.GONE
         } else {
-            if (config.isOnlyCamera) {
+            if (config.isOnlyCamera || config.systemGallery) {
             } else {
                 mTvOriginal?.visibility =
                     if (config.isOriginalControl) View.VISIBLE else View.GONE

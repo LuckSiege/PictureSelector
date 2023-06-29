@@ -175,15 +175,6 @@ class SelectionCameraModel constructor(
         return this
     }
 
-    /**
-     * Enable original image options
-     *
-     * @param isOriginalControl Enable original image options
-     */
-    fun isOriginalControl(isOriginalControl: Boolean): SelectionCameraModel {
-        this.config.isOriginalControl = isOriginalControl
-        return this
-    }
 
     /**
      * Change the desired orientation of this activity.  If the activity
