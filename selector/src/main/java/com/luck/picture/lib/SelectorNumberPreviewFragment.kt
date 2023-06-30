@@ -123,8 +123,15 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             getPreviewWrap().source[viewPager.currentItem]
         galleryAdapter?.selectResult = getSelectResult()
         rvGallery.adapter = galleryAdapter
+        rvGallery.post {
+            val position = galleryAdapter?.data?.indexOf(galleryAdapter?.currentMedia) ?: -1
+            if (position >= 0) {
+                rvGallery.smoothScrollToPosition(position)
+            }
+        }
         galleryAdapter?.setOnItemClickListener(object : OnItemClickListener<LocalMedia> {
             override fun onItemClick(position: Int, data: LocalMedia) {
+                rvGallery.smoothScrollToPosition(position)
                 val currentItem = getPreviewWrap().source.indexOf(data)
                 if (currentItem >= 0) {
                     viewPager.setCurrentItem(currentItem, false)
