@@ -211,29 +211,26 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun initNavbarBar() {
-        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            mBottomNarBar?.visibility = View.GONE
-        } else {
-            if (config.isOnlyCamera || config.systemGallery) {
-            } else {
-                mTvOriginal?.visibility =
-                    if (config.isOriginalControl) View.VISIBLE else View.GONE
-                mTvOriginal?.setOnClickListener { tvOriginal ->
-                    onOriginalClick(tvOriginal)
-                }
-            }
-            val media = getPreviewWrap().source[getPreviewWrap().position]
-            mTvEditor?.visibility =
-                if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
-            mTvEditor?.setOnClickListener {
-                onEditorClick(it)
-            }
+        val media = getPreviewWrap().source[getPreviewWrap().position]
+        mTvEditor?.visibility =
+            if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
+        mTvEditor?.setOnClickListener {
+            onEditorClick(it)
+        }
+        mTvOriginal?.visibility =
+            if (config.isOriginalControl) View.VISIBLE else View.GONE
+        mTvOriginal?.setOnClickListener { tvOriginal ->
+            onOriginalClick(tvOriginal)
         }
         mTvSelectNum?.setOnClickListener {
             mTvComplete?.performClick()
         }
         mTvComplete?.setOnClickListener {
             onCompleteClick(it)
+        }
+        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
+            mTvSelectNum?.visibility = View.GONE
+            mTvComplete?.visibility = View.GONE
         }
     }
 

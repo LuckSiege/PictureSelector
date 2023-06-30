@@ -20,6 +20,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.recyclerview.widget.*
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorConfig
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.entity.LocalMedia
@@ -285,24 +286,26 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     override fun onSelectionResultChange(change: LocalMedia?) {
         super.onSelectionResultChange(change)
         mTvComplete?.isEnabled = true
-        if (galleryAdapter != null) {
-            galleryAdapter?.selectResult = getSelectResult()
-            galleryAdapter?.notifyDataSetChanged()
-            if (getSelectResult().contains(change)) {
-                val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
-                if (lastPosition >= 0) {
-                    rvGallery.smoothScrollToPosition(lastPosition)
+        if (config.selectionMode != SelectionMode.ONLY_SINGLE) {
+            if (galleryAdapter != null) {
+                galleryAdapter?.selectResult = getSelectResult()
+                galleryAdapter?.notifyDataSetChanged()
+                if (getSelectResult().contains(change)) {
+                    val lastPosition = galleryAdapter?.itemCount ?: 0 - 1
+                    if (lastPosition >= 0) {
+                        rvGallery.smoothScrollToPosition(lastPosition)
+                    }
                 }
+                if (!getPreviewWrap().isBottomPreview) {
+                    rvGallery.visibility =
+                        if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
+                }
+                onSelectResultSort()
             }
-            if (!getPreviewWrap().isBottomPreview) {
-                rvGallery.visibility =
-                    if (galleryAdapter?.selectResult?.isEmpty() == true) View.GONE else View.VISIBLE
-            }
-            selectResultSort()
         }
     }
 
-    private fun selectResultSort() {
+    open fun onSelectResultSort() {
         if (moveFromPosition != -1 && moveToPosition != -1) {
             if (moveFromPosition < moveToPosition) {
                 for (i in moveFromPosition until moveToPosition) {
@@ -329,7 +332,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     ) {
         super.onViewPageScrolled(position, positionOffset, positionOffsetPixels)
         if (getPreviewWrap().source.size > position) {
-            updateGallerySelected(
+            onUpdateGallerySelected(
                 if (positionOffsetPixels < screenWidth / 2) position
                 else position + 1
             )
@@ -338,10 +341,10 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
     override fun onViewPageSelected(position: Int) {
         super.onViewPageSelected(position)
-        updateGallerySelected(position)
+        onUpdateGallerySelected(position)
     }
 
-    private fun updateGallerySelected(position: Int) {
+    open fun onUpdateGallerySelected(position: Int) {
         // update old selected position
         val oldPosition = galleryAdapter?.data?.indexOf(galleryAdapter?.currentMedia) ?: -1
         if (oldPosition >= 0) {
