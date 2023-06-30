@@ -5,7 +5,7 @@ package com.luck.picture.lib.config
  * @date：2021/11/23 6:53 下午
  * @describe：PictureSelector selection mode
  */
-enum class SelectorMode {
+enum class MediaType {
     ALL,
     IMAGE,
     VIDEO,
