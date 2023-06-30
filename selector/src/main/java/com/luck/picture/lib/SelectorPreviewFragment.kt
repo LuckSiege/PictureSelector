@@ -84,15 +84,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     var isPause = false
     var isAnimationStart = false
     var isPlayPageSelected = false
-    var isEnableStickResult = true
-
-    open fun enableStickResult(): Boolean {
-        if (isEnableStickResult) {
-            isEnableStickResult = false
-            return true
-        }
-        return isEnableStickResult
-    }
 
     open fun getCurrentAlbum(): LocalMediaAlbum {
         return TempDataProvider.getInstance().currentMediaAlbum
@@ -139,7 +130,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
-        isEnableStickResult = getSelectResult().isNotEmpty()
         mBottomNarBar?.let {
             navBarViews.add(it)
         }
@@ -158,9 +148,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     private fun registerLiveData() {
         globalViewMode.getSelectResultLiveData().observe(viewLifecycleOwner) { change ->
-            if (enableStickResult()) {
-                return@observe
-            }
             onSelectionResultChange(change)
         }
         globalViewMode.getOriginalLiveData().observe(viewLifecycleOwner) { isOriginal ->
