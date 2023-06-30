@@ -61,7 +61,7 @@
         <ImageView
             android:id="@+id/ps_iv_left_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:scaleType="centerInside"
             android:src="@drawable/ps_ic_black_back"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +72,7 @@
         <com.luck.picture.lib.widget.MarqueeTextView
             android:id="@+id/ps_tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:ellipsize="marquee"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -106,7 +106,7 @@
         <com.luck.picture.lib.widget.MediumBoldTextView
             android:id="@+id/ps_tv_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@drawable/ps_cancel_default_bg"
             android:gravity="center"
             android:text="@string/ps_cancel"
