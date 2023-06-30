@@ -515,8 +515,7 @@ abstract class BaseSelectorFragment : Fragment() {
                 SelectorConstant.REQUEST_CAMERA
             )
         } else {
-            val imageCaptureComponent =
-                config.registry.get(ImageCaptureComponent::class.java)
+            val imageCaptureComponent = config.registry.get(ImageCaptureComponent::class.java)
             if (imageCaptureComponent.isAssignableFrom(ImageCaptureComponent::class.java)) {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (intent.resolveActivity(context.packageManager) != null) {
@@ -563,8 +562,7 @@ abstract class BaseSelectorFragment : Fragment() {
                 SelectorConstant.REQUEST_CAMERA
             )
         } else {
-            val videoCaptureComponent =
-                config.registry.get(VideoCaptureComponent::class.java)
+            val videoCaptureComponent = config.registry.get(VideoCaptureComponent::class.java)
             if (videoCaptureComponent.isAssignableFrom(VideoCaptureComponent::class.java)) {
                 val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                 if (intent.resolveActivity(context.packageManager) != null) {
