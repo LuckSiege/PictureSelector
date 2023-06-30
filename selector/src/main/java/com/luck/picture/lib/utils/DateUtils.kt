@@ -22,10 +22,21 @@ object DateUtils {
      * @param timeMs
      */
     fun formatDurationTime(timeMs: Long): String {
-        if (timeMs < 1000) {
-            return String.format(
-                Locale.getDefault(), "%s%02d:%02d", "", 0, 1
-            )
+        return formatDurationTime(timeMs, true)
+    }
+
+    /**
+     * 时间戳转换成时间格式
+     *
+     * @param timeMs
+     */
+    fun formatDurationTime(timeMs: Long, isAdjust: Boolean): String {
+        if (isAdjust) {
+            if (timeMs < 1000) {
+                return String.format(
+                    Locale.getDefault(), "%s%02d:%02d", "", 0, 1
+                )
+            }
         }
         val prefix = if (timeMs < 0) "-" else ""
         val absTimeMs = abs(timeMs)

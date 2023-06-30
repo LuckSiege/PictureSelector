@@ -32,7 +32,7 @@ open class VideoController : ConstraintLayout, AbsController {
         override fun run() {
             val duration = mediaPlayer.getDuration()
             val currentPosition = mediaPlayer.getCurrentPosition()
-            val time = DateUtils.formatDurationTime(currentPosition)
+            val time = DateUtils.formatDurationTime(currentPosition,false)
             if (TextUtils.equals(time, tvCurrentDuration.text)) {
                 // Same progress ignored
             } else {
@@ -106,13 +106,13 @@ open class VideoController : ConstraintLayout, AbsController {
     }
 
     override fun setDataSource(media: LocalMedia) {
-        tvDuration.text = DateUtils.formatDurationTime(media.duration)
+        tvDuration.text = DateUtils.formatDurationTime(media.duration,false)
         seekBar.max = media.duration.toInt()
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     seekBar?.progress = progress
-                    tvCurrentDuration.text = DateUtils.formatDurationTime(progress.toLong())
+                    tvCurrentDuration.text = DateUtils.formatDurationTime(progress.toLong(), false)
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.seekTo(progress)
                     }

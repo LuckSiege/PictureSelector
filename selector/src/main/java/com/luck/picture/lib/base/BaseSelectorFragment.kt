@@ -884,7 +884,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     if (config.mediaType == MediaType.AUDIO && schemeFile && data?.data != null) {
                         copyAudioUriToFile(data.data!!)
                     } else {
-                        analysisCameraData(outputUri, false)
+                        analysisCameraData(outputUri)
                     }
                 } else {
                     throw IllegalStateException("Camera output uri is empty")
@@ -907,11 +907,12 @@ abstract class BaseSelectorFragment : Fragment() {
     /**
      * copy audio to output file
      */
-    open fun copyAudioUriToFile(uri: Uri) {
-        requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
-            viewModel.outputUri?.let { uri ->
-                if (FileUtils.writeFileFromIS(inputStream, FileOutputStream(uri.path))) {
-                    analysisCameraData(uri, true)
+    open fun copyAudioUriToFile(data: Uri) {
+        requireContext().contentResolver.openInputStream(data)?.use { inputStream ->
+            viewModel.outputUri?.let { outputUri ->
+                if (FileUtils.writeFileFromIS(inputStream, FileOutputStream(outputUri.path))) {
+                    analysisCameraData(outputUri)
+                    MediaUtils.deleteUri(requireContext(), data)
                 }
                 FileUtils.close(inputStream)
             }
@@ -921,7 +922,7 @@ abstract class BaseSelectorFragment : Fragment() {
     /**
      * Analyzing Camera Generated Data
      */
-    open fun analysisCameraData(uri: Uri, deleteOriginal: Boolean) {
+    open fun analysisCameraData(uri: Uri) {
         val context = requireContext()
         val isContent = uri.scheme.equals("content")
         val realPath = if (isContent) {
@@ -941,9 +942,6 @@ abstract class BaseSelectorFragment : Fragment() {
                         MediaUtils.getAssignFileMedia(context, realPath!!)
                     }
                     onMergeCameraResult(media)
-                    if (deleteOriginal) {
-                        MediaUtils.deleteUri(requireContext(), uri)
-                    }
                 }
             }
         })
