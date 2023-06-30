@@ -351,12 +351,7 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
             media.absolutePath = file.absolutePath
             media.mimeType = mimeType
             media.path = media.absolutePath
-            val mediaInfo = MediaUtils.getMediaInfo(
-                application,
-                application.contentResolver,
-                media.mimeType,
-                file.absolutePath
-            )
+            val mediaInfo = MediaUtils.getMediaInfo(application, media.mimeType, file.absolutePath)
             media.orientation = mediaInfo.orientation
             media.duration = mediaInfo.duration
             media.width = mediaInfo.width

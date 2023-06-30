@@ -465,13 +465,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if ((realWidth <= 0 || realHeight <= 0) || (realWidth > realHeight)) {
             withContext(Dispatchers.IO) {
                 media.absolutePath?.let { realPath ->
-                    val context = requireContext()
-                    MediaUtils.getMediaInfo(
-                        context,
-                        context.contentResolver,
-                        media.mimeType,
-                        realPath
-                    ).let {
+                    MediaUtils.getMediaInfo(requireContext(), media.mimeType, realPath).let {
                         if (it.width > 0) {
                             realWidth = it.width
                         }

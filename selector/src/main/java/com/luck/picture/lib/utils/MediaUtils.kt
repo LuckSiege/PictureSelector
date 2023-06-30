@@ -240,18 +240,11 @@ object MediaUtils {
     }
 
 
-    suspend fun getMediaInfo(
-        context: Context,
-        contentResolver: ContentResolver,
-        path: String,
-    ): MediaInfo {
-        return getMediaInfo(context, contentResolver, getMimeType(path), path)
+    suspend fun getMediaInfo(context: Context, path: String): MediaInfo {
+        return getMediaInfo(context, getMimeType(path), path)
     }
 
-
-    suspend fun getMediaInfo(
-        context: Context, contentResolver: ContentResolver, mimeType: String?, path: String,
-    ): MediaInfo {
+    suspend fun getMediaInfo(context: Context, mimeType: String?, path: String): MediaInfo {
         return withContext(Dispatchers.IO) {
             suspendCancellableCoroutine {
                 val mediaInfo = MediaInfo()
@@ -260,7 +253,7 @@ object MediaUtils {
                     val options = BitmapFactory.Options()
                     options.inJustDecodeBounds = true
                     if (isContent(path)) {
-                        val inputStream = contentResolver.openInputStream(Uri.parse(path))
+                        val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
                         try {
                             BitmapFactory.decodeStream(inputStream, null, options)
                             mediaInfo.width = options.outWidth
@@ -342,8 +335,7 @@ object MediaUtils {
             media.bucketId = SelectorConstant.DEFAULT_DIR_BUCKET_ID
             media.bucketDisplayName = file.parentFile?.name
             media.mimeType = getMimeType(media.absolutePath)
-            val mediaInfo =
-                getMediaInfo(context, context.contentResolver, media.mimeType, absolutePath)
+            val mediaInfo = getMediaInfo(context, media.mimeType, absolutePath)
             media.orientation = mediaInfo.orientation
             media.duration = mediaInfo.duration
             media.size = file.length()
