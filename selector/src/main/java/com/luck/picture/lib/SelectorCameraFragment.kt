@@ -2,25 +2,19 @@ package com.luck.picture.lib
 
 import android.Manifest
 import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
-import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
+import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
-import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.provider.TempDataProvider
-import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils.isQ
 import com.luck.picture.lib.utils.SelectorLogUtils
 import com.luck.picture.lib.utils.ToastUtils
-import kotlinx.coroutines.launch
 
 /**
  * @author：luck
@@ -87,40 +81,14 @@ open class SelectorCameraFragment : BaseSelectorFragment() {
         }
     }
 
-    override fun analysisCameraData(uri: Uri) {
-        val context = requireContext()
-        val isContent = uri.scheme.equals("content")
-        val realPath = if (isContent) {
-            MediaUtils.getPath(context, uri)
+    override fun onMergeCameraResult(media: LocalMedia?) {
+        if (media != null && confirmSelect(media, false) == SelectedState.SUCCESS) {
+            handleSelectResult()
         } else {
-            uri.path
+            onBackPressed()
+            SelectorLogUtils.info("only camera analysisCameraData: Parsing LocalMedia object as empty")
         }
-        if (TextUtils.isEmpty(realPath)) {
-            return
-        }
-        viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
-            override fun onScanFinish() {
-                viewModel.viewModelScope.launch {
-                    val media = if (isContent) {
-                        MediaUtils.getAssignPathMedia(context, realPath!!)
-                    } else {
-                        MediaUtils.getAssignFileMedia(context, realPath!!)
-                    }
-                    if (media == null) {
-                        onBackPressed()
-                    } else {
-                        if (confirmSelect(media, false) == SelectedState.SUCCESS) {
-                            handleSelectResult()
-                        } else {
-                            onBackPressed()
-                            SelectorLogUtils.info("only camera analysisCameraData: Parsing LocalMedia object as empty")
-                        }
-                    }
-                }
-            }
-        })
     }
-
 
     override fun handlePermissionSettingResult(permission: Array<String>) {
         if (permission.isEmpty()) {

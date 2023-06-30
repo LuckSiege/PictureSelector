@@ -3,7 +3,6 @@ package com.luck.picture.lib
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Service
-import android.net.Uri
 import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.text.TextUtils
@@ -31,7 +30,6 @@ import com.luck.picture.lib.factory.ClassFactory
 import com.luck.picture.lib.helper.FragmentInjectManager
 import com.luck.picture.lib.interfaces.*
 import com.luck.picture.lib.magical.RecycleItemViewParams
-import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.provider.TempDataProvider
@@ -873,36 +871,15 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
-    override fun analysisCameraData(uri: Uri) {
-        val context = requireContext()
-        val isContent = uri.scheme.equals("content")
-        val realPath = if (isContent) {
-            MediaUtils.getPath(context, uri)
+    override fun onMergeCameraResult(media: LocalMedia?) {
+        if (media != null) {
+            isCameraCallback = true
+            onCheckDuplicateMedia(media)
+            onMergeCameraAlbum(media)
+            onMergeCameraMedia(media)
         } else {
-            uri.path
+            SelectorLogUtils.info("analysisCameraData: Parsing LocalMedia object as empty")
         }
-        if (TextUtils.isEmpty(realPath)) {
-            return
-        }
-        viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
-            override fun onScanFinish() {
-                viewModel.viewModelScope.launch {
-                    val media = if (isContent) {
-                        MediaUtils.getAssignPathMedia(context, realPath!!)
-                    } else {
-                        MediaUtils.getAssignFileMedia(context, realPath!!)
-                    }
-                    if (media != null) {
-                        isCameraCallback = true
-                        onCheckDuplicateMedia(media)
-                        onMergeCameraAlbum(media)
-                        onMergeCameraMedia(media)
-                    } else {
-                        SelectorLogUtils.info("analysisCameraData: Parsing LocalMedia object as empty")
-                    }
-                }
-            }
-        })
     }
 
     /**

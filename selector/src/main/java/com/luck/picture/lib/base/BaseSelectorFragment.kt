@@ -39,6 +39,7 @@ import com.luck.picture.lib.interfaces.OnItemClickListener
 import com.luck.picture.lib.interfaces.OnRecordAudioListener
 import com.luck.picture.lib.language.Language
 import com.luck.picture.lib.language.PictureLanguageUtils
+import com.luck.picture.lib.media.ScanListener
 import com.luck.picture.lib.permissions.OnPermissionResultListener
 import com.luck.picture.lib.permissions.PermissionChecker
 import com.luck.picture.lib.permissions.PermissionUtil
@@ -48,10 +49,7 @@ import com.luck.picture.lib.registry.ImageCaptureComponent
 import com.luck.picture.lib.registry.SoundCaptureComponent
 import com.luck.picture.lib.registry.VideoCaptureComponent
 import com.luck.picture.lib.service.ForegroundService
-import com.luck.picture.lib.utils.FileUtils
-import com.luck.picture.lib.utils.MediaStoreUtils
-import com.luck.picture.lib.utils.MediaUtils
-import com.luck.picture.lib.utils.SpUtils
+import com.luck.picture.lib.utils.*
 import com.luck.picture.lib.viewmodel.GlobalViewModel
 import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
@@ -886,7 +884,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     if (config.mediaType == MediaType.AUDIO && schemeFile && data?.data != null) {
                         copyAudioUriToFile(data.data!!)
                     } else {
-                        analysisCameraData(outputUri)
+                        analysisCameraData(outputUri, false)
                     }
                 } else {
                     throw IllegalStateException("Camera output uri is empty")
@@ -912,10 +910,8 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun copyAudioUriToFile(uri: Uri) {
         requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
             viewModel.outputUri?.let { uri ->
-                val fileOutputStream = FileOutputStream(uri.path)
-                if (FileUtils.writeFileFromIS(inputStream, fileOutputStream)) {
-                    MediaUtils.deleteUri(requireContext(), uri)
-                    analysisCameraData(uri)
+                if (FileUtils.writeFileFromIS(inputStream, FileOutputStream(uri.path))) {
+                    analysisCameraData(uri, true)
                 }
                 FileUtils.close(inputStream)
             }
@@ -925,7 +921,38 @@ abstract class BaseSelectorFragment : Fragment() {
     /**
      * Analyzing Camera Generated Data
      */
-    open fun analysisCameraData(uri: Uri) {
+    open fun analysisCameraData(uri: Uri, deleteOriginal: Boolean) {
+        val context = requireContext()
+        val isContent = uri.scheme.equals("content")
+        val realPath = if (isContent) {
+            MediaUtils.getPath(context, uri)
+        } else {
+            uri.path
+        }
+        if (TextUtils.isEmpty(realPath)) {
+            return
+        }
+        viewModel.scanFile(if (isContent) realPath else null, object : ScanListener {
+            override fun onScanFinish() {
+                viewModel.viewModelScope.launch {
+                    val media = if (isContent) {
+                        MediaUtils.getAssignPathMedia(context, realPath!!)
+                    } else {
+                        MediaUtils.getAssignFileMedia(context, realPath!!)
+                    }
+                    onMergeCameraResult(media)
+                    if (deleteOriginal) {
+                        MediaUtils.deleteUri(requireContext(), uri)
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * Merge Camera Output Results
+     */
+    open fun onMergeCameraResult(media: LocalMedia?) {
 
     }
 
