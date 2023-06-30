@@ -1,11 +1,10 @@
 package com.luck.pictureselector
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.model.PictureSelector
@@ -18,7 +17,7 @@ class InjectFragmentActivity : AppCompatActivity() {
         val tvResult = findViewById<TextView>(R.id.tv_result)
         findViewById<Button>(R.id.btn_camera).setOnClickListener {
             PictureSelector.create(this)
-                .openCamera(SelectorMode.ALL)
+                .openCamera(MediaType.ALL)
                 .buildLaunch(R.id.container_fragment, object : OnResultCallbackListener {
                     override fun onResult(result: List<LocalMedia>) {
                         val stringBuilder = StringBuilder()
@@ -35,7 +34,7 @@ class InjectFragmentActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.btn_photo).setOnClickListener {
             PictureSelector.create(this)
-                .openGallery(SelectorMode.ALL)
+                .openGallery(MediaType.ALL)
                 .setImageEngine(GlideEngine.create())
                 .buildLaunch(R.id.container_fragment, object : OnResultCallbackListener {
                     override fun onResult(result: List<LocalMedia>) {

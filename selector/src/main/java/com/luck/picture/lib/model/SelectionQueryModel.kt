@@ -2,8 +2,8 @@ package com.luck.picture.lib.model
 
 import android.text.TextUtils
 import androidx.annotation.IntRange
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectorConfig
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
@@ -22,12 +22,12 @@ import org.jetbrains.annotations.NotNull
  * @describe：SelectionQueryModel
  */
 class SelectionQueryModel constructor(
-    private var selector: PictureSelector, mode: SelectorMode
+    private var selector: PictureSelector, mediaType: MediaType
 ) {
     private var config: SelectorConfig = SelectorConfig()
 
     init {
-        this.config.selectorMode = mode
+        this.config.mediaType = mediaType
         SelectorProviders.getInstance().addSelectorConfigQueue(config)
     }
 

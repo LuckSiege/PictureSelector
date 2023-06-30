@@ -40,12 +40,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.luck.lib.camerax.SimpleCameraX
-import com.luck.picture.lib.SelectorNumberMainFragment
-import com.luck.picture.lib.SelectorNumberPreviewFragment
 import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbRequestCode: RadioButton
     private lateinit var tvDeleteText: TextView
     private lateinit var launcherResult: ActivityResultLauncher<Intent>
-    private var selectorMode: SelectorMode = SelectorMode.ALL
+    private var mediaType: MediaType = MediaType.ALL
     private var selectionMode: SelectionMode = SelectionMode.MULTIPLE
     private var mData: MutableList<LocalMedia> = mutableListOf()
     private var language: Language = Language.SYSTEM_LANGUAGE
@@ -212,16 +210,16 @@ class MainActivity : AppCompatActivity() {
         findViewById<RadioGroup>(R.id.rgb_type).setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rb_all -> {
-                    selectorMode = SelectorMode.ALL
+                    mediaType = MediaType.ALL
                 }
                 R.id.rb_image -> {
-                    selectorMode = SelectorMode.IMAGE
+                    mediaType = MediaType.IMAGE
                 }
                 R.id.rb_video -> {
-                    selectorMode = SelectorMode.VIDEO
+                    mediaType = MediaType.VIDEO
                 }
                 R.id.rb_audio -> {
-                    selectorMode = SelectorMode.AUDIO
+                    mediaType = MediaType.AUDIO
                 }
             }
         }
@@ -362,7 +360,7 @@ class MainActivity : AppCompatActivity() {
                 when {
                     checkSystem.isChecked -> {
                         val systemGallery = PictureSelector.create(this@MainActivity)
-                            .openSystemGallery(selectorMode)
+                            .openSystemGallery(mediaType)
                         systemGallery.setSelectionMode(selectionMode)
                         systemGallery.setCropEngine(if (checkCrop.isChecked) UCropEngine() else null)
                         systemGallery.setMediaConverterEngine(MediaConverter.create())
@@ -384,20 +382,20 @@ class MainActivity : AppCompatActivity() {
                     }
                     checkOnlyCamera.isChecked -> {
                         val onlyCamera = PictureSelector.create(this@MainActivity)
-                            .openCamera(selectorMode)
+                            .openCamera(mediaType)
                         if (checkCustomCamera.isChecked) {
                             onlyCamera.registry(CustomCameraActivity::class.java)
                         }
-                        onlyCamera.setAllOfCameraMode(SelectorMode.IMAGE)
+                        onlyCamera.setAllOfCameraMode(MediaType.IMAGE)
                         if (checkOutput.isChecked) {
-                            when (selectorMode) {
-                                SelectorMode.IMAGE -> {
+                            when (mediaType) {
+                                MediaType.IMAGE -> {
                                     onlyCamera.setOutputImageDir(getCustomImagePath())
                                 }
-                                SelectorMode.VIDEO -> {
+                                MediaType.VIDEO -> {
                                     onlyCamera.setOutputVideoDir(getCustomVideoPath())
                                 }
-                                SelectorMode.AUDIO -> {
+                                MediaType.AUDIO -> {
                                     onlyCamera.setOutputAudioDir(getCustomAudioPath())
                                 }
                                 else -> {
@@ -430,7 +428,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         val gallery = PictureSelector.create(this@MainActivity)
-                            .openGallery(selectorMode)
+                            .openGallery(mediaType)
                         gallery.setImageSpanCount(imageSpanCount)
                         gallery.setMaxSelectNum(
                             maxSelectNum,
@@ -485,22 +483,22 @@ class MainActivity : AppCompatActivity() {
                         gallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
                         gallery.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         if (checkOutput.isChecked) {
-                            when (selectorMode) {
-                                SelectorMode.IMAGE -> {
+                            when (mediaType) {
+                                MediaType.IMAGE -> {
                                     gallery.setOutputImageDir(getCustomImagePath())
                                     gallery.setQuerySandboxDir(
                                         getCustomImagePath(),
                                         checkOnlyDir.isChecked
                                     )
                                 }
-                                SelectorMode.VIDEO -> {
+                                MediaType.VIDEO -> {
                                     gallery.setOutputVideoDir(getCustomVideoPath())
                                     gallery.setQuerySandboxDir(
                                         getCustomVideoPath(),
                                         checkOnlyDir.isChecked
                                     )
                                 }
-                                SelectorMode.AUDIO -> {
+                                MediaType.AUDIO -> {
                                     gallery.setOutputAudioDir(getCustomAudioPath())
                                     gallery.setQuerySandboxDir(
                                         getCustomAudioPath(),
@@ -517,20 +515,20 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         } else if (checkOnlyDir.isChecked) {
-                            when (selectorMode) {
-                                SelectorMode.IMAGE -> {
+                            when (mediaType) {
+                                MediaType.IMAGE -> {
                                     gallery.setQuerySandboxDir(
                                         getCustomImagePath(),
                                         checkOnlyDir.isChecked
                                     )
                                 }
-                                SelectorMode.VIDEO -> {
+                                MediaType.VIDEO -> {
                                     gallery.setQuerySandboxDir(
                                         getCustomVideoPath(),
                                         checkOnlyDir.isChecked
                                     )
                                 }
-                                SelectorMode.AUDIO -> {
+                                MediaType.AUDIO -> {
                                     gallery.setQuerySandboxDir(
                                         getCustomAudioPath(),
                                         checkOnlyDir.isChecked
@@ -1007,7 +1005,7 @@ class MainActivity : AppCompatActivity() {
     private val getCustomCameraListener = object : OnCustomCameraListener {
         override fun onCamera(
             fragment: Fragment,
-            type: SelectorMode,
+            type: MediaType,
             outputUri: Uri,
             requestCode: Int
         ) {

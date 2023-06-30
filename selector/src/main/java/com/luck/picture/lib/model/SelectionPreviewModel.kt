@@ -13,8 +13,8 @@ import com.luck.picture.lib.SelectorExternalPreviewFragment
 import com.luck.picture.lib.SelectorPreviewFragment
 import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectorConfig
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.engine.ImageEngine
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.factory.ClassFactory
@@ -313,7 +313,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
         if (position >= source.size) {
             throw NullPointerException("#position# cannot be greater than #source.size#")
         }
-        if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {
+        if (config.imageEngine == null && config.mediaType != MediaType.AUDIO) {
             throw NullPointerException("Please set the API # .setImageEngine(${ImageEngine::class.simpleName});")
         }
         if (MediaUtils.hasMimeTypeOfAudio(source[position].mimeType)) {

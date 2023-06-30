@@ -11,8 +11,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.base.BaseSelectorFragment
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
@@ -71,12 +71,12 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         createSystemContracts()
-        if (isCheckReadStorage(requireContext(), config.selectorMode)) {
+        if (isCheckReadStorage(requireContext(), config.mediaType)) {
             openSystemAlbum()
         } else {
             val permissionArray = PermissionChecker.getReadPermissionArray(
                 requireContext(),
-                config.selectorMode
+                config.mediaType
             )
             showPermissionDescription(true, permissionArray)
             val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
@@ -120,13 +120,13 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
      */
     open fun openSystemAlbum() {
         if (config.selectionMode == SelectionMode.SINGLE || config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            if (config.selectorMode == SelectorMode.ALL) {
+            if (config.mediaType == MediaType.ALL) {
                 mDocSingleLauncher?.launch(SYSTEM_ALL)
             } else {
                 mContentLauncher?.launch(getInput())
             }
         } else {
-            if (config.selectorMode == SelectorMode.ALL) {
+            if (config.mediaType == MediaType.ALL) {
                 mDocMultipleLauncher?.launch(SYSTEM_ALL)
             } else {
                 mContentsLauncher?.launch(getInput())
@@ -135,12 +135,12 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     }
 
     open fun getInput(): String? {
-        return when (config.selectorMode) {
-            SelectorMode.VIDEO -> {
+        return when (config.mediaType) {
+            MediaType.VIDEO -> {
                 SYSTEM_AUDIO
                 SYSTEM_VIDEO
             }
-            SelectorMode.AUDIO -> {
+            MediaType.AUDIO -> {
                 SYSTEM_AUDIO
             }
             else -> {
@@ -155,13 +155,13 @@ open class SelectorSystemFragment : BaseSelectorFragment() {
     open fun createSystemContracts() {
         val selectionMode = config.selectionMode
         if (selectionMode == SelectionMode.MULTIPLE) {
-            if (config.selectorMode == SelectorMode.ALL) {
+            if (config.mediaType == MediaType.ALL) {
                 createMultipleDocuments()
             } else {
                 createMultipleContents()
             }
         } else {
-            if (config.selectorMode == SelectorMode.ALL) {
+            if (config.mediaType == MediaType.ALL) {
                 createSingleDocuments()
             } else {
                 createContent()

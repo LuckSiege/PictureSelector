@@ -10,7 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.luck.picture.lib.base.BaseSelectorFragment
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.helper.ActivityCompatHelper
 import com.luck.picture.lib.utils.SdkVersionUtils
 import com.luck.picture.lib.utils.SdkVersionUtils.isTIRAMISU
@@ -84,16 +84,16 @@ object PermissionChecker {
         }
     }
 
-    fun isCheckReadStorage(context: Context, mode: SelectorMode): Boolean {
+    fun isCheckReadStorage(context: Context, mediaType: MediaType): Boolean {
         return if (isTIRAMISU()) {
-            when (mode) {
-                SelectorMode.IMAGE -> {
+            when (mediaType) {
+                MediaType.IMAGE -> {
                     isCheckReadImages(context)
                 }
-                SelectorMode.VIDEO -> {
+                MediaType.VIDEO -> {
                     isCheckReadVideo(context)
                 }
-                SelectorMode.AUDIO -> {
+                MediaType.AUDIO -> {
                     isCheckReadAudio(context)
                 }
                 else -> {
@@ -165,20 +165,20 @@ object PermissionChecker {
     }
 
 
-    fun getReadPermissionArray(context: Context, mode: SelectorMode): Array<String> {
+    fun getReadPermissionArray(context: Context, mediaType: MediaType): Array<String> {
         if (isTIRAMISU()) {
             val targetSdkVersion = context.applicationInfo.targetSdkVersion
-            return if (mode == SelectorMode.IMAGE) {
+            return if (mediaType == MediaType.IMAGE) {
                 if (targetSdkVersion >= SdkVersionUtils.TIRAMISU) arrayOf(READ_MEDIA_IMAGES) else arrayOf(
                     READ_MEDIA_IMAGES,
                     READ_EXTERNAL_STORAGE
                 )
-            } else if (mode == SelectorMode.VIDEO) {
+            } else if (mediaType == MediaType.VIDEO) {
                 if (targetSdkVersion >= SdkVersionUtils.TIRAMISU) arrayOf(READ_MEDIA_VIDEO) else arrayOf(
                     READ_MEDIA_VIDEO,
                     READ_EXTERNAL_STORAGE
                 )
-            } else if (mode == SelectorMode.AUDIO) {
+            } else if (mediaType == MediaType.AUDIO) {
                 if (targetSdkVersion >= SdkVersionUtils.TIRAMISU) arrayOf(READ_MEDIA_AUDIO) else arrayOf(
                     READ_MEDIA_AUDIO,
                     READ_EXTERNAL_STORAGE

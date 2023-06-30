@@ -6,11 +6,10 @@ import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.luck.picture.lib.R
 import com.luck.picture.lib.SelectorCameraFragment
 import com.luck.picture.lib.SelectorTransparentActivity
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectorConfig
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.engine.CropEngine
 import com.luck.picture.lib.engine.MediaConverterEngine
@@ -30,12 +29,12 @@ import com.luck.picture.lib.utils.DoubleUtils
  */
 class SelectionCameraModel constructor(
     private var selector: PictureSelector,
-    mode: SelectorMode
+    mediaType: MediaType
 ) {
     private var config: SelectorConfig = SelectorConfig()
 
     init {
-        this.config.selectorMode = mode
+        this.config.mediaType = mediaType
         this.config.isOnlyCamera = true
         this.config.isDisplayTimeAxis = false
         this.config.isPreviewFullScreenMode = false
@@ -194,11 +193,11 @@ class SelectionCameraModel constructor(
     /**
      * Choose between photographing and shooting in ofAll mode
      *
-     * @param allCameraMode [SelectorMode.VIDEO]#[SelectorMode.IMAGE]
-     * The default is [SelectorMode.ALL] mode
+     * @param allCameraMediaType [MediaType.VIDEO]#[MediaType.IMAGE]
+     * The default is [MediaType.ALL] mode
      */
-    fun setAllOfCameraMode(allCameraMode: SelectorMode): SelectionCameraModel {
-        this.config.allCameraMode = allCameraMode
+    fun setAllOfCameraMode(allCameraMediaType: MediaType): SelectionCameraModel {
+        this.config.allCameraMediaType = allCameraMediaType
         return this
     }
 

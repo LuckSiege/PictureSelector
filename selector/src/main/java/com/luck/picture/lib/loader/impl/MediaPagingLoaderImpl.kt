@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.text.TextUtils
 import com.luck.picture.lib.R
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.entity.LocalMediaAlbum
@@ -42,17 +42,17 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     override fun getAlbumSelection(): String {
         val duration = getDurationCondition()
         val fileSize = getFileSizeCondition()
-        return when (config.selectorMode) {
-            SelectorMode.ALL -> { // query the image or video
+        return when (config.mediaType) {
+            MediaType.ALL -> { // query the image or video
                 "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
             }
-            SelectorMode.IMAGE -> { // query the image
+            MediaType.IMAGE -> { // query the image
                 "$MEDIA_TYPE=?${getImageMimeTypeCondition()} AND $fileSize"
             }
-            SelectorMode.VIDEO -> { // query the video
+            MediaType.VIDEO -> { // query the video
                 "$MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration"
             }
-            SelectorMode.AUDIO -> { // query the audio
+            MediaType.AUDIO -> { // query the audio
                 "$MEDIA_TYPE=?${getAudioMimeTypeCondition()} AND $duration"
             }
         }
@@ -61,29 +61,29 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     override fun getSelection(bucketId: Long): String {
         val duration = getDurationCondition()
         val fileSize = getFileSizeCondition()
-        when (config.selectorMode) {
-            SelectorMode.ALL -> { // query the image or video
+        when (config.mediaType) {
+            MediaType.ALL -> { // query the image or video
                 return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
                 } else {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()} OR $MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize AND $BUCKET_ID=?"
                 }
             }
-            SelectorMode.IMAGE -> { // query the image
+            MediaType.IMAGE -> { // query the image
                 return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()}) AND $fileSize"
                 } else {
                     "($MEDIA_TYPE=?${getImageMimeTypeCondition()}) AND $fileSize AND $BUCKET_ID=?"
                 }
             }
-            SelectorMode.VIDEO -> { // query the video
+            MediaType.VIDEO -> { // query the video
                 return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
                     "($MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize"
                 } else {
                     "($MEDIA_TYPE=?${getVideoMimeTypeCondition()} AND $duration) AND $fileSize AND $BUCKET_ID=?"
                 }
             }
-            SelectorMode.AUDIO -> { // query the audio
+            MediaType.AUDIO -> { // query the audio
                 return if (bucketId == SelectorConstant.DEFAULT_ALL_BUCKET_ID) {
                     "($MEDIA_TYPE=?${getAudioMimeTypeCondition()} AND $duration) AND $fileSize"
                 } else {
@@ -94,20 +94,20 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
     }
 
     override fun getSelectionArgs(): Array<String> {
-        when (config.selectorMode) {
-            SelectorMode.ALL -> {
+        when (config.mediaType) {
+            MediaType.ALL -> {
                 return arrayOf(
                     MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
                     MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
                 )
             }
-            SelectorMode.IMAGE -> {
+            MediaType.IMAGE -> {
                 return arrayOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
             }
-            SelectorMode.VIDEO -> {
+            MediaType.VIDEO -> {
                 return arrayOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
             }
-            SelectorMode.AUDIO -> {
+            MediaType.AUDIO -> {
                 return arrayOf(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO.toString())
             }
         }
@@ -216,7 +216,7 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
                     // create all media album
                     val allMediaAlbum = LocalMediaAlbum()
                     val bucketDisplayName =
-                        config.defaultAlbumName ?: if (config.selectorMode == SelectorMode.AUDIO)
+                        config.defaultAlbumName ?: if (config.mediaType == MediaType.AUDIO)
                             application.getString(R.string.ps_all_audio) else application.getString(
                             R.string.ps_camera_roll
                         )
@@ -311,15 +311,15 @@ open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
         listFiles.forEach continuing@{ file ->
             val media = LocalMedia()
             val mimeType = getMimeType(file.absolutePath)
-            if (config.selectorMode == SelectorMode.IMAGE) {
+            if (config.mediaType == MediaType.IMAGE) {
                 if (!MediaUtils.hasMimeTypeOfImage(mimeType)) {
                     return@continuing
                 }
-            } else if (config.selectorMode == SelectorMode.VIDEO) {
+            } else if (config.mediaType == MediaType.VIDEO) {
                 if (!MediaUtils.hasMimeTypeOfVideo(mimeType)) {
                     return@continuing
                 }
-            } else if (config.selectorMode == SelectorMode.AUDIO) {
+            } else if (config.mediaType == MediaType.AUDIO) {
                 if (!MediaUtils.hasMimeTypeOfAudio(mimeType)) {
                     return@continuing
                 }

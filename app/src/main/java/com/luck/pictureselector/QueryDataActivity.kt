@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener
@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 class QueryDataActivity : AppCompatActivity() {
     private lateinit var mRecycler: RecyclerPreloadView
     private var mData: MutableList<LocalMedia> = mutableListOf()
-    private var selectorMode: SelectorMode = SelectorMode.ALL
+    private var mediaType: MediaType = MediaType.ALL
     private lateinit var loader: MediaLoader
     private val pageSize = 60
     private var page = 1
@@ -65,10 +65,10 @@ class QueryDataActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_all).setOnClickListener {
             Glide.with(this).resumeRequests()
             page = 1
-            selectorMode = SelectorMode.ALL
+            mediaType = MediaType.ALL
             lifecycleScope.launch {
                 loader = PictureSelector.create(this@QueryDataActivity)
-                    .dataSource(selectorMode)
+                    .dataSource(mediaType)
                     .buildMediaLoader()
                 mediaLiveData.postValue(loader.loadMedia(pageSize))
             }
@@ -76,10 +76,10 @@ class QueryDataActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_image).setOnClickListener {
             Glide.with(this).resumeRequests()
             page = 1
-            selectorMode = SelectorMode.IMAGE
+            mediaType = MediaType.IMAGE
             lifecycleScope.launch {
                 loader = PictureSelector.create(this@QueryDataActivity)
-                    .dataSource(selectorMode)
+                    .dataSource(mediaType)
                     .buildMediaLoader()
                 mediaLiveData.postValue(loader.loadMedia(pageSize))
             }
@@ -87,10 +87,10 @@ class QueryDataActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_video).setOnClickListener {
             Glide.with(this).resumeRequests()
             page = 1
-            selectorMode = SelectorMode.VIDEO
+            mediaType = MediaType.VIDEO
             lifecycleScope.launch {
                 loader = PictureSelector.create(this@QueryDataActivity)
-                    .dataSource(selectorMode)
+                    .dataSource(mediaType)
                     .buildMediaLoader()
                 mediaLiveData.postValue(loader.loadMedia(pageSize))
             }
@@ -98,10 +98,10 @@ class QueryDataActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_audio).setOnClickListener {
             Glide.with(this).pauseAllRequests()
             page = 1
-            selectorMode = SelectorMode.AUDIO
+            mediaType = MediaType.AUDIO
             lifecycleScope.launch {
                 loader = PictureSelector.create(this@QueryDataActivity)
-                    .dataSource(selectorMode)
+                    .dataSource(mediaType)
                     .buildMediaLoader()
                 mediaLiveData.postValue(loader.loadMedia(pageSize))
             }
@@ -110,7 +110,7 @@ class QueryDataActivity : AppCompatActivity() {
         lifecycleScope.launch {
             page = 1
             loader = PictureSelector.create(this@QueryDataActivity)
-                .dataSource(selectorMode)
+                .dataSource(mediaType)
                 .buildMediaLoader()
             mediaLiveData.postValue(loader.loadMedia(pageSize))
         }

@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BaseListViewHolder
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 
 /**
  * @author：luck
@@ -19,7 +19,7 @@ open class CameraViewHolder(itemView: View) : BaseListViewHolder(itemView) {
                 mItemClickListener?.openCamera()
             }
         }
-        if (config.selectorMode == SelectorMode.AUDIO) {
+        if (config.mediaType == MediaType.AUDIO) {
             tvCamera.text = itemView.context.getString(R.string.ps_tape)
         } else {
             tvCamera.text = itemView.context.getString(R.string.ps_take_picture)

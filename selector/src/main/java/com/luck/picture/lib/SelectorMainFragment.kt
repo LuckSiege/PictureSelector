@@ -19,8 +19,8 @@ import com.luck.picture.lib.adapter.MediaListAdapter
 import com.luck.picture.lib.adapter.base.BaseMediaListAdapter
 import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.dialog.AlbumListPopWindow
@@ -152,7 +152,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     open fun setDataEmpty() {
         mTvDataEmpty?.text =
-            if (config.selectorMode == SelectorMode.AUDIO) getString(R.string.ps_audio_empty) else getString(
+            if (config.mediaType == MediaType.AUDIO) getString(R.string.ps_audio_empty) else getString(
                 R.string.ps_empty
             )
     }
@@ -397,7 +397,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 }
             } else {
                 isNotifyAll = if (selectCount == 0 ||
-                    (if (isAddRemove) config.selectorMode == SelectorMode.ALL && selectCount == 1
+                    (if (isAddRemove) config.mediaType == MediaType.ALL && selectCount == 1
                     else selectCount == config.totalCount - 1)
                 ) {
                     true
@@ -626,7 +626,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun checkPermissions() {
-        if (PermissionChecker.isCheckReadStorage(requireContext(), config.selectorMode)) {
+        if (PermissionChecker.isCheckReadStorage(requireContext(), config.mediaType)) {
             if (isNeedRestore()) {
                 restoreMemoryData()
             } else {
@@ -635,7 +635,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         } else {
             val permissionArray = PermissionChecker.getReadPermissionArray(
                 requireContext(),
-                config.selectorMode
+                config.mediaType
             )
             showPermissionDescription(true, permissionArray)
             val onPermissionApplyListener = config.mListenerInfo.onPermissionApplyListener
@@ -738,7 +738,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
      */
     open fun setDefaultAlbumTitle(title: String?) {
         mTvTitle?.text =
-            config.defaultAlbumName ?: title ?: if (config.selectorMode == SelectorMode.AUDIO)
+            config.defaultAlbumName ?: title ?: if (config.mediaType == MediaType.AUDIO)
                 getString(R.string.ps_all_audio) else getString(
                 R.string.ps_camera_roll
             )

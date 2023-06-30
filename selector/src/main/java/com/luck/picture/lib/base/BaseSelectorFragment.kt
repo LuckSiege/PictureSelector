@@ -22,8 +22,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.luck.picture.lib.*
 import com.luck.picture.lib.app.SelectorAppMaster
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.CropWrap
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
@@ -339,7 +339,7 @@ abstract class BaseSelectorFragment : Fragment() {
         ) {
             return false
         }
-        if (config.selectorMode == SelectorMode.ALL) {
+        if (config.mediaType == MediaType.ALL) {
             var videoSize = 0
             var imageSize = 0
             selectResult.forEach {
@@ -372,14 +372,14 @@ abstract class BaseSelectorFragment : Fragment() {
             }
         } else {
             if (config.minSelectNum > 0 && selectResult.size <= 0) {
-                val msg = when (config.selectorMode) {
-                    SelectorMode.VIDEO -> {
+                val msg = when (config.mediaType) {
+                    MediaType.VIDEO -> {
                         getString(
                             R.string.ps_min_video_num,
                             config.minSelectNum.toString()
                         )
                     }
-                    SelectorMode.AUDIO -> {
+                    MediaType.AUDIO -> {
                         getString(
                             R.string.ps_min_audio_num,
                             config.minSelectNum.toString()
@@ -403,27 +403,27 @@ abstract class BaseSelectorFragment : Fragment() {
      * Turn on the camera
      */
     open fun openSelectedCamera() {
-        if (config.selectorMode == SelectorMode.ALL) {
-            if (config.allCameraMode == SelectorMode.ALL) {
+        if (config.mediaType == MediaType.ALL) {
+            if (config.allCameraMediaType == MediaType.ALL) {
                 onSelectedOnlyCameraDialog()
             } else {
-                startCameraAction(config.allCameraMode)
+                startCameraAction(config.allCameraMediaType)
             }
         } else {
-            startCameraAction(config.selectorMode)
+            startCameraAction(config.mediaType)
         }
     }
 
     /**
-     * Activate camera intent based on [SelectorMode]
+     * Activate camera intent based on [MediaType]
      */
-    open fun startCameraAction(mode: SelectorMode) {
-        if (mode == SelectorMode.AUDIO) {
+    open fun startCameraAction(mode: MediaType) {
+        if (mode == MediaType.AUDIO) {
             soundRecording()
         } else {
             val permission = arrayOf(Manifest.permission.CAMERA)
             if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
-                if (mode == SelectorMode.VIDEO) {
+                if (mode == MediaType.VIDEO) {
                     recordVideo()
                 } else {
                     takePictures()
@@ -438,7 +438,7 @@ abstract class BaseSelectorFragment : Fragment() {
                         object : OnPermissionResultListener {
                             override fun onGranted() {
                                 showPermissionDescription(false, permission)
-                                if (mode == SelectorMode.VIDEO) {
+                                if (mode == MediaType.VIDEO) {
                                     recordVideo()
                                 } else {
                                     takePictures()
@@ -508,7 +508,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (customCameraListener != null) {
             customCameraListener.onCamera(
                 this,
-                SelectorMode.IMAGE,
+                MediaType.IMAGE,
                 outputUri,
                 SelectorConstant.REQUEST_CAMERA
             )
@@ -556,7 +556,7 @@ abstract class BaseSelectorFragment : Fragment() {
         if (customCameraListener != null) {
             customCameraListener.onCamera(
                 this,
-                SelectorMode.VIDEO,
+                MediaType.VIDEO,
                 outputUri,
                 SelectorConstant.REQUEST_CAMERA
             )
@@ -582,7 +582,7 @@ abstract class BaseSelectorFragment : Fragment() {
     }
 
     /**
-     * [SelectorMode.ALL] mode, select one option for taking photos and recording videos, pop up the box
+     * [MediaType.ALL] mode, select one option for taking photos and recording videos, pop up the box
      */
     open fun onSelectedOnlyCameraDialog() {
         val selectedDialog = PhotoItemSelectedDialog.newInstance()
@@ -590,11 +590,11 @@ abstract class BaseSelectorFragment : Fragment() {
             override fun onItemClick(position: Int, data: View) {
                 when (position) {
                     PhotoItemSelectedDialog.IMAGE_CAMERA -> {
-                        startCameraAction(SelectorMode.IMAGE)
+                        startCameraAction(MediaType.IMAGE)
                     }
 
                     PhotoItemSelectedDialog.VIDEO_CAMERA -> {
-                        startCameraAction(SelectorMode.VIDEO)
+                        startCameraAction(MediaType.VIDEO)
                     }
                 }
             }
@@ -655,8 +655,8 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun onCheckSelectValidity(media: LocalMedia, isSelected: Boolean): Int {
         val count = getSelectResult().size
-        when (config.selectorMode) {
-            SelectorMode.ALL -> {
+        when (config.mediaType) {
+            MediaType.ALL -> {
                 if (config.isAllWithImageVideo) {
                     // Support for selecting images and videos
                     var videoSize = 0
@@ -755,7 +755,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     }
                 }
             }
-            SelectorMode.IMAGE -> {
+            MediaType.IMAGE -> {
                 if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
@@ -765,7 +765,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     return SelectedState.INVALID
                 }
             }
-            SelectorMode.VIDEO -> {
+            MediaType.VIDEO -> {
                 if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
@@ -776,7 +776,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     return SelectedState.INVALID
                 }
             }
-            SelectorMode.AUDIO -> {
+            MediaType.AUDIO -> {
                 if (count >= config.totalCount) {
                     showTipsDialog(
                         getString(
@@ -883,7 +883,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     ?: viewModel.outputUri
                 }
                 if (outputUri != null) {
-                    if (config.selectorMode == SelectorMode.AUDIO && schemeFile && data?.data != null) {
+                    if (config.mediaType == MediaType.AUDIO && schemeFile && data?.data != null) {
                         copyAudioUriToFile(data.data!!)
                     } else {
                         analysisCameraData(outputUri)

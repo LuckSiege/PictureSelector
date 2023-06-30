@@ -14,8 +14,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.luck.picture.lib.BuildConfig;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.MediaType;
 import com.luck.picture.lib.config.SelectorConfig;
-import com.luck.picture.lib.config.SelectorMode;
 import com.luck.picture.lib.provider.SelectorProviders;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -76,7 +76,7 @@ public class ForegroundService extends Service {
         }
         SelectorConfig config = SelectorProviders.Companion.getInstance().getSelectorConfig();
 
-        String contentText = config.getSelectorMode() == SelectorMode.AUDIO
+        String contentText = config.getMediaType() == MediaType.AUDIO
                 ? getString(R.string.ps_use_sound) : getString(R.string.ps_use_camera);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ps_ic_trans_1px)

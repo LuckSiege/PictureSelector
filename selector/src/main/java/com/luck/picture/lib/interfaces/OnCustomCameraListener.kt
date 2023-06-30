@@ -2,7 +2,7 @@ package com.luck.picture.lib.interfaces
 
 import android.net.Uri
 import androidx.fragment.app.Fragment
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 
 /**
  * @author：luck
@@ -17,5 +17,5 @@ interface OnCustomCameraListener {
      * @param outputUri   Camera output uri
      * @param requestCode requestCode for result
      */
-    fun onCamera(fragment: Fragment, type: SelectorMode, outputUri: Uri, requestCode: Int)
+    fun onCamera(fragment: Fragment, type: MediaType, outputUri: Uri, requestCode: Int)
 }

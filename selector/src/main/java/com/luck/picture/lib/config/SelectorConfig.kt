@@ -25,8 +25,8 @@ import com.luck.picture.lib.style.WindowAnimStyle
 class SelectorConfig {
     var statusBarStyle = StatusBarStyle()
     var windowAnimStyle = WindowAnimStyle()
-    var selectorMode = SelectorMode.ALL
-    var allCameraMode = SelectorMode.ALL
+    var mediaType = MediaType.ALL
+    var allCameraMediaType = MediaType.ALL
     var selectionMode = SelectionMode.MULTIPLE
     var imageSpanCount = SelectorConstant.DEFAULT_GRID_ITEM_COUNT
     var totalCount = SelectorConstant.DEFAULT_MAX_SELECT_NUM
@@ -100,8 +100,8 @@ class SelectorConfig {
         this.registry.clear()
         this.statusBarStyle.of(false, Color.parseColor("#393a3e"), Color.parseColor("#393a3e"))
         this.windowAnimStyle.of(R.anim.ps_anim_enter, R.anim.ps_anim_exit)
-        this.selectorMode = SelectorMode.ALL
-        this.allCameraMode = SelectorMode.ALL
+        this.mediaType = MediaType.ALL
+        this.allCameraMediaType = MediaType.ALL
         this.selectionMode = SelectionMode.MULTIPLE
         this.imageSpanCount = SelectorConstant.DEFAULT_GRID_ITEM_COUNT
         this.totalCount = SelectorConstant.DEFAULT_MAX_SELECT_NUM

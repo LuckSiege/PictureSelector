@@ -13,9 +13,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.luck.picture.lib.*
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.config.SelectorConfig
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.FileSizeUnitConstant
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.engine.CropEngine
@@ -42,11 +42,11 @@ import org.jetbrains.annotations.NotNull
  * @date：2017-5-24 22:30
  * @describe：SelectionMainModel
  */
-class SelectionMainModel constructor(private var selector: PictureSelector, mode: SelectorMode) {
+class SelectionMainModel constructor(private var selector: PictureSelector, mediaType: MediaType) {
     private var config: SelectorConfig = SelectorConfig()
 
     init {
-        config.selectorMode = mode
+        config.mediaType = mediaType
         SelectorProviders.getInstance().addSelectorConfigQueue(config)
     }
 
@@ -321,11 +321,11 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
     /**
      * Choose between photographing and shooting in ofAll mode
      *
-     * @param allCameraMode [SelectorMode.VIDEO]#[SelectorMode.IMAGE]
-     * The default is [SelectorMode.ALL] mode
+     * @param allCameraMediaType [MediaType.VIDEO]#[MediaType.IMAGE]
+     * The default is [MediaType.ALL] mode
      */
-    fun setAllOfCameraMode(allCameraMode: SelectorMode): SelectionMainModel {
-        this.config.allCameraMode = allCameraMode
+    fun setAllOfCameraMode(allCameraMediaType: MediaType): SelectionMainModel {
+        this.config.allCameraMediaType = allCameraMediaType
         return this
     }
 
@@ -401,7 +401,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         isAsTotalCount: Boolean
     ): SelectionMainModel {
         this.config.totalCount = totalCount
-        if (this.config.selectorMode == SelectorMode.ALL) {
+        if (this.config.mediaType == MediaType.ALL) {
             this.config.maxVideoSelectNum = maxVideoNum
             this.config.isAsTotalCount = isAsTotalCount
             this.config.isAllWithImageVideo = maxVideoNum > 0
@@ -663,7 +663,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         isPreviewEffect: Boolean,
         isFullScreen: Boolean
     ): SelectionMainModel {
-        if (this.config.selectorMode != SelectorMode.AUDIO) {
+        if (this.config.mediaType != MediaType.AUDIO) {
             this.config.isPreviewZoomEffect = isPreviewEffect
         }
         this.config.isPreviewFullScreenMode = isFullScreen
@@ -682,7 +682,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         isFullScreen: Boolean,
         listView: ViewGroup
     ): SelectionMainModel {
-        if (this.config.selectorMode != SelectorMode.AUDIO) {
+        if (this.config.mediaType != MediaType.AUDIO) {
             this.config.isPreviewZoomEffect = isPreviewEffect
             if (isPreviewEffect) {
                 RecycleItemViewParams.build(
@@ -831,7 +831,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, mode
         }
         val activity = selector.getActivity()
             ?: throw NullPointerException("PictureSelector.create(); # Activity is empty")
-        if (config.imageEngine == null && config.selectorMode != SelectorMode.AUDIO) {
+        if (config.imageEngine == null && config.mediaType != MediaType.AUDIO) {
             throw NullPointerException("Please set the API # .setImageEngine(${ImageEngine::class.simpleName});")
         }
         val intent = Intent(activity, SelectorSupporterActivity::class.java)

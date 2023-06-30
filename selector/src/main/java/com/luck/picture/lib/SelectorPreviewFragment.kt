@@ -29,8 +29,8 @@ import com.luck.picture.lib.adapter.PreviewVideoHolder
 import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
 import com.luck.picture.lib.base.BaseSelectorFragment
 import com.luck.picture.lib.config.LayoutSource
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
-import com.luck.picture.lib.config.SelectorMode
 import com.luck.picture.lib.constant.CropWrap
 import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.constant.SelectorConstant
@@ -612,7 +612,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         } else {
             mMagicalView?.setBackgroundAlpha(1.0F)
         }
-        if (config.selectorMode == SelectorMode.AUDIO || (getPreviewWrap().source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
+        if (config.mediaType == MediaType.AUDIO || (getPreviewWrap().source.isNotEmpty() && MediaUtils.hasMimeTypeOfAudio(
                 getPreviewWrap().source.first().mimeType
             ))
         ) {

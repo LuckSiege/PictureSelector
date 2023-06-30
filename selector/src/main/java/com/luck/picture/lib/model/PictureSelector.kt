@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.luck.picture.lib.config.SelectorMode
+import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import java.lang.ref.SoftReference
@@ -41,34 +41,34 @@ class PictureSelector {
 
     /**
      * open gallery source
-     * use [SelectorMode]
+     * use [MediaType]
      */
-    fun openGallery(mode: SelectorMode): SelectionMainModel {
-        return SelectionMainModel(this, mode)
+    fun openGallery(mediaType: MediaType): SelectionMainModel {
+        return SelectionMainModel(this, mediaType)
     }
 
     /**
      * From system album Select the type of images you want，all or images or video or audio
-     * use [SelectorMode]
+     * use [MediaType]
      */
-    fun openSystemGallery(mode: SelectorMode): SelectionSystemModel {
-        return SelectionSystemModel(this, mode)
+    fun openSystemGallery(mediaType: MediaType): SelectionSystemModel {
+        return SelectionSystemModel(this, mediaType)
     }
 
     /**
      * only use camera，images or video or audio
-     * use [SelectorMode]
+     * use [MediaType]
      */
-    fun openCamera(mode: SelectorMode): SelectionCameraModel {
-        return SelectionCameraModel(this, mode)
+    fun openCamera(mediaType: MediaType): SelectionCameraModel {
+        return SelectionCameraModel(this, mediaType)
     }
 
     /**
      * query the type of images you want，all or images or video or audio
-     * use [SelectorMode]
+     * use [MediaType]
      */
-    fun dataSource(mode: SelectorMode): SelectionQueryModel {
-        return SelectionQueryModel(this, mode)
+    fun dataSource(mediaType: MediaType): SelectionQueryModel {
+        return SelectionQueryModel(this, mediaType)
     }
 
     /**
