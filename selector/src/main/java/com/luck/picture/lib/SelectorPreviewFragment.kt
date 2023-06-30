@@ -228,10 +228,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         mTvComplete?.setOnClickListener {
             onCompleteClick(it)
         }
-        if (config.selectionMode == SelectionMode.ONLY_SINGLE) {
-            mTvSelectNum?.visibility = View.GONE
-            mTvComplete?.visibility = View.GONE
-        }
     }
 
 
