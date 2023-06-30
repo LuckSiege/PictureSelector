@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.InputStream
 import java.net.URLConnection
 import java.util.*
 import kotlin.coroutines.resume
@@ -250,23 +251,37 @@ object MediaUtils {
                 val mediaInfo = MediaInfo()
                 mediaInfo.mimeType = mimeType
                 if (hasMimeTypeOfImage(mimeType)) {
-                    val options = BitmapFactory.Options()
-                    options.inJustDecodeBounds = true
+                    var exif: ExifInterface? = null
+                    var inputStream: InputStream? = null
                     if (isContent(path)) {
-                        val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
-                        try {
-                            BitmapFactory.decodeStream(inputStream, null, options)
-                            mediaInfo.width = options.outWidth
-                            mediaInfo.height = options.outHeight
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        } finally {
-                            FileUtils.close(inputStream)
+                        inputStream = context.contentResolver.openInputStream(Uri.parse(path))
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && inputStream != null) {
+                            exif = ExifInterface(inputStream)
                         }
                     } else {
-                        BitmapFactory.decodeFile(path, options)
-                        mediaInfo.width = options.outWidth
-                        mediaInfo.height = options.outHeight
+                        exif = ExifInterface(path)
+                    }
+                    exif?.apply {
+                        val orientation = this.getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL
+                        )
+                        val width = this.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 0)
+                        val height = this.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 0)
+                        if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                            || orientation == ExifInterface.ORIENTATION_ROTATE_180
+                            || orientation == ExifInterface.ORIENTATION_ROTATE_270
+                            || orientation == ExifInterface.ORIENTATION_TRANSVERSE
+                        ) {
+                            mediaInfo.width = height
+                            mediaInfo.height = width
+                        } else {
+                            mediaInfo.width = width
+                            mediaInfo.height = height
+                        }
+                    }
+                    inputStream?.apply {
+                        FileUtils.close(this)
                     }
                 } else if (hasMimeTypeOfVideo(mimeType)) {
                     val retriever = MediaMetadataRetriever()
