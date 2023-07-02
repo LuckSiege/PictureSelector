@@ -13,7 +13,7 @@ class ListenerInfo {
     var onRecordAudioListener: OnRecordAudioListener? = null
     var onCustomCameraListener: OnCustomCameraListener? = null
     var onSelectFilterListener: OnSelectFilterListener? = null
-    var onApplyFileNameListener: OnApplyFileNameListener? = null
+    var onReplaceFileNameListener: OnReplaceFileNameListener? = null
     var onCustomLoadingListener: OnCustomLoadingListener? = null
     var onResultCallbackListener: OnResultCallbackListener? = null
     var onCustomAnimationListener: OnCustomAnimationListener? = null
@@ -31,7 +31,7 @@ class ListenerInfo {
         this.onSelectFilterListener = null
         this.onCustomCameraListener = null
         this.onCustomLoadingListener = null
-        this.onApplyFileNameListener = null
+        this.onReplaceFileNameListener = null
         this.onResultCallbackListener = null
         this.onExternalPreviewListener = null
         this.onCustomAnimationListener = null

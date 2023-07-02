@@ -127,8 +127,8 @@ class SelectionCameraModel constructor(
     /**
      * Use custom file name
      */
-    fun setOnApplyFileNameListener(l: OnApplyFileNameListener?): SelectionCameraModel {
-        this.config.mListenerInfo.onApplyFileNameListener = l
+    fun setOnReplaceFileNameListener(l: OnReplaceFileNameListener?): SelectionCameraModel {
+        this.config.mListenerInfo.onReplaceFileNameListener = l
         return this
     }
 

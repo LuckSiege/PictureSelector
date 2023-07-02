@@ -462,7 +462,7 @@ abstract class BaseSelectorFragment : Fragment() {
         } else {
             // Use custom storage path
             val defaultFileName = "${FileUtils.createFileName("AUD")}.amr"
-            val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
+            val applyFileNameListener = config.mListenerInfo.onReplaceFileNameListener
             val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
             viewModel.outputUri = Uri.fromFile(File(outputDir, fileName))
         }
@@ -491,7 +491,7 @@ abstract class BaseSelectorFragment : Fragment() {
         val context = requireContext()
         val outputDir = config.imageOutputDir
         val defaultFileName = "${FileUtils.createFileName("IMG")}.jpg"
-        val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
+        val applyFileNameListener = config.mListenerInfo.onReplaceFileNameListener
         val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
         val outputUri: Uri?
         if (TextUtils.isEmpty(outputDir)) {
@@ -538,7 +538,7 @@ abstract class BaseSelectorFragment : Fragment() {
         val context = requireContext()
         val outputDir = config.videoOutputDir
         val defaultFileName = "${FileUtils.createFileName("VID")}.mp4"
-        val applyFileNameListener = config.mListenerInfo.onApplyFileNameListener
+        val applyFileNameListener = config.mListenerInfo.onReplaceFileNameListener
         val fileName = applyFileNameListener?.apply(defaultFileName) ?: defaultFileName
         val outputUri: Uri?
         if (TextUtils.isEmpty(outputDir)) {

@@ -187,8 +187,8 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
     /**
      * Use custom file name
      */
-    fun setOnApplyFileNameListener(l: OnApplyFileNameListener?): SelectionMainModel {
-        this.config.mListenerInfo.onApplyFileNameListener = l
+    fun setOnReplaceFileNameListener(l: OnReplaceFileNameListener?): SelectionMainModel {
+        this.config.mListenerInfo.onReplaceFileNameListener = l
         return this
     }
 

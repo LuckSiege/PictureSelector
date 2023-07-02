@@ -5,7 +5,7 @@ package com.luck.picture.lib.interfaces
  * @date：2022/8/12 7:19 下午
  * @describe：Use custom file name
  */
-interface OnApplyFileNameListener {
+interface OnReplaceFileNameListener {
     /**
      * Users can customize file names
      */
