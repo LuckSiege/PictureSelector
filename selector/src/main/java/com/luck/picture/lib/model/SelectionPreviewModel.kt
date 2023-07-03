@@ -98,9 +98,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
      * return value is expected to be a layout resource reference ([R.layout.ps_fragment_selector]).
      */
     fun inflateCustomLayout(key: LayoutSource, @LayoutRes resource: Int): SelectionPreviewModel {
-        if (resource != 0) {
-            this.config.layoutSource[key] = resource
-        }
+        this.config.layoutSource[key] = resource
         return this
     }
 

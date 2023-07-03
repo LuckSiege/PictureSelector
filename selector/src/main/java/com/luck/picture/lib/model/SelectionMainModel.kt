@@ -102,9 +102,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
      * return value is expected to be a layout resource reference ([R.layout.ps_fragment_selector]).
      */
     fun inflateCustomLayout(key: LayoutSource, @LayoutRes resource: Int): SelectionMainModel {
-        if (resource != 0) {
-            this.config.layoutSource[key] = resource
-        }
+        this.config.layoutSource[key] = resource
         return this
     }
 
