@@ -96,7 +96,7 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     private var tipsDialog: Dialog? = null
 
-    protected val config = SelectorProviders.getInstance().getSelectorConfig()
+    protected val config = SelectorProviders.getInstance().getConfig()
 
     protected val factory = ClassFactory.NewInstance()
 

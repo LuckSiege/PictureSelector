@@ -29,7 +29,7 @@ import kotlin.math.max
  */
 open class MediaPagingLoaderImpl(val application: Application) : MediaLoader() {
 
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
 
     override fun getQueryUri(): Uri {
         return MediaStore.Files.getContentUri("external")

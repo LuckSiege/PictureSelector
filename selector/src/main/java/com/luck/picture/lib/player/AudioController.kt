@@ -21,7 +21,7 @@ import com.luck.picture.lib.utils.DateUtils
  * @describe：Audio Player Controller
  */
 open class AudioController : ConstraintLayout, AbsController {
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
     private lateinit var seekBar: SeekBar
     private lateinit var ivBack: ImageView
     private lateinit var ivFast: ImageView

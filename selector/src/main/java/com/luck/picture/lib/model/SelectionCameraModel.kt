@@ -39,7 +39,7 @@ class SelectionCameraModel constructor(
         this.config.isDisplayTimeAxis = false
         this.config.isPreviewFullScreenMode = false
         this.config.isPreviewZoomEffect = false
-        SelectorProviders.getInstance().addSelectorConfigQueue(config)
+        SelectorProviders.getInstance().addConfigQueue(config)
     }
 
     /**

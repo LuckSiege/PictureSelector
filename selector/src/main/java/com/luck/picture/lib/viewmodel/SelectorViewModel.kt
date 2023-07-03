@@ -37,7 +37,7 @@ class SelectorViewModel(application: Application, private val state: SavedStateH
     /**
      * PictureSelector Config
      */
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
 
     /**
      * Media loader

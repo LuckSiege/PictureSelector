@@ -52,7 +52,7 @@ class MagicalView @JvmOverloads constructor(
     private val backgroundView: View
     private val magicalWrapper: MagicalViewWrapper
     private val isPreviewFullScreenMode: Boolean
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
     private var startX = 0
     private var startY = 0
 

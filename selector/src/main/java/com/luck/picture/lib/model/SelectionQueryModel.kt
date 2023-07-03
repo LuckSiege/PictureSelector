@@ -28,7 +28,7 @@ class SelectionQueryModel constructor(
 
     init {
         this.config.mediaType = mediaType
-        SelectorProviders.getInstance().addSelectorConfigQueue(config)
+        SelectorProviders.getInstance().addConfigQueue(config)
     }
 
     /**

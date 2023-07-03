@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull
  */
 abstract class BaseMediaListAdapter :
     RecyclerView.Adapter<BaseListViewHolder>() {
-    val config = SelectorProviders.getInstance().getSelectorConfig()
+    val config = SelectorProviders.getInstance().getConfig()
     val holderFactory = ClassFactory.NewConstructorInstance()
     private var mData = mutableListOf<LocalMedia>()
 

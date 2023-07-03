@@ -16,7 +16,7 @@ import com.luck.picture.lib.utils.DensityUtil
  * @describe：BasePreviewMediaHolder
  */
 abstract class BasePreviewMediaHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val config = SelectorProviders.getInstance().getSelectorConfig()
+    val config = SelectorProviders.getInstance().getConfig()
     var screenWidth = DensityUtil.getRealScreenWidth(itemView.context)
     var screenHeight = DensityUtil.getScreenHeight(itemView.context)
     var screenAppInHeight = DensityUtil.getRealScreenHeight(itemView.context)

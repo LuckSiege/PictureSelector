@@ -10,29 +10,29 @@ import java.util.*
  * @describe：SelectorProviders
  */
 class SelectorProviders {
-    private val selectionConfigsQueue = LinkedList<SelectorConfig>()
+    private val configQueue = LinkedList<SelectorConfig>()
 
-    fun addSelectorConfigQueue(config: SelectorConfig) {
-        selectionConfigsQueue.add(config)
+    fun addConfigQueue(config: SelectorConfig) {
+        configQueue.add(config)
     }
 
-    fun getSelectorConfig(): SelectorConfig {
-        return if (selectionConfigsQueue.size > 0) selectionConfigsQueue.last else SelectorConfig()
+    fun getConfig(): SelectorConfig {
+        return if (configQueue.size > 0) configQueue.last else SelectorConfig()
     }
 
     fun destroy() {
-        val selectorConfig = getSelectorConfig()
-        selectorConfig.destroy()
-        selectionConfigsQueue.remove(selectorConfig)
+        val config = getConfig()
+        config.destroy()
+        configQueue.remove(config)
         TempDataProvider.getInstance().reset()
         SelectorLogUtils.info("${System.currentTimeMillis()}:销毁")
     }
 
     fun reset() {
-        for (i in selectionConfigsQueue.indices) {
-            selectionConfigsQueue[i].destroy()
+        for (i in configQueue.indices) {
+            configQueue[i].destroy()
         }
-        selectionConfigsQueue.clear()
+        configQueue.clear()
     }
 
     companion object {

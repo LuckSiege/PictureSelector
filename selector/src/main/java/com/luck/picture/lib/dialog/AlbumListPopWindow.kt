@@ -30,7 +30,7 @@ import com.luck.picture.lib.widget.WrapContentLinearLayoutManager
  * @describe：AlbumListPopWindow
  */
 open class AlbumListPopWindow(context: Context) : PopupWindow() {
-    val config = SelectorProviders.getInstance().getSelectorConfig()
+    val config = SelectorProviders.getInstance().getConfig()
     var windMask: View
     var rvList: RecyclerView
     var rootView: RelativeLayout

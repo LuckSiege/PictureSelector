@@ -11,7 +11,7 @@ import com.luck.picture.lib.provider.SelectorProviders
  * @describe：BaseListViewHolder
  */
 open class BaseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var config = SelectorProviders.getInstance().getSelectorConfig()
+    var config = SelectorProviders.getInstance().getConfig()
 
     var mItemClickListener: OnMediaItemClickListener? = null
 

@@ -13,7 +13,7 @@ import com.luck.picture.lib.provider.SelectorProviders
  * @describe：SelectorSupporterActivity
  */
 class SelectorSupporterActivity : AppCompatActivity() {
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

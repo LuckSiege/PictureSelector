@@ -47,7 +47,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
 
     init {
         config.mediaType = mediaType
-        SelectorProviders.getInstance().addSelectorConfigQueue(config)
+        SelectorProviders.getInstance().addConfigQueue(config)
     }
 
     /**

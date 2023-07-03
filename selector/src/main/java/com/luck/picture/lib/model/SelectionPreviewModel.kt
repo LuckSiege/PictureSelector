@@ -42,7 +42,7 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
     private var config: SelectorConfig = SelectorConfig()
 
     init {
-        SelectorProviders.getInstance().addSelectorConfigQueue(config)
+        SelectorProviders.getInstance().addConfigQueue(config)
     }
 
 

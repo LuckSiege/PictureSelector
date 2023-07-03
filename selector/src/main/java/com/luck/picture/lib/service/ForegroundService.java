@@ -74,7 +74,7 @@ public class ForegroundService extends Service {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
-        SelectorConfig config = SelectorProviders.Companion.getInstance().getSelectorConfig();
+        SelectorConfig config = SelectorProviders.Companion.getInstance().getConfig();
 
         String contentText = config.getMediaType() == MediaType.AUDIO
                 ? getString(R.string.ps_use_sound) : getString(R.string.ps_use_camera);

@@ -14,7 +14,7 @@ import com.luck.picture.lib.provider.SelectorProviders
  * @describe：SelectorTransparentActivity
  */
 class SelectorTransparentActivity : AppCompatActivity() {
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         immersive()

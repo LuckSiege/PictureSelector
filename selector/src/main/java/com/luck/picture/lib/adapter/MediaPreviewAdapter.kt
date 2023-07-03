@@ -20,7 +20,7 @@ import com.luck.picture.lib.utils.MediaUtils
  */
 open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() {
     private lateinit var mData: MutableList<LocalMedia>
-    private val config = SelectorProviders.getInstance().getSelectorConfig()
+    private val config = SelectorProviders.getInstance().getConfig()
     private val holderFactory = ClassFactory.NewConstructorInstance()
     private val mViewHolderCache = LinkedHashMap<Int, BasePreviewMediaHolder>()
     private var isFirstAttachedToWindow = false

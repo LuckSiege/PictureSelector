@@ -35,7 +35,7 @@ class SelectionSystemModel constructor(
         this.config.mediaType = mediaType
         this.config.isPreviewZoomEffect = false
         this.config.isPreviewFullScreenMode = false
-        SelectorProviders.getInstance().addSelectorConfigQueue(config)
+        SelectorProviders.getInstance().addConfigQueue(config)
     }
 
     /**
