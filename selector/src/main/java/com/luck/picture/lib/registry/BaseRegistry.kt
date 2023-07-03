@@ -1,6 +1,11 @@
 package com.luck.picture.lib.registry
 
 import androidx.annotation.NonNull
+import com.luck.picture.lib.adapter.MediaPreviewAdapter
+import com.luck.picture.lib.adapter.base.BaseListViewHolder
+import com.luck.picture.lib.adapter.base.BaseMediaListAdapter
+import com.luck.picture.lib.adapter.base.BasePreviewMediaHolder
+import com.luck.picture.lib.base.BaseSelectorFragment
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -17,6 +22,26 @@ abstract class BaseRegistry {
         fun handles(fromClass: Class<*>): Boolean {
             return fromClass.isAssignableFrom(this.fromClass)
         }
+    }
+
+    fun <V> isAssignableFromCapture(targetClass: Class<V>): Boolean {
+        return VideoCaptureComponent::class.java.isAssignableFrom(targetClass)
+                || ImageCaptureComponent::class.java.isAssignableFrom(targetClass)
+                || SoundCaptureComponent::class.java.isAssignableFrom(targetClass)
+    }
+
+    fun <V> isAssignableFromHolder(targetClass: Class<V>): Boolean {
+        return BaseListViewHolder::class.java.isAssignableFrom(targetClass)
+                || BasePreviewMediaHolder::class.java.isAssignableFrom(targetClass)
+    }
+
+    fun <V> isAssignableFromFragment(targetClass: Class<V>): Boolean {
+        return BaseSelectorFragment::class.java.isAssignableFrom(targetClass)
+    }
+
+    fun <A> isAssignableFromAdapter(targetClass: Class<A>): Boolean {
+        return BaseMediaListAdapter::class.java.isAssignableFrom(targetClass)
+                || MediaPreviewAdapter::class.java.isAssignableFrom(targetClass)
     }
 
     open fun clear() {
