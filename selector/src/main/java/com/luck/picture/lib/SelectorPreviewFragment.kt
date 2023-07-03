@@ -403,7 +403,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
             if (viewParams == null || width == 0 && height == 0) {
                 mMagicalView?.startNormal(width, height, false)
                 mMagicalView?.setBackgroundAlpha(1F)
-                mBottomNarBar?.alpha = 1F
+                navBarViews.forEach {
+                    it.alpha = 1F
+                }
             } else {
                 mMagicalView?.setViewParams(
                     viewParams.left,
@@ -582,7 +584,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isHasMagicalEffect()) {
             val alpha = if (isSavedInstanceState) 1F else 0F
             mMagicalView?.setBackgroundAlpha(alpha)
-            mBottomNarBar?.alpha = alpha
+            navBarViews.forEach {
+                it.alpha = alpha
+            }
         } else {
             mMagicalView?.setBackgroundAlpha(1.0F)
         }
@@ -671,7 +675,9 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
 
     open fun onMojitoBackgroundAlpha(alpha: Float) {
         mMagicalView?.setBackgroundAlpha(alpha)
-        mBottomNarBar?.alpha = alpha
+        navBarViews.forEach {
+            it.alpha = alpha
+        }
     }
 
     open fun onMojitoMagicalViewFinish() {
