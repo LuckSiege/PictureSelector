@@ -26,6 +26,7 @@ import com.luck.picture.lib.constant.SelectedState
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnItemClickListener
 import com.luck.picture.lib.interfaces.OnLongClickListener
+import com.luck.picture.lib.utils.DateUtils
 import com.luck.picture.lib.utils.DensityUtil
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.SdkVersionUtils
@@ -396,7 +397,7 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             holder.viewBorder.visibility =
                 if (isSelected(currentMedia, media)) View.VISIBLE else View.INVISIBLE
             holder.ivEditor.visibility = if (media.isEditor()) View.VISIBLE else View.GONE
-            holder.ivPlay.visibility =
+            holder.ivVideoFlag.visibility =
                 if (MediaUtils.hasMimeTypeOfVideo(media.mimeType) || MediaUtils.hasMimeTypeOfAudio(
                         media.mimeType
                     )
@@ -425,9 +426,9 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
 
         class GalleryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val ivCover: ImageView = itemView.findViewById(R.id.iv_image)
-            val ivEditor: ImageView = itemView.findViewById(R.id.iv_editor)
-            val ivPlay: ImageView = itemView.findViewById(R.id.iv_play)
             val viewBorder: View = itemView.findViewById(R.id.view_border)
+            val ivEditor: ImageView = itemView.findViewById(R.id.iv_editor)
+            val ivVideoFlag: ImageView = itemView.findViewById(R.id.iv_video_flag)
         }
 
         fun isSelected(currentMedia: LocalMedia?, media: LocalMedia): Boolean {

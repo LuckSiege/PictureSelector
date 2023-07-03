@@ -21,11 +21,13 @@
         android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/iv_play"
-        android:layout_width="21dp"
-        android:layout_height="21dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ps_ic_video_play"
+        android:id="@+id/iv_video_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="3dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ps_ic_video"
         android:visibility="gone" />
 
     <View
