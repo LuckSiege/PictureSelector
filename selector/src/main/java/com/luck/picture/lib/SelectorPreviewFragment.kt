@@ -114,28 +114,6 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         screenWidth = DensityUtil.getRealScreenWidth(requireContext())
         screenHeight = DensityUtil.getScreenHeight(requireContext())
         isPlayPageSelected = !config.isPreviewZoomEffect
-        // TitleBar
-        mStatusBar = view.findViewById(R.id.ps_status_bar)
-        mTitleBar = view.findViewById(R.id.ps_title_bar)
-        mIvLeftBack = view.findViewById(R.id.ps_iv_left_back)
-        mTvTitle = view.findViewById(R.id.ps_tv_title)
-        mTvSelected = view.findViewById(R.id.ps_tv_selected)
-        setStatusBarRectSize(mStatusBar)
-        mTitleBar?.let {
-            titleViews.add(it)
-        }
-        // BottomNarBar
-        mBottomNarBar = view.findViewById(R.id.ps_bottom_nar_bar)
-        mTvEditor = view.findViewById(R.id.ps_tv_editor)
-        mTvOriginal = view.findViewById(R.id.ps_tv_original)
-        mTvComplete = view.findViewById(R.id.ps_tv_complete)
-        mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
-        mBottomNarBar?.let {
-            navBarViews.add(it)
-        }
-
-        // MagicalView
-        mMagicalView = view.findViewById(R.id.magical)
         initViews(view)
         attachPreview()
         initTitleBar()
@@ -159,7 +137,28 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun initViews(view: View) {
+        // TitleBar
+        mStatusBar = view.findViewById(R.id.ps_status_bar)
+        mTitleBar = view.findViewById(R.id.ps_title_bar)
+        mIvLeftBack = view.findViewById(R.id.ps_iv_left_back)
+        mTvTitle = view.findViewById(R.id.ps_tv_title)
+        mTvSelected = view.findViewById(R.id.ps_tv_selected)
+        setStatusBarRectSize(mStatusBar)
+        mTitleBar?.let {
+            titleViews.add(it)
+        }
+        // BottomNarBar
+        mBottomNarBar = view.findViewById(R.id.ps_bottom_nar_bar)
+        mTvEditor = view.findViewById(R.id.ps_tv_editor)
+        mTvOriginal = view.findViewById(R.id.ps_tv_original)
+        mTvComplete = view.findViewById(R.id.ps_tv_complete)
+        mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
+        mBottomNarBar?.let {
+            navBarViews.add(it)
+        }
 
+        // MagicalView
+        mMagicalView = view.findViewById(R.id.magical)
     }
 
     open fun initWidgets() {

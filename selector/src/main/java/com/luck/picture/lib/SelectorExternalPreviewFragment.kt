@@ -46,7 +46,9 @@ open class SelectorExternalPreviewFragment : SelectorPreviewFragment() {
 
     private lateinit var ivDelete: ImageView
 
+
     override fun initViews(view: View) {
+        super.initViews(view)
         ivDelete = view.findViewById(R.id.ps_iv_delete)
         ivDelete.visibility =
             if (config.previewWrap.isDisplayDelete) View.VISIBLE else View.GONE

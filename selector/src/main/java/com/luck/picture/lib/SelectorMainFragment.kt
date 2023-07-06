@@ -103,6 +103,18 @@ open class SelectorMainFragment : BaseSelectorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews(view)
+        onMergeSelectedSource()
+        initAlbumWindow()
+        initTitleBar()
+        initNavbarBar()
+        initMediaAdapter()
+        checkPermissions()
+        registerLiveData()
+        initWidgets()
+    }
+
+    open fun initViews(view: View) {
         // RecyclerView
         mRecycler = view.findViewById(R.id.ps_recycler)
         mTvDataEmpty = view.findViewById(R.id.ps_tv_data_empty)
@@ -123,19 +135,6 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         mTvOriginal = view.findViewById(R.id.ps_tv_original)
         mTvComplete = view.findViewById(R.id.ps_tv_complete)
         mTvSelectNum = view.findViewById(R.id.ps_tv_select_num)
-        initViews(view)
-        onMergeSelectedSource()
-        initAlbumWindow()
-        initTitleBar()
-        initNavbarBar()
-        initMediaAdapter()
-        checkPermissions()
-        registerLiveData()
-        initWidgets()
-    }
-
-    open fun initViews(view: View) {
-
     }
 
     open fun initWidgets() {
