@@ -482,6 +482,17 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 }
             }
         })
+
+        mRecycler.setOnRecyclerViewScrollStateListener(object : OnRecyclerViewScrollStateListener {
+            override fun onScrollFast() {
+                config.imageEngine?.pauseRequests(requireContext())
+            }
+
+            override fun onScrollSlow() {
+                config.imageEngine?.resumeRequests(requireContext())
+            }
+        })
+
         mRecycler.setOnRecyclerViewScrollListener(object : OnRecyclerViewScrollListener {
             override fun onScrolled(dx: Int, dy: Int) {
                 setCurrentMediaCreateTimeText()
