@@ -41,6 +41,11 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.luck.lib.camerax.SimpleCameraX
 import com.luck.picture.lib.adapter.PreviewVideoHolder
+import com.luck.picture.lib.adapter.base.BaseListViewHolder
+import com.luck.picture.lib.adapter.base.BaseMediaListAdapter
+import com.luck.picture.lib.animators.AlphaInAnimationAdapter
+import com.luck.picture.lib.animators.BaseAnimationAdapter
+import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
@@ -92,6 +97,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbCallback: RadioButton
     private lateinit var rbLauncher: RadioButton
     private lateinit var rbRequestCode: RadioButton
+    private lateinit var rbDefaultListAnim: RadioButton
+    private lateinit var rbAlphaListAnim: RadioButton
+    private lateinit var rbScaleListAnim: RadioButton
     private lateinit var tvDeleteText: TextView
     private lateinit var launcherResult: ActivityResultLauncher<Intent>
     private var mediaType: MediaType = MediaType.ALL
@@ -284,6 +292,10 @@ class MainActivity : AppCompatActivity() {
         rbLauncher = findViewById(R.id.rb_launcher)
         rbRequestCode = findViewById(R.id.rb_request_code)
 
+        rbDefaultListAnim = findViewById(R.id.rb_default_list_anim)
+        rbAlphaListAnim = findViewById(R.id.rb_alpha_list_anim)
+        rbScaleListAnim = findViewById(R.id.rb_scale_list_anim)
+
         rbDefaultWindowAnim = findViewById(R.id.rb_default_window_anim)
         rbWindowUpAnim = findViewById(R.id.rb_window_up_anim)
 
@@ -472,6 +484,22 @@ class MainActivity : AppCompatActivity() {
                         if (checkCustomCamera.isChecked) {
                             gallery.registry(CustomCameraActivity::class.java)
                         }
+                        gallery.setOnAnimationAdapterWrapListener(object :
+                            OnAnimationAdapterWrapListener {
+                            override fun wrap(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): BaseAnimationAdapter? {
+                                return when {
+                                    rbAlphaListAnim.isChecked -> {
+                                        AlphaInAnimationAdapter(adapter)
+                                    }
+                                    rbScaleListAnim.isChecked -> {
+                                        SlideInBottomAnimationAdapter(adapter)
+                                    }
+                                    else -> {
+                                        null
+                                    }
+                                }
+                            }
+                        })
                         gallery.setLanguage(language)
                         gallery.setPageSize(pageSize)
                         gallery.setImageEngine(GlideEngine.create())

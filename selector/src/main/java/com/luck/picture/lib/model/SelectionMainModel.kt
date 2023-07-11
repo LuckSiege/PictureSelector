@@ -167,6 +167,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
     }
 
     /**
+     * Media List Animation wrap
+     */
+    fun setOnAnimationAdapterWrapListener(l: OnAnimationAdapterWrapListener?): SelectionMainModel {
+        this.config.mListenerInfo.onAnimationAdapterWrapListener = l
+        return this
+    }
+
+    /**
      * Custom recording callback listening
      */
     fun setOnRecordAudioListener(l: OnRecordAudioListener?): SelectionMainModel {

@@ -21,8 +21,8 @@ class ListenerInfo {
     var onPermissionDeniedListener: OnPermissionDeniedListener? = null
     var onFragmentLifecycleListener: OnFragmentLifecycleListener? = null
     var onPermissionApplyListener: OnPermissionsInterceptListener? = null
+    var onAnimationAdapterWrapListener: OnAnimationAdapterWrapListener? = null
     var onPermissionDescriptionListener: OnPermissionDescriptionListener? = null
-
 
     fun destroy() {
         this.onEditorMediaListener = null
@@ -38,6 +38,7 @@ class ListenerInfo {
         this.onPermissionApplyListener = null
         this.onPermissionDeniedListener = null
         this.onFragmentLifecycleListener = null
+        this.onAnimationAdapterWrapListener = null
         this.onPermissionDescriptionListener = null
     }
 }

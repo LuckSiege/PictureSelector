@@ -162,7 +162,7 @@
                         android:layout_marginLeft="7dp"
                         android:button="@drawable/ps_ic_trans_1px"
                         android:enabled="false"
-                        android:text="相册启动效果"
+                        android:text="启动效果"
                         android:textColor="@color/ps_color_black"
                         android:textSize="14sp" />
 
@@ -180,6 +180,48 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="底部弹出"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/rgb_list_anim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:button="@drawable/ps_ic_trans_1px"
+                        android:enabled="false"
+                        android:text="列表动画"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_default_list_anim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="默认"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_alpha_list_anim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="透明渐变"
+                        android:textColor="@color/ps_color_black"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_scale_list_anim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="底部渐入"
                         android:textColor="@color/ps_color_black"
                         android:textSize="14sp" />
                 </RadioGroup>
@@ -505,8 +547,8 @@
                     android:id="@+id/check_editor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="编辑"
                     android:checked="true"
+                    android:text="编辑"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 
@@ -580,8 +622,8 @@
                     android:id="@+id/check_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="自定义选择限制"
                     android:checked="true"
+                    android:text="自定义选择限制"
                     android:textColor="@color/ps_color_black"
                     android:textSize="14sp" />
 

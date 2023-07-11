@@ -461,11 +461,14 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         return factory.create(adapterClass)
     }
 
+    @Suppress("UNCHECKED_CAST")
     open fun initMediaAdapter() {
         initRecyclerConfig(mRecycler)
         mAdapter = createMediaAdapter()
         mAdapter.setDisplayCamera(isDisplayCamera())
-        mRecycler.adapter = mAdapter
+        mRecycler.adapter =
+            config.mListenerInfo.onAnimationAdapterWrapListener?.wrap(mAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>)
+                ?: mAdapter
         setFastSlidingSelect()
         onSelectionResultChange(null)
         mRecycler.setReachBottomRow(RecyclerPreloadView.BOTTOM_PRELOAD)
@@ -732,6 +735,9 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun onPreloadFakeData() {
+        if (isSavedInstanceState) {
+            return
+        }
         val pre = mutableListOf<LocalMedia>()
         for (i in 0 until SelectorConstant.DEFAULT_MAX_PAGE_SIZE) {
             pre.add(LocalMedia().apply {
