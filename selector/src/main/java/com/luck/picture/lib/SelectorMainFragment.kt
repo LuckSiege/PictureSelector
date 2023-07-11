@@ -722,12 +722,23 @@ open class SelectorMainFragment : BaseSelectorFragment() {
             mRecycler.setEnabledLoadMore(false)
             viewModel.loadAppInternalDir(sandboxDir)
         } else {
-            viewModel.loadMedia(getCurrentAlbum().bucketId)
+            onPreloadFakeData()
             Looper.myQueue().addIdleHandler {
                 viewModel.loadMediaAlbum()
+                viewModel.loadMedia(getCurrentAlbum().bucketId)
                 return@addIdleHandler false
             }
         }
+    }
+
+    open fun onPreloadFakeData() {
+        val pre = mutableListOf<LocalMedia>()
+        for (i in 0 until SelectorConstant.DEFAULT_MAX_PAGE_SIZE) {
+            pre.add(LocalMedia().apply {
+                this.id = SelectorConstant.INVALID_DATA
+            })
+        }
+        mAdapter.setDataNotifyChanged(pre)
     }
 
     /**

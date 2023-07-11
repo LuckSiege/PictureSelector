@@ -9,6 +9,7 @@ import com.luck.picture.lib.R
 import com.luck.picture.lib.adapter.base.BaseListViewHolder
 import com.luck.picture.lib.config.SelectionMode
 import com.luck.picture.lib.constant.SelectedState
+import com.luck.picture.lib.constant.SelectorConstant
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.StyleUtils
@@ -40,10 +41,13 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
         if (MediaUtils.hasMimeTypeOfAudio(media.mimeType)) {
             ivCover.setImageResource(R.drawable.ps_audio_placeholder)
         } else {
-            media.getAvailablePath()?.let { config.imageEngine?.loadListImage(ivCover.context, it, ivCover) }
+            config.imageEngine?.loadListImage(ivCover.context, media.getAvailablePath(), ivCover)
         }
         tvSelectView.setOnClickListener {
             if (media.isEnabledMask) {
+                return@setOnClickListener
+            }
+            if (media.id == SelectorConstant.INVALID_DATA) {
                 return@setOnClickListener
             }
             val resultCode =
@@ -95,6 +99,9 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
 
         itemView.setOnClickListener {
             if (media.isEnabledMask) {
+                return@setOnClickListener
+            }
+            if (media.id == SelectorConstant.INVALID_DATA) {
                 return@setOnClickListener
             }
             val isPreview = when {

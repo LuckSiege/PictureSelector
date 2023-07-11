@@ -19,6 +19,7 @@ object SelectorConstant {
     const val REQUEST_CROP = 10001
     const val REQUEST_EDITOR_CROP = 10002
     const val REQUEST_GO_SETTING = 10003
+    const val INVALID_DATA = -10000L
 
     const val KEY_EXTRA_RESULT = "extra_result_media"
     const val QUICK_CAPTURE = "android.intent.extra.quickCapture"
