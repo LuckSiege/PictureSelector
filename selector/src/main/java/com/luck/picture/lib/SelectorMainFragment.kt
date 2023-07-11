@@ -446,7 +446,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                 )
             }
             view.layoutManager =
-                GridLayoutManager(requireContext(), config.imageSpanCount)
+                WrapContentGridLayoutManager(requireContext(), config.imageSpanCount)
             (view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
     }
