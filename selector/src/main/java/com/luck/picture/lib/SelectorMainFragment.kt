@@ -326,8 +326,13 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
         // Cache the current album data before switching to the next album
         mAlbumWindow.getAlbum(oldCurrentAlbum.bucketId)?.let {
-            it.source = mAdapter.getData().toMutableList()
-            it.cachePage = viewModel.page
+            val source = mAdapter.getData().toMutableList()
+            if (source.isNotEmpty() && source.first().id == SelectorConstant.INVALID_DATA) {
+                // ignore
+            } else {
+                it.source = source
+                it.cachePage = viewModel.page
+            }
         }
         // Update current album
         setCurrentAlbum(data)
@@ -745,6 +750,9 @@ open class SelectorMainFragment : BaseSelectorFragment() {
         }
     }
 
+    /**
+     * set fake data transition
+     */
     open fun onPreloadFakeData() {
         if (isSavedInstanceState) {
             return
