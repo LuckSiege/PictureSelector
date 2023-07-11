@@ -144,7 +144,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         TempDataProvider.getInstance().albumSource = mAlbumWindow.getAlbumList()
-        TempDataProvider.getInstance().mediaSource = mAdapter.getData()
+        TempDataProvider.getInstance().mediaSource = mAdapter.getData().toMutableList()
     }
 
     open fun setDataEmpty() {
