@@ -176,6 +176,7 @@ abstract class BaseSelectorFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        restoreEngine()
         viewModel.onSaveInstanceState()
     }
 
