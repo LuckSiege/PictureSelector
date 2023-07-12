@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.Surface
 import android.view.TextureView
 import android.widget.FrameLayout
+import com.luck.picture.lib.player.widget.TextureViewAttacher
 import com.luck.picture.lib.utils.MediaUtils
 
 /**
@@ -20,6 +21,7 @@ class DefaultMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMed
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var textureView: VideoTextureView
     private var mVideoRotation = 0
+    private lateinit var textureViewAttacher: TextureViewAttacher
 
     constructor(context: Context) : super(context) {
         init()
@@ -44,6 +46,7 @@ class DefaultMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMed
                 this.gravity = Gravity.CENTER
             }
         addView(textureView)
+        textureViewAttacher = TextureViewAttacher(textureView)
     }
 
     override fun setDataSource(context: Context, path: String, isLoopAutoPlay: Boolean) {
@@ -126,6 +129,7 @@ class DefaultMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMed
         if (listener != null) {
             mediaPlayer?.setOnPreparedListener {
                 listener.onPrepared(this)
+                textureViewAttacher.update()
             }
         } else {
             mediaPlayer?.setOnPreparedListener(null)
