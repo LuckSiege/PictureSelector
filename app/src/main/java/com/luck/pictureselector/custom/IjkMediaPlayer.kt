@@ -10,7 +10,6 @@ import android.view.TextureView
 import android.widget.FrameLayout
 import com.luck.picture.lib.player.IMediaPlayer
 import com.luck.picture.lib.player.VideoTextureView
-import com.luck.picture.lib.player.widget.TextureViewAttacher
 import com.luck.picture.lib.utils.MediaUtils
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
@@ -22,7 +21,6 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
 class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPlayer {
     private lateinit var textureView: VideoTextureView
     private var mediaPlayer: IjkMediaPlayer? = null
-    private lateinit var textureViewAttacher: TextureViewAttacher
     private var mVideoRotation = 0
 
     constructor(context: Context) : super(context) {
@@ -48,7 +46,6 @@ class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPl
                 this.gravity = Gravity.CENTER
             }
         addView(textureView, 0)
-        textureViewAttacher = TextureViewAttacher(textureView)
     }
 
     override fun initMediaPlayer() {
@@ -142,7 +139,6 @@ class IjkMediaPlayer : FrameLayout, TextureView.SurfaceTextureListener, IMediaPl
         if (listener != null) {
             mediaPlayer?.setOnPreparedListener {
                 listener.onPrepared(this)
-                textureViewAttacher.update()
             }
         } else {
             mediaPlayer?.setOnPreparedListener(null)
