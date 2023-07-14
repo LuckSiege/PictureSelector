@@ -4,7 +4,6 @@ package com.luck.picture.lib.player.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -14,7 +13,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewParent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView.ScaleType;
 import android.widget.OverScroller;
 
 import com.luck.picture.lib.photoview.OnMatrixChangedListener;
@@ -87,7 +85,6 @@ public class TextureViewAttacher implements View.OnTouchListener,
     private float mBaseRotation;
 
     private boolean mZoomEnabled = true;
-    private ScaleType mScaleType = ScaleType.FIT_CENTER;
 
     private final OnTextureViewGestureListener onTextureViewGestureListener = new OnTextureViewGestureListener() {
         @Override
@@ -304,16 +301,12 @@ public class TextureViewAttacher implements View.OnTouchListener,
                 (getValue(mSuppMatrix, Matrix.MSKEW_Y), 2));
     }
 
-    public ScaleType getScaleType() {
-        return mScaleType;
-    }
-
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int
             oldRight, int oldBottom) {
         // Update our base matrix, as the bounds have changed
         if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom) {
-            updateBaseMatrix(mTextureView.getBitmap());
+            updateBaseMatrix();
         }
     }
 
@@ -458,12 +451,6 @@ public class TextureViewAttacher implements View.OnTouchListener,
         mInterpolator = interpolator;
     }
 
-    public void setScaleType(ScaleType scaleType) {
-        if (TextureViewUtils.INSTANCE.isSupportedScaleType(scaleType) && scaleType != mScaleType) {
-            mScaleType = scaleType;
-            update();
-        }
-    }
 
     public boolean isZoomable() {
         return mZoomEnabled;
@@ -477,7 +464,7 @@ public class TextureViewAttacher implements View.OnTouchListener,
     public void update() {
         if (mZoomEnabled) {
             // Update the base matrix using the current drawable
-            updateBaseMatrix(mTextureView.getBitmap());
+            updateBaseMatrix();
         } else {
             // Reset the Matrix...
             resetMatrix();
@@ -575,59 +562,9 @@ public class TextureViewAttacher implements View.OnTouchListener,
 
     /**
      * Calculate Matrix for FIT_CENTER
-     *
-     * @param bitmap - bitmap being displayed
      */
-    private void updateBaseMatrix(Bitmap bitmap) {
-        if (bitmap == null) {
-            return;
-        }
-        final float viewWidth = getTextureViewWidth(mTextureView);
-        final float viewHeight = getTextureViewHeight(mTextureView);
-        final int bitmapWidth = bitmap.getWidth();
-        final int bitmapHeight = bitmap.getHeight();
+    private void updateBaseMatrix() {
         mBaseMatrix.reset();
-        final float widthScale = viewWidth / bitmapWidth;
-        final float heightScale = viewHeight / bitmapHeight;
-        if (mScaleType == ScaleType.CENTER) {
-            mBaseMatrix.postTranslate((viewWidth - bitmapWidth) / 2F,
-                    (viewHeight - bitmapHeight) / 2F);
-
-        } else if (mScaleType == ScaleType.CENTER_CROP) {
-            float scale = Math.max(widthScale, heightScale);
-            mBaseMatrix.postScale(scale, scale);
-            mBaseMatrix.postTranslate((viewWidth - bitmapWidth * scale) / 2F,
-                    (viewHeight - bitmapHeight * scale) / 2F);
-
-        } else if (mScaleType == ScaleType.CENTER_INSIDE) {
-            float scale = Math.min(1.0f, Math.min(widthScale, heightScale));
-            mBaseMatrix.postScale(scale, scale);
-            mBaseMatrix.postTranslate((viewWidth - bitmapWidth * scale) / 2F,
-                    (viewHeight - bitmapHeight * scale) / 2F);
-
-        } else {
-            RectF mTempSrc = new RectF(0, 0, bitmapWidth, bitmapHeight);
-            RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
-            if ((int) mBaseRotation % 180 != 0) {
-                mTempSrc = new RectF(0, 0, bitmapHeight, bitmapWidth);
-            }
-            switch (mScaleType) {
-                case FIT_CENTER:
-                    mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.CENTER);
-                    break;
-                case FIT_START:
-                    mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.START);
-                    break;
-                case FIT_END:
-                    mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.END);
-                    break;
-                case FIT_XY:
-                    mBaseMatrix.setRectToRect(mTempSrc, mTempDst, ScaleToFit.FILL);
-                    break;
-                default:
-                    break;
-            }
-        }
         resetMatrix();
     }
 
@@ -640,17 +577,7 @@ public class TextureViewAttacher implements View.OnTouchListener,
         float deltaX = 0, deltaY = 0;
         final int viewHeight = getTextureViewHeight(mTextureView);
         if (height <= viewHeight) {
-            switch (mScaleType) {
-                case FIT_START:
-                    deltaY = -rect.top;
-                    break;
-                case FIT_END:
-                    deltaY = viewHeight - height - rect.top;
-                    break;
-                default:
-                    deltaY = (viewHeight - height) / 2 - rect.top;
-                    break;
-            }
+            deltaY = (viewHeight - height) / 2 - rect.top;
             mVerticalScrollEdge = VERTICAL_EDGE_BOTH;
         } else if (rect.top > 0) {
             mVerticalScrollEdge = VERTICAL_EDGE_TOP;
@@ -663,17 +590,7 @@ public class TextureViewAttacher implements View.OnTouchListener,
         }
         final int viewWidth = getTextureViewWidth(mTextureView);
         if (width <= viewWidth) {
-            switch (mScaleType) {
-                case FIT_START:
-                    deltaX = -rect.left;
-                    break;
-                case FIT_END:
-                    deltaX = viewWidth - width - rect.left;
-                    break;
-                default:
-                    deltaX = (viewWidth - width) / 2 - rect.left;
-                    break;
-            }
+            deltaX = (viewWidth - width) / 2 - rect.left;
             mHorizontalScrollEdge = HORIZONTAL_EDGE_BOTH;
         } else if (rect.left > 0) {
             mHorizontalScrollEdge = HORIZONTAL_EDGE_LEFT;
