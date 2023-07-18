@@ -241,7 +241,7 @@ class SelectionCameraModel constructor(
     /**
      * Custom permissions
      */
-    fun setOnPermissionsApplyListener(l: OnPermissionsApplyListener?): SelectionCameraModel {
+    fun setOnPermissionsApplyListener(l: OnPermissionApplyListener?): SelectionCameraModel {
         this.config.mListenerInfo.onPermissionApplyListener = l
         return this
     }

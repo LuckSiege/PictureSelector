@@ -898,7 +898,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val getPermissionsInterceptListener = object : OnPermissionsApplyListener {
+    private val getPermissionsInterceptListener = object : OnPermissionApplyListener {
         override fun requestPermission(
             fragment: Fragment,
             permissionArray: Array<String>,

@@ -20,7 +20,7 @@ class ListenerInfo {
     var onExternalPreviewListener: OnExternalPreviewListener? = null
     var onPermissionDeniedListener: OnPermissionDeniedListener? = null
     var onFragmentLifecycleListener: OnFragmentLifecycleListener? = null
-    var onPermissionApplyListener: OnPermissionsApplyListener? = null
+    var onPermissionApplyListener: OnPermissionApplyListener? = null
     var onAnimationAdapterWrapListener: OnAnimationAdapterWrapListener? = null
     var onPermissionDescriptionListener: OnPermissionDescriptionListener? = null
 
