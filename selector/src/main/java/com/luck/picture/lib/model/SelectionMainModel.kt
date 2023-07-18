@@ -786,7 +786,7 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
     /**
      * Custom permissions
      */
-    fun setOnPermissionsInterceptListener(l: OnPermissionsInterceptListener?): SelectionMainModel {
+    fun setOnPermissionsApplyListener(l: OnPermissionsApplyListener?): SelectionMainModel {
         this.config.mListenerInfo.onPermissionApplyListener = l
         return this
     }

@@ -87,7 +87,7 @@ class SelectionSystemModel constructor(
     /**
      * Custom permissions
      */
-    fun setOnPermissionsInterceptListener(l: OnPermissionsInterceptListener?): SelectionSystemModel {
+    fun setOnPermissionsApplyListener(l: OnPermissionsApplyListener?): SelectionSystemModel {
         this.config.mListenerInfo.onPermissionApplyListener = l
         return this
     }

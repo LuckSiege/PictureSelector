@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment
 /**
  * @author：luck
  * @date：2021/12/1 8:48 下午
- * @describe：OnPermissionsInterceptListener
+ * @describe：OnPermissionsApplyListener
  */
-interface OnPermissionsInterceptListener {
+interface OnPermissionsApplyListener {
     /**
      * Custom Permissions management
      *

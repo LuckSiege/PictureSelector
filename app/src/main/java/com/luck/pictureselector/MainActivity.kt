@@ -41,8 +41,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.luck.lib.camerax.SimpleCameraX
 import com.luck.picture.lib.adapter.PreviewVideoHolder
-import com.luck.picture.lib.adapter.base.BaseListViewHolder
-import com.luck.picture.lib.adapter.base.BaseMediaListAdapter
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter
 import com.luck.picture.lib.animators.BaseAnimationAdapter
 import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter
@@ -379,7 +377,7 @@ class MainActivity : AppCompatActivity() {
                         systemGallery.setOnPermissionDescriptionListener(
                             getPermissionDescriptionListener
                         )
-                        systemGallery.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
+                        systemGallery.setOnPermissionsApplyListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         when {
                             rbCallback.isChecked -> {
                                 systemGallery.forResult(getResultCallbackListener, true)
@@ -425,7 +423,7 @@ class MainActivity : AppCompatActivity() {
                         onlyCamera.setOnPermissionDescriptionListener(
                             getPermissionDescriptionListener
                         )
-                        onlyCamera.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
+                        onlyCamera.setOnPermissionsApplyListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         when {
                             rbCallback.isChecked -> {
                                 onlyCamera.forResult(getResultCallbackListener, true)
@@ -509,7 +507,7 @@ class MainActivity : AppCompatActivity() {
                         gallery.setOnFragmentLifecycleListener(if (checkLifecycle.isChecked) getFragmentLifecycleListener else null)
                         gallery.setOnSelectFilterListener(if (checkFilter.isChecked) geSelectFilterListener else null)
                         gallery.setOnPermissionDescriptionListener(getPermissionDescriptionListener)
-                        gallery.setOnPermissionsInterceptListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
+                        gallery.setOnPermissionsApplyListener(if (checkApplyPermission.isChecked) getPermissionsInterceptListener else null)
                         if (checkOutput.isChecked) {
                             when (mediaType) {
                                 MediaType.IMAGE -> {
@@ -900,7 +898,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val getPermissionsInterceptListener = object : OnPermissionsInterceptListener {
+    private val getPermissionsInterceptListener = object : OnPermissionsApplyListener {
         override fun requestPermission(
             fragment: Fragment,
             permissionArray: Array<String>,
