@@ -712,11 +712,11 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
             UseCaseGroup useCaseGroup = useCase.build();
             // Must unbind the use-cases before rebinding them
             mCameraProvider.unbindAll();
+            // Attach the viewfinder's surface provider to preview use case
+            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, useCaseGroup);
-            // Attach the viewfinder's surface provider to preview use case
-            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // setFlashMode
             setFlashMode();
             mCameraInfo = camera.getCameraInfo();
@@ -752,11 +752,11 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
 
             // Must unbind the use-cases before rebinding them
             mCameraProvider.unbindAll();
+            // Attach the viewfinder's surface provider to preview use case
+            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mImageCapture, mImageAnalyzer);
-            // Attach the viewfinder's surface provider to preview use case
-            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // setFlashMode
             setFlashMode();
             mCameraInfo = camera.getCameraInfo();
@@ -780,11 +780,11 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
             buildVideoCapture();
             // Must unbind the use-cases before rebinding them
             mCameraProvider.unbindAll();
+            // Attach the viewfinder's surface provider to preview use case
+            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mVideoCapture);
-            // Attach the viewfinder's surface provider to preview use case
-            preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             mCameraInfo = camera.getCameraInfo();
             mCameraControl = camera.getCameraControl();
             initCameraPreviewListener();
