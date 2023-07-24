@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.luck.picture.lib.config.SelectMimeType;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -20,13 +21,34 @@ public final class FileDirMap {
             return;
         }
         if (null == dirMap.get(SelectMimeType.TYPE_IMAGE)) {
-            dirMap.put(SelectMimeType.TYPE_IMAGE, context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath());
+            String path;
+            File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (externalFilesDir != null && externalFilesDir.exists()) {
+                path = externalFilesDir.getPath();
+            } else {
+                path = context.getCacheDir().getPath();
+            }
+            dirMap.put(SelectMimeType.TYPE_IMAGE, path);
         }
         if (null == dirMap.get(SelectMimeType.TYPE_VIDEO)) {
-            dirMap.put(SelectMimeType.TYPE_VIDEO, context.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath());
+            String path;
+            File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+            if (externalFilesDir != null && externalFilesDir.exists()) {
+                path = externalFilesDir.getPath();
+            } else {
+                path = context.getCacheDir().getPath();
+            }
+            dirMap.put(SelectMimeType.TYPE_VIDEO, path);
         }
         if (null == dirMap.get(SelectMimeType.TYPE_AUDIO)) {
-            dirMap.put(SelectMimeType.TYPE_AUDIO, context.getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath());
+            String path;
+            File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            if (externalFilesDir != null && externalFilesDir.exists()) {
+                path = externalFilesDir.getPath();
+            } else {
+                path = context.getCacheDir().getPath();
+            }
+            dirMap.put(SelectMimeType.TYPE_AUDIO, path);
         }
     }
 
