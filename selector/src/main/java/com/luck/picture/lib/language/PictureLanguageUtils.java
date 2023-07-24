@@ -8,8 +8,6 @@ import android.util.DisplayMetrics;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.utils.SpUtils;
-
-import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 /**
@@ -34,14 +32,13 @@ public class PictureLanguageUtils {
      * @param defaultLanguageId
      */
     public static void setAppLanguage(Context context, int languageId, int defaultLanguageId) {
-        WeakReference<Context> contextWeakReference = new WeakReference<>(context);
         if (languageId >= 0) {
-            applyLanguage(contextWeakReference.get(), LocaleTransform.getLanguage(languageId));
+            applyLanguage(context, LocaleTransform.getLanguage(languageId));
         } else {
             if (defaultLanguageId >= 0) {
-                applyLanguage(contextWeakReference.get(), LocaleTransform.getLanguage(defaultLanguageId));
+                applyLanguage(context, LocaleTransform.getLanguage(defaultLanguageId));
             } else {
-                setDefaultLanguage(contextWeakReference.get());
+                setDefaultLanguage(context);
             }
         }
     }
@@ -70,7 +67,7 @@ public class PictureLanguageUtils {
 
 
 
-    private static void updateLanguage(Context context, Locale locale) {
+    private static void updateLanguage(@NonNull Context context, Locale locale) {
         Resources resources = context.getResources();
         Configuration config = resources.getConfiguration();
         Locale contextLocale = config.locale;
