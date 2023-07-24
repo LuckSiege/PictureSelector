@@ -220,10 +220,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
         super.onSaveInstanceState(outState);
         outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, allFolderSize);
         outState.putInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
-        outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
-        outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
-        selectorConfig.addAlbumDataSource(albumListPopWindow.getAlbumList());
-        selectorConfig.addDataSource(mAdapter.getData());
+        if (mRecycler != null) {
+            outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
+        }
+        if (mAdapter != null) {
+            outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
+            selectorConfig.addDataSource(mAdapter.getData());
+        }
+        if (albumListPopWindow != null) {
+            selectorConfig.addAlbumDataSource(albumListPopWindow.getAlbumList());
+        }
     }
 
     @Override
