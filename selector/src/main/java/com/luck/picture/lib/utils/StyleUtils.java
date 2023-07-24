@@ -40,25 +40,12 @@ public class StyleUtils {
     }
 
     /**
-     * 验证文本是否有动态匹配符
-     *
-     * @param text
-     * @return
-     */
-    public static boolean checkTextFormatValidity(String text) {
-        String pattern = "\\([^)]*\\)";
-        Pattern compile = Pattern.compile(pattern);
-        Matcher matcher = compile.matcher(text);
-        return matcher.find();
-    }
-
-    /**
      * 验证文本是否有2个动态匹配符
      *
      * @param text
      * @return
      */
-    public static boolean checkTextTwoFormatValidity(String text) {
+    public static int getFormatCount(String text) {
         String pattern = "%[^%]*\\d";
         Pattern compile = Pattern.compile(pattern);
         Matcher matcher = compile.matcher(text);
@@ -66,7 +53,7 @@ public class StyleUtils {
         while (matcher.find()) {
             count++;
         }
-        return count >= 2;
+        return count;
     }
 
     /**

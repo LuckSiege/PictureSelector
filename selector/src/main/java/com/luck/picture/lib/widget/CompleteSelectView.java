@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -75,7 +74,10 @@ public class CompleteSelectView extends LinearLayout {
         String selectNormalText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalTextResId())
                 ? getContext().getString(selectMainStyle.getSelectNormalTextResId()) : selectMainStyle.getSelectNormalText();
         if (StyleUtils.checkTextValidity(selectNormalText)) {
-            if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
+            int formatCount = StyleUtils.getFormatCount(selectNormalText);
+            if (formatCount == 1) {
+                tvComplete.setText(String.format(selectNormalText, config.getSelectCount()));
+            } else if (formatCount == 2) {
                 tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));
             } else {
                 tvComplete.setText(selectNormalText);
@@ -128,7 +130,10 @@ public class CompleteSelectView extends LinearLayout {
             String selectText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectTextResId())
                     ? getContext().getString(selectMainStyle.getSelectTextResId()) : selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
-                if (StyleUtils.checkTextTwoFormatValidity(selectText)) {
+                int formatCount = StyleUtils.getFormatCount(selectText);
+                if (formatCount == 1) {
+                    tvComplete.setText(String.format(selectText, config.getSelectCount()));
+                } else if (formatCount == 2) {
                     tvComplete.setText(String.format(selectText, config.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectText);
@@ -198,7 +203,10 @@ public class CompleteSelectView extends LinearLayout {
             String selectNormalText = StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalTextResId())
                     ? getContext().getString(selectMainStyle.getSelectNormalTextResId()) : selectMainStyle.getSelectNormalText();
             if (StyleUtils.checkTextValidity(selectNormalText)) {
-                if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
+                int formatCount = StyleUtils.getFormatCount(selectNormalText);
+                if (formatCount == 1) {
+                    tvComplete.setText(String.format(selectNormalText, config.getSelectCount()));
+                } else if (formatCount == 2) {
                     tvComplete.setText(String.format(selectNormalText, config.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectNormalText);

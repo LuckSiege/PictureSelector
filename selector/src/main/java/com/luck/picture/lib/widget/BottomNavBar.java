@@ -197,8 +197,11 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             String previewSelectText = StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewSelectTextResId())
                     ? getContext().getString(bottomBarStyle.getBottomPreviewSelectTextResId()) : bottomBarStyle.getBottomPreviewSelectText();
             if (StyleUtils.checkTextValidity(previewSelectText)) {
-                if (StyleUtils.checkTextFormatValidity(previewSelectText)) {
+                int formatCount = StyleUtils.getFormatCount(previewSelectText);
+                if (formatCount == 1) {
                     tvPreview.setText(String.format(previewSelectText, config.getSelectCount()));
+                } else if (formatCount == 2) {
+                    tvPreview.setText(String.format(previewSelectText, config.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvPreview.setText(previewSelectText);
                 }
