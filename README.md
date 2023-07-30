@@ -3,15 +3,15 @@
    
    [简体中文🇨🇳](README_CN.md)
 
-   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2023-07-30_103142_kotlin-v1.0.0-beta.apk)<br>
+   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2023-07-30_110215_kotlin-v1.0.0-beta.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.1-yellow)](https://github.com/LuckSiege)
+[![Maven Central](https://img.shields.io/badge/maven%20central-kotlin_v1.0.0-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 
 ## Contents
--[Latest version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.11.1)<br>
+-[Latest version](https://github.com/LuckSiege/PictureSelector/releases/tag/kotlin-v1.0.0-beta)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
@@ -34,17 +34,7 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.11.1'
-
-  // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.11.1'
-
-  // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.11.1'
-
-  // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.11.1'
+    implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
 }
 ```
 
@@ -54,26 +44,9 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.11.1</version>
+  <version>kotlin-v1.0.0-beta</version>
 </dependency>
 
-<dependency>
-  <groupId>io.github.lucksiege</groupId>
-  <artifactId>compress</artifactId>
-  <version>v3.11.1</version>
-</dependency>
-
-<dependency>
-  <groupId>io.github.lucksiege</groupId>
-  <artifactId>ucrop</artifactId>
-  <version>v3.11.1</version>
-</dependency>
-
-<dependency>
-  <groupId>io.github.lucksiege</groupId>
-  <artifactId>camerax</artifactId>
-  <version>v3.11.1</version>
-</dependency>
 ```
 
 ## Permission  
