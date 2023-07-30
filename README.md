@@ -37,9 +37,6 @@ dependencies {
   // PictureSelector basic (Necessary)
   implementation 'io.github.lucksiege:pictureselector:v3.11.1'
 
-  // PictureSelector basic (Necessary Kotlin)
-  implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
-
   // image compress library (Not necessary)
   implementation 'io.github.lucksiege:compress:v3.11.1'
 
@@ -48,6 +45,15 @@ dependencies {
 
   // simple camerax library (Not necessary)
   implementation 'io.github.lucksiege:camerax:v3.11.1'
+}
+```
+
+Kotlin Version
+
+```sh
+dependencies {
+  // Please do not upgrade across versions, please check the Kotlin version demo first
+  implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
 }
 ```
 
