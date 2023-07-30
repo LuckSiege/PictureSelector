@@ -1,7 +1,7 @@
 ext {
     cfgs = [
-            versionCode                   : 91,
-            versionName                   : "v3.11.1",
+            versionCode                   : 93,
+            versionName                   : "v3.11.2",
 
             //open version control
             androidSupportVersion         : "27.0.2",
