@@ -1,45 +1,34 @@
-# PictureSelector 2.0
+# PictureSelector 3.0
    一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
-   
-   [英文版🇺🇸](README.md)
- 
-   [我的博客地址](http://blog.csdn.net/luck_mw)   
-  
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/demo_2021-11-14_122603_v2.7.3-rc10.apk)<br>
-  
-[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
+    
+   [English🇺🇸](README.md)
+
+   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2023-07-30_103142_kotlin-v1.0.0-beta.apk)<br>
+
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.1-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
-[![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
-[![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
+
 ## 目录
--[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
--[集成使用](#集成使用)<br>
--[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
--[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-2.0-%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[PictureSelector路径说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc10)<br>
--[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
--[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
+-[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.11.1)<br>
+-[如何引用](#如何引用)<br>
+-[进阶使用](#进阶使用)<br>
+-[权限](#权限)<br>
+-[返回结果说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)<br>
 -[演示效果](#演示效果)<br>
--[Api说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
--[启动相册](#启动相册)<br>
--[单独拍照](#单独拍照)<br>
--[自定义相机](#自定义相机)<br>
--[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
--[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[缓存清除](#缓存清除)<br>
 -[混淆配置](#混淆配置)<br>
--[License](#License)<br>
+-[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
+-[如何提Issues](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
+-[License](#License)<br>
 
 
 
+## 如何引用
 
-## 集成使用
-
+使用Gradle
 ```sh
 repositories {
   google()
@@ -47,239 +36,474 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.3-rc10'
+  // PictureSelector 基础 (必须)
+  implementation 'io.github.lucksiege:pictureselector:v3.11.1'
+
+  // 图片压缩 (按需引入)
+  implementation 'io.github.lucksiege:compress:v3.11.1'
+
+  // 图片裁剪 (按需引入)
+  implementation 'io.github.lucksiege:ucrop:v3.11.1'
+
+  // 自定义相机 (按需引入)
+  implementation 'io.github.lucksiege:camerax:v3.11.1'
 }
 ```
 
-Or Maven:
+或者Maven:
 
 ```sh
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v2.7.3-rc10</version>
+  <version>v3.11.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>compress</artifactId>
+  <version>v3.11.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>ucrop</artifactId>
+  <version>v3.11.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>camerax</artifactId>
+  <version>v3.11.1</version>
 </dependency>
 ```
 
-## 启动相册
-快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+## 权限
 
-1、onActivityResult
-```sh 
- PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
-                    // 结果回调
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
-```
+权限使用说明，请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
 
-2、Callback
 ```sh
- PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofAll())
-   .imageEngine(GlideEngine.createGlideEngine())
-   .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // 结果回调
-       }
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.VIBRATE" />
 
-       @Override
-       public void onCancel() {
-            // 取消
-       }
-     });  
+Android 13版本适配，细化存储权限
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 ```
 
-## 单独拍照
-快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+Android 11 使用相机，需要再AndroidManifest.xm 添加如下代码：
 
-onActivityResult
 ```sh
- PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.REQUEST_CAMERA);  
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.REQUEST_CAMERA:
-                    // 结果回调
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
+<queries package="${applicationId}">
+    <intent>
+        <action android:name="android.media.action.IMAGE_CAPTURE">
+
+        </action>
+    </intent>
+    <intent>
+        <action android:name="android.media.action.ACTION_VIDEO_CAPTURE">
+
+        </action>
+    </intent>
+</queries>
 ```
 
-Callback
+## ImageEngine
+[GlideEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java)<br> 
+[PicassoEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/PicassoEngine.java)<br>
+[CoilEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/CoilEngine.java)<br>
+
+
+## 进阶使用
+想要了解更多功能，请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%8A%9F%E8%83%BDapi%E8%AF%B4%E6%98%8E)
+
+简单用例如下所示:
+
+1、获取图片
+
 ```sh
 PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine())
+   .openGallery(SelectMimeType.ofImage())
+   .setImageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // 结果回调
-       }
+      @Override
+      public void onResult(ArrayList<LocalMedia> result) {
 
-       @Override
-       public void onCancel() {
-            // 取消
-       }
-     });
+      }
+
+      @Override
+      public void onCancel() {
+
+      }
+});
 ```
 
-## 自定义相机
-如果需要使用自定义相机需要设置
-```
-.isUseCustomCamera(true);
-```
-Application下实现如下接口
+使用系统相册
+
 ```sh
- public class App extends Application implements CameraXConfig.Provider {
-    private static final String TAG = App.class.getSimpleName();
+PictureSelector.create(this)
+     .openSystemGallery(SelectMimeType.ofImage())
+     .forResult(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(ArrayList<LocalMedia> result) {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+        }
 
-    @NonNull
-    @Override
-    public CameraXConfig getCameraXConfig() {
-        return Camera2Config.defaultConfig();
-    }
- }
+        @Override
+        public void onCancel() {
+
+        }
+});
 ```
 
-## 缓存清除
+2、单独拍照
+
 ```sh
- //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
- PictureCacheManager.deleteCacheDirFile(this,type);
- // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
- PictureCacheManager.deleteAllCacheDirFile(this);
- // 清除缓存且刷新图库
- PictureCacheManager.deleteAllCacheDirRefreshFile(this);
- // 清除缓存且刷新图库
- PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
-            @Override
-            public void onCall(String absolutePath) {
-                // 清空缓存并刷新相册
-            }
-        });
+PictureSelector.create(this)
+     .openCamera(SelectMimeType.ofImage())
+     .forResult(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(ArrayList<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+});
 ```
- 
-## 预览图片 
+
+Navigation Fragment场景下，单独拍照请使用如下方式:
+
+```sh
+PictureSelector.create(this)
+     .openCamera(SelectMimeType.ofImage())
+     .forResultActivity(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(ArrayList<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+});
 ```
-// 预览图片 可自定长按保存路径
-*注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
+
+
+3、您还可以按如下示例使用：
+
+(1)、注入到任意视图层
+
+```sh
 
 PictureSelector.create(this)
- .themeStyle(R.style.picture_default_style)
- .isNotPreviewDownload(true)
- .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
- .openExternalPreview(position, result);
+   .openGallery(SelectMimeType.ofAll())
+   .setImageEngine(GlideEngine.createGlideEngine())
+   .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
+      @Override
+      public void onResult(ArrayList<LocalMedia> result) {
+      
+      }
 
+      @Override
+      public void onCancel() {
+      
+      }
+});
+			
 ```
-## 预览视频
+
+(2)、自行注入到任意视图层
+
 ```sh
-PictureSelector.create(this).externalPictureVideo(video_path);
+
+PictureSelectorFragment selectorFragment = PictureSelector.create(this)
+     .openGallery(SelectMimeType.ofAll())
+     .setImageEngine(GlideEngine.createGlideEngine())
+     .build();
+     
+getSupportFragmentManager().beginTransaction()
+     .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
+     .addToBackStack(selectorFragment.getFragmentTag())
+     .commitAllowingStateLoss();
+			
 ```
 
-## 项目使用第三方库
+4、单独获取数据源
 
-* PhotoView
-* luban
-* ucrop
+(1)、专辑列表
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .obtainAlbumData(new OnQueryDataSourceListener<LocalMediaFolder>() {
+        @Override
+        public void onComplete(List<LocalMediaFolder> result) {
+
+        }
+   );
+
+```
+
+(2)、相册列表
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .obtainMediaData(new OnQueryDataSourceListener<LocalMedia>() {
+        @Override
+        public void onComplete(List<LocalMedia> result) {
+
+        }
+   );
+
+```
+
+(3)、根据IBridgeMediaLoader获取指定数据
+```sh
+
+IBridgeMediaLoader loader = PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofImage()).buildMediaLoader();
+    loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+        @Override
+        public void onComplete(List<LocalMediaFolder> result) {
+
+        }
+  });
+
+```
+
+
+5、预览图片、视频、音频
+
+如果预览网络视频AndroidManifest.xml添加如下代码
+
+```sh
+android:usesCleartextTraffic="true"
+```
+
+```sh
+
+PictureSelector.create(this)
+    .openPreview()
+    .setImageEngine(GlideEngine.createGlideEngine())
+    .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
+       @Override
+       public void onPreviewDelete(int position) {
+
+       }
+
+        @Override
+       public boolean onLongPressDownload(LocalMedia media) {
+           return false;
+       }
+    }).startActivityPreview(position, true, list);
+
+```
+
+
+设置图片选择器主题，更多请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
+
+```sh
+.setSelectorUIStyle();
+```
+或者您可以重载布局，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E9%87%8D%E8%BD%BD%E5%B8%83%E5%B1%80%EF%BC%9F)
+
+```sh
+.setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
+   @Override
+   public int getLayoutResourceId(Context context, int resourceSource) {
+	return 0;
+   }
+```
+
+高级用例如下所示：
+
+1、使用自定义相机功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%B8%E6%9C%BA%EF%BC%9F)
+
+```sh
+.setCameraInterceptListener(new OnCameraInterceptListener() {
+    @Override
+    public void openCamera(Fragment fragment, int cameraMode, int requestCode){
+	                                    
+    }
+});
+```
+
+2、使用图片压缩功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
+
+```sh
+.setCompressEngine(new CompressFileEngine() {
+   @Override
+   public void onStartCompress(Context context, ArrayList<Uri> source, OnKeyValueResultCallbackListener call){
+                                    
+   }
+});
+```
+
+3、使用图片裁剪功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%A3%81%E5%89%AA%EF%BC%9F)
+
+```sh
+
+.setCropEngine(new CropFileEngine() {
+   @Override
+   public void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
+                                    
+   }
+});
+```
+
+4、使用图片编辑功能，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E7%BC%96%E8%BE%91%E5%9B%BE%E7%89%87%EF%BC%9F)
+
+```sh
+.setEditMediaInterceptListener(new OnMediaEditInterceptListener() {
+    @Override
+    public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
+                                    
+    }
+});
+
+```
+
+5、加载自定义数据源，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%9F)
+
+```sh
+.setExtendLoaderEngine(new ExtendLoaderEngine() {
+    @Override
+    public void loadAllAlbumData(Context context, OnQueryAllAlbumListener<LocalMediaFolder> query) {
+                                    
+    }
+
+    @Override
+    public void loadOnlyInAppDirAllMediaData(Context context, OnQueryAlbumListener<LocalMediaFolder> query) {
+
+    }
+
+    @Override
+    public void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
+    }
+
+    @Override
+    public void loadMoreMediaData(Context context, long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
+    }
+ });
+
+
+```
+
+6、自定义权限申请，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+
+```sh
+.setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
+      @Override
+      public void requestPermission(Fragment fragment, String[] permissionArray, OnRequestPermissionListener call) {
+
+      }
+
+      @Override
+      public boolean hasPermissions(Fragment fragment, String[] permissionArray) {
+      	return false;
+      }
+});
+
+```
+
+7、Android 10 及以上版本，沙盒机制文件处理，详情请参阅 [文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%AE%BF%E9%97%AE%E6%B2%99%E7%9B%92%E5%A4%96%E8%B5%84%E6%BA%90%EF%BC%9F)
+
+```sh
+.setSandboxFileEngine(new UriToFileTransformEngine() {
+    @Override
+    public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
+                                        
+    }
+});
+```
+
 
 ## 混淆配置 
 ```sh
-#PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
 
-#Ucrop
+// 如果引入了Camerax库请添加混淆
+-keep class com.luck.lib.camerax.** { *; }
+	
+// 如果引入了Ucrop库请添加混淆
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
-
-
 ```
 ## License
 ```sh
-   Copyright 2017 Luck
+Copyright 2016 Luck
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
 
 ## 联系方式
-Android开发交流 新群 [662320389]() <br>
-Android开发交流 群一 [619458861]() (已满) <br>
-Android开发交流 群二 [679824206]() (已满) <br>
-Android开发交流 群三 [854136996]() (已满) <br>
+Android开发交流  [662320389]() <br>
+Android开发交流  [619458861]() <br>
+Android开发交流  [679824206]() <br>
+Android开发交流  [854136996]() <br>
 QQ [893855882]() <br>
 
 
 ## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
+![image](https://github.com/LuckSiege/PictureSelector/blob/version_component/image/test.png)
 
 
 ## 演示效果
 
-| 单一模式 | 混选模式 |
-|:-----------:|:-----------:|
-|![](image/home.jpg)|![](image/home_mixed.jpg)| 
+| 功能列表 |
+|:-----------:|
+|![](image/home.jpg)|
 
 | 默认风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
+|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|
 
 | 数字风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
+|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)|
 
 | 白色风格 | 预览 | 单图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
+|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)|
 
 | 全新风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
+|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)|
 
 | 相册目录 | 单选模式 | 头像裁剪|
 |:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
+|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)|
 
 | 白色风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)|
 
