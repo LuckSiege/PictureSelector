@@ -50,7 +50,7 @@ dependencies {
 }
 ```
 
-Kotlin版本
+Kotlin版本[Demo](https://github.com/LuckSiege/PictureSelector/tree/master)
 
 ```sh
 dependencies {
