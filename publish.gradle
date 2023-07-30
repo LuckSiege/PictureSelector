@@ -10,7 +10,7 @@ localProperties.each { name, value ->
 def mavenUsername = localProperties.getProperty("sonatype.username")
 def mavenPassword = localProperties.getProperty("sonatype.password")
 def projectGroupId = localProperties.getProperty("groupId")
-def projectArtifactId = localProperties.getProperty("artifactId")
+def projectArtifactId = PUBLISH_ARTIFACT_ID
 def projectVersionName = cfgs.versionName
 def projectDescription = localProperties.getProperty("description")
 def projectGitUrl = localProperties.getProperty("gitUrl")

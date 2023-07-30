@@ -26,6 +26,12 @@ android {
     }
 }
 
+ext {
+    PUBLISH_ARTIFACT_ID = "pictureselector"
+}
+
+apply from: '../publish.gradle'
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
