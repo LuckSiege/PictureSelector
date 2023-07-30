@@ -39,6 +39,9 @@ dependencies {
   // PictureSelector 基础 (必须)
   implementation 'io.github.lucksiege:pictureselector:v3.11.1'
 
+  // PictureSelector 基础 Kotlin (必须)
+  implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
+
   // 图片压缩 (按需引入)
   implementation 'io.github.lucksiege:compress:v3.11.1'
 
