@@ -46,7 +46,7 @@ public class FocusImageView extends AppCompatImageView {
     }
 
     private void init() {
-        setVisibility(View.GONE);
+        setVisibility(View.INVISIBLE);
         mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.focusview_show);
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -97,12 +97,12 @@ public class FocusImageView extends AppCompatImageView {
 
     private void setFocusGone() {
         if (isDisappear) {
-            setVisibility(View.GONE);
+            setVisibility(View.INVISIBLE);
         }
     }
 
     public void destroy() {
         mHandler.removeCallbacks(null, null);
-        setVisibility(View.GONE);
+        setVisibility(View.INVISIBLE);
     }
 }
