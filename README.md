@@ -1,4 +1,4 @@
-# PictureSelector 3.0
+# PictureSelector 3.0 
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br> 
    
    [简体中文🇨🇳](README_CN.md)
@@ -45,6 +45,15 @@ dependencies {
 
   // simple camerax library (Not necessary)
   implementation 'io.github.lucksiege:camerax:v3.11.1'
+}
+```
+
+Kotlin Version [Demo](https://github.com/LuckSiege/PictureSelector/tree/master)
+
+```sh
+dependencies {
+  // Please do not upgrade across versions, please check the Kotlin version demo first
+  implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
 }
 ```
 

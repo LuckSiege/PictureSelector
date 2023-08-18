@@ -50,6 +50,15 @@ dependencies {
 }
 ```
 
+Kotlin版本[Demo](https://github.com/LuckSiege/PictureSelector/tree/master)
+
+```sh
+dependencies {
+  // 请不要跨版本升级，请先查看Kotlin版Demo
+  implementation 'io.github.lucksiege:pictureselector:kotlin-v1.0.0-beta'
+}
+```
+
 或者Maven:
 
 ```sh
