@@ -14,9 +14,9 @@ import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CompressFileEngine;
@@ -194,6 +194,15 @@ public final class PictureSelectionSystemModel {
         return this;
     }
 
+    /**
+     * Compatible with Fragment fallback scheme, default to true
+     *
+     * @param isNewKeyBackMode
+     */
+    public PictureSelectionSystemModel isNewKeyBackMode(boolean isNewKeyBackMode) {
+        selectionConfig.isNewKeyBackMode = isNewKeyBackMode;
+        return this;
+    }
 
     /**
      * # file size The unit is KB

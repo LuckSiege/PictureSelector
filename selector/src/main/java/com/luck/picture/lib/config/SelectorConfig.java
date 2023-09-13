@@ -140,6 +140,7 @@ public final class SelectorConfig {
     public boolean isOriginalSkipCompress;
     public boolean isPreloadFirst;
     public boolean isUseSystemVideoPlayer;
+    public boolean isNewKeyBackMode;
     public PictureSelectorStyle selectorStyle;
 
     public SelectorConfig() {
@@ -235,6 +236,7 @@ public final class SelectorConfig {
         isSyncWidthAndHeight = true;
         isOriginalSkipCompress = false;
         isPreloadFirst = true;
+        isNewKeyBackMode = true;
         isUseSystemVideoPlayer = false;
     }
 

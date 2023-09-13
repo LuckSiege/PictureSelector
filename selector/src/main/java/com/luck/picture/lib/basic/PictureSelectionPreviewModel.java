@@ -297,6 +297,16 @@ public final class PictureSelectionPreviewModel {
     }
 
     /**
+     * Compatible with Fragment fallback scheme, default to true
+     *
+     * @param isNewKeyBackMode
+     */
+    public PictureSelectionPreviewModel isNewKeyBackMode(boolean isNewKeyBackMode) {
+        selectionConfig.isNewKeyBackMode = isNewKeyBackMode;
+        return this;
+    }
+
+    /**
      * preview LocalMedia
      *
      * @param currentPosition

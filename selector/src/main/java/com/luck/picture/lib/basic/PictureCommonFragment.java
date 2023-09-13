@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -332,18 +333,27 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @param view
      */
     public void setRootViewKeyListener(View view) {
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
+        if (selectorConfig.isNewKeyBackMode) {
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
                     onKeyBackFragmentFinish();
-                    return true;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            view.setFocusableInTouchMode(true);
+            view.requestFocus();
+            view.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
+                        onKeyBackFragmentFinish();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override

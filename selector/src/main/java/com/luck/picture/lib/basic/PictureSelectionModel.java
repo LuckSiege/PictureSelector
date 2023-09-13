@@ -533,6 +533,15 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Compatible with Fragment fallback scheme, default to true
+     *
+     * @param isNewKeyBackMode
+     */
+    public PictureSelectionModel isNewKeyBackMode(boolean isNewKeyBackMode) {
+        selectionConfig.isNewKeyBackMode = isNewKeyBackMode;
+        return this;
+    }
 
     /**
      * You can select pictures and videos at the same time
