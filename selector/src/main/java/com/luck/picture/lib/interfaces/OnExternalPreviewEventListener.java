@@ -21,7 +21,7 @@ public interface OnExternalPreviewEventListener {
      * 长按下载
      *
      * @param media 资源
-     * @return false 自己实现下载逻辑；默认true
+     * @return true 自己实现下载逻辑；默认false
      */
     boolean onLongPressDownload(Context context, LocalMedia media);
 
