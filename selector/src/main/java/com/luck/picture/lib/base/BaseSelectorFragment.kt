@@ -241,7 +241,7 @@ abstract class BaseSelectorFragment : Fragment() {
         }
     }
 
-    private fun setFragmentKeyBackListener() {
+    open fun setFragmentKeyBackListener() {
         if (config.isNewKeyBackMode) {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
                 OnBackPressedCallback(true) {
