@@ -134,6 +134,14 @@ class SelectionSystemModel constructor(
     }
 
     /**
+     * Compatible with Fragment fallback scheme, default to true
+     */
+    fun isNewKeyBackMode(isNewKeyBackMode: Boolean): SelectionSystemModel {
+        this.config.isNewKeyBackMode = isNewKeyBackMode
+        return this
+    }
+
+    /**
      * Starting the system graph library using the [OnResultCallbackListener] method
      */
     fun forResult(call: OnResultCallbackListener?) {

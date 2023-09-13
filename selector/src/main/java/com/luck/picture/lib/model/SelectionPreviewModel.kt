@@ -232,6 +232,14 @@ class SelectionPreviewModel constructor(private var selector: PictureSelector) {
     }
 
     /**
+     * Compatible with Fragment fallback scheme, default to true
+     */
+    fun isNewKeyBackMode(isNewKeyBackMode: Boolean): SelectionPreviewModel {
+        this.config.isNewKeyBackMode = isNewKeyBackMode
+        return this
+    }
+
+    /**
      * View lifecycle listener
      */
     fun setOnFragmentLifecycleListener(l: OnFragmentLifecycleListener?): SelectionPreviewModel {

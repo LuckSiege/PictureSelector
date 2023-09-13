@@ -223,6 +223,14 @@ class SelectionCameraModel constructor(
     }
 
     /**
+     * Compatible with Fragment fallback scheme, default to true
+     */
+    fun isNewKeyBackMode(isNewKeyBackMode: Boolean): SelectionCameraModel {
+        this.config.isNewKeyBackMode = isNewKeyBackMode
+        return this
+    }
+
+    /**
      * Custom loading
      */
     fun setOnCustomLoadingListener(loading: OnCustomLoadingListener?): SelectionCameraModel {

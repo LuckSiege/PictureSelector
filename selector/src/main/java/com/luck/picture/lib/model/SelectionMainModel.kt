@@ -584,6 +584,14 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
     }
 
     /**
+     * Compatible with Fragment fallback scheme, default to true
+     */
+    fun isNewKeyBackMode(isNewKeyBackMode: Boolean): SelectionMainModel {
+        this.config.isNewKeyBackMode = isNewKeyBackMode
+        return this
+    }
+
+    /**
      * Display gif type resources
      *
      * filter gif format data

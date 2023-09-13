@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
@@ -49,7 +50,10 @@ import com.luck.picture.lib.registry.ImageCaptureComponent
 import com.luck.picture.lib.registry.SoundCaptureComponent
 import com.luck.picture.lib.registry.VideoCaptureComponent
 import com.luck.picture.lib.service.ForegroundService
-import com.luck.picture.lib.utils.*
+import com.luck.picture.lib.utils.FileUtils
+import com.luck.picture.lib.utils.MediaStoreUtils
+import com.luck.picture.lib.utils.MediaUtils
+import com.luck.picture.lib.utils.SpUtils
 import com.luck.picture.lib.viewmodel.GlobalViewModel
 import com.luck.picture.lib.viewmodel.SelectorViewModel
 import kotlinx.coroutines.launch
@@ -238,15 +242,24 @@ abstract class BaseSelectorFragment : Fragment() {
     }
 
     private fun setFragmentKeyBackListener() {
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                onKeyBackAction()
-                return@OnKeyListener true
-            }
-            false
-        })
+        if (config.isNewKeyBackMode) {
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object :
+                OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    onKeyBackAction()
+                }
+            })
+        } else {
+            requireView().isFocusableInTouchMode = true
+            requireView().requestFocus()
+            requireView().setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                    onKeyBackAction()
+                    return@OnKeyListener true
+                }
+                false
+            })
+        }
     }
 
     open fun onKeyBackAction() {
