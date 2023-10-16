@@ -9,10 +9,6 @@ import android.os.Build;
  */
 public class SdkVersionUtils {
 
-    public static final int R = 30;
-
-    public static final int TIRAMISU = 33;
-
     /**
      * 判断是否是低于Android LOLLIPOP版本
      */
@@ -61,13 +57,20 @@ public class SdkVersionUtils {
      * 判断是否是Android R版本
      */
     public static boolean isR() {
-        return Build.VERSION.SDK_INT >= R;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
     }
 
     /**
      * 判断是否是Android TIRAMISU版本
      */
     public static boolean isTIRAMISU() {
-        return Build.VERSION.SDK_INT >= TIRAMISU;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
+    }
+
+    /**
+     * 判断是否是Android UPSIDE_DOWN_CAKE版本
+     */
+    public static boolean isUPSIDE_DOWN_CAKE() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE;
     }
 }
