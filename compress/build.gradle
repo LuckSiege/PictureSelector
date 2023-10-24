@@ -11,13 +11,10 @@ buildscript {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode cfgs.versionCode
-        versionName cfgs.versionName
     }
     buildTypes {
         release {

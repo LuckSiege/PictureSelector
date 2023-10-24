@@ -239,7 +239,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (mPermissionResultCallback != null) {
-            PermissionChecker.getInstance().onRequestPermissionsResult(grantResults, mPermissionResultCallback);
+            PermissionChecker.getInstance().onRequestPermissionsResult(getContext(),permissions,grantResults, mPermissionResultCallback);
             mPermissionResultCallback = null;
         }
     }

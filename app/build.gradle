@@ -7,12 +7,12 @@ static def releaseTime() {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.luck.pictureselector"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdk 21
+        targetSdk 34
         versionCode cfgs.versionCode
         versionName cfgs.versionName
     }
