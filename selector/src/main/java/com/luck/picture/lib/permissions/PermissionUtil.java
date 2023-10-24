@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
@@ -47,11 +48,24 @@ public class PermissionUtil {
         return true;
     }
 
-    public static boolean isAllGranted(int[] grantResults) {
+    public static boolean isAllGranted(Context context,String[] permissions,int[] grantResults) {
         boolean isAllGranted = true;
+        boolean skipPermissionReject = false;
+        int targetSdkVersion = context.getApplicationInfo().targetSdkVersion;
+        if (targetSdkVersion >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            if (ContextCompat.checkSelfPermission(context, PermissionConfig.READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED) {
+                skipPermissionReject = true;
+            }
+        }
         if (grantResults.length > 0) {
-            for (int grant : grantResults) {
-                if (grant != PackageManager.PERMISSION_GRANTED) {
+            for (int i = 0; i<grantResults.length; i++){
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    if (skipPermissionReject){
+                        if (permissions[i].equals(PermissionConfig.READ_MEDIA_IMAGES) ||
+                                permissions[i].equals(PermissionConfig.READ_MEDIA_VIDEO)){
+                            break;
+                        }
+                    }
                     isAllGranted = false;
                     break;
                 }

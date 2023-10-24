@@ -90,8 +90,8 @@ public class PermissionChecker {
         }
     }
 
-    public void onRequestPermissionsResult(int[] grantResults, PermissionResultCallback action) {
-        if (PermissionUtil.isAllGranted(grantResults)) {
+    public void onRequestPermissionsResult(Context context,String[] permissions,int[] grantResults, PermissionResultCallback action) {
+        if (PermissionUtil.isAllGranted(context,permissions,grantResults)) {
             action.onGranted();
         } else {
             action.onDenied();
