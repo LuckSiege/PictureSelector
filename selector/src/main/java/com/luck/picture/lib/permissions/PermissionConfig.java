@@ -91,6 +91,8 @@ public class PermissionConfig {
                         ? new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO}
                         : new String[]{READ_EXTERNAL_STORAGE};
             }
+        }else if (SdkVersionUtils.isQ()) {
+            return new String[]{READ_EXTERNAL_STORAGE};
         }
         return new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE};
     }
