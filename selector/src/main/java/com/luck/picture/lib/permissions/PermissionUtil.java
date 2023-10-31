@@ -13,6 +13,8 @@ import androidx.annotation.Size;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.utils.SdkVersionUtils;
+
 /**
  * @author：luck
  * @date：2021/11/18 10:12 上午
@@ -52,9 +54,11 @@ public class PermissionUtil {
         boolean isAllGranted = true;
         boolean skipPermissionReject = false;
         int targetSdkVersion = context.getApplicationInfo().targetSdkVersion;
-        if (targetSdkVersion >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
-            if (ContextCompat.checkSelfPermission(context, PermissionConfig.READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED) {
-                skipPermissionReject = true;
+        if (SdkVersionUtils.isUPSIDE_DOWN_CAKE()){
+            if (targetSdkVersion >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+                if (ContextCompat.checkSelfPermission(context, PermissionConfig.READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED) {
+                    skipPermissionReject = true;
+                }
             }
         }
         if (grantResults.length > 0) {
