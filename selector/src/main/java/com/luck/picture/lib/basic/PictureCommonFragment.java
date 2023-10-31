@@ -393,8 +393,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
 
     public long getEnterAnimationDuration() {
-        final long DIFFERENCE = 50;
-        long duration = enterAnimDuration > DIFFERENCE ? enterAnimDuration - DIFFERENCE : enterAnimDuration;
+        long duration = enterAnimDuration > 50 ? enterAnimDuration - 50 : enterAnimDuration;
         return duration >= 0 ? duration : 0;
     }
 
