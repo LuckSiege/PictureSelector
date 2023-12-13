@@ -73,7 +73,6 @@ import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.picture.lib.utils.SpUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 
 import org.json.JSONArray;
@@ -256,11 +255,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void handlePermissionDenied(String[] permissionArray) {
         PermissionConfig.CURRENT_REQUEST_PERMISSION = permissionArray;
-        if (permissionArray != null && permissionArray.length > 0) {
-            SpUtils.putBoolean(getAppContext(), permissionArray[0], true);
-        }
         if (selectorConfig.onPermissionDeniedListener != null) {
-            onPermissionExplainEvent(false, null);
+            onPermissionExplainEvent(false, permissionArray);
             selectorConfig.onPermissionDeniedListener
                     .onDenied(this, permissionArray, PictureConfig.REQUEST_GO_SETTING,
                             new OnCallbackListener<Boolean>() {
@@ -1028,16 +1024,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onPermissionExplainEvent(boolean isDisplayExplain, String[] permissionArray) {
         if (selectorConfig.onPermissionDescriptionListener != null) {
-            if (isDisplayExplain) {
-                if (PermissionChecker.isCheckSelfPermission(getAppContext(), permissionArray)) {
-                    SpUtils.putBoolean(getAppContext(), permissionArray[0], false);
-                } else {
-                    if (!SpUtils.getBoolean(getAppContext(), permissionArray[0], false)) {
+            if (PermissionChecker.isCheckSelfPermission(getAppContext(), permissionArray)) {
+                selectorConfig.onPermissionDescriptionListener.onDismiss(this);
+            } else {
+                if (isDisplayExplain) {
+                    int permissionStatus = PermissionUtil.getPermissionStatus(requireActivity(), permissionArray[0]);
+                    if (permissionStatus != PermissionUtil.REFUSE_PERMANENT) {
                         selectorConfig.onPermissionDescriptionListener.onPermissionDescription(this, permissionArray);
                     }
+                } else {
+                    selectorConfig.onPermissionDescriptionListener.onDismiss(this);
                 }
-            } else {
-                selectorConfig.onPermissionDescriptionListener.onDismiss(this);
             }
         }
     }

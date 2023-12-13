@@ -31,4 +31,8 @@ public class SpUtils {
     public static boolean getBoolean(Context context, String key, boolean defValue) {
         return getSp(context).getBoolean(key, defValue);
     }
+
+    public static boolean contains(Context context, String key) {
+        return getSp(context).contains(key);
+    }
 }

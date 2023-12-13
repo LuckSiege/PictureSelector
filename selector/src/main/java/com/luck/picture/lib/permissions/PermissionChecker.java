@@ -15,6 +15,7 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.SpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +92,12 @@ public class PermissionChecker {
     }
 
     public void onRequestPermissionsResult(Context context,String[] permissions,int[] grantResults, PermissionResultCallback action) {
-        if (PermissionUtil.isAllGranted(context,permissions,grantResults)) {
+        Activity activity = (Activity) context;
+        for (String permission : permissions) {
+            boolean should = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+            SpUtils.putBoolean(context, permission, should);
+        }
+        if (PermissionUtil.isAllGranted(context, permissions, grantResults)) {
             action.onGranted();
         } else {
             action.onDenied();
