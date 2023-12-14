@@ -24,4 +24,8 @@ object SpUtils {
     fun getBoolean(context: Context, key: String?, defValue: Boolean): Boolean {
         return getSp(context)!!.getBoolean(key, defValue)
     }
+
+    fun contains(context: Context, key: String): Boolean {
+        return getSp(context)!!.contains(key)
+    }
 }

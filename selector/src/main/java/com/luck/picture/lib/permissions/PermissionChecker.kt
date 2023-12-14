@@ -14,6 +14,7 @@ import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.helper.ActivityCompatHelper
 import com.luck.picture.lib.utils.SdkVersionUtils
 import com.luck.picture.lib.utils.SdkVersionUtils.isTIRAMISU
+import com.luck.picture.lib.utils.SpUtils.putBoolean
 
 /**
  * @author：luck
@@ -76,7 +77,11 @@ object PermissionChecker {
         }
     }
 
-    fun onRequestPermissionsResult(grantResults: IntArray?, action: OnPermissionResultListener?) {
+    fun onRequestPermissionsResult(activity: Activity,grantResults: IntArray?, permissions: Array<out String>,action: OnPermissionResultListener?) {
+        for (permission in permissions) {
+            val should = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
+            putBoolean(activity, permission, should)
+        }
         if (PermissionUtil.isAllGranted(grantResults)) {
             action?.onGranted()
         } else {

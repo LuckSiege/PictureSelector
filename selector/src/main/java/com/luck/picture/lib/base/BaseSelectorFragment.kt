@@ -21,7 +21,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.luck.picture.lib.*
+import com.luck.picture.lib.R
+import com.luck.picture.lib.SelectorCameraFragment
+import com.luck.picture.lib.SelectorExternalPreviewFragment
+import com.luck.picture.lib.SelectorMainFragment
+import com.luck.picture.lib.SelectorPreviewFragment
+import com.luck.picture.lib.SelectorSupporterActivity
+import com.luck.picture.lib.SelectorSystemFragment
+import com.luck.picture.lib.SelectorTransparentActivity
 import com.luck.picture.lib.app.SelectorAppMaster
 import com.luck.picture.lib.config.MediaType
 import com.luck.picture.lib.config.SelectionMode
@@ -191,16 +198,18 @@ abstract class BaseSelectorFragment : Fragment() {
         val onPermissionDescriptionListener =
             config.mListenerInfo.onPermissionDescriptionListener
         if (onPermissionDescriptionListener != null) {
-            if (isDisplay) {
-                if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
-                    SpUtils.putBoolean(requireContext(), permission[0], false)
-                } else {
-                    if (!SpUtils.getBoolean(requireContext(), permission[0], false)) {
-                        onPermissionDescriptionListener.onDescription(this, permission)
-                    }
-                }
-            } else {
+            if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
                 onPermissionDescriptionListener.onDismiss(this)
+            } else{
+                if (isDisplay) {
+                    val permissionStatus =
+                        PermissionUtil.getPermissionStatus(requireActivity(), permission[0])
+                    if (permissionStatus != PermissionUtil.REFUSE_PERMANENT) {
+                        onPermissionDescriptionListener.onDescription(this,permission)
+                    }
+                } else {
+                    onPermissionDescriptionListener.onDismiss(this)
+                }
             }
         }
     }
@@ -876,7 +885,12 @@ abstract class BaseSelectorFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (mPermissionResultListener != null) {
-            PermissionChecker.onRequestPermissionsResult(grantResults, mPermissionResultListener)
+            PermissionChecker.onRequestPermissionsResult(
+                requireActivity(),
+                grantResults,
+                permissions,
+                mPermissionResultListener
+            )
             mPermissionResultListener = null
         }
     }

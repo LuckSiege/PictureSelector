@@ -1,5 +1,6 @@
 package com.luck.picture.lib.permissions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,8 +10,11 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import com.luck.picture.lib.utils.SpUtils;
 
 /**
  * @author：luck
@@ -19,7 +23,22 @@ import androidx.fragment.app.Fragment;
  */
 public class PermissionUtil {
 
-
+    /**
+     * 默认未请求授权状态
+     */
+    public static final int DEFAULT = 0;
+    /**
+     * 获取权限成功
+     */
+    public static final int SUCCESS = 1;
+    /**
+     * 申请权限拒绝, 但是下次申请权限还会弹窗
+     */
+    public static final int REFUSE = 2;
+    /**
+     * 申请权限拒绝，并且是永久，不会再弹窗
+     */
+    public static final int REFUSE_PERMANENT = 3;
     /**
      * Activity Action: Show screen for controlling which apps have access to manage external
      * storage.
@@ -47,6 +66,21 @@ public class PermissionUtil {
             }
         }
         return true;
+    }
+
+    public static int getPermissionStatus(Activity activity, String permission) {
+        int flag = ActivityCompat.checkSelfPermission(activity, permission);
+        boolean should = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+        if (should) {
+            return REFUSE;
+        }
+        if (flag == PackageManager.PERMISSION_GRANTED) {
+            return SUCCESS;
+        }
+        if (!SpUtils.INSTANCE.contains(activity, permission)) {
+            return DEFAULT;
+        }
+        return REFUSE_PERMANENT;
     }
 
     public static boolean isAllGranted(int[] grantResults) {
