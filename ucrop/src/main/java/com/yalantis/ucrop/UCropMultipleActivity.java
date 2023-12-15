@@ -107,7 +107,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private void initCropFragments(Intent intent) {
         isSkipCropForbid = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
         ArrayList<String> totalCropData = intent.getStringArrayListExtra(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
-        if (totalCropData == null || totalCropData.size() <= 0) {
+        if (totalCropData == null || totalCropData.size() == 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
         }
         uCropSupportList = new ArrayList<>();
@@ -135,8 +135,10 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
                 extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
                 AspectRatio aspectRatio = aspectRatioList != null && aspectRatioList.size() > i ? aspectRatioList.get(i) : null;
-                extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, aspectRatio != null ? aspectRatio.getAspectRatioX() : -1);
-                extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_Y, aspectRatio != null ? aspectRatio.getAspectRatioY() : -1);
+                if (aspectRatio != null) {
+                    extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, aspectRatio.getAspectRatioX());
+                    extras.putFloat(UCrop.EXTRA_ASPECT_RATIO_Y, aspectRatio.getAspectRatioY());
+                }
                 UCropFragment uCropFragment = UCropFragment.newInstance(extras);
                 fragments.add(uCropFragment);
             }
