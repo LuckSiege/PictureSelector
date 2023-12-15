@@ -56,6 +56,7 @@ import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -217,6 +218,11 @@ public class UCropActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
+                String outputDir = getIntent().getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_DIR);
+                if (!TextUtils.isEmpty(outputDir) && "file".equalsIgnoreCase(outputUri.getScheme())) {
+                    File originalFile = new File(outputUri.getPath());
+                    outputUri = Uri.fromFile(new File(outputDir, originalFile.getName()));
+                }
                 outputUri = FileUtils.replaceOutputUri(UCropActivity.this, isForbidCropGifWebp, inputUri, outputUri);
                 mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
             } catch (Exception e) {
