@@ -1065,7 +1065,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ForegroundService.stopService(getAppContext());
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 dispatchHandleCamera(data);
@@ -1138,6 +1137,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
             }
         }
+        ForegroundService.stopService(getAppContext());
     }
 
     /**
