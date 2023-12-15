@@ -1,6 +1,5 @@
 package com.luck.picture.lib;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionConfig;
-import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 
@@ -46,22 +44,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
         super.onViewCreated(view, savedInstanceState);
         // 这里只有非内存回收状态下才走，否则当内存不足Fragment被回收后会重复执行
         if (savedInstanceState == null) {
-            if (SdkVersionUtils.isQ()) {
-                openSelectedCamera();
-            } else {
-                String[] writePermissionArray = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                PermissionChecker.getInstance().requestPermissions(this, writePermissionArray, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        openSelectedCamera();
-                    }
-
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied(writePermissionArray);
-                    }
-                });
-            }
+            openSelectedCamera();
         }
     }
 
