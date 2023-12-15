@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
-import com.luck.picture.lib.config.SelectorProviders;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -156,7 +155,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (media.isMaxSelectEnabledMask() || listener == null) {
+                if (listener == null) {
                     return;
                 }
                 int resultCode = listener.onSelected(tvCheck, position, media);
@@ -195,7 +194,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (media.isMaxSelectEnabledMask() || listener == null) {
+                if (listener == null) {
                     return;
                 }
                 boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && selectorConfig.isEnablePreviewImage
@@ -205,6 +204,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                         || PictureMimeType.isHasAudio(media.getMimeType()) && (selectorConfig.isEnablePreviewAudio
                         || selectorConfig.selectionMode == SelectModeConfig.SINGLE);
                 if (isPreview) {
+                    if (media.isMaxSelectEnabledMask()) {
+                        return;
+                    }
                     listener.onItemClick(tvCheck, position, media);
                 } else {
                     btnCheck.performClick();
