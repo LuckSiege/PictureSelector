@@ -4,19 +4,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectorConfig;
-import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +26,12 @@ public abstract class IBridgeMediaLoader {
     protected static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     protected static final String ORDER_BY = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
     protected static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif')";
+    protected static final String NOT_WEBP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/webp')";
+    protected static final String NOT_BMP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/bmp')";
+    protected static final String NOT_XMS_BMP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/x-ms-bmp')";
+    protected static final String NOT_VND_WAP_BMP = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/vnd.wap.wbmp')";
+    protected static final String NOT_HEIC = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/heic')";
+
     protected static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
     protected static final String DISTINCT_BUCKET_Id = "DISTINCT bucket_id";
     protected static final String COLUMN_COUNT = "count";
@@ -167,43 +169,56 @@ public abstract class IBridgeMediaLoader {
                 Math.max(0, getConfig().filterMinFileSize), "=", maxS);
     }
 
-    /**
-     * getQueryMimeCondition
-     *
-     * @return
-     */
-    protected String getQueryMimeCondition() {
-        List<String> filters = getConfig().queryOnlyList;
-        HashSet<String> filterSet = new HashSet<>(filters);
-        Iterator<String> iterator = filterSet.iterator();
+    protected String getImageMimeTypeCondition(){
+        List<String> filters = getConfig().queryOnlyImageList;
         StringBuilder stringBuilder = new StringBuilder();
-        int index = -1;
-        while (iterator.hasNext()) {
-            String value = iterator.next();
-            if (TextUtils.isEmpty(value)) {
-                continue;
-            }
-            if (getConfig().chooseMode == SelectMimeType.ofVideo()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)) {
-                    continue;
-                }
-            } else if (getConfig().chooseMode == SelectMimeType.ofImage()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)) {
-                    continue;
-                }
-            } else if (getConfig().chooseMode == SelectMimeType.ofAudio()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE)) {
-                    continue;
-                }
-            }
-            index++;
-            stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(value).append("'");
+        for (int i = 0; i < filters.size(); i++) {
+            String mimeType = filters.get(i);
+            stringBuilder.append(i == 0 ? " AND " : " OR ")
+                    .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
+                    .append("'");
         }
-        if (getConfig().chooseMode != SelectMimeType.ofVideo()) {
-            if (!getConfig().isGif && !filterSet.contains(PictureMimeType.ofGIF())) {
-                stringBuilder.append(NOT_GIF);
-            }
+        if (!getConfig().isGif && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofGIF())) {
+            stringBuilder.append(NOT_GIF);
+        }
+        if (!getConfig().isWebp && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofWEBP())) {
+            stringBuilder.append(NOT_WEBP);
+        }
+        if (!getConfig().isBmp && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofBMP())
+                && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofXmsBMP())
+                && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofWapBMP())
+        ) {
+            stringBuilder.append(NOT_BMP).append(NOT_XMS_BMP).append(NOT_VND_WAP_BMP);
+        }
+        if (!getConfig().isHeic && !getConfig().queryOnlyImageList.contains(PictureMimeType.ofHeic())) {
+            stringBuilder.append(NOT_HEIC);
+        }
+
+        return stringBuilder.toString();
+    }
+
+    protected String getVideoMimeTypeCondition(){
+        List<String> filters = getConfig().queryOnlyVideoList;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < filters.size(); i++) {
+            String mimeType = filters.get(i);
+            stringBuilder.append(i == 0 ? " AND " : " OR ")
+                .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
+                    .append("'");
         }
         return stringBuilder.toString();
     }
+
+    protected String getAudioMimeTypeCondition() {
+        List<String> filters = getConfig().queryOnlyAudioList;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < filters.size(); i++) {
+            String mimeType = filters.get(i);
+            stringBuilder.append(i == 0 ? " AND " : " OR ")
+                    .append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(mimeType)
+                    .append("'");
+        }
+        return stringBuilder.toString();
+    }
+
 }

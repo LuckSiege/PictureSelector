@@ -132,6 +132,15 @@ public class PictureSelectionQueryModel {
         return this;
     }
 
+    /**
+     * @param isHeic Whether to open .isHeic
+     * @return
+     */
+    public PictureSelectionQueryModel isHeic(boolean isHeic) {
+        selectionConfig.isHeic = isHeic;
+        return this;
+    }
+
 
     /**
      * # file size The unit is KB

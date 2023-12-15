@@ -130,6 +130,19 @@ public final class PictureMimeType {
     }
 
     /**
+     * isHasHeic
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isHasHeic(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            return false;
+        }
+        return mimeType.startsWith(PictureMimeType.ofHeic());
+    }
+
+    /**
      * Determine if it is JPG.
      *
      * @param is image file mimeType
@@ -259,12 +272,17 @@ public final class PictureMimeType {
         return MIME_TYPE_BMP;
     }
 
+
     public static String ofXmsBMP() {
         return MIME_TYPE_XMS_BMP;
     }
 
     public static String ofWapBMP() {
         return MIME_TYPE_WAP_BMP;
+    }
+
+    public static String ofHeic() {
+        return MIME_TYPE_HEIC;
     }
 
     public static String ofGIF() {
@@ -309,6 +327,7 @@ public final class PictureMimeType {
     private final static String MIME_TYPE_WAP_BMP = "image/vnd.wap.wbmp";
     private final static String MIME_TYPE_GIF = "image/gif";
     private final static String MIME_TYPE_WEBP = "image/webp";
+    private final static String MIME_TYPE_HEIC = "image/heic";
 
     private final static String MIME_TYPE_3GP = "video/3gp";
     private final static String MIME_TYPE_MP4 = "video/mp4";

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -88,20 +88,29 @@ public final class SandboxFileLoader {
                     if (!PictureMimeType.isHasImage(mimeType)) {
                         continue;
                     }
+                    if (config.queryOnlyImageList != null
+                            && config.queryOnlyImageList.size() > 0
+                            && !config.queryOnlyImageList.contains(mimeType)) {
+                        continue;
+                    }
                 } else if (config.chooseMode == SelectMimeType.ofVideo()) {
                     if (!PictureMimeType.isHasVideo(mimeType)) {
+                        continue;
+                    }
+                    if (config.queryOnlyVideoList != null
+                            && config.queryOnlyVideoList.size() > 0
+                            && !config.queryOnlyVideoList.contains(mimeType)) {
                         continue;
                     }
                 } else if (config.chooseMode == SelectMimeType.ofAudio()) {
                     if (!PictureMimeType.isHasAudio(mimeType)) {
                         continue;
                     }
-                }
-
-                if (config.queryOnlyList != null
-                        && config.queryOnlyList.size() > 0
-                        && !config.queryOnlyList.contains(mimeType)) {
-                    continue;
+                    if (config.queryOnlyAudioList != null
+                            && config.queryOnlyAudioList.size() > 0
+                            && !config.queryOnlyAudioList.contains(mimeType)) {
+                        continue;
+                    }
                 }
 
                 if (!config.isGif) {

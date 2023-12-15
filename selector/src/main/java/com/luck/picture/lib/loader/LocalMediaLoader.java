@@ -62,16 +62,16 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
      *
      * @param timeCondition
      * @param sizeCondition
-     * @param queryMimeCondition
-     * @return
+     * @param queryImageMimeType
+     * @param queryVideoMimeType
      */
     private static String getSelectionArgsForAllMediaCondition(String timeCondition,
                                                                String sizeCondition,
-                                                               String queryMimeCondition) {
+                                                               String queryImageMimeType,
+                                                               String queryVideoMimeType) {
         return "(" +
-                MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" +
-                queryMimeCondition + " OR " +
-                MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " +
+                MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryImageMimeType + " OR " +
+                MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryVideoMimeType + " AND " +
                 timeCondition + ") AND " +
                 sizeCondition;
     }
@@ -210,20 +210,19 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     protected String getSelection() {
         String durationCondition = getDurationCondition();
         String fileSizeCondition = getFileSizeCondition();
-        String queryMimeCondition = getQueryMimeCondition();
         switch (getConfig().chooseMode) {
             case SelectMimeType.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(durationCondition, fileSizeCondition, queryMimeCondition);
+                return getSelectionArgsForAllMediaCondition(durationCondition, fileSizeCondition, getImageMimeTypeCondition(),getVideoMimeTypeCondition());
             case SelectMimeType.TYPE_IMAGE:
                 // Gets the image
-                return getSelectionArgsForImageMediaCondition(fileSizeCondition, queryMimeCondition);
+                return getSelectionArgsForImageMediaCondition(fileSizeCondition, getImageMimeTypeCondition());
             case SelectMimeType.TYPE_VIDEO:
                 // Access to video
-                return getSelectionArgsForVideoMediaCondition(durationCondition, queryMimeCondition);
+                return getSelectionArgsForVideoMediaCondition(durationCondition, getVideoMimeTypeCondition());
             case SelectMimeType.TYPE_AUDIO:
                 // Access to the audio
-                return getSelectionArgsForAudioMediaCondition(durationCondition, queryMimeCondition);
+                return getSelectionArgsForAudioMediaCondition(durationCondition, getAudioMimeTypeCondition());
         }
         return null;
     }
@@ -296,6 +295,11 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
         }
         if (!getConfig().isBmp) {
             if (PictureMimeType.isHasBmp(mimeType)) {
+                return null;
+            }
+        }
+        if (!getConfig().isHeic) {
+            if (PictureMimeType.isHasHeic(mimeType)) {
                 return null;
             }
         }

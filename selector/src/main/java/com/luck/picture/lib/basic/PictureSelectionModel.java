@@ -17,9 +17,10 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.config.FileSizeUnit;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.config.VideoQuality;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -51,7 +52,6 @@ import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.interfaces.OnVideoThumbnailEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
-import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.utils.DoubleUtils;
@@ -91,7 +91,7 @@ public final class PictureSelectionModel {
      *                {@link com.luck.picture.lib.style.BottomNavBarStyle}
      *                {@link com.luck.picture.lib.style.PictureWindowAnimationStyle}
      *                <p/>
-     * @return PictureSelectorStyle
+     *  PictureSelectorStyle
      */
     public PictureSelectionModel setSelectorUIStyle(PictureSelectorStyle uiStyle) {
         if (uiStyle != null) {
@@ -104,7 +104,7 @@ public final class PictureSelectionModel {
      * Set App Language
      *
      * @param language {@link LanguageConfig}
-     * @return PictureSelectionModel
+     *  PictureSelectionModel
      */
     public PictureSelectionModel setLanguage(int language) {
         selectionConfig.language = language;
@@ -115,7 +115,7 @@ public final class PictureSelectionModel {
      * Set App default Language
      *
      * @param defaultLanguage default language {@link LanguageConfig}
-     * @return PictureSelectionModel
+     *  PictureSelectionModel
      */
     public PictureSelectionModel setDefaultLanguage(int defaultLanguage) {
         selectionConfig.defaultLanguage = defaultLanguage;
@@ -129,7 +129,7 @@ public final class PictureSelectionModel {
      *               <p>
      *               <a href="https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java">
      *               </p>
-     * @return
+     *
      */
     public PictureSelectionModel setImageEngine(ImageEngine engine) {
         selectionConfig.imageEngine = engine;
@@ -142,7 +142,7 @@ public final class PictureSelectionModel {
      *   Used to preview custom player instances，MediaPlayer by default
      *  </p>
      * @param engine
-     * @return
+     *
      */
     public PictureSelectionModel setVideoPlayerEngine(VideoPlayerEngine engine) {
         selectionConfig.videoPlayerEngine = engine;
@@ -154,7 +154,7 @@ public final class PictureSelectionModel {
      *
      * @param engine Image Compress the engine
      * Please use {@link CompressFileEngine}
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel setCompressEngine(CompressEngine engine) {
@@ -167,7 +167,7 @@ public final class PictureSelectionModel {
      * Image Compress the engine
      *
      * @param engine Image Compress the engine
-     * @return
+     *
      */
     public PictureSelectionModel setCompressEngine(CompressFileEngine engine) {
         selectionConfig.compressFileEngine = engine;
@@ -180,7 +180,7 @@ public final class PictureSelectionModel {
      *
      * @param engine Image Crop the engine
      * Please Use {@link CropFileEngine}
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel setCropEngine(CropEngine engine) {
@@ -193,7 +193,7 @@ public final class PictureSelectionModel {
      * Image Crop the engine
      *
      * @param engine Image Crop the engine
-     * @return
+     *
      */
     public PictureSelectionModel setCropEngine(CropFileEngine engine) {
         selectionConfig.cropFileEngine = engine;
@@ -205,7 +205,7 @@ public final class PictureSelectionModel {
      *
      * @param engine App Sandbox path transform
      * Please Use {@link UriToFileTransformEngine}
-     * @return
+     *
      *
      */
     @Deprecated
@@ -223,7 +223,7 @@ public final class PictureSelectionModel {
      * App Sandbox file path transform
      *
      * @param engine App Sandbox path transform
-     * @return
+     *
      */
     public PictureSelectionModel setSandboxFileEngine(UriToFileTransformEngine engine) {
         if (SdkVersionUtils.isQ()) {
@@ -246,7 +246,7 @@ public final class PictureSelectionModel {
      * </p>
      *
      * @param engine
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel setExtendLoaderEngine(ExtendLoaderEngine engine) {
@@ -263,7 +263,7 @@ public final class PictureSelectionModel {
      * {@link LocalMedia}
      *
      * @param engine
-     * @return
+     *
      */
     public PictureSelectionModel setLoaderFactoryEngine(IBridgeLoaderFactory loaderFactory) {
         selectionConfig.loaderFactory = loaderFactory;
@@ -287,7 +287,7 @@ public final class PictureSelectionModel {
      * Intercept camera click events, and users can implement their own camera framework
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setCameraInterceptListener(OnCameraInterceptListener listener) {
         selectionConfig.onCameraInterceptListener = listener;
@@ -299,7 +299,7 @@ public final class PictureSelectionModel {
      * Intercept Record Audio click events, and users can implement their own Record Audio framework
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setRecordAudioInterceptListener(OnRecordAudioInterceptListener listener) {
         selectionConfig.onRecordAudioListener = listener;
@@ -311,7 +311,7 @@ public final class PictureSelectionModel {
      * Intercept preview click events, and users can implement their own preview framework
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setPreviewInterceptListener(OnPreviewInterceptListener listener) {
         selectionConfig.onPreviewInterceptListener = listener;
@@ -324,7 +324,7 @@ public final class PictureSelectionModel {
      * on the premise that the view ID must be consistent
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
         selectionConfig.isInjectLayoutResource = listener != null;
@@ -336,7 +336,7 @@ public final class PictureSelectionModel {
      * Intercept media edit click events, and users can implement their own edit media framework
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setEditMediaInterceptListener(OnMediaEditInterceptListener listener) {
         selectionConfig.onEditMediaEventListener = listener;
@@ -347,7 +347,7 @@ public final class PictureSelectionModel {
      * Custom interception permission processing
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
         selectionConfig.onPermissionsEventListener = listener;
@@ -358,7 +358,7 @@ public final class PictureSelectionModel {
      * permission description
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setPermissionDescriptionListener(OnPermissionDescriptionListener listener) {
         selectionConfig.onPermissionDescriptionListener = listener;
@@ -369,7 +369,7 @@ public final class PictureSelectionModel {
      *  Permission denied
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setPermissionDeniedListener(OnPermissionDeniedListener listener) {
         selectionConfig.onPermissionDeniedListener = listener;
@@ -390,7 +390,7 @@ public final class PictureSelectionModel {
      * You need to filter out the content that does not meet the selection criteria
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setSelectFilterListener(OnSelectFilterListener listener) {
         selectionConfig.onSelectFilterListener = listener;
@@ -401,7 +401,7 @@ public final class PictureSelectionModel {
      * You need to filter out what doesn't meet the standards
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setQueryFilterListener(OnQueryFilterListener listener) {
         selectionConfig.onQueryFilterListener = listener;
@@ -412,7 +412,7 @@ public final class PictureSelectionModel {
      * Animate the selected item in the list
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setGridItemSelectAnimListener(OnGridItemSelectAnimListener listener) {
         selectionConfig.onItemSelectAnimListener = listener;
@@ -423,7 +423,7 @@ public final class PictureSelectionModel {
      * Animate the selected item
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setSelectAnimListener(OnSelectAnimListener listener) {
         selectionConfig.onSelectAnimListener = listener;
@@ -434,7 +434,7 @@ public final class PictureSelectionModel {
      * You can add a watermark to the image
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setAddBitmapWatermarkListener(OnBitmapWatermarkEventListener listener) {
         if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
@@ -447,7 +447,7 @@ public final class PictureSelectionModel {
      * Process video thumbnails
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setVideoThumbnailListener(OnVideoThumbnailEventListener listener) {
         if (selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
@@ -460,7 +460,7 @@ public final class PictureSelectionModel {
      * Custom show loading dialog
      *
      * @param listener
-     * @return
+     *
      */
     public PictureSelectionModel setCustomLoadingListener(OnCustomLoadingListener listener) {
         selectionConfig.onCustomLoadingListener = listener;
@@ -472,7 +472,7 @@ public final class PictureSelectionModel {
      * of some models due to the use of cameras
      *
      * @param isForeground
-     * @return
+     *
      */
     public PictureSelectionModel isCameraForegroundService(boolean isForeground) {
         selectionConfig.isCameraForegroundService = isForeground;
@@ -524,7 +524,7 @@ public final class PictureSelectionModel {
      *                      <p>
      *                      Use {@link SelectModeConfig}
      *                      </p>
-     * @return
+     *
      */
     public PictureSelectionModel setSelectionMode(int selectionMode) {
         selectionConfig.selectionMode = selectionMode;
@@ -547,7 +547,7 @@ public final class PictureSelectionModel {
      * You can select pictures and videos at the same time
      *
      * @param isWithVideoImage Whether the pictures and videos can be selected together
-     * @return
+     *
      */
     public PictureSelectionModel isWithSelectVideoImage(boolean isWithVideoImage) {
         selectionConfig.isWithVideoImage = selectionConfig.chooseMode == SelectMimeType.ofAll() && isWithVideoImage;
@@ -559,7 +559,7 @@ public final class PictureSelectionModel {
      *
      * @param ofAllCameraType {@link SelectMimeType.ofImage or SelectMimeType.ofVideo}
      *                        The default is ofAll() mode
-     * @return
+     *
      */
     public PictureSelectionModel setOfAllCameraType(int ofAllCameraType) {
         selectionConfig.ofAllCameraType = ofAllCameraType;
@@ -570,7 +570,7 @@ public final class PictureSelectionModel {
      * When the maximum number of choices is reached, does the list enable the mask effect
      *
      * @param isMaxSelectEnabledMask
-     * @return
+     *
      */
     public PictureSelectionModel isMaxSelectEnabledMask(boolean isMaxSelectEnabledMask) {
         selectionConfig.isMaxSelectEnabledMask = isMaxSelectEnabledMask;
@@ -585,7 +585,7 @@ public final class PictureSelectionModel {
      * </p>
      *
      * @param isOriginalControl
-     * @return
+     *
      */
     public PictureSelectionModel isOriginalControl(boolean isOriginalControl) {
         selectionConfig.isOriginalControl = isOriginalControl;
@@ -596,7 +596,7 @@ public final class PictureSelectionModel {
      * If SyncCover
      *
      * @param isSyncCover
-     * @return
+     *
      */
     public PictureSelectionModel isSyncCover(boolean isSyncCover) {
         selectionConfig.isSyncCover = isSyncCover;
@@ -607,7 +607,7 @@ public final class PictureSelectionModel {
      * Select the maximum number of files
      *
      * @param maxSelectNum PictureSelector max selection
-     * @return
+     *
      */
     public PictureSelectionModel setMaxSelectNum(int maxSelectNum) {
         selectionConfig.maxSelectNum = selectionConfig.selectionMode == SelectModeConfig.SINGLE ? 1 : maxSelectNum;
@@ -618,7 +618,7 @@ public final class PictureSelectionModel {
      * Select the minimum number of files
      *
      * @param minSelectNum PictureSelector min selection
-     * @return
+     *
      */
     public PictureSelectionModel setMinSelectNum(int minSelectNum) {
         selectionConfig.minSelectNum = minSelectNum;
@@ -630,7 +630,7 @@ public final class PictureSelectionModel {
      * By clicking the title bar consecutively, RecyclerView automatically rolls back to the top
      *
      * @param isAutomaticTitleRecyclerTop
-     * @return
+     *
      */
     public PictureSelectionModel isAutomaticTitleRecyclerTop(boolean isAutomaticTitleRecyclerTop) {
         selectionConfig.isAutomaticTitleRecyclerTop = isAutomaticTitleRecyclerTop;
@@ -640,7 +640,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param Select whether to return directly
-     * @return
+     *
      */
     public PictureSelectionModel isDirectReturnSingle(boolean isDirectReturn) {
         if (isDirectReturn) {
@@ -655,7 +655,7 @@ public final class PictureSelectionModel {
      * Whether to turn on paging mode
      *
      * @param isPageStrategy
-     * @return
+     *
      */
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy) {
         selectionConfig.isPageStrategy = isPageStrategy;
@@ -667,7 +667,7 @@ public final class PictureSelectionModel {
      *
      * @param isPageStrategy
      * @param pageSize       Maximum number of pages {@link PageSize is preferably no less than 20}
-     * @return
+     *
      */
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize) {
         selectionConfig.isPageStrategy = isPageStrategy;
@@ -681,7 +681,7 @@ public final class PictureSelectionModel {
      *
      * @param isPageStrategy
      * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, boolean isFilterInvalidFile) {
@@ -696,7 +696,7 @@ public final class PictureSelectionModel {
      * @param isPageStrategy
      * @param pageSize            Maximum number of pages {@link  PageSize is preferably no less than 20}
      * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize, boolean isFilterInvalidFile) {
@@ -710,7 +710,7 @@ public final class PictureSelectionModel {
      * View lifecycle listener
      *
      * @param viewLifecycle
-     * @return
+     *
      */
     public PictureSelectionModel setAttachViewLifecycle(IBridgeViewLifecycle viewLifecycle) {
         selectionConfig.viewLifecycle = viewLifecycle;
@@ -725,7 +725,7 @@ public final class PictureSelectionModel {
      *                     <p>
      *                     There are limitations, only high or low
      *                     </p>
-     * @return
+     *
      */
     @Deprecated
     public PictureSelectionModel setVideoQuality(int videoQuality) {
@@ -737,7 +737,7 @@ public final class PictureSelectionModel {
      * Set the first default album name
      *
      * @param defaultAlbumName
-     * @return
+     *
      */
     public PictureSelectionModel setDefaultAlbumName(String defaultAlbumName) {
         selectionConfig.defaultAlbumName = defaultAlbumName;
@@ -748,7 +748,7 @@ public final class PictureSelectionModel {
      * camera output image format
      *
      * @param imageFormat PictureSelector media format
-     * @return
+     *
      */
     public PictureSelectionModel setCameraImageFormat(String imageFormat) {
         selectionConfig.cameraImageFormat = imageFormat;
@@ -759,7 +759,7 @@ public final class PictureSelectionModel {
      * camera output image format
      *
      * @param imageFormat PictureSelector media format
-     * @return
+     *
      */
     public PictureSelectionModel setCameraImageFormatForQ(String imageFormat) {
         selectionConfig.cameraImageFormatForQ = imageFormat;
@@ -770,7 +770,7 @@ public final class PictureSelectionModel {
      * camera output video format
      *
      * @param videoFormat PictureSelector media format
-     * @return
+     *
      */
     public PictureSelectionModel setCameraVideoFormat(String videoFormat) {
         selectionConfig.cameraVideoFormat = videoFormat;
@@ -781,7 +781,7 @@ public final class PictureSelectionModel {
      * camera output video format
      *
      * @param videoFormat PictureSelector media format
-     * @return
+     *
      */
     public PictureSelectionModel setCameraVideoFormatForQ(String videoFormat) {
         selectionConfig.cameraVideoFormatForQ = videoFormat;
@@ -793,7 +793,7 @@ public final class PictureSelectionModel {
      * filter max seconds video
      *
      * @param videoMaxSecond filter video max second
-     * @return
+     *
      */
     public PictureSelectionModel setFilterVideoMaxSecond(int videoMaxSecond) {
         selectionConfig.filterVideoMaxSecond = videoMaxSecond * 1000;
@@ -804,7 +804,7 @@ public final class PictureSelectionModel {
      * filter min seconds video
      *
      * @param videoMinSecond filter video min second
-     * @return
+     *
      */
     public PictureSelectionModel setFilterVideoMinSecond(int videoMinSecond) {
         selectionConfig.filterVideoMinSecond = videoMinSecond * 1000;
@@ -815,7 +815,7 @@ public final class PictureSelectionModel {
      * Select the max number of seconds for video or audio support
      *
      * @param maxDurationSecond select video max second
-     * @return
+     *
      */
     public PictureSelectionModel setSelectMaxDurationSecond(int maxDurationSecond) {
         selectionConfig.selectMaxDurationSecond = maxDurationSecond * 1000;
@@ -826,7 +826,7 @@ public final class PictureSelectionModel {
      * Select the min number of seconds for video or audio support
      *
      * @param minDurationSecond select video min second
-     * @return
+     *
      */
     public PictureSelectionModel setSelectMinDurationSecond(int minDurationSecond) {
         selectionConfig.selectMinDurationSecond = minDurationSecond * 1000;
@@ -837,7 +837,7 @@ public final class PictureSelectionModel {
      * The max duration of video recording. If it is system recording, there may be compatibility problems
      *
      * @param maxSecond video record second
-     * @return
+     *
      */
     public PictureSelectionModel setRecordVideoMaxSecond(int maxSecond) {
         selectionConfig.recordVideoMaxSecond = maxSecond;
@@ -849,7 +849,7 @@ public final class PictureSelectionModel {
      * Select the maximum video number of files
      *
      * @param maxVideoSelectNum PictureSelector video max selection
-     * @return
+     *
      */
     public PictureSelectionModel setMaxVideoSelectNum(int maxVideoSelectNum) {
         selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == SelectMimeType.ofVideo() ? 0 : maxVideoSelectNum;
@@ -860,7 +860,7 @@ public final class PictureSelectionModel {
      * Select the minimum video number of files
      *
      * @param minVideoSelectNum PictureSelector video min selection
-     * @return
+     *
      */
     public PictureSelectionModel setMinVideoSelectNum(int minVideoSelectNum) {
         selectionConfig.minVideoSelectNum = minVideoSelectNum;
@@ -871,7 +871,7 @@ public final class PictureSelectionModel {
      * Select the minimum audio number of files
      *
      * @param minAudioSelectNum PictureSelector audio min selection
-     * @return
+     *
      */
     public PictureSelectionModel setMinAudioSelectNum(int minAudioSelectNum) {
         selectionConfig.minAudioSelectNum = minAudioSelectNum;
@@ -880,7 +880,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param minSecond video record second
-     * @return
+     *
      */
     public PictureSelectionModel setRecordVideoMinSecond(int minSecond) {
         selectionConfig.recordVideoMinSecond = minSecond;
@@ -889,7 +889,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param imageSpanCount PictureSelector image span count
-     * @return
+     *
      */
     public PictureSelectionModel setImageSpanCount(int imageSpanCount) {
         selectionConfig.imageSpanCount = imageSpanCount;
@@ -898,7 +898,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isEmptyReturn No data can be returned
-     * @return
+     *
      */
     public PictureSelectionModel isEmptyResultReturn(boolean isEmptyReturn) {
         selectionConfig.isEmptyResultReturn = isEmptyReturn;
@@ -910,7 +910,7 @@ public final class PictureSelectionModel {
      * After recording with the system camera, does it support playing the video immediately using the system player
      *
      * @param isQuickCapture
-     * @return
+     *
      */
     public PictureSelectionModel isQuickCapture(boolean isQuickCapture) {
         selectionConfig.isQuickCapture = isQuickCapture;
@@ -919,7 +919,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isDisplayCamera Whether to open camera button
-     * @return
+     *
      */
     public PictureSelectionModel isDisplayCamera(boolean isDisplayCamera) {
         selectionConfig.isDisplayCamera = isDisplayCamera;
@@ -929,7 +929,7 @@ public final class PictureSelectionModel {
     /**
      * @param outPutCameraDir Camera output path
      *                        <p>Audio mode setting is not supported</p>
-     * @return
+     *
      */
     public PictureSelectionModel setOutputCameraDir(String outPutCameraDir) {
         selectionConfig.outPutCameraDir = outPutCameraDir;
@@ -938,7 +938,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param outPutAudioDir Audio output path
-     * @return
+     *
      */
     public PictureSelectionModel setOutputAudioDir(String outPutAudioDir) {
         selectionConfig.outPutAudioDir = outPutAudioDir;
@@ -950,7 +950,7 @@ public final class PictureSelectionModel {
      * # Such as xxx.png
      *
      * @param fileName
-     * @return
+     *
      */
     public PictureSelectionModel setOutputCameraImageFileName(String fileName) {
         selectionConfig.outPutCameraImageFileName = fileName;
@@ -962,7 +962,7 @@ public final class PictureSelectionModel {
      * # Such as xxx.png
      *
      * @param fileName
-     * @return
+     *
      */
     public PictureSelectionModel setOutputCameraVideoFileName(String fileName) {
         selectionConfig.outPutCameraVideoFileName = fileName;
@@ -974,7 +974,7 @@ public final class PictureSelectionModel {
      * # Such as xxx.amr
      *
      * @param fileName
-     * @return
+     *
      */
     public PictureSelectionModel setOutputAudioFileName(String fileName) {
         selectionConfig.outPutAudioFileName = fileName;
@@ -994,7 +994,7 @@ public final class PictureSelectionModel {
      *            Do not set the external storage path,
      *            which may cause the problem of picture duplication
      *            </p>
-     * @return
+     *
      */
     public PictureSelectionModel setQuerySandboxDir(String dir) {
         selectionConfig.sandboxDir = dir;
@@ -1008,7 +1008,7 @@ public final class PictureSelectionModel {
      * <p/>
      *
      * @param isOnlySandboxDir true or Only Display {@link SelectorConfig.setQuerySandboxDir();}
-     * @return
+     *
      */
     public PictureSelectionModel isOnlyObtainSandboxDir(boolean isOnlySandboxDir) {
         selectionConfig.isOnlySandboxDir = isOnlySandboxDir;
@@ -1019,7 +1019,7 @@ public final class PictureSelectionModel {
      * Displays the creation timeline of the resource
      *
      * @param isDisplayTimeAxis
-     * @return
+     *
      */
     public PictureSelectionModel isDisplayTimeAxis(boolean isDisplayTimeAxis) {
         selectionConfig.isDisplayTimeAxis = isDisplayTimeAxis;
@@ -1030,7 +1030,7 @@ public final class PictureSelectionModel {
      * # file size The unit is KB
      *
      * @param fileKbSize Filter max file size
-     * @return
+     *
      */
     public PictureSelectionModel setFilterMaxFileSize(long fileKbSize) {
         if (fileKbSize >= FileSizeUnit.MB) {
@@ -1045,7 +1045,7 @@ public final class PictureSelectionModel {
      * # file size The unit is KB
      *
      * @param fileKbSize Filter min file size
-     * @return
+     *
      */
     public PictureSelectionModel setFilterMinFileSize(long fileKbSize) {
         if (fileKbSize >= FileSizeUnit.MB) {
@@ -1061,7 +1061,7 @@ public final class PictureSelectionModel {
      * # file size The unit is KB
      *
      * @param fileKbSize Filter max file size
-     * @return
+     *
      */
     public PictureSelectionModel setSelectMaxFileSize(long fileKbSize) {
         if (fileKbSize >= FileSizeUnit.MB) {
@@ -1076,7 +1076,7 @@ public final class PictureSelectionModel {
      * # file size The unit is KB
      *
      * @param fileKbSize Filter min file size
-     * @return
+     *
      */
     public PictureSelectionModel setSelectMinFileSize(long fileKbSize) {
         if (fileKbSize >= FileSizeUnit.MB) {
@@ -1090,12 +1090,23 @@ public final class PictureSelectionModel {
     /**
      * query only mimeType
      *
-     * @param mimeTypes Use example {@link { image/jpeg or image/png ... }}
-     * @return
+     * @param values Use example {@link { image/jpeg or video/mp4 ... }}
      */
-    public PictureSelectionModel setQueryOnlyMimeType(String... mimeTypes) {
-        if (mimeTypes != null && mimeTypes.length > 0) {
-            selectionConfig.queryOnlyList.addAll(Arrays.asList(mimeTypes));
+    public PictureSelectionModel setQueryOnlyMimeType(String... values) {
+        for (String mimeType : values) {
+            if (PictureMimeType.isHasImage(mimeType)) {
+                if (!selectionConfig.queryOnlyImageList.contains(mimeType)) {
+                    selectionConfig.queryOnlyImageList.add(mimeType);
+                }
+            } else if (PictureMimeType.isHasVideo(mimeType)) {
+                if (!selectionConfig.queryOnlyVideoList.contains(mimeType)) {
+                    selectionConfig.queryOnlyVideoList.add(mimeType);
+                }
+            } else if (PictureMimeType.isHasAudio(mimeType)) {
+                if (!selectionConfig.queryOnlyAudioList.contains(mimeType)) {
+                    selectionConfig.queryOnlyAudioList.add(mimeType);
+                }
+            }
         }
         return this;
     }
@@ -1105,7 +1116,7 @@ public final class PictureSelectionModel {
      * Skip crop mimeType
      *
      * @param mimeTypes Use example {@link { image/gift or image/webp ... }}
-     * @return
+     *
      */
     public PictureSelectionModel setSkipCropMimeType(String... mimeTypes) {
         if (mimeTypes != null && mimeTypes.length > 0) {
@@ -1123,7 +1134,7 @@ public final class PictureSelectionModel {
      * </p>
      *
      * @param sortOrder
-     * @return
+     *
      */
     public PictureSelectionModel setQuerySortOrder(String sortOrder) {
         if (!TextUtils.isEmpty(sortOrder)) {
@@ -1134,7 +1145,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isGif Whether to open gif
-     * @return
+     *
      */
     public PictureSelectionModel isGif(boolean isGif) {
         selectionConfig.isGif = isGif;
@@ -1143,7 +1154,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isWebp Whether to open .webp
-     * @return
+     *
      */
     public PictureSelectionModel isWebp(boolean isWebp) {
         selectionConfig.isWebp = isWebp;
@@ -1152,7 +1163,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isBmp Whether to open .isBmp
-     * @return
+     *
      */
     public PictureSelectionModel isBmp(boolean isBmp) {
         selectionConfig.isBmp = isBmp;
@@ -1160,10 +1171,19 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * @param isHeic Whether to open .isHeic
+     *
+     */
+    public PictureSelectionModel isHeic(boolean isHeic) {
+        selectionConfig.isHeic = isHeic;
+        return this;
+    }
+
+    /**
      * Preview Full Screen Mode
      *
      * @param isFullScreenModel
-     * @return
+     *
      */
     public PictureSelectionModel isPreviewFullScreenMode(boolean isFullScreenModel) {
         selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
@@ -1173,7 +1193,7 @@ public final class PictureSelectionModel {
     /**
      * Preview Zoom Effect Mode
      *
-     * @return
+     *
      */
     public PictureSelectionModel isPreviewZoomEffect(boolean isPreviewZoomEffect) {
         if (selectionConfig.chooseMode == SelectMimeType.ofAudio()) {
@@ -1199,7 +1219,7 @@ public final class PictureSelectionModel {
      * It is forbidden to correct or synchronize the width and height of the video
      *
      * @param isSyncWidthAndHeight
-     * @return
+     *
      */
     public PictureSelectionModel isSyncWidthAndHeight(boolean isSyncWidthAndHeight) {
         selectionConfig.isSyncWidthAndHeight = isSyncWidthAndHeight;
@@ -1210,7 +1230,7 @@ public final class PictureSelectionModel {
      * Do you want to preview play the audio file?
      *
      * @param isPreviewAudio
-     * @return
+     *
      */
     public PictureSelectionModel isPreviewAudio(boolean isPreviewAudio) {
         selectionConfig.isEnablePreviewAudio = isPreviewAudio;
@@ -1219,7 +1239,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isPreviewImage Do you want to preview the picture?
-     * @return
+     *
      */
     public PictureSelectionModel isPreviewImage(boolean isPreviewImage) {
         selectionConfig.isEnablePreviewImage = isPreviewImage;
@@ -1229,7 +1249,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isPreviewVideo Do you want to preview the video?
-     * @return
+     *
      */
     public PictureSelectionModel isPreviewVideo(boolean isPreviewVideo) {
         selectionConfig.isEnablePreviewVideo = isPreviewVideo;
@@ -1240,7 +1260,7 @@ public final class PictureSelectionModel {
      * Whether to play video automatically when previewing
      *
      * @param isAutoPlay
-     * @return
+     *
      */
     public PictureSelectionModel isAutoVideoPlay(boolean isAutoPlay) {
         selectionConfig.isAutoVideoPlay = isAutoPlay;
@@ -1251,7 +1271,7 @@ public final class PictureSelectionModel {
      * loop video
      *
      * @param isLoopAutoPlay
-     * @return
+     *
      */
     public PictureSelectionModel isLoopAutoVideoPlay(boolean isLoopAutoPlay) {
         selectionConfig.isLoopAutoPlay = isLoopAutoPlay;
@@ -1262,7 +1282,7 @@ public final class PictureSelectionModel {
      * The video supports pause and resume
      *
      * @param isPauseResumePlay
-     * @return
+     *
      */
     public PictureSelectionModel isVideoPauseResumePlay(boolean isPauseResumePlay) {
         selectionConfig.isPauseResumePlay = isPauseResumePlay;
@@ -1283,7 +1303,7 @@ public final class PictureSelectionModel {
      * Select original image to skip compression
      *
      * @param isOriginalSkipCompress
-     * @return
+     *
      */
     public PictureSelectionModel isOriginalSkipCompress(boolean isOriginalSkipCompress) {
         selectionConfig.isOriginalSkipCompress = isOriginalSkipCompress;
@@ -1294,7 +1314,7 @@ public final class PictureSelectionModel {
      * Filter the validity of file size or duration of audio and video
      *
      * @param isFilterSizeDuration
-     * @return
+     *
      */
     public PictureSelectionModel isFilterSizeDuration(boolean isFilterSizeDuration) {
         selectionConfig.isFilterSizeDuration = isFilterSizeDuration;
@@ -1305,7 +1325,7 @@ public final class PictureSelectionModel {
      * Quick slide selection results
      *
      * @param isFastSlidingSelect
-     * @return
+     *
      */
     public PictureSelectionModel isFastSlidingSelect(boolean isFastSlidingSelect) {
         if (selectionConfig.isDirectReturnSingle) {
@@ -1318,7 +1338,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param isClickSound Whether to open click voice
-     * @return
+     *
      */
     public PictureSelectionModel isOpenClickSound(boolean isClickSound) {
         selectionConfig.isOpenClickSound = isClickSound;
@@ -1351,7 +1371,7 @@ public final class PictureSelectionModel {
 
     /**
      * @param selectedList Select the selected picture set
-     * @return
+     *
      */
     public PictureSelectionModel setSelectedData(List<LocalMedia> selectedList) {
         if (selectedList == null) {
@@ -1370,7 +1390,7 @@ public final class PictureSelectionModel {
      * Use {@link AnimationType#ALPHA_IN_ANIMATION or SLIDE_IN_BOTTOM_ANIMATION} directly.
      *
      * @param animationMode
-     * @return
+     *
      */
     public PictureSelectionModel setRecyclerAnimationMode(int animationMode) {
         selectionConfig.animationMode = animationMode;
