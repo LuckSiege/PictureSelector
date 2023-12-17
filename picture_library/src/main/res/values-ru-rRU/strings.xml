@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_camera_roll">Камера</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
+    <string name="picture_cancel">Отмена</string>
+    <string name="picture_take_picture">Сделать фото</string>
+    <string name="picture_rule">Нет картинок или видео</string>
+    <string name="picture_min_video_num">Минимум %1$s видео</string>
+    <string name="picture_message_max_num">Выберите до %1$s изображений</string>
+    <string name="picture_message_audio_max_num">Выберите до %1$s аудио</string>
+    <string name="picture_message_video_max_num">Выберите до %1$s видео</string>
+    <string name="picture_preview">Предпросмотр</string>
+    <string name="picture_please">Пожалуйста подождите...</string>
+    <string name="picture_done_front_num">%1$d/%2$d Ок</string>
+    <string name="picture_completed">Выбрано</string>
+    <string name="picture_done">Завершить</string>
+    <string name="picture_please_select">Пожалуйста выберите</string>
+    <string name="picture_empty_title">Нет изображений или видео\n</string>
+    <string name="picture_empty_audio_title">Нет аудио файлов\n</string>
+    <string name="picture_audio_empty">Вы можете использовать системные настройки, чтобы записать аудио</string>
+    <string name="picture_empty">вы можете использовать свою камеру, чтобы сделать фото или видео</string>
+    <string name="picture_min_img_num">Минимум изображений %1$s</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
+    <string name="picture_audio">Доступ к записи запрещен</string>
+    <string name="picture_jurisdiction">Доступ к карте памяти запрещен</string>
+    <string name="picture_camera">Доступ к камере запрещен</string>
+    <string name="picture_video_toast">Предпросмотр недоступен</string>
+    <string name="picture_record_video">Записать видео</string>
+    <string name="picture_photograph">Фотография</string>
+    <string name="picture_long_chart">Длинный</string>
+    <string name="picture_warning">Нет медиа файлов!</string>
+    <string name="picture_prompt">Подсказка</string>
+    <string name="picture_prompt_content">Вы хотите сохранить фотографии на ваш телефон?</string>
+    <string name="picture_save_error">Не удалось сохранить фото</string>
+    <string name="picture_save_success">Изображение успешно сохранено</string>
+    <string name="picture_all_audio">Все аудио</string>
+    <string name="picture_tape">Лента</string>
+    <string name="picture_play_audio">Играть</string>
+    <string name="picture_stop_audio">Остановить</string>
+    <string name="picture_quit_audio">Выход</string>
+    <string name="picture_pause_audio">Пауза</string>
+    <string name="picture_error">Изображение повреждено</string>
+    <string name="picture_video_error">Видео повреждено</string>
+    <string name="picture_audio_error">Аудио повреждено</string>
+    <string name="picture_confirm">Принять</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
+    <string name="picture_not_crop_data">Нет данных</string>
+    <string name="picture_original_image">Оригинал (%1$s)</string>
+    <string name="picture_default_original_image">Оригинал</string>
+    <string name="picture_send">Завершить</string>
+    <string name="picture_send_num">Завершить(%1$d/%2$d)</string>
+    <string name="picture_preview_num">Предпросмотр(%1$d)</string>
+    <string name="picture_select">Выбрать</string>
+    <string name="picture_data_exception">Ошибка при получении альбома…</string>
+    <string name="picture_recording_time_is_short">Слишком короткое время записи</string>
+    <string name="picture_photo_camera">Фотография</string>
+    <string name="picture_choose_max_seconds">Вы можете выбрать видео в пределах %1$ds</string>
+    <string name="picture_choose_min_seconds">Вы не можете выбрать видео меньше чем %1$ds</string>
+    <string name="picture_choose_limit_seconds">Может быть выбрано видео только от %1$ds до %2$ds</string>
+
+    <string name="picture_photo_pictures">Сделать фото</string>
+    <string name="picture_photo_recording">Долгое нажатие для записи</string>
+    <string name="picture_go_setting">Переход к настройкам</string>
+    <string name="picture_know">Ок</string>
+    <string name="picture_data_null">Нет данных...</string>
+    <string name="picture_editor">Редактор</string>
+
+
+    <string name="ucrop_label_original">Оригинал</string>
+    <string name="ucrop_label_edit_photo">Отредактировать фото</string>
+
+    <string name="ucrop_menu_crop">Вырезать</string>
+
+    <string name="ucrop_rotate">Повернуть</string>
+    <string name="ucrop_scale">Масштаб</string>
+    <string name="ucrop_crop">Вырезать</string>
+
+    <string name="ucrop_gif_tag">gif</string>
+</resources>
