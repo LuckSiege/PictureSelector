@@ -253,7 +253,11 @@ public class PictureSelectionQueryModel {
         loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
-                if (result != null && result.size() > 0) {
+                if (result != null) {
+                    if (result.size() == 0) {
+                        call.onComplete(new ArrayList<>());
+                        return;
+                    }
                     LocalMediaFolder all = result.get(0);
                     if (selectionConfig.isPageStrategy) {
                         loader.loadPageMediaData(all.getBucketId(), 1, selectionConfig.pageSize,
