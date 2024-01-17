@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">选择音频大于%1$d秒</string>
     <string name="ps_select_audio_min_second">选择音频小于%1$d秒</string>
     <string name="ps_select_no_support">不支持的选择类型</string>
+    <string name="ps_media_reselection_tip">您已授予对选定数量的照片和视频的访问权限。</string>
+    <string name="ps_manage">管理</string>
 </resources>

@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">%1$d秒以上のオーディオを選択</string>
     <string name="ps_select_audio_min_second">%1$d秒未満のオーディオを選択</string>
     <string name="ps_select_no_support">サポートされていない選択タイプ</string>
+    <string name="ps_manage">管理</string>
+    <string name="ps_media_reselection_tip">選択した数の写真とビデオへのアクセスが許可されました。</string>
 </resources>

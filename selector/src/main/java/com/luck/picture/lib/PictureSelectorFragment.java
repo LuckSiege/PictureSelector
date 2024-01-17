@@ -65,6 +65,7 @@ import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
+import com.luck.picture.lib.widget.MediaReselectionTipView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.luck.picture.lib.widget.SlideSelectTouchListener;
 import com.luck.picture.lib.widget.SlideSelectionHandler;
@@ -92,6 +93,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private RecyclerPreloadView mRecycler;
     private TextView tvDataEmpty;
     private TitleBar titleBar;
+    private MediaReselectionTipView mediaReselectionTipView;
     private BottomNavBar bottomNarBar;
     private CompleteSelectView completeSelectView;
     private TextView tvCurrentDataTime;
@@ -240,11 +242,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
         tvDataEmpty = view.findViewById(R.id.tv_data_empty);
         completeSelectView = view.findViewById(R.id.ps_complete_select);
         titleBar = view.findViewById(R.id.title_bar);
+        mediaReselectionTipView = view.findViewById(R.id.media_reselection_tip_view);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         tvCurrentDataTime = view.findViewById(R.id.tv_current_data_time);
         onCreateLoader();
         initAlbumListPopWindow();
         initTitleBar();
+        initMediaReselectionTipView(false);
         initComplete();
         initRecycler(view);
         initBottomNavBar();
@@ -388,7 +392,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         addAlbumPopWindowAction();
     }
 
-    private void recoverSaveInstanceData(){
+    private void recoverSaveInstanceData() {
         mAdapter.setDisplayCamera(isDisplayCamera);
         setEnterAnimationDuration(0);
         if (selectorConfig.isOnlySandboxDir) {
@@ -428,24 +432,50 @@ public class PictureSelectorFragment extends PictureCommonFragment
         mAdapter.setDisplayCamera(isDisplayCamera);
         if (PermissionChecker.isCheckReadStorage(selectorConfig.chooseMode, getContext())) {
             beginLoadData();
+        } else if (PermissionChecker.isCheckUserSelected(selectorConfig.chooseMode, getContext())) {
+            //权限未授予，但是授予了 READ_MEDIA_VISUAL_USER_SELECTED 权限
+            //正常加载数据，同时提示用户再次选择要展示在图库的照片
+            initMediaReselectionTipView(true);
+            beginLoadData();
         } else {
-            String[] readPermissionArray = PermissionConfig.getReadPermissionArray(getAppContext(), selectorConfig.chooseMode);
-            onPermissionExplainEvent(true, readPermissionArray);
-            if (selectorConfig.onPermissionsEventListener != null) {
-                onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, readPermissionArray);
-            } else {
-                PermissionChecker.getInstance().requestPermissions(this, readPermissionArray, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        beginLoadData();
-                    }
+            requestPermissionsAndLoadData();
+        }
+    }
 
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied(readPermissionArray);
+    private void initMediaReselectionTipView(Boolean showTip) {
+        if (showTip) {
+            mediaReselectionTipView.setVisibility(View.VISIBLE);
+            mediaReselectionTipView.setMediaReselectionTipViewStyle();
+            mediaReselectionTipView.setOnMediaReselectionListener(
+                    new MediaReselectionTipView.OnMediaReselectionListener() {
+                        @Override
+                        public void onManageClick() {
+                            requestPermissionsAndLoadData();
+                        }
                     }
-                });
-            }
+            );
+        } else {
+            mediaReselectionTipView.setVisibility(View.GONE);
+        }
+    }
+
+    private void requestPermissionsAndLoadData() {
+        String[] readPermissionArray = PermissionConfig.getReadPermissionArray(getAppContext(), selectorConfig.chooseMode);
+        onPermissionExplainEvent(true, readPermissionArray);
+        if (selectorConfig.onPermissionsEventListener != null) {
+            onApplyPermissionsEvent(PermissionEvent.EVENT_SOURCE_DATA, readPermissionArray);
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this, readPermissionArray, new PermissionResultCallback() {
+                @Override
+                public void onGranted() {
+                    beginLoadData();
+                }
+
+                @Override
+                public void onDenied() {
+                    handlePermissionDenied(readPermissionArray);
+                }
+            });
         }
     }
 
@@ -481,7 +511,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
-        if (permissions == null){
+        if (permissions == null) {
             return;
         }
         onPermissionExplainEvent(false, null);

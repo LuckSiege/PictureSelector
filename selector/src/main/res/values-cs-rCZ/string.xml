@@ -79,4 +79,6 @@
     <string name="ps_select_audio_max_second">Vyberte zvuk delší než %1$d s</string>
     <string name="ps_select_audio_min_second">Vyberte zvuk kratší než %1$d s</string>
     <string name="ps_select_no_support">Nepodporovaný typ výběru</string>
+    <string name="ps_manage">Podávání</string>
+    <string name="ps_media_reselection_tip">udělili jste přístup k vybranému počtu fotografií a videí.</string>
 </resources>
