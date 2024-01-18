@@ -91,7 +91,7 @@ public class PermissionChecker {
         }
     }
 
-    public void onRequestPermissionsResult(Context context,String[] permissions,int[] grantResults, PermissionResultCallback action) {
+    public void onRequestPermissionsResult(Context context, String[] permissions, int[] grantResults, PermissionResultCallback action) {
         Activity activity = (Activity) context;
         for (String permission : permissions) {
             boolean should = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
@@ -143,6 +143,19 @@ public class PermissionChecker {
         }
     }
 
+    /**
+     * 检查 READ_MEDIA_VISUAL_USER_SELECTED 权限是否存在
+     */
+    public static boolean isCheckUserSelected(int chooseMode, Context context) {
+        if (SdkVersionUtils.isUPSIDE_DOWN_CAKE()) {
+            if (chooseMode != SelectMimeType.ofAudio()) {
+                return PermissionChecker.checkSelfPermission(context,
+                        new String[]{PermissionConfig.READ_MEDIA_VISUAL_USER_SELECTED});
+            } else return false;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 检查读取图片权限是否存在

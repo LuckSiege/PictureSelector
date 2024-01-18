@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_nar_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/media_reselection_tip_view" />
 
     <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_current_data_time"
@@ -29,7 +29,7 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/media_reselection_tip_view" />
 
     <com.luck.picture.lib.widget.TitleBar
         android:id="@+id/title_bar"
@@ -38,6 +38,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="48dp" />
+
+    <com.luck.picture.lib.widget.MediaReselectionTipView
+        android:id="@+id/media_reselection_tip_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
         tools:layout_height="48dp" />
 
     <com.luck.picture.lib.widget.BottomNavBar
@@ -54,9 +64,9 @@
         android:id="@+id/ps_complete_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:layout_marginEnd="15dp"
         android:background="@drawable/ps_transparent_space"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="@id/bottom_nar_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />

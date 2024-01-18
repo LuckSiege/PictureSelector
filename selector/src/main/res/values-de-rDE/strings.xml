@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">Audio für mehr als %1$d Sekunden auswählen</string>
     <string name="ps_select_audio_min_second">Audio für weniger als %1$d Sekunden auswählen</string>
     <string name="ps_select_no_support">Nicht unterstützter Auswahltyp</string>
+    <string name="ps_manage">Verwaltung</string>
+    <string name="ps_media_reselection_tip">Sie haben Zugriff auf eine ausgewählte Anzahl von Fotos und Videos gewährt.</string>
 </resources>

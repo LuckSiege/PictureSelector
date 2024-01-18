@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">Выберите звук больше %1$d секунд</string>
     <string name="ps_select_audio_min_second">Выберите звук меньше %1$d секунд</string>
     <string name="ps_select_no_support">не поддерживается тип выделения</string>
+    <string name="ps_manage">управлять</string>
+    <string name="ps_media_reselection_tip">вы предоставили доступ к определенному количеству фотографий и видео.</string>
 </resources>
