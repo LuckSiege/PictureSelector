@@ -248,7 +248,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         onCreateLoader();
         initAlbumListPopWindow();
         initTitleBar();
-        initMediaReselectionTipView(false);
         initComplete();
         initRecycler(view);
         initBottomNavBar();
@@ -433,29 +432,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PermissionChecker.isCheckReadStorage(selectorConfig.chooseMode, getContext())) {
             beginLoadData();
         } else if (PermissionChecker.isCheckUserSelected(selectorConfig.chooseMode, getContext())) {
-            //权限未授予，但是授予了 READ_MEDIA_VISUAL_USER_SELECTED 权限
-            //正常加载数据，同时提示用户再次选择要展示在图库的照片
-            initMediaReselectionTipView(true);
+            //媒体权限未授予，但是授予了 READ_MEDIA_VISUAL_USER_SELECTED 权限
+            //正常加载数据
             beginLoadData();
         } else {
             requestPermissionsAndLoadData();
-        }
-    }
-
-    private void initMediaReselectionTipView(Boolean showTip) {
-        if (showTip) {
-            mediaReselectionTipView.setVisibility(View.VISIBLE);
-            mediaReselectionTipView.setMediaReselectionTipViewStyle();
-            mediaReselectionTipView.setOnMediaReselectionListener(
-                    new MediaReselectionTipView.OnMediaReselectionListener() {
-                        @Override
-                        public void onManageClick() {
-                            requestPermissionsAndLoadData();
-                        }
-                    }
-            );
-        } else {
-            mediaReselectionTipView.setVisibility(View.GONE);
         }
     }
 
@@ -501,11 +482,33 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 开始获取数据
      */
     private void beginLoadData() {
+        //加载数据同时，初始化媒体重选 View
+        initMediaReselectionTipView();
         onPermissionExplainEvent(false, null);
         if (selectorConfig.isOnlySandboxDir) {
             loadOnlyInAppDirectoryAllMediaData();
         } else {
             loadAllAlbumData();
+        }
+    }
+
+    private void initMediaReselectionTipView() {
+        //未授予读写权限 且 授予 READ_MEDIA_VISUAL_USER_SELECTED 权限，需要显示媒体重选提示
+        boolean shouldShowMediaReselectionTip = !PermissionChecker.isCheckReadStorage(selectorConfig.chooseMode, getContext())
+                && PermissionChecker.isCheckUserSelected(selectorConfig.chooseMode, getContext());
+        if (shouldShowMediaReselectionTip) {
+            mediaReselectionTipView.setVisibility(View.VISIBLE);
+            mediaReselectionTipView.setMediaReselectionTipViewStyle();
+            mediaReselectionTipView.setOnMediaReselectionListener(
+                    new MediaReselectionTipView.OnMediaReselectionListener() {
+                        @Override
+                        public void onManageClick() {
+                            requestPermissionsAndLoadData();
+                        }
+                    }
+            );
+        } else {
+            mediaReselectionTipView.setVisibility(View.GONE);
         }
     }
 
