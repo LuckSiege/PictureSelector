@@ -994,6 +994,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             }
                         }
                     }
+                    // 拖动排序后刷新当前item选择序号
+                    notifySelectNumberStyle(mData.get(curPosition));
                 }
             });
             mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);
