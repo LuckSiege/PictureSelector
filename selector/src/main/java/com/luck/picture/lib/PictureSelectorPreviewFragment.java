@@ -162,6 +162,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     protected List<View> mAnimViews = new ArrayList<>();
 
     private boolean isPause = false;
+    private boolean isEnterWindowFullScreen = false;
 
     public static PictureSelectorPreviewFragment newInstance() {
         PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
@@ -745,6 +746,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         onBackCurrentFragment();
                     }
                 }
+                exitWindowFullScreen();
             }
         });
         titleBar.setTitle((curPosition + 1) + "/" + totalNum);
@@ -1294,6 +1296,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             } else {
                 onBackCurrentFragment();
             }
+            exitWindowFullScreen();
         }
     }
 
@@ -1325,20 +1328,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
-                if (SdkVersionUtils.isP() && isAdded()) {
-                    Window window = requireActivity().getWindow();
-                    WindowManager.LayoutParams lp = window.getAttributes();
-                    if (isAnimInit) {
-                        lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                        lp.layoutInDisplayCutoutMode =
-                                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-                        window.setAttributes(lp);
-                        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-                    } else {
-                        lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                        window.setAttributes(lp);
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-                    }
+                if (isAnimInit) {
+                    enterWindowFullScreen();
+                } else {
+                    exitWindowFullScreen();
                 }
             }
         });
@@ -1347,6 +1340,30 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             showFullScreenStatusBar();
         } else {
             hideFullScreenStatusBar();
+        }
+    }
+
+    private void enterWindowFullScreen() {
+        if (SdkVersionUtils.isP() && isAdded() && !isEnterWindowFullScreen) {
+            isEnterWindowFullScreen = true;
+            Window window = requireActivity().getWindow();
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            lp.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            window.setAttributes(lp);
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
+
+    private void exitWindowFullScreen() {
+        if (SdkVersionUtils.isP() && isAdded() && isEnterWindowFullScreen) {
+            isEnterWindowFullScreen = false;
+            Window window = requireActivity().getWindow();
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.setAttributes(lp);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
     }
 
