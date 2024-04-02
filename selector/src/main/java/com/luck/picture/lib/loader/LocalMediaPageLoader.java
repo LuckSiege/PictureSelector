@@ -275,13 +275,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 Map<Long, Long> countMap = new HashMap<>();
                                 Set<Long> hashSet = new HashSet<>();
                                 while (data.moveToNext()) {
-                                    if (getConfig().isPageSyncAsCount) {
-                                        LocalMedia media = parseLocalMedia(data, true);
-                                        if (media == null) {
-                                            continue;
-                                        }
-                                        media.recycle();
+                                    LocalMedia media = parseLocalMedia(data, true);
+                                    if (media == null) {
+                                        continue;
                                     }
+                                    media.recycle();
                                     long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                     Long newCount = countMap.get(bucketId);
                                     if (newCount == null) {
