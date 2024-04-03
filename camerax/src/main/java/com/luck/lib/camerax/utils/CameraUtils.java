@@ -38,7 +38,7 @@ public class CameraUtils {
             values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         } else {
             if (cameraFileName.lastIndexOf(".") == -1) {
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, cameraFileName);
             } else {
                 String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
                 String fileName = cameraFileName.replaceAll(suffix, "");
@@ -69,7 +69,7 @@ public class CameraUtils {
             values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
         } else {
             if (cameraFileName.lastIndexOf(".") == -1) {
-                values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, cameraFileName);
             } else {
                 String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
                 String fileName = cameraFileName.replaceAll(suffix, "");
