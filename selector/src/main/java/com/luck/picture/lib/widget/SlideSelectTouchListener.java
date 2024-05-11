@@ -307,6 +307,8 @@ public class SlideSelectTouchListener implements RecyclerView.OnItemTouchListene
             return;
         }
 
+        boolean isReverse = mStart > mEnd;
+
         int newStart, newEnd;
         newStart = Math.min(mStart, mEnd);
         newEnd = Math.max(mStart, mEnd);
@@ -315,21 +317,21 @@ public class SlideSelectTouchListener implements RecyclerView.OnItemTouchListene
         }
         if (mLastStart == RecyclerView.NO_POSITION || mLastEnd == RecyclerView.NO_POSITION) {
             if (newEnd - newStart == 1) {
-                mSelectListener.onSelectChange(newStart, newStart, true);
+                mSelectListener.onSelectChange(newStart, newStart, true, isReverse);
             } else {
-                mSelectListener.onSelectChange(newStart, newEnd, true);
+                mSelectListener.onSelectChange(newStart, newEnd, true, isReverse);
             }
         } else {
             if (newStart > mLastStart) {
-                mSelectListener.onSelectChange(mLastStart, newStart - 1, false);
+                mSelectListener.onSelectChange(mLastStart, newStart - 1, false, isReverse);
             } else if (newStart < mLastStart) {
-                mSelectListener.onSelectChange(newStart, mLastStart - 1, true);
+                mSelectListener.onSelectChange(newStart, mLastStart - 1, true, isReverse);
             }
 
             if (newEnd > mLastEnd) {
-                mSelectListener.onSelectChange(mLastEnd + 1, newEnd, true);
+                mSelectListener.onSelectChange(mLastEnd + 1, newEnd, true, isReverse);
             } else if (newEnd < mLastEnd) {
-                mSelectListener.onSelectChange(newEnd + 1, mLastEnd, false);
+                mSelectListener.onSelectChange(newEnd + 1, mLastEnd, false, isReverse);
             }
         }
 
@@ -389,7 +391,8 @@ public class SlideSelectTouchListener implements RecyclerView.OnItemTouchListene
          * @param start      the newly (un)selected range start
          * @param end        the newly (un)selected range end
          * @param isSelected true, it range got selected, false if not
+         * @param isReverse  true, it select from bottom to top, false if not
          */
-        void onSelectChange(int start, int end, boolean isSelected);
+        void onSelectChange(int start, int end, boolean isSelected, boolean isReverse);
     }
 }

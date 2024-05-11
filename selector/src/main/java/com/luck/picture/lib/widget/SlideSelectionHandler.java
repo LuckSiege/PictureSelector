@@ -54,9 +54,16 @@ public class SlideSelectionHandler implements SlideSelectTouchListener.OnAdvance
     }
 
     @Override
-    public void onSelectChange(int start, int end, boolean isSelected) {
-        for (int i = start; i <= end; i++) {
-            checkedChangeSelection(i, i, isSelected != mOriginalSelection.contains(i));
+    public void onSelectChange(int start, int end, boolean isSelected, boolean isReverse) {
+        if (isReverse) {
+            for (int i = end; i >= start; i--) {
+                checkedChangeSelection(i, i, isSelected != mOriginalSelection.contains(i));
+            }
+        }
+        else {
+            for (int i = start; i <= end; i++) {
+                checkedChangeSelection(i, i, isSelected != mOriginalSelection.contains(i));
+            }
         }
     }
 
