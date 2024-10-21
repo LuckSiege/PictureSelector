@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
-buildscript {
+/*buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
-}
+}*/
 
 android {
     compileSdkVersion 27
@@ -28,6 +28,6 @@ ext {
     PUBLISH_ARTIFACT_ID = "compress"
 }
 
-apply from: '../publish.gradle'
+//apply from: '../publish.gradle'
 
 dependencies {}

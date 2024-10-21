@@ -178,6 +178,10 @@ public class PictureFileUtils {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    public static boolean isContentProviderUri(Uri uri) {
+        return "com.google.android.apps.photos.contentprovider".equals(uri.getAuthority());
+    }
+
     /**
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
@@ -285,7 +289,7 @@ public class PictureFileUtils {
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
 
             // Return the remote address
-            if (isGooglePhotosUri(uri)) {
+            if (isGooglePhotosUri(uri) || isContentProviderUri(uri)) {
                 return uri.getLastPathSegment();
             }
 
