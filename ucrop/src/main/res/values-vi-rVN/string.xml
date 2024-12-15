@@ -2,8 +2,9 @@
 <resources>
 
     <string name="ucrop_gif_tag">gif</string>
-    <string name="ucrop_label_edit_photo">Editar foto</string>
-    <string name="ucrop_label_original">Original</string>
-    <string name="ucrop_menu_crop">Recortar</string>
-    <string name="ucrop_not_crop">Kiểu cắt chưa sắp xếp</string>
+    <string name="ucrop_label_edit_photo">Chỉnh sửa</string>
+    <string name="ucrop_label_original">Ảnh Gốc</string>
+    <string name="ucrop_menu_crop">Cắt ảnh</string>
+    <string name="ucrop_not_crop">Kiểu cắt chưa được hỗ trợ</string>
+    
 </resources>
