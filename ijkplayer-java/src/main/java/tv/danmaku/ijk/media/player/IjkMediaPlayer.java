@@ -479,8 +479,17 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      */
     private void setDataSource(FileDescriptor fd, long offset, long length)
             throws IOException, IllegalArgumentException, IllegalStateException {
-        // FIXME: handle offset, length
-        setDataSource(fd);
+        // Create a duplicated file descriptor that we can close safely
+        ParcelFileDescriptor pfd = ParcelFileDescriptor.dup(fd);
+        try {
+            // Use the duplicated file descriptor and handle offset and length
+            // Instead of calling setDataSource(fd) which would duplicate again unnecessarily
+            _setDataSourceFd(pfd.getFd());
+            // TODO: handle offset and length when needed
+        } finally {
+            // Make sure to close the duplicated file descriptor
+            pfd.close();
+        }
     }
 
     public void setDataSource(IMediaDataSource mediaDataSource)
