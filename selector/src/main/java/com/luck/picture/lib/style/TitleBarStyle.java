@@ -21,6 +21,11 @@ public class TitleBarStyle {
     private int previewTitleLeftBackResource;
 
     /**
+     * 标题栏是否始终显示默认文案
+     */
+    private boolean titleDefaultTextAlways;
+
+    /**
      * 标题栏默认文案
      */
     private String titleDefaultText;
@@ -141,6 +146,14 @@ public class TitleBarStyle {
 
     public void setPreviewTitleLeftBackResource(int previewTitleLeftBackResource) {
         this.previewTitleLeftBackResource = previewTitleLeftBackResource;
+    }
+
+    public boolean isTitleDefaultTextAlways() {
+        return titleDefaultTextAlways;
+    }
+
+    public void setTitleDefaultTextAlways(boolean titleDefaultTextAlways) {
+        this.titleDefaultTextAlways = titleDefaultTextAlways;
     }
 
     public String getTitleDefaultText() {

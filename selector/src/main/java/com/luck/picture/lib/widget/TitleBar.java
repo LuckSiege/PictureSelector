@@ -119,6 +119,10 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
      * @param title
      */
     public void setTitle(String title) {
+        if (config.selectorStyle.getTitleBarStyle().isTitleDefaultTextAlways()){
+            return;
+        }
+
         tvTitle.setText(title);
     }
 
