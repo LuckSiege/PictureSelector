@@ -3,16 +3,22 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-        google()
-        mavenCentral()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
         }
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://developer.huawei.com/repo/' } //华为 push
+        //mavenCentral仓和jcenter仓的聚合仓 阿里云镜像(老)
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+        classpath 'com.android.tools.build:gradle:8.10.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.21'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -21,12 +27,18 @@ buildscript {
 allprojects {
 
     repositories {
-        google()
-        mavenCentral()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
         }
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://developer.huawei.com/repo/' } //华为 push
+        //mavenCentral仓和jcenter仓的聚合仓 阿里云镜像(老)
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
     }
 }
 

@@ -76,4 +76,6 @@
     <string name="ps_select_audio_max_second">Chọn tiếng lớn hơn %1$d giây</string>
     <string name="ps_select_audio_min_second">Chọn tiếng dưới %1$d giây</string>
     <string name="ps_select_no_support">Kiểu chọn không được sắp xếp</string>
+    <string name="ps_manage">quản lý</string>
+    <string name="ps_media_reselection_tip">bạn đã cấp quyền truy cập vào một số ảnh và video được chọn.</string>
 </resources>

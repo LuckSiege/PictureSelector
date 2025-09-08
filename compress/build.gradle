@@ -2,7 +2,18 @@ apply plugin: 'com.android.library'
 
 buildscript {
     repositories {
-        jcenter()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://developer.huawei.com/repo/' } //华为 push
+        //mavenCentral仓和jcenter仓的聚合仓 阿里云镜像(老)
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
@@ -10,11 +21,10 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 27
-
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 34
     }
     buildTypes {
         release {
@@ -22,6 +32,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    namespace "top.zibin.luban"
 }
 
 ext {

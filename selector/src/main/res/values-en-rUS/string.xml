@@ -78,4 +78,6 @@
     <string name="ps_select_audio_max_second">Select audio for more than %1$d s</string>
     <string name="ps_select_audio_min_second">Select audio for less than %1$d s</string>
     <string name="ps_select_no_support">Unsupported selection type</string>
+    <string name="ps_manage">Manage</string>
+    <string name="ps_media_reselection_tip">you\'ve given access to a select number of photos and videos.</string>
 </resources>

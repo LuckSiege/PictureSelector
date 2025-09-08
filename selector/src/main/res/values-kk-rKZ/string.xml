@@ -79,4 +79,6 @@
     <string name="ps_select_audio_max_second">%1$d секундан артық аудионы таңдау</string>
     <string name="ps_select_audio_min_second">%1$d секундан аз аудионы таңдау</string>
     <string name="ps_select_no_support">Таңдау типі қолдау көрсетілмейді</string>
+    <string name="ps_manage">басқару</string>
+    <string name="ps_media_reselection_tip">фотосуреттер мен бейнелердің таңдаулы санына рұқсат бердіңіз.</string>
 </resources>

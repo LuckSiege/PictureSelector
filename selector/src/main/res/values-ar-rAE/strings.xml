@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">ختيار الصوت أكبر من %1$d ثانية</string>
     <string name="ps_select_audio_min_second">اختيار الصوت أقل من %1$d ثوان</string>
     <string name="ps_select_no_support">اختيار نوع غير معتمد</string>
+    <string name="ps_manage"> إدارة </string>
+    <string name="ps_media_reselection_tip">لقد منحت حق الوصول إلى عدد محدد من الصور ومقاطع الفيديو.</string>
 </resources>

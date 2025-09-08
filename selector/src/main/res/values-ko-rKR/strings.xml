@@ -75,4 +75,6 @@
     <string name="ps_select_audio_max_second">%1$d초 이상의 음성파일을 선택해주세요.</string>
     <string name="ps_select_audio_min_second">%1$d초 미만의 음성파일을 선택해주세요.</string>
     <string name="ps_select_no_support">지원되지 않는 선택 유형입니다.</string>
+    <string name="ps_manage">관리하다</string>
+    <string name="ps_media_reselection_tip">선택한 수의 사진과 비디오에 대한 액세스 권한을 부여했습니다.</string>
 </resources>
